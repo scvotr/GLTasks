@@ -1,2 +1,6 @@
 # Игнорировать директорию node_modules
 node_modules/
+bk/combined.log
+bk/error.log
+bk/errorAuth.log
+bk/warnAuth.log
