@@ -9,6 +9,8 @@ server.on("error", (error) => {
   console.log("server.on ", error)
 })
 
+const io = socketManager.init(server);
+
 const host = process.env.HOST || "localhost"
 const port = process.env.PORT || 3070
 
