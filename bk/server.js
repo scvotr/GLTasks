@@ -4,6 +4,7 @@ const http = require('http')
 require('dotenv').config()
 const {socketManager} = require('./utils/socket/socketManager')
 const { setupSocket } = require('./socketService')
+const socketEventLogger = require('./utils/socket/socketEventLogger')
 
 const server = http.createServer(async (req, res) => {})
 
@@ -13,6 +14,7 @@ server.on("error", (error) => {
 
 const io = socketManager.init(server)
 setupSocket(io)
+socketEventLogger(io)
 
 const host = process.env.HOST || "localhost"
 const port = process.env.PORT || 3070
