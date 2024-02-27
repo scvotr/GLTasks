@@ -1,3 +1,4 @@
+'use strict'
 let io = null
 
 module.exports.socketManager  = {
