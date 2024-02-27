@@ -81,7 +81,8 @@ function setupSocket(io) {
       })
 
       socket.on('error', (error) => {
-        console.error('Произошла ошибка сокета для пользователя с ID:', socket.decoded.id, error);
+        console.error('Произошла ошибка сокета для пользователя с ID:', socket.decoded.id, error)
+        logger.error('Произошла ошибка сокета для пользователя с ID:', socket.decoded.id, error)
       });
     })
 }

@@ -35,8 +35,8 @@ const logger = winston.createLogger({
       level: 'info'
     }), // Вывод в консоль
     new winston.transports.File({ filename: 'error.log', level: 'error' }), // Запись ошибок в файл error.log
-    // new winston.transports.File({ filename: 'errorAuth.log', level: 'errorAuth' }), // Запись ошибок в файл error.log
-    // new winston.transports.File({ filename: 'warnAuth.log', level: 'warnAuth' }), // Запись ошибок в файл error.log
+    new winston.transports.File({ filename: 'errorAuth.log', level: 'errorAuth' }), // Запись ошибок уровня errorAuth в файл errorAuth.log
+    new winston.transports.File({ filename: 'warnAuth.log', level: 'warnAuth' }), // Запись предупреждений уровня warnAuth в файл warnAuth.log
     new winston.transports.File({ filename: 'combined.log' }) // Запись всех уровней в файл combined.log
   ]
 });
