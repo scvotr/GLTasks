@@ -7,8 +7,8 @@ let userSocketPool = [];
 
 function addUserInCache(userId) {
   console.log('addUserInSocketCache: ', userId)
-  if(!userSocketPool.includes(userId)) {
-  // if(!userSocketPool.some(id => id === userId)) {
+  if (!userSocketPool.includes(userId)) {
+    //! if(!userSocketPool.some(id => id === userId)) {
     userSocketPool.push(userId)
     console.log('Активных пользователй: ', userSocketPool)
   }
@@ -48,10 +48,43 @@ function authenticateUserSocket(socket, next) {
   }
 }
 
-
 function setupSocket(io) {
   io.use(authenticateUserSocket)
     .on('connection', (socket) => {
       addUserInCache(socket.decoded.id)
+
+      socket.join('allActiveUser')
+      socket.join('user_' + socket.decoded.id) //?для каждого пользователя
+      socket.join('dep_' + socket.decoded.department_id) //? для каждого подразделения
+      socket.join('subDep_' + socket.decoded.subdepartment_id) //? для каждого отдела
+
+      if (socket.decoded.role === 'chife') {
+        let leadRoomName = 'leadSubDep_' + socket.decoded.subdepartment_id
+        socket.join(leadRoomName)
+
+        socket.on('newMessage', (message) => {
+          // Это пример, внутренняя логика зависит от вашего предназначения
+          io.to(leadRoomName).emit('messageReceived', message);
+        });
+      }
+
+      socket.on('getMyRooms', () => {
+        const allRooms = Array.from(socket.rooms)
+        socket.emit('yourRooms',
+          allRooms.filter((room) => room !== socket.id)
+        )
+      })
+
+      socket.on('disconnect', () => {
+        removeUserFromCache(socket.decoded.id)
+      })
+
+      socket.on('error', (error) => {
+        console.error('Произошла ошибка сокета для пользователя с ID:', socket.decoded.id, error);
+      });
     })
+}
+
+module.exports = {
+  setupSocket,
 }
