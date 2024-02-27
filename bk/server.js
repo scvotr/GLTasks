@@ -19,5 +19,6 @@ server.listen({ host,port }, () => {
 
 // $env:HOST="192.168.8.102"; $env:PORT="3050"; node .\server.js // win PowerShell 
 // $env:HOST="localhost"; $env:PORT="3070"; node .\server.js     // win PowerShell 
+// $env:HOST="localhost"; $env:PORT="3070"; nodemon .\server.js  // win PowerShell 
 // export HOST=192.168.8.102 export PORT=3050 node ./server.js   // Unix и Linux
 // export HOST=localhost export PORT=3070 node ./server.js       // Unix и Linux
