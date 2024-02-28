@@ -1,0 +1,22 @@
+{
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "jsxSingleQuote": false,
+  "printWidth": 480,
+  "overrides": [
+    {
+      "files": "*.jsx",
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ],
+  "quoteProps": "as-needed",
+  "rangeStart": 0,
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "useTabs": false,
+  "jsxBracketSameLine": true
+}
