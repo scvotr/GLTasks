@@ -1,6 +1,11 @@
 'use strict'
 
+const {handleDefaultRoute} = require('./handleDefaultRoute')
 const logger = require('../utils/logger/logger')
+
+const routeHandlers = {
+  "/auth/registration": '',
+};
 
 const handleAuthRoutes = async (req, res) => {
   req.on('error', (err) => {
