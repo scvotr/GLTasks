@@ -5,7 +5,7 @@ const logger = require('../utils/logger/logger');
 const AuthControler = require('../controllers/Auth/AuthControler');
 
 const routeHandlers = {
-  "/auth/registration": AuthControler,
+  "/auth/registrationLocalUser": AuthControler.registrationLocalUser,
 };
 
 const handleAuthRoutes = async (req, res) => {
