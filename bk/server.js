@@ -8,7 +8,6 @@ const socketEventLogger = require('./utils/socket/socketEventLogger')
 
 const routeHandlers = [
   { prefix: "/auth", handler: handleAuthRoutes },
-  { prefix: "/admin", handler: handleAdminRoutes },
 ]
 
 
