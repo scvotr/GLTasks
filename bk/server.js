@@ -6,7 +6,7 @@ const { socketManager } = require('./utils/socket/socketManager')
 const { setupSocket } = require('./socketService')
 const socketEventLogger = require('./utils/socket/socketEventLogger')
 
-const { initDatabase } = require('./Database/testControl')
+const { initDatabase } = require('./Database/initDatabase')
 
 const { handleDefaultRoute } = require('./routingHandlers/handleDefaultRoute')
 const { handleOptionsRequest } = require('./routingHandlers/handleOptionsRequest')
