@@ -38,9 +38,8 @@ export const DefaultLayoutMain = () => {
           </Toolbar>
         </AppBar>
       </Box>
-      <Box sx={{ mt: 10 }}>
+      <Box sx={{ mt: 15 }}>
         <Outlet />
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque unde sit ipsum perspiciatis! Animi pariatur sequi alias corporis veritatis ducimus.
       </Box>
     </>
   )
