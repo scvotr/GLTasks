@@ -2,21 +2,23 @@ import { Avatar, Box, Button, Checkbox, Container, FormControlLabel, Grid, Link,
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
+import { sendRegData } from "./API/sendRegData"
+import { HOST_ADDR } from "../../../utils/remoteHosts"
 
 export const Registration = () => {
+  const [reqStatus, setReqStatus] = useState(null)
   const [formData, setFormData] = useState({ name: "", password: "", confirmPassword: "" })
-  console.log(formData)
   const [error, setError] = useState("")
   const [fieldColor, setFieldColor] = useState("")
   const [errorPin, setErrorPin] = useState("")
   const [fieldColorPin, setFieldColorPin] = useState("")
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault()
     try {
-      
+      await sendRegData(formData, HOST_ADDR, setReqStatus)
     } catch (error) {
-      
+      console.log('sendRegData - handleSubmit: ', error)
     }
   }
 
@@ -35,14 +37,14 @@ export const Registration = () => {
     } else {
       setFieldColor("warning") // сброс цвета поля
     }
-    
+
     if (name === "pincode" || name === "confirmPincode") setErrorPin("")
-    const pincode = name === 'pincode' ? value: formData.pincode
-    const confirmPincode = name === 'confirmPincode' ? value: formData.confirmPincode
-    if(pincode && pincode === confirmPincode) {
-      setFieldColorPin('success')
+    const pincode = name === "pincode" ? value : formData.pincode
+    const confirmPincode = name === "confirmPincode" ? value : formData.confirmPincode
+    if (pincode && pincode === confirmPincode) {
+      setFieldColorPin("success")
     } else {
-      setFieldColorPin('warning')
+      setFieldColorPin("warning")
     }
   }
 
@@ -116,7 +118,7 @@ export const Registration = () => {
             }}
           />
           {/* -------------------------------- */}
-          <Stack  spacing={1} direction="row">
+          <Stack spacing={1} direction="row">
             <TextField
               margin="normal"
               required
