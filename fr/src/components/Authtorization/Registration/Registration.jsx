@@ -11,7 +11,14 @@ export const Registration = () => {
   const [errorPin, setErrorPin] = useState("")
   const [fieldColorPin, setFieldColorPin] = useState("")
 
-  const handleSubmit = () => {}
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
 
   const handleChange = e => {
     const { name, value } = e.target
