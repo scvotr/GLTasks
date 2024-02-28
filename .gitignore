@@ -7,6 +7,10 @@ bk/warnAuth.log
 
 /.pnp
 .pnp.js
+*.drawio
+*.rar
+*.txt
+*.db
 
 # testing
 /coverage
