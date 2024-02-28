@@ -6,6 +6,12 @@ const { socketManager } = require('./utils/socket/socketManager')
 const { setupSocket } = require('./socketService')
 const socketEventLogger = require('./utils/socket/socketEventLogger')
 
+const routeHandlers = [
+  { prefix: "/auth", handler: handleAuthRoutes },
+  { prefix: "/admin", handler: handleAdminRoutes },
+]
+
+
 const server = http.createServer(async (req, res) => {
   try {
     const { url, method } = req;
