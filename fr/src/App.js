@@ -1,5 +1,5 @@
-import { createTheme, ThemeProvider, CssBaseline, Container, Box } from "@mui/material"
-
+import { createTheme, ThemeProvider, CssBaseline, Container, Box } from '@mui/material'
+import { GlobalWrapper } from './components/GlobalWrapper'
 
 const defaultTheme = createTheme()
 
@@ -9,7 +9,7 @@ function App() {
         <CssBaseline />
         <Container maxWidth={false}>
           <Box>
-            It's work
+            <GlobalWrapper />
           </Box>
         </Container>
     </ThemeProvider>
