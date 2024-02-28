@@ -1,6 +1,7 @@
 'use strict'
 
-const logger = require('../../utils/logger/logger')
+const { getPostDataset } = require('../../utils/getPostDataset')
+const { logger } = require('../../utils/logger/logger')
 
 class AuthControler {
   async registrationLocalUser(req, res) {
