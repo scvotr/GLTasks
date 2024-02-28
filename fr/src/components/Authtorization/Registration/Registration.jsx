@@ -8,6 +8,8 @@ export const Registration = () => {
   console.log(formData)
   const [error, setError] = useState("")
   const [fieldColor, setFieldColor] = useState("")
+  const [errorPin, setErrorPin] = useState("")
+  const [fieldColorPin, setFieldColorPin] = useState("")
 
   const handleSubmit = () => {}
 
@@ -18,16 +20,22 @@ export const Registration = () => {
       [name]: value,
     }))
 
-    if (name === "password" || name === "confirmPassword") {
-      setError("")
-    }
+    if (name === "password" || name === "confirmPassword") setError("")
     const newPasswordValue = name === "password" ? value : formData.password
     const confirmPasswordValue = name === "confirmPassword" ? value : formData.confirmPassword
-
     if (newPasswordValue && newPasswordValue === confirmPasswordValue) {
       setFieldColor("success") // функция, изменяющая цвет поля, должна быть определена в вашем коде
     } else {
       setFieldColor("warning") // сброс цвета поля
+    }
+    
+    if (name === "pincode" || name === "confirmPincode") setErrorPin("")
+    const pincode = name === 'pincode' ? value: formData.pincode
+    const confirmPincode = name === 'confirmPincode' ? value: formData.confirmPincode
+    if(pincode && pincode === confirmPincode) {
+      setFieldColorPin('success')
+    } else {
+      setFieldColorPin('warning')
     }
   }
 
@@ -64,6 +72,9 @@ export const Registration = () => {
             autoFocus
             onChange={handleChange}
             helperText={"Это поле обязательно к заполнению"}
+            inputProps={{
+              minLength: 4,
+            }}
           />
           <TextField
             margin="normal"
@@ -77,6 +88,9 @@ export const Registration = () => {
             color={fieldColor}
             error={!!error}
             helperText={error || "Это поле обязательно к заполнению"}
+            inputProps={{
+              minLength: 4,
+            }}
           />
           <TextField
             margin="normal"
@@ -90,6 +104,9 @@ export const Registration = () => {
             color={fieldColor}
             error={!!error}
             helperText={error || "Это поле обязательно к заполнению"}
+            inputProps={{
+              minLength: 4,
+            }}
           />
           {/* -------------------------------- */}
           <Stack  spacing={1} direction="row">
@@ -102,12 +119,13 @@ export const Registration = () => {
               type="password"
               autoComplete="new-password"
               onChange={handleChange}
-              color={fieldColor}
-              error={!!error}
-              helperText={error || "обязательно к заполнению"}
+              color={fieldColorPin}
+              error={!!errorPin}
+              helperText={errorPin || "введите 4 цифры"}
               inputProps={{
+                minLength: 4,
                 maxLength: 4,
-                pattern: "\\d*"
+                pattern: "[0-9]{4}",
               }}
             />
             <TextField
@@ -119,12 +137,13 @@ export const Registration = () => {
               type="password"
               autoComplete="new-password"
               onChange={handleChange}
-              color={fieldColor}
-              error={!!error}
-              helperText={error || "обязательно к заполнению"}
+              color={fieldColorPin}
+              error={!!errorPin}
+              helperText={errorPin || "введите 4 цифры"}
               inputProps={{
+                minLength: 4,
                 maxLength: 4,
-                pattern: "\\d*"
+                pattern: "[0-9]{4}",
               }}
             />
           </Stack>
