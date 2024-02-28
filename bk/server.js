@@ -17,9 +17,9 @@ const routeHandlers = [
 const server = http.createServer(async (req, res) => {
   try {
     const { url, method } = req;
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type")
     
     if (method === "OPTIONS") {
       handleOptionsRequest(req, res);
@@ -38,7 +38,7 @@ const server = http.createServer(async (req, res) => {
     }
   } catch (error) {
     logger.error(`Server-error: ${error}`)
-    console.log("server-catch-error: ", error);
+    console.log("server-catch-error: ", error)
   }
 })
 
