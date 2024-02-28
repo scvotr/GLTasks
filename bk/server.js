@@ -12,7 +12,6 @@ const routeHandlers = [
   // { prefix: "/auth", handler: handleAuthRoutes },
 ]
 
-
 const server = http.createServer(async (req, res) => {
   try {
     const { url, method } = req;
