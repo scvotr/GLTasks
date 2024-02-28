@@ -1,6 +1,6 @@
 export const sendRegData = async (regData, hostAddr, resError) => {
   try {
-    const res = await fetch(hostAddr + "/auth/registrationWithoutMail", {
+    const res = await fetch(hostAddr + "/auth/registrationLocalUser", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(regData),

@@ -10,9 +10,12 @@ class AuthControler {
       res.setHeader("Content-Type", "application/json")
       const postPayload = await getPostDataset(req)
       let postData = JSON.parse(postPayload)
+
       console.log('registrationLocalUser', postData)
-      const { name, email=`${name}@mail.local`, password, pinCode ='1234' } = postData
-      const isEmpty = name && password && pinCode
+
+      const { name, email=`${name}@mail.local`, password, pincode } = postData
+      console.log(name, email, password, pincode)
+      const isEmpty = name && password && pincode
       if(!isEmpty) return res.end(JSON.stringify({ Registrtaion: "Пустые поля" })) 
 
     } catch (error) {
