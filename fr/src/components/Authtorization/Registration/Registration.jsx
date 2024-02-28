@@ -1,15 +1,35 @@
-import { Avatar, Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, TextField, Typography } from "@mui/material"
+import { Avatar, Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Stack, TextField, Typography } from "@mui/material"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { useState } from "react"
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom"
 
 export const Registration = () => {
+  const [formData, setFormData] = useState({ name: "", password: "", confirmPassword: "" })
+  console.log(formData)
   const [error, setError] = useState("")
   const [fieldColor, setFieldColor] = useState("")
 
   const handleSubmit = () => {}
 
-  const handleChange = () => {}
+  const handleChange = e => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }))
+
+    if (name === "password" || name === "confirmPassword") {
+      setError("")
+    }
+    const newPasswordValue = name === "password" ? value : formData.password
+    const confirmPasswordValue = name === "confirmPassword" ? value : formData.confirmPassword
+
+    if (newPasswordValue && newPasswordValue === confirmPasswordValue) {
+      setFieldColor("success") // функция, изменяющая цвет поля, должна быть определена в вашем коде
+    } else {
+      setFieldColor("warning") // сброс цвета поля
+    }
+  }
 
   return (
     <Container
@@ -71,6 +91,44 @@ export const Registration = () => {
             error={!!error}
             helperText={error || "Это поле обязательно к заполнению"}
           />
+          {/* -------------------------------- */}
+          <Stack  spacing={1} direction="row">
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="pincode"
+              label="Введите пин-код"
+              type="password"
+              autoComplete="new-password"
+              onChange={handleChange}
+              color={fieldColor}
+              error={!!error}
+              helperText={error || "обязательно к заполнению"}
+              inputProps={{
+                maxLength: 4,
+                pattern: "\\d*"
+              }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPincode"
+              label="Повторите пин-код"
+              type="password"
+              autoComplete="new-password"
+              onChange={handleChange}
+              color={fieldColor}
+              error={!!error}
+              helperText={error || "обязательно к заполнению"}
+              inputProps={{
+                maxLength: 4,
+                pattern: "\\d*"
+              }}
+            />
+          </Stack>
+          {/* -------------------------------- */}
           <FormControlLabel required control={<Checkbox value="agreeTerms" color="primary" />} label="Согласен с условиями использования" />
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Зарегистрироватся
