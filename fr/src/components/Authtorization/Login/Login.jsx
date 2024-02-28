@@ -34,8 +34,30 @@ export const Login = () => {
           Вход
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <TextField margin="normal" required fullWidth label="Введите ваш логин" name="name" autoComplete="name" autoFocus onChange={handleChange} error={!!reqStatus2} helperText={reqStatus2 || "Это поле обязательно к заполнению"} />
-          <TextField margin="normal" required fullWidth name="password" label="Введите ваш пароль" type="password" autoComplete="current-password" onChange={handleChange} error={!!reqStatus2} helperText={reqStatus2 || "Это поле обязательно к заполнению"} />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="Введите ваш логин"
+            name="name"
+            autoComplete="name"
+            autoFocus
+            onChange={handleChange}
+            error={!!reqStatus2}
+            helperText={reqStatus2 || "Это поле обязательно к заполнению"}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Введите ваш пароль"
+            type="password"
+            autoComplete="current-password"
+            onChange={handleChange}
+            error={!!reqStatus2}
+            helperText={reqStatus2 || "Это поле обязательно к заполнению"}
+          />
           {/* <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Оставаться в системе" /> */}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Войти
