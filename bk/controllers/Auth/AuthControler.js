@@ -9,6 +9,12 @@ class AuthControler {
       res.statusCode = 200
       res.setHeader("Content-Type", "application/json")
       const postPayload = await getPostDataset(req)
+      let postData = JSON.parse(postPayload)
+      console.log('registrationLocalUser', postData)
+      const { name, email=`${name}@mail.local`, password, pinCode ='1234' } = postData
+      const isEmpty = name && password && pinCode
+      if(!isEmpty) return res.end(JSON.stringify({ Registrtaion: "Пустые поля" })) 
+
     } catch (error) {
       console.error('Ошибка при регистрации локального пользователя', error)
       logger.error('Ошибка при регистрации локального пользователя', error)
