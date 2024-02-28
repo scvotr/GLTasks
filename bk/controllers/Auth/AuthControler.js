@@ -14,7 +14,9 @@ class AuthControler {
       console.log('registrationLocalUser', postData)
 
       const { name, email=`${name}@mail.local`, password, pincode } = postData
+
       console.log(name, email, password, pincode)
+      
       const isEmpty = name && password && pincode
       if(!isEmpty) return res.end(JSON.stringify({ Registrtaion: "Пустые поля" })) 
 
