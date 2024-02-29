@@ -8,7 +8,7 @@ const SECRET_KEY = process.env.KEY_TOKEN
 
 const createTableTokens = async () => {
   try {
-    await queryAsyncWraper(
+    await executeDatabaseQueryAsync(
       // command
       `CREATE TABLE IF NOT EXISTS tokens  (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,9 +16,7 @@ const createTableTokens = async () => {
         token TEXT NOT NULL UNIQUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id)
-      )`,
-      // method
-      "run"
+      )`, []
     )
     //! Выполняем проверку наличия записей в таблице
     const rows = await queryAsyncWraper('SELECT COUNT(*) FROM tokens', 'get');
