@@ -7,6 +7,11 @@ const { createTableSubdepartments } = require('./models/OrgStructure/subdepartme
 const { createTaskStatus } = require('./models/Task/taskStatus')
 const { createTableUsers } = require('./models/User/user')
 const { createTableTokens } = require('./models/User/token')
+const { createTableWorkshops } = require('./models/venchel/workshop')
+const { createVenchelTable } = require('./models/venchel/venchel')
+const { createTableVenchelFiles } = require('./models/venchel/venchelFiles')
+const { createTableVenchelComments } = require('./models/venchel/venchelCommets')
+const { createTablePendingNotifications } = require('./models/Notification/pendingNotification')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
@@ -23,6 +28,11 @@ db.serialize(async () => {
   createTablePositions()
   createTableUsers()
   createTableTokens()
+  createTableWorkshops()
+  createVenchelTable()
+  createTableVenchelFiles()
+  createTableVenchelComments()
+  createTablePendingNotifications()
 })
 
 module.exports ={
