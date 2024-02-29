@@ -5,6 +5,8 @@ const { createTableDepartments } = require('./models/OrgStructure/departments')
 const { createTablePositions } = require('./models/OrgStructure/positions')
 const { createTableSubdepartments } = require('./models/OrgStructure/subdepartments')
 const { createTaskStatus } = require('./models/Task/taskStatus')
+const { createTableUsers } = require('./models/User/user')
+const { createTableTokens } = require('./models/User/token')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
@@ -19,6 +21,8 @@ db.serialize(async () => {
   createTableDepartments()
   createTableSubdepartments()
   createTablePositions()
+  createTableUsers()
+  createTableTokens()
 })
 
 module.exports ={
