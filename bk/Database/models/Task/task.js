@@ -6,10 +6,11 @@ const createTableTasks = async () => {
       // command
       `CREATE TABLE IF NOT EXISTS tasks (
            id INTEGER PRIMARY KEY AUTOINCREMENT,
-           task_id INTEGER NOT NULL,
+           task_id INTEGER NOT NULL UNIQUE,
            task_descript TEXT,
            task_priority TEXT,
            task_status TEXT NOT NULL,
+           task_status_ref TEXT, --NOT NULL,
            deadline DATETIME,
            appoint_user_id INTEGER NOT NULL,
            appoint_department_id INTEGER NOT NULL,
@@ -34,6 +35,7 @@ const createTableTasks = async () => {
            FOREIGN KEY(responsible_department_id) REFERENCES departments(id),
            FOREIGN KEY(responsible_subdepartment_id) REFERENCES subdepartments(id)
            FOREIGN KEY(responsible_position_id) REFERENCES position(id)
+           FOREIGN KEY(task_status_ref) REFERENCES taskStatus(status)
        )`, [])
   } catch (error) {
     console.log('DB ERROR - createTableTasks: ', error)
@@ -60,3 +62,38 @@ module.exports = {
 // }
 
 // module.exports = Task
+
+// **tasks**
+// Эта таблица содержит информацию о задачах, их статусе и назначении.
+
+// | Поле                     | Тип данных      | Описание                                                                                                       |
+// |------------------------- |-----------------|----------------------------------------------------------------------------------------------------------------|
+// | id                       | INTEGER         | Первичный ключ, уникальный идентификатор задачи                                                                 |
+// | task_id                  | INTEGER         | Уникальный идентификатор задачи                                                                                  |
+// | task_descript            | TEXT            | Описание задачи                                                                                                 |
+// | task_priority            | TEXT            | Приоритет задачи                                                                                                |
+// | task_status              | TEXT            | Текущий статус задачи                                                                                            |
+// | task_status_ref          | TEXT            | Ссылка на статус задачи в таблице `taskStatus`                                                                    |
+// | deadline                 | DATETIME        | Крайний срок выполнения задачи                                                                                   |
+// | appoint_user_id          | INTEGER         | Идентификатор пользователя, назначенного на выполнение задачи                                                     |
+// | appoint_department_id    | INTEGER         | Идентификатор отдела, к которому относится назначенный пользователь                                               |
+// | appoint_subdepartment_id | INTEGER         | Идентификатор подотдела, к которому относится назначенный пользователь                                            |
+// | appoint_position_id      | INTEGER         | Идентификатор должности назначенного пользователя (при наличии)                                                   |
+// | responsible_user_id      | INTEGER         | Идентификатор пользователя, ответственного за выполнение задачи                                                   |
+// | responsible_department_id| INTEGER         | Идентификатор отдела, к которому относится ответственный пользователь                                              |
+// | responsible_subdepartment_id | INTEGER      | Идентификатор подотдела, к которому относится ответственный пользователь                                           |
+// | responsible_position_id  | INTEGER         | Идентификатор должности ответственного пользователя (при наличии)                                                 |
+// | created_on               | TIMESTAMP       | Дата и время создания записи                                                                                     |
+// | approved_on              | DATETIME        | Дата согласования задачи                                                                                         |
+// | reject_on                | DATETIME        | Дата отклонения задачи                                                                                           |
+// | confirmation_on          | DATETIME        | Дата запроса на подтверждение задачи                                                                             |
+// | closed_on                | DATETIME        | Дата закрытия задачи                                                                                             |
+// | setResponseSubDep_on     | DATETIME        | Дата назначения ответственного подотдела                                                                        |
+// | setResponseUser_on       | DATETIME        | Дата назначения ответственного пользователя                                                                       |
+
+// **Связи с другими таблицами:**
+// - `appoint_user_id`, `responsible_user_id` связаны с таблицей `users` по полю `id`.
+// - `appoint_department_id`, `responsible_department_id` связаны с таблицей `departments` по полю `id`.
+// - `appoint_subdepartment_id`, `responsible_subdepartment_id` связаны с таблицей `subdepartments` по полю `id`.
+// - `appoint_position_id`, `responsible_position_id` связаны с таблицей `position` по полю `id`.
+// - `task_status_ref` связано с таблицей `taskStatus` по полю `status`.
