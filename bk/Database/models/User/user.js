@@ -1,5 +1,4 @@
 const { executeDatabaseQueryAsync, queryAsyncWraper, queryAsyncWraperParam } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
-
 const bcrypt = require('bcrypt');
 require('dotenv').config()
 
@@ -14,35 +13,32 @@ const createTableUsers = async () => {
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        pin_code INTEGER, --временно 
+        pin_code INTEGER NOT NULL, --временно 
         role TEXT NOT NULL,
+        role_ref TEXT, --NOT NULL,
         department_id INTEGER,
         subdepartment_id INTEGER,
         position_id INTEGER,
+        last_name TEXT,
+        first_name TEXT,
+        middle_name TEXT,
+        internal_phone TEXT,
+        external_phone TEXT,
+        office_number TEXT,
         FOREIGN KEY (department_id) REFERENCES departments(id),
         FOREIGN KEY (subdepartment_id) REFERENCES subdepartments(id),
-        FOREIGN KEY (position_id) REFERENCES positions(id)
+        FOREIGN KEY (position_id) REFERENCES positions(id),
+        FOREIGN KEY (role_ref) REFERENCES userRoles(role)
       )`, []
     )
-    //! Выполняем проверку наличия записей в таблице
     const rows = await queryAsyncWraper('SELECT COUNT(*) FROM users', 'get')
-    if (rows['COUNT(*)'] === 0) { // Если записей нет, то выполняем вставку начальных значений
+    if (rows['COUNT(*)'] === 0) { 
       const hashedPassword = await bcrypt.hash('0091', HASH_SALT);
-      const objUser = {
-        id: 1,
-        name: 'admin',
-        email: 'admin',
-        password: hashedPassword,
-        role: 'admin'
-      }
-      const {
-        name,
-        email,
-        password,
-        role
-      } = objUser
-      const command = `INSERT INTO users(name, email, password, role, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      await queryAsyncWraperParam(command, [name, email, password, role || 'user', 1, 1, 1], 'run', )
+      const hashedPincode = await bcrypt.hash('0099', HASH_SALT);
+      const objUser = { id: 1, name: 'admin', email: 'admin', password: hashedPassword, role: 'admin', pin_code: hashedPincode}
+      const { name, email, password, role, pin_code } = objUser
+      const command = `INSERT INTO users(name, email, password, role, pin_code, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      await queryAsyncWraperParam(command, [name, email, password, role || 'user', pin_code, 1, 1, 1], 'run', )
     }
   } catch (error) {
     console.error('createTableUsers ERROR: ', error)
