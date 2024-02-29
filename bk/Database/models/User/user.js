@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 require('dotenv').config()
 
 const HASH_SALT = parseInt(process.env.KEY_SALT)
-const SECRET_KEY = process.env.KEY_TOKEN
 
 const createTableUsers = async () => {
   try {
