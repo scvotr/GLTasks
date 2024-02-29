@@ -1,4 +1,4 @@
-const { executeDatabaseQueryAsync, queryAsyncWraper } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
+const { executeDatabaseQueryAsync, queryAsyncWraper, queryAsyncWraperParam } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
 
 const bcrypt = require('bcrypt');
 require('dotenv').config()
@@ -25,7 +25,7 @@ const createTableUsers = async () => {
       )`, []
     )
     //! Выполняем проверку наличия записей в таблице
-    const rows = await queryAsyncWraper('SELECT COUNT(*) FROM users', 'get');
+    const rows = await queryAsyncWraper('SELECT COUNT(*) FROM users', 'get')
     if (rows['COUNT(*)'] === 0) { // Если записей нет, то выполняем вставку начальных значений
       const hashedPassword = await bcrypt.hash('0091', HASH_SALT);
       const objUser = {
@@ -34,7 +34,7 @@ const createTableUsers = async () => {
         email: 'admin',
         password: hashedPassword,
         role: 'admin'
-      }; //console.log('>>>>>>>>>>>>', objUser)
+      }
       const {
         name,
         email,
@@ -45,7 +45,7 @@ const createTableUsers = async () => {
       await queryAsyncWraperParam(command, [name, email, password, role || 'user', 1, 1, 1], 'run', )
     }
   } catch (error) {
-    console.error('createTableUsers ERROR: ', error);
+    console.error('createTableUsers ERROR: ', error)
   }
 }
 
