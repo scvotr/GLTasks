@@ -18,21 +18,14 @@ const createTableTokens = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id)
       )`, []
     )
-    //! Выполняем проверку наличия записей в таблице
-    const rows = await queryAsyncWraper('SELECT COUNT(*) FROM tokens', 'get');
-    if (rows['COUNT(*)'] === 0) { // Если записей нет, то выполняем вставку начальных значений
-      const hashedPassword = await bcrypt.hash('0091', HASH_SALT);
-      const objUser = {
-        id: 1,
-        name: 'admin',
-        email: 'admin',
-        password: hashedPassword,
-        role: 'admin'
-      };
+    const rows = await queryAsyncWraper('SELECT COUNT(*) FROM tokens', 'get')
+    if (rows['COUNT(*)'] === 0) { 
+      const hashedPassword = await bcrypt.hash('0091', HASH_SALT)
+      const objUser = { id: 1, name: 'admin', email: 'admin', password: hashedPassword, role: 'admin' }
       console.log('>>>>>>>>>>>>', objUser)
-      const token = jwt.sign(objUser, SECRET_KEY);
+      const token = jwt.sign(objUser, SECRET_KEY)
       console.log('>>>>>>>>>>>>', token)
-      const command = `INSERT INTO tokens(user_id, token) VALUES (?, ?)`;
+      const command = `INSERT INTO tokens(user_id, token) VALUES (?, ?)`
       await queryAsyncWraperParam(command, [objUser.id, token], `run`)
     }
   } catch (error) {
