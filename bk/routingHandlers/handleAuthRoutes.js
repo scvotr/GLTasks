@@ -6,6 +6,7 @@ const AuthControler = require('../controllers/Auth/AuthControler');
 
 const routeHandlers = {
   "/auth/registrationLocalUser": AuthControler.registrationLocalUser,
+  "/auth/login": AuthControler.login,
 };
 
 const handleAuthRoutes = async (req, res) => {
