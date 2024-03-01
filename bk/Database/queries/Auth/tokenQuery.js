@@ -22,7 +22,7 @@ const updateTokenQ = async (userId, token) => {
 const getTokenQ = async (userId) => {
   try {
     const command = `SELECT * FROM tokens WHERE user_id = ?`
-    return await executeDatabaseQueryAsync(command, [userId], `run`)
+    return await executeDatabaseQueryAsync(command, [userId])
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }
