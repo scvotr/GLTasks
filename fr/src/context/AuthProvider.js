@@ -30,15 +30,45 @@ export const AuthProvider = ({children}) => {
       setPosition(response.position)
       setToken(response.token)
       setLogin(true)
+      localStorage.setItem("token", token);
+      localStorage.setItem("userName", name);
+      localStorage.setItem("userRole", role);
+      localStorage.setItem("userRoleRef", roleRef);
+      localStorage.setItem("userId", id);
+      localStorage.setItem("dep", dep);
+      localStorage.setItem("subDep", subDep);
+      localStorage.setItem("position", position);
     } else {
       setLogin(false)
     }
   }, [])
 
+  const logout = () => {
+    setLogin(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userRoleRef');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('dep');
+    localStorage.removeItem('subDep');
+    localStorage.removeItem('position');
+  };
+
   return (
     <AuthContext.Provider
       value={{
-        handleServerResponse
+        id,
+        name,
+        role,
+        roleRef,
+        token,
+        login,
+        dep,
+        subDep,
+        position,
+        handleServerResponse,
+        logout,
       }}
     >
       {children}
