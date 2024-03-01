@@ -16,7 +16,7 @@ export const Login = () => {
     e.preventDefault()
     try {
       const authData = await sendAuthData(formData, HOST_ADDR, setReqStatus)
-      console.log(authData)
+      currentUser.handleServerResponse(authData)
     } catch (error) {
       
     }
