@@ -3,7 +3,6 @@ const { executeDatabaseQueryAsync, queryAsyncWraper } = require("../../utils/exe
 const createUserRoles = async () => {
   try {
     await executeDatabaseQueryAsync(
-      // command
       `CREATE TABLE IF NOT EXISTS user_roles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         role TEXT NOT NULL
