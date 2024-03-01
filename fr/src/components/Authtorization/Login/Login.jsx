@@ -4,8 +4,10 @@ import { NavLink } from "react-router-dom"
 import { useState } from "react"
 import { HOST_ADDR } from "../../../utils/remoteHosts"
 import { sendAuthData } from "./API/sendAuthData"
+import { useAuthContext } from "../../../context/AuthProvider"
 
 export const Login = () => {
+  const currentUser = useAuthContext()
   const [formData, setFormData] = useState({ name: "", password: "" })
   const [reqStatus, setReqStatus] = useState(null)
 
