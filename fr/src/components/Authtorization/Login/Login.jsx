@@ -2,13 +2,31 @@ import { Avatar, Box, Button, Checkbox, Container, FormControlLabel, Grid, Link,
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { NavLink } from "react-router-dom"
 import { useState } from "react"
+import { HOST_ADDR } from "../../../utils/remoteHosts"
+import { sendAuthData } from "./API/sendAuthData"
 
 export const Login = () => {
-  const [reqStatus2, setReqStatus2] = useState(null)
+  const [formData, setFormData] = useState({ name: "", password: "" })
+  const [reqStatus, setReqStatus] = useState(null)
 
-  const handleSubmit = () => {}
 
-  const handleChange = () => {}
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const authData = await sendAuthData(formData, HOST_ADDR, setReqStatus)
+      console.log(authData)
+    } catch (error) {
+      
+    }
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData( prev => ({
+      ...prev,
+      [name]:value
+    }))
+  }
 
   return (
     <Container
@@ -43,8 +61,8 @@ export const Login = () => {
             autoComplete="name"
             autoFocus
             onChange={handleChange}
-            error={!!reqStatus2}
-            helperText={reqStatus2 || "Это поле обязательно к заполнению"}
+            error={!!reqStatus}
+            helperText={reqStatus || "Это поле обязательно к заполнению"}
           />
           <TextField
             margin="normal"
@@ -55,8 +73,8 @@ export const Login = () => {
             type="password"
             autoComplete="current-password"
             onChange={handleChange}
-            error={!!reqStatus2}
-            helperText={reqStatus2 || "Это поле обязательно к заполнению"}
+            error={!!reqStatus}
+            helperText={reqStatus || "Это поле обязательно к заполнению"}
           />
           {/* <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Оставаться в системе" /> */}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
