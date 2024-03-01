@@ -9,7 +9,6 @@ const SECRET_KEY = process.env.KEY_TOKEN
 const createTableTokens = async () => {
   try {
     await executeDatabaseQueryAsync(
-      // command
       `CREATE TABLE IF NOT EXISTS tokens  (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
