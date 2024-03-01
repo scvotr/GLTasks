@@ -7,13 +7,12 @@ export const sendRegData = async (regData, hostAddr, resError) => {
     });
     const data = await res.json();
     if (res.ok) {
-      const token = res.headers.get("Authorization");
+      const token = res.headers.get("Authorization")
       if (token === null) {
-        console.log("Token not found!", data.Registration);
+        console.log("Token not found!", data.Registration)
         resError(data.Registration)
       } else {
-        // localStorage.setItem("token", token);
-        window.location.href = "/Login";
+        window.location.href = "/login"
       }
     } else {
       resError(data.Registrtaion)
