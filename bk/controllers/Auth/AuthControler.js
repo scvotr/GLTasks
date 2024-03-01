@@ -82,9 +82,10 @@ class AuthControler {
         subDep: userData.subdepartment_id,
         position: userData.position_id,
       })
+      console.log(authData)
       res.setHeader("Access-Control-Expose-Headers", "Authorization");
       res.setHeader("Authorization", `Bearer ${token[0].token}`);
-      res.end(JSON.stringify(authData))
+      res.end(authData)
     } catch (error) {
       console.error(error);
       res.statusCode = 500;
