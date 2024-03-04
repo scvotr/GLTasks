@@ -19,8 +19,8 @@ export const AuthProvider = ({children}) => {
   
 
   const handleServerResponse = useCallback((response) => {
-    console.log(response)
     if(response) {
+      console.log(response)
       setId(response.id)
       setRole(response.role)
       setRoleRef(response.role_ref)
@@ -30,14 +30,14 @@ export const AuthProvider = ({children}) => {
       setPosition(response.position)
       setToken(response.token)
       setLogin(true)
-      localStorage.setItem("token", token);
-      localStorage.setItem("userName", name);
-      localStorage.setItem("userRole", role);
-      localStorage.setItem("userRoleRef", roleRef);
-      localStorage.setItem("userId", id);
-      localStorage.setItem("dep", dep);
-      localStorage.setItem("subDep", subDep);
-      localStorage.setItem("position", position);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("userName", response.name);
+      localStorage.setItem("userRole", response.role);
+      localStorage.setItem("userRoleRef", response.roleRef);
+      localStorage.setItem("userId", response.id);
+      localStorage.setItem("dep", response.dep);
+      localStorage.setItem("subDep", response.subDep);
+      localStorage.setItem("position", response.position);
     } else {
       setLogin(false)
     }
