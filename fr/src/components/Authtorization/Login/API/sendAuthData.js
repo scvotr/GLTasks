@@ -15,6 +15,7 @@ export const sendAuthData = async (authData, apiHostAddr, resError) => {
         token,
         name: data.name,
         role: data.role,
+        roleRef: data.role_ref,
         id: data.id,
         dep: data.dep,
         subDep: data.subDep,
