@@ -8,7 +8,7 @@ export const GlobalWrapper = () => {
   const currentUser = useAuthContext()
 
   const comtentMap = new Map([
-    ['admin', ()=><LefSideAdmin> <AdminLayout/> </LefSideAdmin>]
+    ['admin', ()=><LefSideAdmin currentUser={currentUser}> <AdminLayout/> </LefSideAdmin>]
   ])
 
   const renderContent = () => {
