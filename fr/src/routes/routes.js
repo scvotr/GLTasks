@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Login } from "../components/Authtorization/Login/Login";
 import { Registration } from "../components/Authtorization/Registration/Registration";
 import { RestorePassword } from "../components/Authtorization/RestorePassword/RestorePassword";
+import { AuthRotes } from "./AuthRotes";
 
 export const routes = createBrowserRouter([
   {
@@ -11,11 +12,11 @@ export const routes = createBrowserRouter([
     children: [
       {
         path: '/login',
-        element: <Login />,
+        element: <AuthRotes component={Login} />,
       },
       {
         path: '/registration',
-        element: <Registration />,
+        element: <AuthRotes component={Registration} />,
       },
       {
         path: '/restorePassword',
