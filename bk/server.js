@@ -11,9 +11,11 @@ const { initDatabase } = require('./Database/initDatabase')
 const { handleDefaultRoute } = require('./routingHandlers/handleDefaultRoute')
 const { handleOptionsRequest } = require('./routingHandlers/handleOptionsRequest')
 const { handleAuthRoutes } = require('./routingHandlers/handleAuthRoutes')
+const { handleAdminRoutes } = require('./routingHandlers/handleAdminRoutes')
 
 const routeHandlers = [
   { prefix: "/auth", handler: handleAuthRoutes },
+  { prefix: "/admin", handler: handleAdminRoutes },
 ]
 
 const server = http.createServer(async (req, res) => {
