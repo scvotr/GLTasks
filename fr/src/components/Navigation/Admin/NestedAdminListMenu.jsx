@@ -40,13 +40,11 @@ export const NestedAdminListMenu = ({isOpen}) => {
 
   const sectionsData = [
     {
-      name: "Проекты",
+      name: "Пользователи",
       icon: <SendIcon />,
-      path: "/projects",
+      path: "/admin/users",
       subItems: [
-        { name: "Проекты", icon: <InboxIcon />, path: "/projects/main" },
-        { name: "Закрытые", icon: <InboxIcon />, path: "/projects/closed" },
-        { name: "Удаленные", icon: <InboxIcon />, path: "/projects/deleted" },
+        { name: "Новые", icon: <InboxIcon />, path: "/admin/users/new" },
       ],
     },
   ]
