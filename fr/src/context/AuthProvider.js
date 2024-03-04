@@ -1,4 +1,4 @@
-const { createContext, useContext, useState, useCallback } = require("react");
+const { createContext, useContext, useState, useCallback, useEffect } = require("react");
 
 const AuthContext = createContext()
 
@@ -17,31 +17,43 @@ export const AuthProvider = ({children}) => {
   const [position, setPosition] = useState('')
   const [login, setLogin] = useState(false)
   
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+      setId(localStorage.getItem('userId'));
+      setRole(localStorage.getItem('userRole'));
+      setName(localStorage.getItem('userName'));
+      setDep(localStorage.getItem('dep'));
+      setSubDep(localStorage.getItem('subDep'));
+      setPosition(localStorage.getItem('position'));
+      setLogin(true);
+    }
+  }, []);
 
   const handleServerResponse = useCallback((response) => {
-    if(response) {
-      console.log(response)
-      setId(response.id)
-      setRole(response.role)
-      setRoleRef(response.role_ref)
-      setName(response.name)
-      setDep(response.dep)
-      setSubDep(response.subDep)
-      setPosition(response.position)
-      setToken(response.token)
-      setLogin(true)
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("userName", response.name);
-      localStorage.setItem("userRole", response.role);
-      localStorage.setItem("userRoleRef", response.roleRef);
-      localStorage.setItem("userId", response.id);
-      localStorage.setItem("dep", response.dep);
-      localStorage.setItem("subDep", response.subDep);
-      localStorage.setItem("position", response.position);
+    if (response) {
+      const { id, role, name, dep, subDep, position, token } = response;
+      setId(id);
+      setRole(role);
+      setName(name);
+      setDep(dep);
+      setSubDep(subDep);
+      setPosition(position);
+      setToken(token);
+      setLogin(true);
+      // Сохранение данных в localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("userName", name);
+      localStorage.setItem("userRole", role);
+      localStorage.setItem("userId", id);
+      localStorage.setItem("dep", dep);
+      localStorage.setItem("subDep", subDep);
+      localStorage.setItem("position", position);
     } else {
-      setLogin(false)
+      setLogin(false);
     }
-  }, [])
+  }, []);
 
   const logout = () => {
     setLogin(false);
