@@ -4,6 +4,8 @@ import { Login } from "../components/Authtorization/Login/Login";
 import { Registration } from "../components/Authtorization/Registration/Registration";
 import { RestorePassword } from "../components/Authtorization/RestorePassword/RestorePassword";
 import { AuthRotes } from "./AuthRotes";
+import { PrivateRoutes } from "./PrivateRoutes";
+import { NewUsers } from "../components/Navigation/Admin/Menu/Users/NewUsers";
 
 export const routes = createBrowserRouter([
   {
@@ -21,6 +23,14 @@ export const routes = createBrowserRouter([
       {
         path: '/restorePassword',
         element: <RestorePassword />,
+      },
+      {
+        path: '/admin/users',
+        element: <PrivateRoutes component={NewUsers} roles={["admin"]}/>,
+      },
+      {
+        path: '/admin/users/new',
+        element: <PrivateRoutes component={NewUsers} roles={["admin"]}/>,
       },
     ]
   }
