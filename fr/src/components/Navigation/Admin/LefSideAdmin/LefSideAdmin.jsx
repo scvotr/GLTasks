@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { styled } from "@mui/material"
 import MuiDrawer from "@mui/material/Drawer"
 import MuiAppBar from "@mui/material/AppBar"
-// import { ToolbarButton } from "./ToolbarButton/ToolbarButton"
+import { ToolbarButton } from "../../ToolbarButton/ToolbarButton"
 // import { NestedListMenu } from "./NestedListMenu/NestedListMenu"
 
 const drawerWidth = 300
@@ -104,7 +104,7 @@ export const LefSideAdmin = ({ currentUser, children }) => {
             }}>
             <MenuOpenTwoTone fontSize="large" />
           </IconButton>
-          {/* <ToolbarButton currentUser={currentUser} /> */}
+          <ToolbarButton currentUser={currentUser} />
         </Toolbar>
       </AppBar>
 
