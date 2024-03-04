@@ -6,6 +6,7 @@ import { styled } from "@mui/material"
 import MuiDrawer from "@mui/material/Drawer"
 import MuiAppBar from "@mui/material/AppBar"
 import { ToolbarButton } from "../../ToolbarButton/ToolbarButton"
+import { NestedAdminListMenu } from "../NestedAdminListMenu"
 // import { NestedListMenu } from "./NestedListMenu/NestedListMenu"
 
 const drawerWidth = 300
@@ -116,7 +117,7 @@ export const LefSideAdmin = ({ currentUser, children }) => {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        {/* <NestedListMenu /> */}
+        <NestedAdminListMenu/>
       </Drawer>
 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
