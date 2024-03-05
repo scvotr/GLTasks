@@ -1,6 +1,9 @@
 import { DataGrid, ruRU } from "@mui/x-data-grid"
 import { Box } from "@mui/material"
 import { useState } from "react"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
+import Divider from "@mui/material/Divider"
 
 const columns = [
   {
@@ -55,16 +58,42 @@ const columns = [
 
 export const UsersTableView = ({ actionType, users }) => {
   const [actionTypeTS, setActionTypeTS] = useState([])
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
 
   const handleCellClick = (params, event) => {
-    //+
     console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.task_status)
     setActionTypeTS(params.row.task_status)
     // openModal(params.row)
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
   }
 
   return (
     <>
+      <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}>
+        <Divider />
+        <MenuItem onClick={handleClose}>Назначить отдел</MenuItem>
+        <MenuItem onClick={handleClose}>Редактировать</MenuItem>
+        <MenuItem onClick={handleClose}>Удалить</MenuItem>
+      </Menu>
+      {/*  */}
       <Box
         sx={{
           height: 500,
@@ -96,7 +125,7 @@ export const UsersTableView = ({ actionType, users }) => {
           }}
           pageSizeOptions={[15, 20, 25]}
         />
-        </Box>
+      </Box>
     </>
   )
 }
