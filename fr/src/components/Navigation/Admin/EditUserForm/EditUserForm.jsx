@@ -1,9 +1,15 @@
-import { Box, TextField } from "@mui/material"
+import { Box, Button, Divider, Stack, TextField } from "@mui/material"
 import { useState } from "react"
+import ThumbUpIcon from "@mui/icons-material/ThumbUp"
+import ThumbDownIcon from "@mui/icons-material/ThumbDown"
 import { SelectDataField } from "./SelectDataField/SelectDataField"
+import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
+import { useAuthContext } from "../../../../context/AuthProvider"
 
-export const EditUserForm = ({ user }) => {
-  console.log("EditUserForm", user)
+export const EditUserForm = ({ user, onTaskSubmit }) => {
+  const currentUser = useAuthContext()
+  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+
   const [formData, setFormData] = useState({
     name: user.name,
     role: user.role,
@@ -16,11 +22,20 @@ export const EditUserForm = ({ user }) => {
     position_id: user.position_id,
   })
   console.log("formData", formData)
-  
 
-  const handleSubmit = event => {
-    event.preventDefault()
-
+  const handleSubmit = async (isApprove, event) => {
+    if (isApprove) {
+      event.preventDefault()
+      try {
+        setReqStatus({ loading: true, error: null })
+        await getDataFromEndpoint(currentUser.token, "/admin/updateUserData", "POST", formData, setReqStatus)
+        setReqStatus({ loading: false, error: null })
+      } catch (error) {
+        setReqStatus({ loading: false, error: error.message })
+      }
+    } else {
+      onTaskSubmit()
+    }
   }
 
   const getInputData = event => {
@@ -48,21 +63,31 @@ export const EditUserForm = ({ user }) => {
         justifyContent: "center",
         alignItems: "center",
       }}>
-        <TextField 
-          name="name"
-          value={formData.name}
-          onChange={e => {
-            getInputData(e)
-          }}
-        />
-        <TextField 
-          name="role"
-          value={formData.role}
-          onChange={e => {
-            getInputData(e)
-          }}
-        />
-        <SelectDataField getData={getInputData} value={formData}/>
-      </Box>
+      <TextField
+        name="name"
+        value={formData.name}
+        onChange={e => {
+          getInputData(e)
+        }}
+      />
+      <TextField
+        name="role"
+        value={formData.role}
+        onChange={e => {
+          getInputData(e)
+        }}
+      />
+      <SelectDataField getData={getInputData} value={formData} />
+
+      <Divider />
+      <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
+        <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={e => handleSubmit(false, e)}>
+          Отклонить
+        </Button>
+        <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={e => handleSubmit(true, e)}>
+          Редактировать
+        </Button>
+      </Stack>
+    </Box>
   )
 }
