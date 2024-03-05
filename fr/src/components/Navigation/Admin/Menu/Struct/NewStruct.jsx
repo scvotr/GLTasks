@@ -2,20 +2,20 @@ import { useCallback, useEffect, useState } from "react"
 import { AppBar, Toolbar, Typography } from "@mui/material"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
-import { UsersTableView } from "../../Tables/UsersTable/UsersTableView"
+import { StructTable } from "../../Tables/StructTable/StructTableView"
 
 export const NewStruct = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
-  const [allUsers, setAllUsers] = useState([])
+  const [dataFromEndpoint, setDataFromEndpoint] = useState([])
   const [formKey, setFormKey] = useState(0);
 
   const fetchData = useCallback(async () => {
     if (currentUser.login) {
       try {
         setReqStatus({ loading: true, error: null })
-        const data = await getDataFromEndpoint(currentUser.token, "/admin/getAllUsers", "POST", null, setReqStatus)
-        setAllUsers(data)
+        const data = await getDataFromEndpoint(currentUser.token, "/orgStruct/getPositions", "POST", null, setReqStatus)
+        setDataFromEndpoint(data)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
         setReqStatus({ loading: false, error: error.message })
@@ -36,10 +36,10 @@ export const NewStruct = () => {
           borderRadius: "5px",
         }}>
         <Toolbar>
-          <Typography>Пользователи: </Typography>
+          <Typography>Отделы: </Typography>
         </Toolbar>
       </AppBar>
-      <UsersTableView users={allUsers} reRender={setFormKey}/>
+      <StructTable users={dataFromEndpoint} reRender={setFormKey}/>
     </>
   )
 }
