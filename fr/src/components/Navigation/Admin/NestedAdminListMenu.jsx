@@ -89,7 +89,7 @@ export const NestedAdminListMenu = ({isOpen}) => {
                         component={NavLink}
                         to={subItem.path}
                         key={subIndex}
-                        activeClassName="active"
+                        activeclassname="active"
                         style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                         <Badge
                           sx={{ ml: 1 }}
@@ -109,7 +109,7 @@ export const NestedAdminListMenu = ({isOpen}) => {
                         component={NavLink}
                         to={subItem.path}
                         key={subIndex}
-                        activeClassName="active"
+                        activeclassname="active"
                         style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                         <Badge
                           sx={{ ml: 2 }}
@@ -139,7 +139,7 @@ export const NestedAdminListMenu = ({isOpen}) => {
                                   component={NavLink}
                                   to={subItemsMenutem.path}
                                   key={subIndex}
-                                  activeClassName="active"
+                                  activeclassname="active"
                                   style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}
                                   sx={{ alignItems: "center" }} // Добавляем выравнивание элементов по центру
                                 >
@@ -161,7 +161,7 @@ export const NestedAdminListMenu = ({isOpen}) => {
                                   component={NavLink}
                                   to={subItemsMenutem.path}
                                   key={subIndex}
-                                  activeClassName="active"
+                                  activeclassname="active"
                                   style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                                   <ListItemButton sx={{ pl: 12 }}>
                                     <ListItemIcon>{subItemsMenutem.icon}</ListItemIcon>
