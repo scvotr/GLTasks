@@ -84,7 +84,7 @@ export const UsersTableView = ({ actionType, users }) => {
       <>
         {selectedUser && (
           <ModalCustom isOpen={modalOpen} onClose={closeModal}>
-            <EditUserForm user={selectedUser} />
+            <EditUserForm user={selectedUser} onTaskSubmit={closeModal}/>
           </ModalCustom>
         )}
         <Box
