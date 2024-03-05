@@ -12,6 +12,7 @@ const { handleDefaultRoute } = require('./routingHandlers/handleDefaultRoute')
 const { handleOptionsRequest } = require('./routingHandlers/handleOptionsRequest')
 const { handleAuthRoutes } = require('./routingHandlers/handleAuthRoutes')
 const { handleAdminRoutes } = require('./routingHandlers/handleAdminRoutes')
+const { handleOrgStructRoutes } = require('./routingHandlers/handleOrgStructRoutes')
 
 const routeHandlers = [
   { prefix: "/auth", handler: handleAuthRoutes },
