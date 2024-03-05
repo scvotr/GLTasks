@@ -1,7 +1,7 @@
 'use strict'
 
 const { getAllDepartmentsQ } = require("../../Database/queries/OrgStructure/departmensQuery")
-const { getPositionsByIDQ } = require("../../Database/queries/OrgStructure/positionQuery")
+const { getPositionsByIDQ, getPositionsQ } = require("../../Database/queries/OrgStructure/positionQuery")
 const { getSubDepartmentsByIDQ } = require("../../Database/queries/OrgStructure/subDepartmetsQuery")
 
 class OrgStructControler {
@@ -48,6 +48,24 @@ class OrgStructControler {
     try {
       const subDep_id = req.user.payLoad
       const data = await getPositionsByIDQ(subDep_id)
+      if (data.length === 0) {
+        res.statusCode = 204
+      } else {
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/json')
+        res.write(JSON.stringify(data))
+      }
+      res.end()
+    } catch (error) {
+      res.statusCode = 500
+      res.end(JSON.stringify({
+        error: 'getPositions'
+      }))
+    }
+  }
+  async getPositions(req, res) {
+    try {
+      const data = await getPositionsQ()
       if (data.length === 0) {
         res.statusCode = 204
       } else {
