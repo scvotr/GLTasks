@@ -16,6 +16,7 @@ const { handleAdminRoutes } = require('./routingHandlers/handleAdminRoutes')
 const routeHandlers = [
   { prefix: "/auth", handler: handleAuthRoutes },
   { prefix: "/admin", handler: handleAdminRoutes },
+  { prefix: "/orgStruct", handler: handleOrgStructRoutes },
 ]
 
 const server = http.createServer(async (req, res) => {
