@@ -7,6 +7,8 @@ import { AuthRotes } from "./AuthRotes";
 import { PrivateRoutes } from "./PrivateRoutes";
 import { NewUsers } from "../components/Navigation/Admin/Menu/Users/NewUsers";
 import { Users } from "../components/Navigation/Admin/Menu/Users/Users";
+import { Struct } from "../components/Navigation/Admin/Menu/Struct/Struct";
+import { NewStruct } from "../components/Navigation/Admin/Menu/Struct/NewStruct";
 
 export const routes = createBrowserRouter([
   {
@@ -32,6 +34,14 @@ export const routes = createBrowserRouter([
       {
         path: '/admin/users/new',
         element: <PrivateRoutes component={NewUsers} roles={["admin"]}/>,
+      },
+      {
+        path: '/admin/struct',
+        element: <PrivateRoutes component={Struct} roles={["admin"]}/>,
+      },
+      {
+        path: '/admin/struct/new',
+        element: <PrivateRoutes component={NewStruct} roles={["admin"]}/>,
       },
     ]
   }
