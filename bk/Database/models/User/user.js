@@ -7,7 +7,6 @@ const HASH_SALT = parseInt(process.env.KEY_SALT)
 const createTableUsers = async () => {
   try {
     await executeDatabaseQueryAsync(
-      // command
       `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
