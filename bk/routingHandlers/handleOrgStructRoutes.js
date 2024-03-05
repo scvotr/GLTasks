@@ -5,11 +5,11 @@ const { protectRouteTkPl } = require("../utils/protectRouteTkPl");
 const routeHandlers = {
   "/orgStruct/getDepartments": OrgStructControler.getDepartments,
   "/orgStruct/getSubDepartmentsByID": OrgStructControler.getSubDepartmentsByID,
+  "/orgStruct/getPositionsByID": OrgStructControler.getPositionsByID,
   // "/orgStruct/getDepartmentsByID": OrgStructControler.getDepartmentsByID,
   // "/orgStruct/getDepartmentsFrom": OrgStructControler.getDepartmentsFrom,
   // "/orgStruct/getSubDepartments": OrgStructControler.getSubDepartments,
   // "/orgStruct/getPositions": OrgStructControler.getPositions,
-  // "/orgStruct/getPositionsByID": OrgStructControler.getPositionsByID,
   // "/orgStruct/getAllWorkshops": OrgStructControler.getAllWorkshops,
   // "/orgStruct/getWorkshopsByDepID": OrgStructControler.getWorkshopsByDepID,
 };
