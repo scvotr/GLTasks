@@ -14,7 +14,7 @@ export const getDataFromEndpoint = async (
         Authorization: token,
         "Content-Type": "application/json",
       },
-      body: data ? data : null,
+      body: data ? JSON.stringify(data) : null,
     });
     if (responce.ok) {
       const responceData = await responce.json();
