@@ -2,6 +2,57 @@ import { DataGrid, ruRU } from "@mui/x-data-grid"
 import { Box } from "@mui/material"
 import { useState } from "react"
 
+const columns = [
+  {
+    field: "id",
+    headerName: "UserID",
+    description: "Id пользовтелей",
+    width: 90,
+  },
+  {
+    field: "name",
+    headerName: "Имя",
+    description: "Логин пользователя",
+    width: 90,
+  },
+  {
+    field: "department",
+    headerName: "Департамент",
+    description: "Департамент пользователя",
+    width: 100,
+  },
+  {
+    field: "subdepartment",
+    headerName: "Отдел",
+    description: "Отдел пользователя",
+    width: 100,
+  },
+  {
+    field: "position",
+    headerName: "Должность",
+    description: "Отдел пользователя",
+    width: 100,
+  },
+  {
+    field: "first_name",
+    headerName: "Имя",
+    description: "Имя пользователя",
+    width: 100,
+  },
+  {
+    field: "middle_name",
+    headerName: "Фамилия",
+    description: "Фамилия пользователя",
+    width: 100,
+  },
+  {
+    field: "last_name",
+    headerName: "Отчество",
+    description: "Отчество пользователя",
+    width: 100,
+  },
+]
+
 export const UsersTableView = ({ actionType, users }) => {
   return (
     <>
@@ -23,7 +74,7 @@ export const UsersTableView = ({ actionType, users }) => {
                 }))
               : []
           }
-
+          columns={columns}
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           initialState={{
             pagination: {
