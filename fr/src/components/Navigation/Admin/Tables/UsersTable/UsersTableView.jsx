@@ -1,6 +1,6 @@
 import { DataGrid, ruRU } from "@mui/x-data-grid"
 import { Box } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 import Divider from "@mui/material/Divider"
@@ -36,7 +36,7 @@ const columns = [
     field: "position",
     headerName: "Должность",
     description: "Отдел пользователя",
-    width: 100,
+    width: 200,
   },
   {
     field: "first_name",
@@ -84,7 +84,7 @@ export const UsersTableView = ({ actionType, users }) => {
       <>
         {selectedUser && (
           <ModalCustom isOpen={modalOpen} onClose={closeModal}>
-            <EditUserForm user={selectedUser} onTaskSubmit={closeModal}/>
+            <EditUserForm user={selectedUser} onTaskSubmit={closeModal} />
           </ModalCustom>
         )}
         <Box

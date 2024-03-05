@@ -58,7 +58,14 @@ export const DepartmentSelect = props => {
         <Box>
           <FormControl sx={{ minWidth: 222 }}>
             <InputLabel id="depart-simple-select-label">{selectedDep ? "Департамент" : "Выберите департамент"}</InputLabel>
-            <Select required value={selectedDep} name={currentUser.role === "admin" ? "department_id" : "responsible_department_id"} labelId="depart-select-label" label={selectedDep ? "Департамент" : "Выберите департамент"} onChange={handleChange}>
+            <Select
+              required
+              value={selectedDep}
+              // value={currentUser.role === "admin" ? props.value.department_id : {selectedDep}}
+              name={currentUser.role === "admin" ? "department_id" : "responsible_department_id"}
+              labelId="depart-select-label"
+              label={selectedDep ? "Департамент" : "Выберите департамент"}
+              onChange={handleChange}>
               {allDeps &&
                 allDeps.map(dep => (
                   <MenuItem key={dep.id} value={dep.id}>
