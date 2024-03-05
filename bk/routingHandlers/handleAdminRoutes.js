@@ -5,7 +5,7 @@ const { protectRouteTkPl } = require("../utils/protectRouteTkPl")
 
 const routeHandlers = {
   "/admin/getAllUsers": UserControler.getAllUsers,
-  // "/admin/updateUserData": UserControler.updateUserData,
+  "/admin/updateUserData": UserControler.updateUserData,
   // "/admin/getAllTasks": UserControler.getAllTasks,
   // "/admin/createNewDep": DepsControler.createNewDep,
   // "/admin/removeDep": DepsControler.removeDep,
