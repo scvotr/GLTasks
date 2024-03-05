@@ -8,7 +8,8 @@ export const NewUsers = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allUsers, setAllUsers] = useState([])
-  console.log(allUsers)
+  const [formKey, setFormKey] = useState(0);
+  console.log('NewUsers', formKey)
 
   const fetchData = useCallback(async () => {
     if (currentUser.login) {
@@ -21,7 +22,7 @@ export const NewUsers = () => {
         setReqStatus({ loading: false, error: error.message })
       }
     }
-  }, [currentUser])
+  }, [currentUser, formKey])
 
   useEffect(() => {fetchData()}, [fetchData])
 
@@ -39,7 +40,7 @@ export const NewUsers = () => {
           <Typography>Пользователи: </Typography>
         </Toolbar>
       </AppBar>
-      <UsersTableView users={allUsers} />
+      <UsersTableView users={allUsers} reRender={setFormKey}/>
     </>
   )
 }
