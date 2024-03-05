@@ -1,6 +1,6 @@
 const { getPostDataset} = require('./getPostDataset')
 const jwt = require('jsonwebtoken');
-const { getTokenQ } = require('../Database/queries/Auth/tokenQuery');
+const { findTokenQ } = require('../Database/queries/Auth/tokenQuery');
 require('dotenv').config();
 
 function protectRouteTkPl(handler) {
@@ -15,7 +15,7 @@ function protectRouteTkPl(handler) {
       const decodedToken = jwt.verify(token, process.env.KEY_TOKEN); //console.log("decodedToken: ", decodedToken)
       // console.log('decodedToken', decodedToken)
       // Check if the user exists and has a valid token in the database
-      const user = await getTokenQ(token);
+      const user = await findTokenQ(token);
       // console.log('sss',user[0].token)
       if (!user || user[0].token !== token) {
         return res.end(JSON.stringify({ error: 'Ошибка аутентификации  if (!user || user[0].token !== token)' }));
