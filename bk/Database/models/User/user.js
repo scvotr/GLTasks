@@ -24,6 +24,7 @@ const createTableUsers = async () => {
         internal_phone TEXT,
         external_phone TEXT,
         office_number TEXT,
+        created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (department_id) REFERENCES departments(id),
         FOREIGN KEY (subdepartment_id) REFERENCES subdepartments(id),
         FOREIGN KEY (position_id) REFERENCES positions(id),
