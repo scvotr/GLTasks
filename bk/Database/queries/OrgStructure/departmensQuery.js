@@ -1,7 +1,7 @@
 'use strict'
 const { executeDatabaseQueryAsync } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
 
-const getAllDepartments = async (userId) => {
+const getAllDepartmentsQ = async (userId) => {
   try {
     const command = `SELECT * FROM departments`
     return await executeDatabaseQueryAsync(command, [])
@@ -11,5 +11,5 @@ const getAllDepartments = async (userId) => {
 }
 
 module.exports = {
-  getAllDepartments,
+  getAllDepartmentsQ,
 }
