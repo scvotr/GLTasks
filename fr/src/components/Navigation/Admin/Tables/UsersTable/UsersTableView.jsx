@@ -54,6 +54,15 @@ const columns = [
 ]
 
 export const UsersTableView = ({ actionType, users }) => {
+  const [actionTypeTS, setActionTypeTS] = useState([])
+
+  const handleCellClick = (params, event) => {
+    //+
+    console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.task_status)
+    setActionTypeTS(params.row.task_status)
+    // openModal(params.row)
+  }
+
   return (
     <>
       <Box
@@ -76,6 +85,7 @@ export const UsersTableView = ({ actionType, users }) => {
           }
           columns={columns}
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+          onCellClick={handleCellClick}
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 15 },
