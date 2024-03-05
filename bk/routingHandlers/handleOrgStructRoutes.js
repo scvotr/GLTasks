@@ -6,10 +6,10 @@ const routeHandlers = {
   "/orgStruct/getDepartments": OrgStructControler.getDepartments,
   "/orgStruct/getSubDepartmentsByID": OrgStructControler.getSubDepartmentsByID,
   "/orgStruct/getPositionsByID": OrgStructControler.getPositionsByID,
+  "/orgStruct/getPositions": OrgStructControler.getPositions,
   // "/orgStruct/getDepartmentsByID": OrgStructControler.getDepartmentsByID,
   // "/orgStruct/getDepartmentsFrom": OrgStructControler.getDepartmentsFrom,
   // "/orgStruct/getSubDepartments": OrgStructControler.getSubDepartments,
-  // "/orgStruct/getPositions": OrgStructControler.getPositions,
   // "/orgStruct/getAllWorkshops": OrgStructControler.getAllWorkshops,
   // "/orgStruct/getWorkshopsByDepID": OrgStructControler.getWorkshopsByDepID,
 };
