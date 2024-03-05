@@ -35,15 +35,27 @@ const getAllUsersQ = async () => {
   }
 }
 
-const updateUserDataQ = async() => {
+const updateUserDataQ = async(data) => {
   try {
-    
+    const {id, name, role, department_id, subdepartment_id, position_id} = data
+    const command = `UPDATE users SET name = ?, role = ?, department_id = ?, subdepartment_id = ?, position_id = ? WHERE id = ?`;
+    await executeDatabaseQueryAsync(command, [name, role, department_id, subdepartment_id, position_id, id], 'run')
   } catch (error) {
-    
+    throw new Error('Ошибка запроса к базе данных')
+  }
+}
+
+const findUserByIdQ = async(user_id) => {
+  try {
+    const command = `SELECT * FROM users WHERE id = ?`
+    return await executeDatabaseQueryAsync(command,[user_id], 'all')
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных')
   }
 }
 
 module.exports = {
   getAllUsersQ,
   updateUserDataQ,
+  findUserByIdQ,
 }
