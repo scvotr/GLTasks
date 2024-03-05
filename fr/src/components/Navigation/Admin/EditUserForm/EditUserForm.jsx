@@ -11,6 +11,7 @@ export const EditUserForm = ({ user, onTaskSubmit }) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
   const [formData, setFormData] = useState({
+    id: user.id,
     name: user.name,
     role: user.role,
     first_name: user.first_name,
@@ -21,22 +22,22 @@ export const EditUserForm = ({ user, onTaskSubmit }) => {
     subdepartment_id: user.subdepartment_id,
     position_id: user.position_id,
   })
-  console.log("formData", formData)
 
-  const handleSubmit = async (isApprove, event) => {
+  const handleSubmit = (isApprove, event) => {
+    event.preventDefault();
     if (isApprove) {
-      event.preventDefault()
-      try {
-        setReqStatus({ loading: true, error: null })
-        await getDataFromEndpoint(currentUser.token, "/admin/updateUserData", "POST", formData, setReqStatus)
-        setReqStatus({ loading: false, error: null })
-      } catch (error) {
-        setReqStatus({ loading: false, error: error.message })
-      }
-    } else {
-      onTaskSubmit()
+      setReqStatus({ loading: true, error: null });
+      getDataFromEndpoint(currentUser.token, "/admin/updateUserData", "POST", formData, setReqStatus)
+        .then(data => {
+          onTaskSubmit();
+          setReqStatus({ loading: false, error: null });
+        })
+        .catch(error => {
+          setReqStatus({ loading: false, error: error.message });
+        });
     }
-  }
+    onTaskSubmit();
+  };
 
   const getInputData = event => {
     const { name, value, files, checked } = event.target
