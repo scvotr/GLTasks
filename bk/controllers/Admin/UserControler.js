@@ -1,7 +1,8 @@
 'use strict'
 
 const jwt = require("jsonwebtoken")
-const { getAllUsersQ } = require("../../Database/queries/User/adminQuery")
+const { getAllUsersQ, updateUserDataQ, findUserByIdQ } = require("../../Database/queries/User/adminQuery")
+const { updateTokenQ } = require("../../Database/queries/Auth/tokenQuery")
 require("dotenv").config()
 const SECRET_KEY = process.env.KEY_TOKEN
 
@@ -32,9 +33,25 @@ class UserControler {
     }
   }
   async updateUserData(req,res) {
-    const authDecodeUserData = req.user;
-    // const userData = JSON.parse(authDecodeUserData.payLoad);
-    console.log('userData', authDecodeUserData)
+    const authDecodeUserData = req.user
+    const userData = JSON.parse(authDecodeUserData.payLoad)
+    console.log('userData', userData)
+    if (authDecodeUserData.role !== "admin") {
+      return res.end(
+        JSON.stringify({
+          updateUserData: "Нет прав на доступ",
+        })
+      );
+    }
+    try {
+      await updateUserDataQ(userData)
+      const udapdedUser = await findUserByIdQ(userData.id)
+      const token = jwt.sign(...udapdedUser, SECRET_KEY)
+      console.log(token)
+      await updateTokenQ(userData.id, token)
+    } catch (error) {
+      
+    }
   }
 }
 
