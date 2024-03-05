@@ -1,9 +1,6 @@
 import { DataGrid, ruRU } from "@mui/x-data-grid"
 import { Box } from "@mui/material"
-import { useEffect, useState } from "react"
-import Menu from "@mui/material/Menu"
-import MenuItem from "@mui/material/MenuItem"
-import Divider from "@mui/material/Divider"
+import { useState } from "react"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
 import { EditUserForm } from "../../EditUserForm/EditUserForm"
 
@@ -39,6 +36,12 @@ const columns = [
     width: 200,
   },
   {
+    field: "role",
+    headerName: "Роль",
+    description: "Роль пользователя",
+    width: 200,
+  },
+  {
     field: "first_name",
     headerName: "Имя",
     description: "Имя пользователя",
@@ -58,7 +61,7 @@ const columns = [
   },
 ]
 
-export const UsersTableView = ({ actionType, users }) => {
+export const UsersTableView = ({ actionType, users, reRender  }) => {
   const [actionTypeTS, setActionTypeTS] = useState([])
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -71,6 +74,7 @@ export const UsersTableView = ({ actionType, users }) => {
   const closeModal = () => {
     setSelectedUser(null)
     setModalOpen(false)
+    reRender(prevKey => prevKey + 1)
   }
 
   const handleCellClick = (params, event) => {
