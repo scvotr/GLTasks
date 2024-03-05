@@ -78,7 +78,7 @@ export const UsersTableView = ({ actionType, users, reRender  }) => {
   }
 
   const handleCellClick = (params, event) => {
-    console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.task_status)
+    // console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.task_status)
     setActionTypeTS(params.row.task_status)
     openModal(params.row)
   }
