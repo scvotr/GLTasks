@@ -83,7 +83,7 @@ export const EditUserForm = ({ user, onTaskSubmit }) => {
       <Divider />
       <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
         <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={e => handleSubmit(false, e)}>
-          Отклонить
+          Отмена
         </Button>
         <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={e => handleSubmit(true, e)}>
           Редактировать

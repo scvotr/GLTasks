@@ -33,7 +33,7 @@ const columns = [
     field: "position",
     headerName: "Должность",
     description: "Отдел пользователя",
-    width: 200,
+    width: 240,
   },
   {
     field: "role",
