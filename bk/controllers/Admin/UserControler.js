@@ -1,7 +1,7 @@
 'use strict'
 
 const jwt = require("jsonwebtoken")
-const { getAllUsers } = require("../../Database/queries/User/adminQuery")
+const { getAllUsersQ } = require("../../Database/queries/User/adminQuery")
 require("dotenv").config()
 const SECRET_KEY = process.env.KEY_TOKEN
 
@@ -16,7 +16,7 @@ class UserControler {
           })
         )  
       }
-      const data = await getAllUsers()
+      const data = await getAllUsersQ()
       data.length === 0 ? res.statusCode = 204 :
       res.statusCode = 200
       res.setHeader("Content-Type", "application/json")
@@ -30,6 +30,11 @@ class UserControler {
         })
       );
     }
+  }
+  async updateUserData(req,res) {
+    const authDecodeUserData = req.user;
+    // const userData = JSON.parse(authDecodeUserData.payLoad);
+    console.log('userData', authDecodeUserData)
   }
 }
 
