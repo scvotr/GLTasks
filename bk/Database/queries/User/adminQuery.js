@@ -1,7 +1,7 @@
 'use strict'
 const { executeDatabaseQueryAsync } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
 
-const getAllUsers = async () => {
+const getAllUsersQ = async () => {
   try {
     const command = `
     SELECT 
@@ -35,4 +35,15 @@ const getAllUsers = async () => {
   }
 }
 
-module.exports = {getAllUsers}
+const updateUserDataQ = async() => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
+module.exports = {
+  getAllUsersQ,
+  updateUserDataQ,
+}
