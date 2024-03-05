@@ -47,6 +47,14 @@ export const NestedAdminListMenu = ({isOpen}) => {
         { name: "Новые", icon: <InboxIcon />, path: "/admin/users/new" },
       ],
     },
+    {
+      name: "Отделы и службы",
+      icon: <SendIcon />,
+      path: "/admin/struct",
+      subItems: [
+        { name: "Новые", icon: <InboxIcon />, path: "/admin/struct/new" },
+      ],
+    },
   ]
 
     // Объявление состояния для открытия и закрытия SubItemsMenu
