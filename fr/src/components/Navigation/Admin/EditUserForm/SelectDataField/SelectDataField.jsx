@@ -10,13 +10,8 @@ export const SelectDataField = props => {
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
         <DepartmentSelect {...props}>
           <SubDepartmenSelect {...props}>
-            {props.internalTask ? (
-              <PositionSelect {...props}>
-                <UserSelect {...props} />
-              </PositionSelect>
-            ) : (
-              <></>
-            )}
+            <PositionSelect {...props}>
+            </PositionSelect>
           </SubDepartmenSelect>
         </DepartmentSelect>
       </Stack>
