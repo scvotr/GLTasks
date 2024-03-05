@@ -16,6 +16,7 @@ const getAllUsers = async () => {
       users.internal_phone,
       users.external_phone,
       users.office_number, 
+      users.created_on,
       departments.id AS department_id,
       departments.name AS department, 
       subdepartments.id AS subdepartment_id,
