@@ -13,7 +13,7 @@ export const DepartmentSelect = props => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allDeps, setAllDeps] = useState([])
 
-  const [selectedDep, setSelectedDep] = useState('')
+  const [selectedDep, setSelectedDep] = useState("")
   // сброс значений полей ввода
   useEffect(() => {
     setSelectedDep(props.value.responsible_department_id)
@@ -23,13 +23,7 @@ export const DepartmentSelect = props => {
     if (currentUser.login) {
       try {
         setReqStatus({ loading: true, error: null })
-        const data = await getDataFromEndpoint(
-          currentUser.token,
-          "/orgStruct/getDepartments",
-          "POST",
-          null,
-          setReqStatus
-        )
+        const data = await getDataFromEndpoint(currentUser.token, "/orgStruct/getDepartments", "POST", null, setReqStatus)
         setAllDeps(data)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
@@ -63,16 +57,8 @@ export const DepartmentSelect = props => {
       ) : (
         <Box>
           <FormControl sx={{ minWidth: 222 }}>
-            <InputLabel id="depart-simple-select-label">
-              {selectedDep ? "Департамент" : "Выберите департамент"}
-            </InputLabel>
-            <Select
-              required
-              value={selectedDep}
-              name="responsible_department_id"
-              labelId="depart-select-label"
-              label={selectedDep ? "Департамент" : "Выберите департамент"}
-              onChange={handleChange}>
+            <InputLabel id="depart-simple-select-label">{selectedDep ? "Департамент" : "Выберите департамент"}</InputLabel>
+            <Select required value={selectedDep} name={currentUser.role === "admin" ? "department_id" : "responsible_department_id"} labelId="depart-select-label" label={selectedDep ? "Департамент" : "Выберите департамент"} onChange={handleChange}>
               {allDeps &&
                 allDeps.map(dep => (
                   <MenuItem key={dep.id} value={dep.id}>

@@ -70,7 +70,7 @@ export const SubDepartmenSelect = props => {
             <Select
               required
               value={selectedSubDep}
-              name="responsible_subdepartment_id"
+              name={currentUser.role === "admin" ? "subdepartment_id" : "responsible_subdepartment_id"}
               labelId="subDepart-select-label"
               label={selectedSubDep ? "Отдел" : "Выберите отдел"}
               onChange={handleChange}>

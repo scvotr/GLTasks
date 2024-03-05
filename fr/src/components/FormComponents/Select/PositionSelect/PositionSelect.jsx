@@ -69,7 +69,7 @@ export const PositionSelect = props => {
             <Select
               required
               value={selectedPosition}
-              name="responsible_position_id"
+              name={currentUser.role === "admin" ? "position_id" : "responsible_position_id"}
               labelId="position-select-label"
               label={selectedPosition ? "Должность" : "Выберите должность"}
               onChange={handleChange}>
