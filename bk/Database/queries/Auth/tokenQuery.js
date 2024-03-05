@@ -28,6 +28,15 @@ const getTokenQ = async (userId) => {
   }
 }
 
+const findTokenQ = async (token) => {
+  try {
+    const command = `SELECT * FROM tokens WHERE token = ?`
+    return await executeDatabaseQueryAsync(command, [token])
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных')
+  }
+}
+
 const deleteTokenQ = async (userId) => {
   try {
     const command = `DELETE FROM tokens WHERE user_id = ?`
@@ -41,6 +50,7 @@ module.exports = {
   addTokenQ,
   updateTokenQ,
   getTokenQ,
+  findTokenQ,
   deleteTokenQ,
 }
 // ! РАБОЧИЙ ВАРИАНТ нужно попробывать
