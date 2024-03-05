@@ -75,8 +75,8 @@ export const UsersTableView = ({ actionType, users }) => {
   return (
     <>
       <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
+        id="positioned-menu"
+        aria-labelledby="positioned-button"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -88,9 +88,10 @@ export const UsersTableView = ({ actionType, users }) => {
           vertical: "top",
           horizontal: "left",
         }}>
-        <Divider />
         <MenuItem onClick={handleClose}>Назначить отдел</MenuItem>
+        <Divider />
         <MenuItem onClick={handleClose}>Редактировать</MenuItem>
+        <Divider />
         <MenuItem onClick={handleClose}>Удалить</MenuItem>
       </Menu>
       {/*  */}
