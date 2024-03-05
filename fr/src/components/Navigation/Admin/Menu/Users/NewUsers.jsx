@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { AppBar, Toolbar, Typography } from "@mui/material"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
+import { UsersTableView } from "../../Tables/UsersTable/UsersTableView"
 
 export const NewUsers = () => {
   const currentUser = useAuthContext()
@@ -38,6 +39,7 @@ export const NewUsers = () => {
           <Typography>Пользователи: </Typography>
         </Toolbar>
       </AppBar>
+      <UsersTableView users={allUsers} />
     </>
   )
 }
