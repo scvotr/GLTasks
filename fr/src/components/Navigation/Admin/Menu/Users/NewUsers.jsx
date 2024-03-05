@@ -9,7 +9,6 @@ export const NewUsers = () => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allUsers, setAllUsers] = useState([])
   const [formKey, setFormKey] = useState(0);
-  console.log('NewUsers', formKey)
 
   const fetchData = useCallback(async () => {
     if (currentUser.login) {
