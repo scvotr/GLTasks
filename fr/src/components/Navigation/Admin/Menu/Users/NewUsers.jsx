@@ -1,8 +1,29 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { AppBar, Toolbar, Typography } from "@mui/material"
-
+import { useAuthContext } from "../../../../../context/AuthProvider"
+import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 
 export const NewUsers = () => {
+  const currentUser = useAuthContext()
+  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [allUsers, setAllUsers] = useState([])
+  console.log(allUsers)
+
+  const fetchData = useCallback(async () => {
+    if (currentUser.login) {
+      try {
+        setReqStatus({ loading: true, error: null })
+        const data = await getDataFromEndpoint(currentUser.token, "/admin/getAllUsers", "POST", null, setReqStatus)
+        setAllUsers(data)
+        setReqStatus({ loading: false, error: null })
+      } catch (error) {
+        setReqStatus({ loading: false, error: error.message })
+      }
+    }
+  }, [currentUser])
+
+  useEffect(() => {fetchData()}, [fetchData])
+
   return (
     <>
       <AppBar
