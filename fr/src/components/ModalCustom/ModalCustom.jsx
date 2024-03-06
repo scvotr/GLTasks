@@ -20,12 +20,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }))
 
-export const ModalCustom = ({ isOpen, onClose, children }) => {
+export const ModalCustom = ({ isOpen, onClose, children, infoText }) => {
   return (
     <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
       <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={isOpen}>
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Новая задача
+          {infoText ? infoText : ''}
         </DialogTitle>
         <IconButton
           aria-label="close"
