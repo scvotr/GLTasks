@@ -12,8 +12,8 @@ export const GlobalWrapper = () => {
 
   const comtentMap = new Map([
     ["admin", () => (<LefSideAdmin currentUser={currentUser}><AdminLayout /></LefSideAdmin>),],
-    [ "chife", () => (<LeftSideDrawer currentUser={currentUser}><LeadLayout /></LeftSideDrawer>),],
-    ["user",() => (<LeftSideDrawer currentUser={currentUser}><UserLayout /></LeftSideDrawer>),],
+    ["chife", () => (<LeftSideDrawer currentUser={currentUser}><LeadLayout /></LeftSideDrawer>),],
+    ["user", () => (<LeftSideDrawer currentUser={currentUser}><UserLayout /></LeftSideDrawer>),],
   ])
 
   const renderContent = () => {
