@@ -2,7 +2,7 @@
   "arrowParens": "avoid",
   "bracketSpacing": true,
   "jsxSingleQuote": false,
-  "printWidth": 280,
+  "printWidth": 60,
   "overrides": [
     {
       "files": "*.jsx",
