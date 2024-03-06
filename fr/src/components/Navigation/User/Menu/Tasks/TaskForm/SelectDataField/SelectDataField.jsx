@@ -5,7 +5,6 @@ import { PositionSelect } from "../../../../../../FormComponents/Select/Position
 import { UserSelect } from "../../../../../../FormComponents/Select/UserSelect/UserSelect"
 
 export const SelectDataField = props => {
-  console.log("SelectDataField", props.internalTask)
   return (
     <>
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
