@@ -40,9 +40,18 @@ const getPositionsBySubDepIdQ = async (subDep_id) => {
     throw new Error('Ошибка запроса к базе данных')
   }
 }
+const getUserByPositionIdQ = async (position_id) => {
+  try {
+    const command = `SELECT id, name FROM users WHERE position_id = ?`
+    return await executeDatabaseQueryAsync(command, [position_id])
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных')
+  }
+}
 
 module.exports = {
   getPositionsByIDQ,
   getPositionsQ,
   getPositionsBySubDepIdQ,
+  getUserByPositionIdQ,
 }
