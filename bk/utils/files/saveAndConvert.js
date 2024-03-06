@@ -1,3 +1,5 @@
+'use strict'
+
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
@@ -5,13 +7,12 @@ const sharp = require('sharp');
 const currentDirectory = process.cwd();
 const defaultPath = path.join(currentDirectory, 'uploads')
 
-const saveAndConvert = async (file, folder = null, folderPath = defaultPath) => {
+const saveAndConvert = async (file, rootCustomFolder , taskFolderName) => {
   try {
-    // Проверяем права на запись в директорию
-    await fs.promises.access(folderPath, fs.constants.W_OK);
+    await fs.promises.access(defaultPath, fs.constants.W_OK);
     const ext = path.extname(file.originalFilename);
     const fileName = `${Date.now()}${ext}`; // задаем имя файла, например, используя метку времени
-    const folderFullPath = path.join(folderPath, folder); // полный путь
+    const folderFullPath = path.join(defaultPath, rootCustomFolder, taskFolderName); // полный путь
     const newFilePath = path.join(folderFullPath, fileName); // задаем полный путь к файлу
     // Создаем папку, если она не существует
     await fs.promises.mkdir(folderFullPath, {
