@@ -94,7 +94,7 @@ export const NestedListMenu = ({ isOpen }) => {
                 {section.subItems.map((subItem, subIndex) => (
                   <div key={subIndex}>
                     {subItem.btn ? ( // Проверка наличия nameBnt вместо name
-                      <StyledListItemButton component={NavLink} to={subItem.path} key={subIndex} activeClassName="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
+                      <StyledListItemButton component={NavLink} to={subItem.path} key={subIndex} activeclassname="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                         <Badge
                           sx={{ ml: 1 }}
                           badgeContent={subItem.tasksCount}
@@ -109,7 +109,7 @@ export const NestedListMenu = ({ isOpen }) => {
                         </Badge>
                       </StyledListItemButton>
                     ) : (
-                      <StyledListItemButton component={NavLink} to={subItem.path} key={subIndex} activeClassName="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
+                      <StyledListItemButton component={NavLink} to={subItem.path} key={subIndex} activeclassname="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                         <Badge
                           sx={{ ml: 2 }}
                           badgeContent={subItem.tasksCount}
@@ -138,7 +138,7 @@ export const NestedListMenu = ({ isOpen }) => {
                                   component={NavLink}
                                   to={subItemsMenutem.path}
                                   key={subIndex}
-                                  activeClassName="active"
+                                  activeclassname="active"
                                   style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}
                                   sx={{ alignItems: "center" }} // Добавляем выравнивание элементов по центру
                                 >
@@ -156,7 +156,7 @@ export const NestedListMenu = ({ isOpen }) => {
                                   </ListItemButton>
                                 </StyledListItemButton>
                               ) : (
-                                <StyledListItemButton component={NavLink} to={subItemsMenutem.path} key={subIndex} activeClassName="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
+                                <StyledListItemButton component={NavLink} to={subItemsMenutem.path} key={subIndex} activeclassname="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                                   <ListItemButton sx={{ pl: 12 }}>
                                     <ListItemIcon>{subItemsMenutem.icon}</ListItemIcon>
                                     <ListItemText primary={subItemsMenutem.name} />
