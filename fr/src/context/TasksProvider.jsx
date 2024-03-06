@@ -10,7 +10,9 @@ export const TasksProvider = ({currentUser, children}) => {
 
 
   return (
-    <TaskContext.Provider>
+    <TaskContext.Provider
+      value={{}}
+    >
       {children}
     </TaskContext.Provider>
   )
