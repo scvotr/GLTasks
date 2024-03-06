@@ -2,6 +2,7 @@ import { AppBar, Box, Fab, Toolbar, Typography } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import { useState } from "react"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
+import { AddTaskForm } from "./AddTaskForm"
 
 export const NewTask = () => {
 
@@ -18,7 +19,7 @@ export const NewTask = () => {
     <>
       <>
         <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText='Новая задача'> 
-
+          <AddTaskForm onTaskSubmit={closeModal}/>
         </ModalCustom>
         <Box>
           <AppBar
