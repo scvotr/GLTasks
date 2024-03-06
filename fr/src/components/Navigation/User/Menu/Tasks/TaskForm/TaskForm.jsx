@@ -1,12 +1,11 @@
 import { v4 as uuidv4 } from "uuid"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
-import { Box, Button, Divider, Stack } from "@mui/material"
-import ThumbUpIcon from "@mui/icons-material/ThumbUp"
-import ThumbDownIcon from "@mui/icons-material/ThumbDown"
+import { Box, Button, Divider } from "@mui/material"
 import { TextDataField } from "./TextDataField/TextDataField"
 import { useState } from "react"
 import { SelectDataField } from "../TaskForm/SelectDataField/SelectDataField"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
+import { ImageBlock } from "./ImageBlock/ImageBlock"
 
 export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   const currentUser = useAuthContext()
@@ -31,14 +30,62 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     task_files: [],
   }
   const [formData, setFormData] = useState(initValue)
-  const [isInternalTask, setIsInternalTask] = useState(false)
-  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [isInternalTask, setIsInternalTask] =
+    useState(false)
+  const [reqStatus, setReqStatus] = useState({
+    loading: true,
+    error: null,
+  })
+  const [isEdit, setIsEdit] = useState(false)
 
-  const getInputData = e => {
+  console.log(formData)
+
+  const getInputData = async e => {
     const { name, value, files, checked } = e.target
+    if (
+      name === "add_new_files" ||
+      name === "append_new_files"
+    ) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "application/pdf",
+      ]
+      const data = Array.from(files).filter(file =>
+        allowedTypes.includes(file.type)
+      )
+      const previews = await Promise.all(
+        data.map(file => {
+          return new Promise(resolve => {
+            const reader = new FileReader()
+            reader.onload = e => {
+              if (file.type.startsWith("image/")) {
+                const img = new Image()
+                img.src = e.target.result
+                img.onload = () => {
+                  resolve(e.target.result)
+                }
+              } else if (
+                file.type.startsWith("application/pdf")
+              ) {
+                resolve(e.target.result)
+              }
+            }
+            reader.readAsDataURL(file)
+          })
+        })
+      )
+      setFormData(prev => ({
+        ...prev,
+        files: [...prev.files, ...data],
+        filePreviews: [...prev.filePreviews, ...previews],
+      }))
+    }
 
     if (name === "responsible_subdepartment_id") {
-      if (value.toString() === currentUser.subDep.toString()) {
+      if (
+        value.toString() === currentUser.subDep.toString()
+      ) {
         console.log("Internal task")
         setIsInternalTask(true)
       } else {
@@ -57,30 +104,76 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     if (isInternalTask && currentUser.role === "chife") {
       console.log("Внутрення задача от начальника")
       formData.task_status = "approved"
-    } else if (!isInternalTask && currentUser.role === "chife") {
+    } else if (
+      !isInternalTask &&
+      currentUser.role === "chife"
+    ) {
       console.log("Внешняя задача от начальника")
       formData.task_status = "approved"
-    } else if (isInternalTask && currentUser.role === "user") {
+    } else if (
+      isInternalTask &&
+      currentUser.role === "user"
+    ) {
       console.log("Внутрення задача от пользователя")
       formData.task_status = "toApprove"
-    } else if (!isInternalTask && currentUser.role === "user") {
+    } else if (
+      !isInternalTask &&
+      currentUser.role === "user"
+    ) {
       console.log("Внешняя задача от пользователя")
       formData.task_status = "toApprove"
     } else {
       // Логика для других случаев
     }
     setReqStatus({ loading: true, error: null })
-    getDataFromEndpoint(currentUser.token, "/tasks/addNewTask", "POST", formData, setReqStatus)
-    .then(data => {
-      onTaskSubmit();
-      setReqStatus({ loading: false, error: null });
-    })
-    .catch(error => {
-      setReqStatus({ loading: false, error: error.message });
-    });
+    getDataFromEndpoint(
+      currentUser.token,
+      "/tasks/addNewTask",
+      "POST",
+      formData,
+      setReqStatus
+    )
+      .then(data => {
+        onTaskSubmit()
+        setReqStatus({ loading: false, error: null })
+      })
+      .catch(error => {
+        setReqStatus({
+          loading: false,
+          error: error.message,
+        })
+      })
     // onTaskSubmit();
     setFormData(initValue)
   }
+
+  const removeTaskAddedFiles = index => {
+    const updatedFiles = [...formData.files]
+    const updatedPreviews = [...formData.filePreviews]
+    updatedFiles.splice(index, 1)
+    updatedPreviews.splice(index, 1)
+
+    setFormData(prev => ({
+      ...prev,
+      files: updatedFiles,
+      filePreviews: updatedPreviews,
+    }))
+  }
+
+  const removeTaskExistingFiles = (index) => {
+    const updatedFiles = [...formData.old_files]; //! поле для фалов с сервера
+    const nameRem = [...formData.file_names];
+    updatedFiles.splice(index, 1);
+    const removedNam = nameRem.splice(index, 1);
+    const updatedFilesToRemove = [...formData.filesToRemove, removedNam];
+
+    setFormData((prev) => ({
+      ...prev,
+      old_files: updatedFiles, //!поле для фалов с сервера
+      file_names: nameRem,
+      filesToRemove: updatedFilesToRemove,
+    }));
+  };
 
   return (
     <Box
@@ -99,11 +192,28 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <TextDataField getData={getInputData} value={formData} />
+      <TextDataField
+        getData={getInputData}
+        value={formData}
+      />
       <Divider />
-      <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask} />
+      <SelectDataField
+        getData={getInputData}
+        value={formData}
+        internalTask={isInternalTask}
+      />
       <Divider />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+      <ImageBlock
+        files={formData}
+        getData={getInputData}
+        isEdit={isEdit}
+        takeAddedIndex={removeTaskAddedFiles}
+      />
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}>
         Создать задачу
       </Button>
     </Box>
