@@ -1,6 +1,7 @@
 import { createTheme, ThemeProvider, CssBaseline, Container, Box } from '@mui/material'
 import { GlobalWrapper } from './components/GlobalWrapper'
 import { SocketProvider } from './context/SocketProvider'
+import { SnackbarProvider } from './context/SnackbarProvider'
 
 const defaultTheme = createTheme()
 
@@ -11,7 +12,9 @@ function App() {
         <SocketProvider>
           <Container maxWidth={false}>
             <Box>
-              <GlobalWrapper />
+              <SnackbarProvider>
+                <GlobalWrapper />
+              </SnackbarProvider>
             </Box>
           </Container>
         </SocketProvider>
