@@ -13,11 +13,13 @@ const { handleOptionsRequest } = require('./routingHandlers/handleOptionsRequest
 const { handleAuthRoutes } = require('./routingHandlers/handleAuthRoutes')
 const { handleAdminRoutes } = require('./routingHandlers/handleAdminRoutes')
 const { handleOrgStructRoutes } = require('./routingHandlers/handleOrgStructRoutes')
+const { handleTaskRoutes } = require('./routingHandlers/handleTaskRoutes')
 
 const routeHandlers = [
   { prefix: "/auth", handler: handleAuthRoutes },
   { prefix: "/admin", handler: handleAdminRoutes },
   { prefix: "/orgStruct", handler: handleOrgStructRoutes },
+  { prefix: "/tasks", handler: handleTaskRoutes },
 ]
 
 const server = http.createServer(async (req, res) => {
