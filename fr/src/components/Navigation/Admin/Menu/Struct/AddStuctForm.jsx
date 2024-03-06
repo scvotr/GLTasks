@@ -130,7 +130,7 @@ export const AddStuctForm = () => {
             justifyContent: "center",
             alignItems: "center",
           }}>
-          {/* <SelectSubDep getData={getInputData} value={formData}/> */}
+          <SelectSubDep getData={getInputData} value={formData}/>
           <TextField
             name="position_name"
             value={formData.position_name}
