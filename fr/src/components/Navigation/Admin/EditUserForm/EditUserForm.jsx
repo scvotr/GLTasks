@@ -6,7 +6,7 @@ import { SelectDataField } from "./SelectDataField/SelectDataField"
 import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../context/AuthProvider"
 
-export const EditUserForm = ({ user, onTaskSubmit }) => {
+export const EditUserForm = ({ user, onUserSubmit }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
@@ -29,14 +29,14 @@ export const EditUserForm = ({ user, onTaskSubmit }) => {
       setReqStatus({ loading: true, error: null });
       getDataFromEndpoint(currentUser.token, "/admin/updateUserData", "POST", formData, setReqStatus)
         .then(data => {
-          onTaskSubmit();
+          onUserSubmit();
           setReqStatus({ loading: false, error: null });
         })
         .catch(error => {
           setReqStatus({ loading: false, error: error.message });
         });
     }
-    onTaskSubmit();
+    onUserSubmit();
   };
 
   const getInputData = event => {
