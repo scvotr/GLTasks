@@ -7,6 +7,7 @@ const routeHandlers = {
   "/orgStruct/getSubDepartmentsByID": OrgStructControler.getSubDepartmentsByID,
   "/orgStruct/getPositionsByID": OrgStructControler.getPositionsByID,
   "/orgStruct/getPositions": OrgStructControler.getPositions,
+  "/orgStruct/getUserByPositionId": OrgStructControler.getUserByPositionId,
   // "/orgStruct/getDepartmentsByID": OrgStructControler.getDepartmentsByID,
   // "/orgStruct/getDepartmentsFrom": OrgStructControler.getDepartmentsFrom,
   // "/orgStruct/getSubDepartments": OrgStructControler.getSubDepartments,
