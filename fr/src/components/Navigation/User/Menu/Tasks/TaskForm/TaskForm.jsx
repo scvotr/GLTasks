@@ -6,6 +6,7 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown"
 import { TextDataField } from "./TextDataField/TextDataField"
 import { useState } from "react"
 import { SelectDataField } from "../TaskForm/SelectDataField/SelectDataField"
+import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 
 export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   const currentUser = useAuthContext()
@@ -31,16 +32,17 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   }
   const [formData, setFormData] = useState(initValue)
   const [isInternalTask, setIsInternalTask] = useState(false)
+  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
   const getInputData = e => {
     const { name, value, files, checked } = e.target
 
     if (name === "responsible_subdepartment_id") {
       if (value.toString() === currentUser.subDep.toString()) {
-        console.log("Internal task");
-        setIsInternalTask(true);
+        console.log("Internal task")
+        setIsInternalTask(true)
       } else {
-        setIsInternalTask(false);
+        setIsInternalTask(false)
       }
     }
 
@@ -50,7 +52,35 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     }))
   }
 
-  const handleSubmit = (isApprove, event) => {}
+  const handleSubmit = event => {
+    event.preventDefault()
+    if (isInternalTask && currentUser.role === "chife") {
+      console.log("Внутрення задача от начальника")
+      formData.task_status = "approved"
+    } else if (!isInternalTask && currentUser.role === "chife") {
+      console.log("Внешняя задача от начальника")
+      formData.task_status = "approved"
+    } else if (isInternalTask && currentUser.role === "user") {
+      console.log("Внутрення задача от пользователя")
+      formData.task_status = "toApprove"
+    } else if (!isInternalTask && currentUser.role === "user") {
+      console.log("Внешняя задача от пользователя")
+      formData.task_status = "toApprove"
+    } else {
+      // Логика для других случаев
+    }
+    setReqStatus({ loading: true, error: null })
+    getDataFromEndpoint(currentUser.token, "/tasks/addNewTask", "POST", formData, setReqStatus)
+    .then(data => {
+      onTaskSubmit();
+      setReqStatus({ loading: false, error: null });
+    })
+    .catch(error => {
+      setReqStatus({ loading: false, error: error.message });
+    });
+    // onTaskSubmit();
+    setFormData(initValue)
+  }
 
   return (
     <Box
@@ -69,18 +99,13 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <TextDataField getData={getInputData} value={formData}/>  
+      <TextDataField getData={getInputData} value={formData} />
       <Divider />
-      <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask}/>
+      <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask} />
       <Divider />
-      <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
-        <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={e => handleSubmit(false, e)}>
-          Отмена
-        </Button>
-        <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={e => handleSubmit(true, e)}>
-          Сохранить
-        </Button>
-      </Stack>
+      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+        Создать задачу
+      </Button>
     </Box>
   )
 }
