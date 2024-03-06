@@ -56,11 +56,11 @@ export const StructTable = ({ actionType, users, reRender  }) => {
   return (
     <>
       <>
-        {selectedUser && (
+        {/* {selectedUser && (
           <ModalCustom isOpen={modalOpen} onClose={closeModal}>
             <EditUserForm user={selectedUser} onTaskSubmit={closeModal} />
           </ModalCustom>
-        )}
+        )} */}
         <Box
           sx={{
             height: 500,
@@ -81,7 +81,7 @@ export const StructTable = ({ actionType, users, reRender  }) => {
             }
             columns={columns}
             localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
-            onCellClick={handleCellClick}
+            // onCellClick={handleCellClick}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 15 },
