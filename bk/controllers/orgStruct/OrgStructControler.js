@@ -1,7 +1,7 @@
 'use strict'
 
 const { getAllDepartmentsQ } = require("../../Database/queries/OrgStructure/departmensQuery")
-const { getPositionsByIDQ, getPositionsQ } = require("../../Database/queries/OrgStructure/positionQuery")
+const { getPositionsByIDQ, getPositionsQ, getUserByPositionIdQ } = require("../../Database/queries/OrgStructure/positionQuery")
 const { getSubDepartmentsByIDQ } = require("../../Database/queries/OrgStructure/subDepartmetsQuery")
 
 class OrgStructControler {
@@ -78,6 +78,22 @@ class OrgStructControler {
       res.statusCode = 500
       res.end(JSON.stringify({
         error: 'getPositions'
+      }))
+    }
+  }
+  async getUserByPositionId(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = authDecodeUserData.payLoad
+      const data = await getUserByPositionIdQ(postPayload)
+      res.setHeader('Content-Type', 'application/json')
+      res.write(JSON.stringify(data))
+      res.end()
+    } catch (error) {
+      console.log(error)
+      res.statusCode = 500
+      res.end(JSON.stringify({
+        error: 'getUsersBySubDepId'
       }))
     }
   }
