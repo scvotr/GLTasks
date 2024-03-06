@@ -10,10 +10,12 @@ import ExpandMore from "@mui/icons-material/ExpandMore"
 import InboxIcon from "@mui/icons-material/MoveToInbox"
 import SendIcon from "@mui/icons-material/Send"
 import { NavLink } from "react-router-dom"
-import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
-import { useAuthContext } from "../../../../../context/AuthProvider"
-import getTasksData from "./MenuListData/TasksData.jsx"
+// import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
+// import getTasksData from "./MenuListData/TasksData.jsx"
 import styled from "@emotion/styled"
+import ConnectWithoutContactIcon from "@mui/icons-material/ConnectWithoutContact"
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined"
+import { useAuthContext } from "../../../context/AuthProvider"
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   textDecoration: "none",
@@ -27,8 +29,8 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   },
 }))
 
-export const NestedListMenu = ({isOpen}) => {
-  const currentUser = useAuthContext() 
+export const NestedListMenu = ({ isOpen }) => {
+  const currentUser = useAuthContext()
 
   const [openSections, setOpenSections] = useState(() => {
     const localSections = JSON.parse(localStorage.getItem("openSections"))
@@ -43,7 +45,17 @@ export const NestedListMenu = ({isOpen}) => {
     setOpenSections({ ...openSections, [section]: !openSections[section] })
   }
   const sectionsData = [
-
+    {
+      name: "Задачи",
+      icon: <ConnectWithoutContactIcon fontSize="large" />,
+      path: "/tasks",
+      tasksCount: 0,
+      subItems: [
+        { name: "Создать задачу",
+          icon: <AddBoxOutlinedIcon fontSize="large" />,
+          path: "/tasks/newTask",
+          btn: true }],
+    },
   ]
 
   // Объявление состояния для открытия и закрытия SubItemsMenu
@@ -82,12 +94,7 @@ export const NestedListMenu = ({isOpen}) => {
                 {section.subItems.map((subItem, subIndex) => (
                   <div key={subIndex}>
                     {subItem.btn ? ( // Проверка наличия nameBnt вместо name
-                      <StyledListItemButton
-                        component={NavLink}
-                        to={subItem.path}
-                        key={subIndex}
-                        activeClassName="active"
-                        style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
+                      <StyledListItemButton component={NavLink} to={subItem.path} key={subIndex} activeClassName="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                         <Badge
                           sx={{ ml: 1 }}
                           badgeContent={subItem.tasksCount}
@@ -102,12 +109,7 @@ export const NestedListMenu = ({isOpen}) => {
                         </Badge>
                       </StyledListItemButton>
                     ) : (
-                      <StyledListItemButton
-                        component={NavLink}
-                        to={subItem.path}
-                        key={subIndex}
-                        activeClassName="active"
-                        style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
+                      <StyledListItemButton component={NavLink} to={subItem.path} key={subIndex} activeClassName="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                         <Badge
                           sx={{ ml: 2 }}
                           badgeContent={subItem.tasksCount}
@@ -154,12 +156,7 @@ export const NestedListMenu = ({isOpen}) => {
                                   </ListItemButton>
                                 </StyledListItemButton>
                               ) : (
-                                <StyledListItemButton
-                                  component={NavLink}
-                                  to={subItemsMenutem.path}
-                                  key={subIndex}
-                                  activeClassName="active"
-                                  style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
+                                <StyledListItemButton component={NavLink} to={subItemsMenutem.path} key={subIndex} activeClassName="active" style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
                                   <ListItemButton sx={{ pl: 12 }}>
                                     <ListItemIcon>{subItemsMenutem.icon}</ListItemIcon>
                                     <ListItemText primary={subItemsMenutem.name} />
