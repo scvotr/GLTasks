@@ -3,6 +3,7 @@ import AddIcon from "@mui/icons-material/Add"
 import { useState } from "react"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
 import { AddTaskForm } from "./AddTaskForm"
+import { TaskForm } from "./TaskForm/TaskForm"
 
 export const NewTask = () => {
 
@@ -19,7 +20,7 @@ export const NewTask = () => {
     <>
       <>
         <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText='Новая задача'> 
-          <AddTaskForm onTaskSubmit={closeModal}/>
+          <TaskForm onTaskSubmit={closeModal}/>
         </ModalCustom>
         <Box>
           <AppBar
