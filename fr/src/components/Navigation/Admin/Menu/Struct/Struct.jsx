@@ -15,7 +15,6 @@ export const Struct = () => {
           <Typography>Отделы: </Typography>
         </Toolbar>
       </AppBar>
-      {/* <UsersTableView users={allUsers} /> */}
     </>
   )
 }
