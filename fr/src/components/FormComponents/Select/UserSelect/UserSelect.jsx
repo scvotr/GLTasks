@@ -21,7 +21,7 @@ export const UserSelect = props => {
         setReqStatus({ loading: true, error: null })
         const data = await getDataFromEndpoint(
           currentUser.token,
-          "/user/getUsersBySubDepId",
+          "/orgStruct/getUserByPositionId",
           "POST",
           props.selectedPosition,
           setReqStatus
