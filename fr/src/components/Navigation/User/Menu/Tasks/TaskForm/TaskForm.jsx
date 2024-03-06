@@ -4,8 +4,8 @@ import { Box, Button, Divider } from "@mui/material"
 import { TextDataField } from "./TextDataField/TextDataField"
 import { useState } from "react"
 import { SelectDataField } from "../TaskForm/SelectDataField/SelectDataField"
-import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { ImageBlock } from "./ImageBlock/ImageBlock"
+import { sendNewTaskData } from "../../../../../../utils/sendNewTaskData"
 
 export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   const currentUser = useAuthContext()
@@ -42,15 +42,8 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
 
   const getInputData = async e => {
     const { name, value, files, checked } = e.target
-    if (
-      name === "add_new_files" ||
-      name === "append_new_files"
-    ) {
-      const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "application/pdf",
-      ]
+    if (name === "add_new_files" || name === "append_new_files" ) {
+      const allowedTypes = [ "image/jpeg", "image/png", "application/pdf", ]
       const data = Array.from(files).filter(file =>
         allowedTypes.includes(file.type)
       )
@@ -99,7 +92,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     }))
   }
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault()
     if (isInternalTask && currentUser.role === "chife") {
       console.log("Внутрення задача от начальника")
@@ -125,26 +118,21 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     } else {
       // Логика для других случаев
     }
-    setReqStatus({ loading: true, error: null })
-    getDataFromEndpoint(
-      currentUser.token,
-      "/tasks/addNewTask",
-      "POST",
-      formData,
-      setReqStatus
-    )
-      .then(data => {
-        onTaskSubmit()
-        setReqStatus({ loading: false, error: null })
-      })
-      .catch(error => {
-        setReqStatus({
-          loading: false,
-          error: error.message,
-        })
-      })
-    // onTaskSubmit();
-    setFormData(initValue)
+    try {
+      setReqStatus({ loading: true, error: null })
+      onTaskSubmit();
+      // нужно что придумать
+      await sendNewTaskData(
+        currentUser.token,
+        formData,
+        "/tasks/addNewTask",
+        "POST",
+        setReqStatus
+      )
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+    }
   }
 
   const removeTaskAddedFiles = index => {
