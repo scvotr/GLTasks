@@ -15,6 +15,7 @@ export const DepartmentSelect = props => {
 
   const [selectedDep, setSelectedDep] = useState("")
   // сброс значений полей ввода
+  
   useEffect(() => {
     setSelectedDep(props.value.responsible_department_id)
   }, [props.value.responsible_department_id])
@@ -60,8 +61,7 @@ export const DepartmentSelect = props => {
             <InputLabel id="depart-simple-select-label">{selectedDep ? "Департамент" : "Выберите департамент"}</InputLabel>
             <Select
               required
-              value={selectedDep}
-              // value={currentUser.role === "admin" ? props.value.department_id : {selectedDep}}
+              value={selectedDep || ''}
               name={currentUser.role === "admin" ? "department_id" : "responsible_department_id"}
               labelId="depart-select-label"
               label={selectedDep ? "Департамент" : "Выберите департамент"}
