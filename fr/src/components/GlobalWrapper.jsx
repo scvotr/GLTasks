@@ -11,30 +11,9 @@ export const GlobalWrapper = () => {
   const currentUser = useAuthContext()
 
   const comtentMap = new Map([
-    [
-      "admin",
-      () => (
-        <LefSideAdmin currentUser={currentUser}>
-          <AdminLayout />
-        </LefSideAdmin>
-      ),
-    ],
-    [
-      "chife",
-      () => (
-        <LeftSideDrawer currentUser={currentUser}>
-          <LeadLayout />
-        </LeftSideDrawer>
-      ),
-    ],
-    [
-      "user",
-      () => (
-        <LeftSideDrawer currentUser={currentUser}>
-          <UserLayout />
-        </LeftSideDrawer>
-      ),
-    ],
+    ["admin", () => (<LefSideAdmin currentUser={currentUser}><AdminLayout /></LefSideAdmin>),],
+    [ "chife", () => (<LeftSideDrawer currentUser={currentUser}><LeadLayout /></LeftSideDrawer>),],
+    ["user",() => (<LeftSideDrawer currentUser={currentUser}><UserLayout /></LeftSideDrawer>),],
   ])
 
   const renderContent = () => {
