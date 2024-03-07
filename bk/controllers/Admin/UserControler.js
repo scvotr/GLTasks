@@ -47,7 +47,6 @@ class UserControler {
       await updateUserDataQ(userData)
       const udapdedUser = await findUserByIdQ(userData.id)
       const token = jwt.sign(...udapdedUser, SECRET_KEY)
-      console.log('ccccccccccc', udapdedUser[0].id, token)
       await updateTokenQ(udapdedUser[0].id, token)
 
       res.setHeader("Access-Control-Expose-Headers", "Authorization");
