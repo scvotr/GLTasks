@@ -47,10 +47,19 @@ class UserControler {
       await updateUserDataQ(userData)
       const udapdedUser = await findUserByIdQ(userData.id)
       const token = jwt.sign(...udapdedUser, SECRET_KEY)
-      console.log(token)
-      await updateTokenQ(userData.id, token)
+      console.log('ccccccccccc', udapdedUser[0].id, token)
+      await updateTokenQ(udapdedUser[0].id, token)
+
+      res.setHeader("Access-Control-Expose-Headers", "Authorization");
+      res.setHeader("Authorization", `Bearer ${token}`);
+      res.statusCode = 201
+      res.end(JSON.stringify({ Registration: "Пользователь обновлен" }))
+
     } catch (error) {
-      
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json")
+      res.end( JSON.stringify({error: "updateUserData - ERROR" })
+      )
     }
   }
 }
