@@ -38,8 +38,6 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   })
   const [isEdit, setIsEdit] = useState(false)
 
-  console.log(formData)
-
   const getInputData = async e => {
     const { name, value, files, checked } = e.target
     if (name === "add_new_files" || name === "append_new_files" ) {
@@ -120,7 +118,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     }
     try {
       setReqStatus({ loading: true, error: null })
-      // onTaskSubmit();
+      onTaskSubmit();
       // нужно что придумать
       await sendNewTaskData(
         currentUser.token,
