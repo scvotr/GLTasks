@@ -54,6 +54,8 @@ function setupSocket(io) {
     .on('connection', (socket) => {
       addUserInCache(socket.decoded.id)
 
+      console.log('>>>>>>>>>>', socket.decoded)
+
       socket.join('allActiveUser')
       socket.join('user_' + socket.decoded.id) //?для каждого пользователя
       socket.join('dep_' + socket.decoded.department_id) //? для каждого подразделения
