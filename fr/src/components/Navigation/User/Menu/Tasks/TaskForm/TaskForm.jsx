@@ -118,14 +118,14 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     }
     try {
       setReqStatus({ loading: true, error: null })
-      onTaskSubmit();
       // нужно что придумать
       await sendNewTaskData(
         currentUser.token,
         formData,
         "/tasks/addNewTask",
         "POST",
-        setReqStatus
+        // setReqStatus
+        onTaskSubmit()
       )
       setReqStatus({ loading: false, error: null })
     } catch (error) {
