@@ -1,5 +1,6 @@
 'use strict'
 
+const { addPendingNotification } = require("../../Database/queries/Notification/pendingNotificationQueries");
 const {
   saveAndConvert
 } = require("../../utils/files/saveAndConvert");
@@ -17,6 +18,7 @@ const handleError = (res, error) => {
 
 class TasksControler {
   async addNewTask(req, res) {
+    console.log('addNewTask')
     try {
       const authDecodeUserData = req.user
       const user_id = authDecodeUserData.id
@@ -33,23 +35,107 @@ class TasksControler {
           console.error('Error saving file:', error);
         }
       }
+      // формирую дату для записи в базу
+      // при создании задачи уведомляется руководитель отдела
       const data = {
         fields,
         fileNames,
         user_id
       }
-      console.log(data.task_status)
+
+      console.log(fields)
 
       const io = socketManager.getIO()
-      io.to('leadSubDep_' + fields.appoint_subdepartment_id)
-        .emit('taskCreated', {
-          message: 'Новая задача на согласование',
-          taskData: fields.task_id
+
+      const inOneDep = data.fields.appoint_department_id === data.fields.responsible_department_id;
+      const inDifDep = data.fields.appoint_department_id !== data.fields.responsible_department_id;
+      const inOneSubDep = data.fields.appoint_subdepartment_id === data.fields.responsible_subdepartment_id;
+      const inDifSubDep = data.fields.appoint_subdepartment_id !== data.fields.responsible_subdepartment_id;
+
+      const noticeToResponsibleUser = (user_id) => {
+        io.in('user_' + fields.responsible_user_id).allSockets()
+        .then(client => {
+          if(client.size === 0) {
+            addPendingNotification(fields.responsible_user_id, fields.task_id, false, 'Задача от начальником')
+            console.log('offline', client, fields.responsible_user_id)
+          } else {
+            addPendingNotification(fields.responsible_user_id, fields.task_id, true, 'Задача от начальником')
+            io.to('user_' + fields.responsible_user_id)
+              .emit('taskApproved', {message: 'Задача от начальником', taskData: fields.task_id})
+            console.log('online', client, fields.responsible_user_id); 
+          }  
         })
+        .catch(error => {
+            console.error(error); // Обработка ошибки
+        });
+      };
+
+      const noticeToAppointUser = (user_id) => {
+        io.in('user_' + fields.appoint_user_id).allSockets()
+        .then(client => {
+          if(client.size === 0) {
+            addPendingNotification(fields.appoint_user_id, fields.task_id, false, 'Задача согласованна начальником')
+            console.log('offline', client, fields.appoint_user_id)
+          } else {
+            addPendingNotification(fields.appoint_user_id, fields.task_id, true, 'Задача согласованна начальником')
+            io.to('user_' + fields.appoint_user_id)
+              .emit('taskApproved', {message: 'Задача согласованна начальником', taskData: fields.task_id})
+            console.log('online', client, fields.appoint_user_id); 
+          }  
+        })
+        .catch(error => {
+            console.error(error); // Обработка ошибки
+        });
+      };
+
+      const noticeToResponceLead = (user_id) => {
+        io.in('leadSubDep_' + fields.responsible_subdepartment_id).allSockets()
+        .then(client => {
+          if(client.size === 0) {
+            addPendingNotification(fields.responsible_subdepartment_id, fields.task_id, false, 'Новая задача для отдела')
+            console.log('offline', client, fields.responsible_subdepartment_id)
+          } else {
+            addPendingNotification(fields.responsible_subdepartment_id, fields.task_id, true, 'Новая задача для отдела')
+            io.to('leadSubDep_' + fields.responsible_subdepartment_id)
+              .emit('taskApproved', {message: 'Новая задача для отдела', taskData: fields.task_id})
+            console.log('online', client, fields.responsible_subdepartment_id); 
+          }  
+        })
+        .catch(error => {
+            console.error(error); // Обработка ошибки
+        });
+      };
+
+
+      if (data.fields.approved_on === 'true') {
+        console.log('Задача от начальника');
+        if (inOneDep && inOneSubDep){
+          console.log('Задача внутри одного отдела в одном департаменте');
+          noticeToResponsibleUser()
+        } else if(inOneDep && inDifSubDep) {
+          console.log('Задача между отделами в одном департаменте');
+          noticeToAppointUser()
+          noticeToResponceLead()
+        } else if (inDifDep && inOneSubDep) {
+          console.log('Задача внутри подразделения, но между разными отделами');
+        } else if (inDifDep && inDifSubDep) {
+          console.log('Задача между разными подразделениями разных отделов');
+        }
+      } else {
+        console.log('Задача от сотрудника');
+        io.to('leadSubDep_' + fields.appoint_subdepartment_id)
+          .emit('taskCreated', {
+            message: 'Новая задача на согласование',
+            taskData: fields.task_id
+          })
+      }
+
 
       res.setHeader('Content-Type', 'application/json')
       res.statusCode = 200;
-      res.end(JSON.stringify({ message: 'Status accepted' }));
+      res.end(JSON.stringify({
+        message: 'Status accepted'
+      }));
 
     } catch (error) {
       handleError(res, `addNewTask: ${error}`)
