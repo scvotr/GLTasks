@@ -9,7 +9,7 @@ const createTableTaskReadStatus = async () => {
         task_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
         read_status TEXT NOT NULL,
-        read_date DATETIME,
+        read_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(task_id) REFERENCES tasks(id),
         FOREIGN KEY(user_id) REFERENCES users(id)
     )`, [])
