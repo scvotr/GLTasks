@@ -11,6 +11,8 @@ export const UserLayout = () => {
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
+  // const [snackbarMessages, setSnackbarMessages] = useState([])
+  // console.log(snackbarMessages)
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -23,13 +25,15 @@ export const UserLayout = () => {
   useEffect(() => {
     socket.on("taskCreated", messageData => {
       setSnackbarMessage(messageData.message)
+      // setSnackbarMessages(prevMessages => [...prevMessages, messageData.message])
       // notifyEvent("need-all-Tasks")
       // setLogSnackbarMessage(prev => [...prev, messageData])
       setOpen(true)
     })
-    socket.on("taskApproved", taskData => {
+    socket.on("taskApproved", messageData => {
+      setSnackbarMessage(messageData.message)
+      // setSnackbarMessages(prevMessages => [...prevMessages, messageData.message])
       // notifyEvent("need-all-Tasks")
-      setSnackbarMessage(taskData.message)
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })
@@ -45,14 +49,14 @@ export const UserLayout = () => {
 
   useEffect(() => {
     window.addEventListener("beforeunload", () => {
-      socket.disconnect();
-    });
+      socket.disconnect()
+    })
     return () => {
       window.removeEventListener("beforeunload", () => {
-        socket.disconnect();
-      });
-    };
-  }, [socket]);
+        socket.disconnect()
+      })
+    }
+  }, [socket])
 
   return (
     <>
