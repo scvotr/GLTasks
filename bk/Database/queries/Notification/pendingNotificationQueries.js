@@ -10,6 +10,7 @@ const addPendingNotification = async (user_id, task_id, delivered_status, messag
     console.log('Notification added to pending_notifications table');
   } catch (error) {
     console.error('Error adding notification to pending_notifications:', error);
+    throw new Error('Ошибка запроса к базе данных')
   }
 };
 // Обновление уведомления
@@ -20,6 +21,7 @@ const updatePendingNotification = async (userId, message) => {
     console.log('Notification updated in pending_notifications table');
   } catch (error) {
     console.error('Error updating notification in pending_notifications:', error);
+    throw new Error('Ошибка запроса к базе данных')
   }
 };
 // Получение уведомлений пользователя
@@ -29,6 +31,7 @@ const getPendingNotification = async (userId) => {
     return await queryAsyncWraperParam(command, [userId], 'all'); // 'all' для получения всех записей
   } catch (error) {
     console.error('Error getting notification from pending_notifications:', error);
+    throw new Error('Ошибка запроса к базе данных')
   }
 };
 // Удаление уведомления
@@ -38,6 +41,7 @@ const deletePendingNotification = async (userId) => {
     return await queryAsyncWraperParam(command, [userId], 'run'); // 'run' для удаления
   } catch (error) {
     console.error('Error deleting notification from pending_notifications:', error);
+    throw new Error('Ошибка запроса к базе данных')
   }
 };
 
