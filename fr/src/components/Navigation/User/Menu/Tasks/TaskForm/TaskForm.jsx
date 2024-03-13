@@ -72,12 +72,13 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
         filePreviews: [...prev.filePreviews, ...previews],
       }))
     }
-
+    // установка признака типа задачи
+    // если отдел текущего пользователя совподает с отделом куда назначена задача
+    // то Internal task = false
     if (name === "responsible_subdepartment_id") {
       if (
         value.toString() === currentUser.subDep.toString()
       ) {
-        console.log("Internal task")
         setIsInternalTask(true)
       } else {
         setIsInternalTask(false)
@@ -92,27 +93,47 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
 
   const handleSubmit = async event => {
     event.preventDefault()
+    // установка признака статуса задачи
+    // Если пользоваель руководитель то задача согласованна
+    // Если пользоваель не руководитель то задача требует согласования
+    // Два типа задач задачи от пользовтеля пользователю
+    // Два типа задач задачи от начальника начальнику на распределение
+    // сотрудник отдела ХПР назначет задачу сотруднику своего же отдела
+    // задача требует согласования начальником отдела ХПР
+    // сотрдуник создает задачу внешнему отделу
+    // задача требует согласования начальником его отдела
+    // начальник отдела ХПР создает задачу в нутри своего отдела
+    // задача согласования не требует и сразу назначается на пользователя
+    // ! responsible_user_id = 'сотрудник' task_status = approved appoint_user_id = 'начальник'
+    // начальник отдела ХПР создает задачу для внешнего отдела
+    // задача согласования не требует и сразу назначается отдел 
+    // ! responsible_subdepartment_id task_status
+
     if (isInternalTask && currentUser.role === "chife") {
       console.log("Внутрення задача от начальника")
       formData.task_status = "approved"
+      formData.approved_on = true
     } else if (
       !isInternalTask &&
       currentUser.role === "chife"
     ) {
       console.log("Внешняя задача от начальника")
       formData.task_status = "approved"
+      formData.approved_on = true
     } else if (
       isInternalTask &&
       currentUser.role === "user"
     ) {
       console.log("Внутрення задача от пользователя")
       formData.task_status = "toApprove"
+      formData.approved_on = false
     } else if (
       !isInternalTask &&
       currentUser.role === "user"
     ) {
       console.log("Внешняя задача от пользователя")
       formData.task_status = "toApprove"
+      formData.approved_on = false
     } else {
       // Логика для других случаев
     }
@@ -122,8 +143,8 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
       await sendNewTaskData(
         currentUser.token,
         formData,
-        "/tasks/addNewTask",
-        "POST",
+        // "/tasks/addNewTask",
+        // "POST",
         // setReqStatus
         onTaskSubmit()
       )
