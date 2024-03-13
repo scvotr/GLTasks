@@ -1,3 +1,4 @@
+const MangeOrgStructControler = require("../controllers/Admin/MangeOrgStructControler");
 const UserControler = require("../controllers/Admin/UserControler")
 // const DepsControler = require('../controls/Admin/Deps/DepsControler')
 const { handleDefaultRoute } = require("../routingHandlers/handleDefaultRoute")
@@ -6,8 +7,12 @@ const { protectRouteTkPl } = require("../utils/protectRouteTkPl")
 const routeHandlers = {
   "/admin/getAllUsers": UserControler.getAllUsers,
   "/admin/updateUserData": UserControler.updateUserData,
+  "/admin/createNewDep": MangeOrgStructControler.createNewDep,
+  "/admin/deleteDep": MangeOrgStructControler.deleteDep,
+  "/admin/createNewSubDep": MangeOrgStructControler.createNewSubDep,
+  "/admin/deleteSubDep": MangeOrgStructControler.deleteSubDep,
+  "/admin/createNewPosition": MangeOrgStructControler.createNewPosition,
   // "/admin/getAllTasks": UserControler.getAllTasks,
-  // "/admin/createNewDep": DepsControler.createNewDep,
   // "/admin/removeDep": DepsControler.removeDep,
   // "/admin/createNewSubDep": DepsControler.createNewSubDep,
   // "/admin/createNewPosition": DepsControler.createNewPosition,
