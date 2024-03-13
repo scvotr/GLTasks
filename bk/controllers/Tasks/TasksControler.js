@@ -114,12 +114,13 @@ class TasksControler {
           noticeToResponsibleUser()
         } else if(inOneDep && inDifSubDep) {
           console.log('Задача между отделами в одном департаменте');
-          noticeToAppointUser()
+          // noticeToAppointUser()
           noticeToResponceLead()
         } else if (inDifDep && inOneSubDep) {
           console.log('Задача внутри подразделения, но между разными отделами');
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов');
+          noticeToResponceLead()
         }
       } else {
         console.log('Задача от сотрудника');
