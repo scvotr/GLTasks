@@ -1,4 +1,4 @@
 
-export const TasksTable = () => {
+export const TasksTable = ({tasks}) => {
   return <>TasksTable</>
 }
