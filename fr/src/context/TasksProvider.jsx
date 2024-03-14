@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { getDataFromEndpoint } from "../utils/getDataFromEndpoint";
 
 const TaskContext = createContext()
@@ -8,6 +8,7 @@ export const useTaskContext = () => {
 }
 
 export const TasksProvider = ({currentUser, children}) => {
+  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
   const notifyEvent = eventName => {
     handleEvent(eventName)
