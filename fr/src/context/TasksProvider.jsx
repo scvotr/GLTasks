@@ -39,7 +39,10 @@ export const TasksProvider = ({currentUser, children}) => {
 
   return (
     <TaskContext.Provider
-      value={{notifyEvent}}
+      value={{
+        allTasks,
+        notifyEvent,
+      }}
     >
       {children}
     </TaskContext.Provider>
