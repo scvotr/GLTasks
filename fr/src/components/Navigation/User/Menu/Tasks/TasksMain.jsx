@@ -1,4 +1,5 @@
 import { AppBar, Toolbar, Typography } from "@mui/material"
+import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
 
 export const TasksMain = () => {
   return (
@@ -15,6 +16,7 @@ export const TasksMain = () => {
           <Typography>Задачи: </Typography>
         </Toolbar>
       </AppBar>
+      <TasksTable/>
     </>
   )
 }
