@@ -3,7 +3,7 @@
 const {
   addPendingNotification
 } = require("../../Database/queries/Notification/pendingNotificationQueries");
-const { addReadStatus } = require("../../Database/queries/Task/readStatusQueries");
+const { addReadStatusQ, updateReadStatusQ } = require("../../Database/queries/Task/readStatusQueries");
 const {
   createTask, getAllTasksBySubDepQ
 } = require("../../Database/queries/Task/taskQueries");
@@ -169,7 +169,7 @@ class TasksControler {
       } else {
         console.log('Задача от сотрудника');
         noticeToLeadNewTask()
-        await addReadStatus({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
+        await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
       }
 
       res.setHeader('Content-Type', 'application/json')
@@ -191,6 +191,20 @@ class TasksControler {
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'getAllTasksBySubDep')
+    }
+  }
+  async updateReadStatus(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      await updateReadStatusQ(postPayload)
+      res.setHeader('Content-Type', 'application/json')
+      res.statusCode = 200;
+      res.end(JSON.stringify({
+        message: 'Status accepted'
+      }));
+     } catch (error) {
+      handleError(res, 'updateReadStatus')
     }
   }
 }
