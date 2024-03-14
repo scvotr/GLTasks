@@ -12,6 +12,17 @@ export const TasksProvider = ({currentUser, children}) => {
     
   }
 
+  const handleEvent = eventName => {
+    switch (eventName) {
+      case "need-all-Tasks":
+        console.log("Handling event: need-all-Tasks")
+        // Логика для добавления новой задачи
+        break
+      default:
+        console.log(`Unknown event: ${eventName}`)
+    }
+  }
+
   return (
     <TaskContext.Provider
       value={{notifyEvent}}
