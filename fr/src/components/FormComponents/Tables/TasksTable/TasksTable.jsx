@@ -7,7 +7,6 @@ import { useAuthContext } from "../../../../context/AuthProvider"
 export const TasksTable = ({ tasks }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
-  const [data, setData] = useState({})
 
   const columns = [
     { field: "task_id", headerName: "Task ID", description: "This column description", width: 100 },
@@ -25,17 +24,15 @@ export const TasksTable = ({ tasks }) => {
 
   const handleCellClick = (params, event) => {
     console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
+    const updatedData = {
+      task_id: params.row.task_id,
+      user_id: params.row.appoint_subdepartment_id,
+      read_status: "readed",
+    }
 
     if (params.row.read_status === "unread") {
-
-      setData({
-        task_id: params.row.task_id,
-        user_id: params.row.appoint_subdepartment_id,
-        read_status: "readed",
-      })
-
       setReqStatus({ loading: true, error: null })
-      getDataFromEndpoint(currentUser.token, "/tasks/updateReadStatus", "POST", data, setReqStatus)
+      getDataFromEndpoint(currentUser.token, "/tasks/updateReadStatus", "POST", updatedData, setReqStatus)
         .then(data => {
           setReqStatus({ loading: false, error: null })
         })
