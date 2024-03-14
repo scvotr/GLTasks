@@ -141,8 +141,9 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
     WHERE ? IN (t.appoint_subdepartment_id, t.responsible_subdepartment_id)
     GROUP BY t.task_id `;
   try {
-    const taskFiles = await queryAsyncWraperParam(command, [subDep_id]);
-    return await getThumbnailFiles(taskFiles);
+    return await executeDatabaseQueryAsync(command, [subDep_id]);
+    // const taskFiles = await executeDatabaseQueryAsync(command, [subDep_id]);
+    // return await getThumbnailFiles(taskFiles);
   } catch (error) {
     console.error("getAllUserTasksFiles ERROR: ", error);
   }
