@@ -24,7 +24,6 @@ const handleError = (res, error) => {
 
 class TasksControler {
   async addNewTask(req, res) {
-    console.log('addNewTask')
     try {
       const authDecodeUserData = req.user
       const user_id = authDecodeUserData.id
@@ -175,6 +174,17 @@ class TasksControler {
 
     } catch (error) {
       handleError(res, `addNewTask: ${error}`)
+    }
+  }
+
+  async getAllTasksBySubDep(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const subDep_id = authDecodeUserData.subdepartment_id
+      const data = await getAllTasksBySubDep(subDep_id)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'getAllTasksBySubDep')
     }
   }
 }
