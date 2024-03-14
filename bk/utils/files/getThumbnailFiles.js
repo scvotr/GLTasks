@@ -1,4 +1,6 @@
 'use strict'
+const fs = require("fs");
+const path = require("path");
 
 const getThumbnailFiles = async ( allTasks, folderName) => {
   const currentDirectory = process.cwd();
@@ -12,8 +14,18 @@ const getThumbnailFiles = async ( allTasks, folderName) => {
       task.old_files = []
 
       for(let j=0; j < task.file_names.length; j++) {
-        const file_ext = path.extname(task.file_names[j]);
-        const file_name = task.file_names[j];
+        const file_ext = path.extname(task.file_names[j])
+        const file_name = task.file_names[j]
+
+        let file_path
+        let file_content
+
+        if(file_ext === ".pdf") {
+          file_path = file_name
+          file_content = file_path
+        } else {
+          file_path = folderName ? `${currentDirectory}/uploads/${folderName}/${task.task_id}/thumbnail_${file_name}` : `${currentDirectory}/uploads/${task.task_id}/thumbnail_${file_name}`;
+        }
       }
     }
   }
