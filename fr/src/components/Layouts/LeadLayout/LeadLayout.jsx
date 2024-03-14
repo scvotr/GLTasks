@@ -10,7 +10,6 @@ import { useTaskContext } from "../../../context/TasksProvider"
 export const LeadLayout = () => {
   const currentUser = useAuthContext()
   const {allTasks, notifyEvent} = useTaskContext()
-  console.log(allTasks)
 
   useEffect(() => {
     if(currentUser.login) {
