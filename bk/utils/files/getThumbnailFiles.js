@@ -1,6 +1,6 @@
 'use strict'
-const fs = require("fs");
 const path = require("path");
+const { readFileAsync } = require("./readFileAsync");
 
 const getThumbnailFiles = async ( allTasks, folderName) => {
   const currentDirectory = process.cwd();
