@@ -9,7 +9,7 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
 
   const notifyEvent = eventName => {
-    
+    handleEvent(eventName)
   }
 
   const handleEvent = eventName => {
