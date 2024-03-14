@@ -93,7 +93,7 @@ const deleteTask = async (taskId) => {
   // Реализация удаления задачи по ее ID
 }
 
-const getAllTasksBySubDep = async (subDep_id) => {
+const getAllTasksBySubDepQ = async (subDep_id) => {
   const command = `
     SELECT 
       t.task_id,
@@ -155,5 +155,5 @@ module.exports = {
   updateTaskDescription,
   updateTaskStatus,
   deleteTask,
-  getAllTasksBySubDep,
+  getAllTasksBySubDepQ,
 };
