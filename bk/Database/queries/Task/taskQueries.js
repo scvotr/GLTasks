@@ -1,4 +1,5 @@
 'use strict'
+const { getThumbnailFiles } = require("../../../utils/files/getThumbnailFiles");
 const {
   executeDatabaseQueryAsync
 } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
@@ -141,9 +142,8 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
     WHERE ? IN (t.appoint_subdepartment_id, t.responsible_subdepartment_id)
     GROUP BY t.task_id `;
   try {
-    return await executeDatabaseQueryAsync(command, [subDep_id]);
-    // const taskFiles = await executeDatabaseQueryAsync(command, [subDep_id]);
-    // return await getThumbnailFiles(taskFiles);
+    const taskFiles = await executeDatabaseQueryAsync(command, [subDep_id]);
+    return await getThumbnailFiles(taskFiles, 'tasks')
   } catch (error) {
     console.error("getAllUserTasksFiles ERROR: ", error);
   }
