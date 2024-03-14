@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { getDataFromEndpoint } from "../utils/getDataFromEndpoint";
 
 const TaskContext = createContext()
 
@@ -21,6 +22,10 @@ export const TasksProvider = ({currentUser, children}) => {
       default:
         console.log(`Unknown event: ${eventName}`)
     }
+  }
+
+  const fetchAllTasksBySubDep = async(token) => {
+    return await getDataFromEndpoint(token, "/tasks/getAllTasksBySubDep", "POST", null)
   }
 
   return (
