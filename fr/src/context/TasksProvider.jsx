@@ -23,7 +23,9 @@ export const TasksProvider = ({currentUser, children}) => {
     switch (eventName) {
       case "need-all-Tasks":
           if(currentUser.login && currentUser.role === "chife") {
-
+            fetchAllTasksBySubDep(currentUser.token)
+              .then(tasks => updateAllTasks(tasks))
+              .catch(error => console.error("Error fetching ALL tasks", error))
           }
         break
       default:
