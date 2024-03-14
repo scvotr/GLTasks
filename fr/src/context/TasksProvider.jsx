@@ -9,7 +9,7 @@ export const useTaskContext = () => {
 
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
-
+  const [allTasks, setAllTasks] = useState([])
   
   const notifyEvent = eventName => {
     handleEvent(eventName)
