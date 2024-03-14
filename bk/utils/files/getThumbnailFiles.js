@@ -39,9 +39,12 @@ const getThumbnailFiles = async ( allTasks, folderName) => {
         })
       }
     } else {
-      
+      task.file_names = []
+      task.files = []
     }
+    tasks.push(task)
   }
+  return tasks
 }
 
 module.exports = {
