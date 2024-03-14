@@ -15,7 +15,7 @@ export const LeadLayout = () => {
     if(currentUser.login) {
       notifyEvent("need-all-Tasks")
     }
-  }, [currentUser])
+  }, [currentUser, notifyEvent])
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
