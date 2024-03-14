@@ -38,6 +38,8 @@ const getThumbnailFiles = async ( allTasks, folderName) => {
           // content: file_content,
         })
       }
+    } else {
+      
     }
   }
 }
