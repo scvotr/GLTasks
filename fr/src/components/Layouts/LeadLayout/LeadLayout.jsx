@@ -11,6 +11,12 @@ export const LeadLayout = () => {
   const currentUser = useAuthContext()
   const {allTasks, notifyEvent} = useTaskContext()
 
+  useEffect(() => {
+    if(currentUser.login) {
+      notifyEvent("need-all-Tasks")
+    }
+  }, [currentUser])
+
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
 
