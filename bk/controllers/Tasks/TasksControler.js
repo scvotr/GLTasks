@@ -5,7 +5,7 @@ const {
 } = require("../../Database/queries/Notification/pendingNotificationQueries");
 const { addReadStatus } = require("../../Database/queries/Task/readStatusQueries");
 const {
-  createTask
+  createTask, getAllTasksBySubDepQ
 } = require("../../Database/queries/Task/taskQueries");
 const {
   saveAndConvert
@@ -181,7 +181,7 @@ class TasksControler {
     try {
       const authDecodeUserData = req.user
       const subDep_id = authDecodeUserData.subdepartment_id
-      const data = await getAllTasksBySubDep(subDep_id)
+      const data = await getAllTasksBySubDepQ(subDep_id)
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'getAllTasksBySubDep')
