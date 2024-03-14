@@ -26,12 +26,17 @@ const getThumbnailFiles = async ( allTasks, folderName) => {
         } else {
           file_path = folderName ? `${currentDirectory}/uploads/${folderName}/${task.task_id}/thumbnail_${file_name}` : `${currentDirectory}/uploads/${task.task_id}/thumbnail_${file_name}`
           try {
-            ile_content = await readFileAsync(file_path, "base64")
+            file_content = await readFileAsync(file_path, "base64")
           } catch (error) {
             file_path = `${currentDirectory}/uploads/default/404.jpg`;
             file_content = await readFileAsync(file_path, "base64");
           }
         }
+        task.old_files.push({
+          type: file_ext,
+          name: file_name,
+          // content: file_content,
+        })
       }
     }
   }
