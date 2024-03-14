@@ -12,7 +12,8 @@ const getThumbnailFiles = async ( allTasks, folderName) => {
       task.old_files = []
 
       for(let j=0; j < task.file_names.length; j++) {
-        
+        const file_ext = path.extname(task.file_names[j]);
+        const file_name = task.file_names[j];
       }
     }
   }
