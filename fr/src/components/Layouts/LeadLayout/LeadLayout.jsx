@@ -5,9 +5,11 @@ import { useSocketContext } from "../../../context/SocketProvider"
 import { Box } from "@mui/material"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
+import { useTaskContext } from "../../../context/TasksProvider"
 
 export const LeadLayout = () => {
   const currentUser = useAuthContext()
+  const {allTasks, notifyEvent} = useTaskContext()
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
