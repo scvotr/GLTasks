@@ -14,6 +14,12 @@ const {
   socketManager
 } = require("../../utils/socket/socketManager");
 
+const sendResponseWithData = (res, data) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.write(JSON.stringify(data));
+  res.end();
+};
+
 const handleError = (res, error) => {
   console.log('handleError', error);
   res.statusCode = 500;
