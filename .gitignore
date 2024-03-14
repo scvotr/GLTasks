@@ -4,6 +4,7 @@ bk/combined.log
 bk/error.log
 bk/errorAuth.log
 bk/warnAuth.log
+bk/uploads/
 
 /.pnp
 .pnp.js
