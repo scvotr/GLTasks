@@ -1,7 +1,10 @@
 import { AppBar, Toolbar, Typography } from "@mui/material"
 import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
+import { useTaskContext } from "../../../../../context/TasksProvider"
 
 export const TasksMain = () => {
+  const {allTasks} = useTaskContext()
+
   return (
     <>
       <AppBar
@@ -16,7 +19,7 @@ export const TasksMain = () => {
           <Typography>Задачи: </Typography>
         </Toolbar>
       </AppBar>
-      <TasksTable/>
+      <TasksTable tasks={allTasks}/>
     </>
   )
 }
