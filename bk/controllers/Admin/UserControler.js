@@ -35,7 +35,6 @@ class UserControler {
   async updateUserData(req,res) {
     const authDecodeUserData = req.user
     const userData = JSON.parse(authDecodeUserData.payLoad)
-    console.log('userData', userData)
     if (authDecodeUserData.role !== "admin") {
       return res.end(
         JSON.stringify({
