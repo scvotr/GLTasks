@@ -4,9 +4,9 @@ const { protectRouteTkPl } = require("../utils/protectRouteTkPl");
 
 const routeHandlers = {
   "/tasks/addNewTask": TasksControler.addNewTask,
+  "/tasks/getAllTasksBySubDep": TasksControler.getAllTasksBySubDep,
   // "/tasks/getAllUserTasks": TasksControler.getAllUserTasks,
   // "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
-  // "/tasks/getAllTasksBySubDep": TasksControler.getAllTasksBySubDep,
   // "/tasks/getAllResponsibleTasksByDep": TasksControler.getAllResponsibleTasksByDep,
   // "/tasks/getAllAppointTasksFromDep": TasksControler.getAllAppointTasksFromDep,
   // "/tasks/getAllResponsibleTasksBySubDep": TasksControler.getAllResponsibleTasksBySubDep,
