@@ -10,6 +10,7 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
+  
   const notifyEvent = eventName => {
     handleEvent(eventName)
   }
@@ -17,8 +18,9 @@ export const TasksProvider = ({currentUser, children}) => {
   const handleEvent = eventName => {
     switch (eventName) {
       case "need-all-Tasks":
-        console.log("Handling event: need-all-Tasks")
-        // Логика для добавления новой задачи
+          if(currentUser.login && currentUser.role === "chife") {
+
+          }
         break
       default:
         console.log(`Unknown event: ${eventName}`)
@@ -26,7 +28,7 @@ export const TasksProvider = ({currentUser, children}) => {
   }
 
   const fetchAllTasksBySubDep = async(token) => {
-    return await getDataFromEndpoint(token, "/tasks/getAllTasksBySubDep", "POST", null)
+    return await getDataFromEndpoint(token, "/tasks/getAllTasksBySubDep", "POST", null, setReqStatus)
   }
 
   return (
