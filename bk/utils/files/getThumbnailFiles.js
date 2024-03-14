@@ -7,8 +7,13 @@ const getThumbnailFiles = async ( allTasks, folderName) => {
   for(let i=0; i < allTasks.length; i++) {
     const task = allTasks[i]
 
-    if(task.file_names) {
-      
+    if (task.file_names) {
+      task.file_names = task.file_names.split("|")
+      task.old_files = []
+
+      for(let j=0; j < task.file_names.length; j++) {
+        
+      }
     }
   }
 }
