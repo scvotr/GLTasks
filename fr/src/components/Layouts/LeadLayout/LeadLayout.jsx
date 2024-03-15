@@ -36,7 +36,7 @@ export const LeadLayout = () => {
       setOpen(true)
     })
     socket.on("taskApproved", taskData => {
-      // notifyEvent("need-all-Tasks")
+      notifyEvent("need-all-Tasks")
       setSnackbarMessage(taskData.message)
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
