@@ -1,5 +1,8 @@
+import './TasksTable.css'
 import { Box } from "@mui/material"
 import { DataGrid, ruRU } from "@mui/x-data-grid"
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import { useState } from "react"
 import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../context/AuthProvider"
@@ -9,17 +12,23 @@ export const TasksTable = ({ tasks, reRender }) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
   const columns = [
-    { field: "task_id", headerName: "Task ID", description: "This column description", width: 100 },
+    { field: "task_id", headerName: "Task ID", description: "This column description", width: 70 },
     {
       field: "read_status",
-      headerName: "read status",
+      headerName: "",
       description: "This column description",
-      width: 150,
+      width: 50,
       renderCell: params => (
-        <div style={{ fontWeight: params.value === "unread" ? "bold" : "normal", color: params.value === "unread" ? "red" : "black" }}>{params.value}</div>
+        <div style={{ fontWeight: params.value === "unread" ? "bold" : "normal", color: params.value === "unread" ? "green" : "black" }}>
+          {params.value === "unread" ? <EmailOutlinedIcon /> : <DraftsOutlinedIcon />}
+        </div>
       ),
     },
-    { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
+    // { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
+    { field: "appoint_user_name", headerName: "От", description: "От кого", width: 150 },
+    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для кого", width: 220 },
+    { field: "responsible_department_name", headerName: "Для", description: "Для кого", width: 220 },
+    { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 150 },
   ]
 
   const handleCellClick = (params, event) => {
@@ -73,6 +82,9 @@ export const TasksTable = ({ tasks, reRender }) => {
           columns={columns}
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           onCellClick={handleCellClick}
+          getRowClassName={(params) => {
+            return params.row.read_status === "unread" ? "bold-row" : "";
+          }}
         />
       </Box>
     </>
