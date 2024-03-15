@@ -4,12 +4,11 @@ import { useTaskContext } from "../../../../../context/TasksProvider"
 import { useEffect, useState } from "react"
 
 export const TasksMain = () => {
-  const { allTasks } = useTaskContext()
+  const { allTasks, notifyEvent} = useTaskContext()
   const [formKey, setFormKey] = useState(0)
-  console.log('formKey', formKey)
 
   useEffect(() => {
-    
+    notifyEvent("need-all-Tasks")
   }, [formKey])
 
   return (
