@@ -1,18 +1,25 @@
-import { Outlet } from "react-router-dom"
-import { useAuthContext } from "../../../context/AuthProvider"
-import { useEffect, useState } from "react"
-import { useSocketContext } from "../../../context/SocketProvider"
 import { Box } from "@mui/material"
+import { Outlet } from "react-router-dom"
+import { useEffect, useState } from "react"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
 
+import { useAuthContext } from "../../../context/AuthProvider"
+import { useSocketContext } from "../../../context/SocketProvider"
+import { useTaskContext } from "../../../context/TasksProvider"
+
 export const UserLayout = () => {
   const currentUser = useAuthContext()
+  const { notifyEvent } = useTaskContext()
+
+  useEffect(() => {
+    if (currentUser.login) {
+      notifyEvent("need-all-Tasks")
+    }
+  }, [currentUser])
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
-  // const [snackbarMessages, setSnackbarMessages] = useState([])
-  // console.log(snackbarMessages)
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -23,24 +30,14 @@ export const UserLayout = () => {
 
   const socket = useSocketContext()
   useEffect(() => {
-    socket.on("taskCreated", messageData => {
-      setSnackbarMessage(messageData.message)
-      // setSnackbarMessages(prevMessages => [...prevMessages, messageData.message])
-      // notifyEvent("need-all-Tasks")
-      // setLogSnackbarMessage(prev => [...prev, messageData])
-      setOpen(true)
-    })
     socket.on("taskApproved", messageData => {
       setSnackbarMessage(messageData.message)
-      // setSnackbarMessages(prevMessages => [...prevMessages, messageData.message])
-      // notifyEvent("need-all-Tasks")
-      // setLogSnackbarMessage(prev => [...prev, taskData])
+      notifyEvent("need-all-Tasks")
       setOpen(true)
     })
 
     return () => {
       socket.off("yourRooms")
-      socket.off("taskCreated")
       socket.off("taskApproved")
       socket.disconnect()
       window.removeEventListener("beforeunload", () => socket.disconnect())
