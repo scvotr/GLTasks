@@ -10,6 +10,7 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allTasks, setAllTasks] = useState([])
+  console.log(allTasks)
 
   console.log(allTasks)
 
@@ -27,17 +28,19 @@ export const TasksProvider = ({currentUser, children}) => {
           if(currentUser.login && currentUser.role === "chife") {
             fetchAllTasksBySubDep(currentUser.token)
               .then(tasks => {
-                // Все задачи на согласование от отдела
                 const filteredTasks = tasks.filter(task => task.task_status === "toApprove" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
-                // Все согласованные задачи в отделе
                 const filteredTasks2 = tasks.filter(task => task.task_status === "approved" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
-                const combinedFilteredTasks = [...filteredTasks, ...filteredTasks2]
-                // Все согласованные задачи на отдел
+                const combinedFilteredTasks = new Set([...filteredTasks, ...filteredTasks2]);
+            
                 const filteredTasks3 = tasks.filter(task => task.task_status === "approved" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
-                const test = [...combinedFilteredTasks, ...filteredTasks3]
-                updateAllTasks(test)
-                // updateAllTasks(tasks)
+                const uniqueTasks = new Set([...combinedFilteredTasks, ...filteredTasks3]);
+            
+                updateAllTasks([...uniqueTasks]);
               })
+              .catch(error => console.error("Error fetching All sub dep tasks", error))
+          } else if(currentUser.login && currentUser.role === "user") {
+            fetchAllUserTasks(currentUser.token)
+              .then(tasks => updateAllTasks(tasks))
               .catch(error => console.error("Error fetching ALL tasks", error))
           }
         break
@@ -48,6 +51,9 @@ export const TasksProvider = ({currentUser, children}) => {
 
   const fetchAllTasksBySubDep = async(token) => {
     return await getDataFromEndpoint(token, "/tasks/getAllTasksBySubDep", "POST", null, setReqStatus)
+  }
+  const fetchAllUserTasks = async currentUserToken => {
+    return await getDataFromEndpoint(currentUserToken, "/tasks/getAllUserTasks", "POST", null, setReqStatus)
   }
 
   return (
