@@ -4,7 +4,7 @@ import { useState } from "react"
 import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../context/AuthProvider"
 
-export const TasksTable = ({ tasks }) => {
+export const TasksTable = ({ tasks, reRender }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
@@ -39,6 +39,7 @@ export const TasksTable = ({ tasks }) => {
         .catch(error => {
           setReqStatus({ loading: false, error: error.message })
         })
+      reRender(prevKey => prevKey + 1) 
     }
   }
 
