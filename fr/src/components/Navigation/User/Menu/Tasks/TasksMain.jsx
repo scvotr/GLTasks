@@ -1,9 +1,16 @@
 import { AppBar, Toolbar, Typography } from "@mui/material"
 import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
 import { useTaskContext } from "../../../../../context/TasksProvider"
+import { useEffect, useState } from "react"
 
 export const TasksMain = () => {
-  const {allTasks} = useTaskContext()
+  const { allTasks } = useTaskContext()
+  const [formKey, setFormKey] = useState(0)
+  console.log('formKey', formKey)
+
+  useEffect(() => {
+    
+  }, [formKey])
 
   return (
     <>
@@ -19,7 +26,7 @@ export const TasksMain = () => {
           <Typography>Задачи: </Typography>
         </Toolbar>
       </AppBar>
-      <TasksTable tasks={allTasks}/>
+      <TasksTable tasks={allTasks} reRender={setFormKey}/>
     </>
   )
 }
