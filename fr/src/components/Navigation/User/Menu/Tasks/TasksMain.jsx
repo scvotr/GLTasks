@@ -1,18 +1,35 @@
-import { AppBar, Toolbar, Typography } from "@mui/material"
+import { AppBar, Toolbar, Typography, Fab } from "@mui/material"
+import AddIcon from "@mui/icons-material/Add"
 import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
 import { useTaskContext } from "../../../../../context/TasksProvider"
 import { useEffect, useState } from "react"
+import { TaskForm } from "./TaskForm/TaskForm"
+import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
 
 export const TasksMain = () => {
-  const { allTasks, notifyEvent} = useTaskContext()
+  const { allTasks, notifyEvent } = useTaskContext()
   const [formKey, setFormKey] = useState(0)
+  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
     notifyEvent("need-all-Tasks")
   }, [formKey])
 
+  const openModal = user => {
+    setModalOpen(true)
+  }
+  const closeModal = () => {
+    setModalOpen(false)
+    setFormKey(prevKey => prevKey + 1)
+  }
+
   return (
     <>
+      <>
+        <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
+          <TaskForm onTaskSubmit={closeModal} />
+        </ModalCustom>
+      </>
       <AppBar
         position="static"
         sx={{
@@ -22,10 +39,15 @@ export const TasksMain = () => {
           borderRadius: "5px",
         }}>
         <Toolbar>
-          <Typography>Задачи: </Typography>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Задачи:
+          </Typography>
+          <Fab color="secondary" aria-label="add" onClick={openModal}>
+            <AddIcon />
+          </Fab>
         </Toolbar>
       </AppBar>
-      <TasksTable tasks={allTasks} reRender={setFormKey}/>
+      <TasksTable tasks={allTasks} reRender={setFormKey} />
     </>
   )
 }
