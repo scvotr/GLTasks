@@ -85,6 +85,12 @@ export const TasksTable = ({ tasks, reRender }) => {
           getRowClassName={(params) => {
             return params.row.read_status === "unread" ? "bold-row" : "";
           }}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 15 },
+            },
+          }}
+          pageSizeOptions={[15, 25, 75]}
         />
       </Box>
     </>
