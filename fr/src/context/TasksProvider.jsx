@@ -14,7 +14,7 @@ export const TasksProvider = ({currentUser, children}) => {
   const updateAllTasks = tasks => {
     setAllTasks(tasks)
   }
-  
+
   const notifyEvent = eventName => {
     handleEvent(eventName)
   }
