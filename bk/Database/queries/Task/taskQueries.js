@@ -1,5 +1,7 @@
 'use strict'
-const { getThumbnailFiles } = require("../../../utils/files/getThumbnailFiles");
+const {
+  getThumbnailFiles
+} = require("../../../utils/files/getThumbnailFiles");
 const {
   executeDatabaseQueryAsync
 } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
@@ -86,7 +88,10 @@ const updateTaskDescription = async (taskId, newDescription) => {
 }
 
 const updateTaskStatusQ = async (data) => {
-  const { task_id, task_status } = data
+  const {
+    task_id,
+    task_status
+  } = data
   const command = `
     UPDATE tasks
     SET task_status = ?, approved_on = CURRENT_TIMESTAMP
@@ -155,7 +160,63 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
     const taskFiles = await executeDatabaseQueryAsync(command, [subDep_id]);
     return await getThumbnailFiles(taskFiles, 'tasks')
   } catch (error) {
-    console.error("getAllUserTasksFiles ERROR: ", error);
+    throw new Error('Ошибка запроса к базе данных');
+  }
+}
+
+const getAllUserTasksQ = async (user_id) => {
+  const command = `
+    SELECT 
+    t.task_id,
+    t.task_descript,
+    t.task_priority,
+    t.task_status,
+    t.deadline,
+    t.appoint_user_id,
+    t.created_on,
+    approved_on ,                              -- Дата согласования задачи
+    reject_on ,                                -- Дата отклонения задачи
+    confirmation_on ,                          -- Дата запрос на подтверждение задачи
+    closed_on ,                                -- Дата закрытия задачи
+    setResponseSubDep_on ,                     -- Дата назначения отдела
+    setResponseUser_on ,                       -- Дата назначения пользователя
+    appoint_user.name AS appoint_user_name,
+    t.appoint_department_id, 
+    appoint_departments.name AS appoint_department_name,
+    t.appoint_subdepartment_id,
+    appoint_subdepartments.name AS appoint_subdepartment_name,
+    t.responsible_user_id, -- ПОЛЬЗОВТЕЛЬ
+    responsible_user.name AS responsible_user_name,
+    t.responsible_department_id,  -- ДЕПАРТАМЕНТ
+    responsible_departments.name AS responsible_department_name,
+    t.responsible_subdepartment_id, -- ПОДРАЗДЕЛЕНИ
+    responsible_subdepartments.name AS responsible_subdepartment_name,
+    t.responsible_position_id, -- ОТДЕЛ
+    responsible_position.name AS responsible_position_name,
+    GROUP_CONCAT(f.file_name, '|') AS file_names,
+    trs.read_status AS read_status
+  FROM tasks t
+    LEFT JOIN users AS appoint_user ON t.appoint_user_id = appoint_user.id
+    LEFT JOIN departments AS appoint_departments ON t.appoint_department_id = appoint_departments.id
+    LEFT JOIN subdepartments AS appoint_subdepartments ON t.appoint_subdepartment_id = appoint_subdepartments.id
+    LEFT JOIN users AS responsible_user ON t.responsible_user_id = responsible_user.id
+    LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
+    LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
+    LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
+    LEFT JOIN task_files f ON t.task_id = f.task_id
+    LEFT JOIN (
+      SELECT task_id, GROUP_CONCAT(read_status, '|') AS read_status
+      FROM task_read_status
+      GROUP BY task_id
+    ) trs ON t.task_id = trs.task_id
+  WHERE ? IN (t.appoint_user_id, t.responsible_user_id)
+  GROUP BY t.task_id`
+
+  try {
+    const taskFiles = await executeDatabaseQueryAsync(command, [user_id])
+    return await getThumbnailFiles(taskFiles)
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных')
   }
 }
 
@@ -167,4 +228,5 @@ module.exports = {
   updateTaskStatusQ,
   deleteTask,
   getAllTasksBySubDepQ,
+  getAllUserTasksQ,
 };
