@@ -2,9 +2,9 @@ const logger = require('../../../utils/logger/logger')
 let activeConnectionsCount = 0;
 
 const openConnection = (db) => {
-  logger.info(`Trying to open connection. Active connections before opening: ${activeConnectionsCount}`);
+  // logger.info(`Trying to open connection. Active connections before opening: ${activeConnectionsCount}`);
   activeConnectionsCount++;
-  logger.info(`Connection successfully opened. Active connections: ${activeConnectionsCount}`);
+  // logger.info(`Connection successfully opened. Active connections: ${activeConnectionsCount}`);
   return db;
   // ---------------------------------------------
   return new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ const openConnection = (db) => {
 
 const closeConnection = (db) => {
   activeConnectionsCount--;
-  logger.info(`Connection closed. Active connections: ${activeConnectionsCount}`);
+  // logger.info(`Connection closed. Active connections: ${activeConnectionsCount}`);
   // --------------------------------------------
   //   db.serialize(() => {
   //     db.run("PRAGMA wal_checkpoint(FULL)", (err) => { // Убедитесь, что WAL (Write-Ahead Logging) журнал был применен
