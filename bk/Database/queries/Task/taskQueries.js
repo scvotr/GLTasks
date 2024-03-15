@@ -109,7 +109,7 @@ const deleteTask = async (taskId) => {
   // Реализация удаления задачи по ее ID
 }
 
-const getAllTasksBySubDepQ = async (subDep_id) => {
+const getAllTasksBySubDepQ = async (user_id, subDep_id) => {
   const command = `
     SELECT 
       t.task_id,

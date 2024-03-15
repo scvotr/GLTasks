@@ -153,11 +153,11 @@ class TasksControler {
       if (data.fields.approved_on === 'true') {
         console.log('Задача от начальника');
         if (inOneDep && inOneSubDep) {
-          console.log('Задача внутри одного отдела в одном департаменте');
+          console.log('Задача внутри одного отдела в одном департаменте addNewTask');
           noticeToResponsibleUser()
           await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
         } else if (inOneDep && inDifSubDep) {
-          console.log('Задача между отделами в одном департаменте');
+          console.log('Задача между отделами в одном департаменте addNewTask');
           // noticeToAppointUser()
           noticeToResponceLead()
           try {
@@ -167,13 +167,13 @@ class TasksControler {
             
           }
         } else if (inDifDep && inOneSubDep) {
-          console.log('Задача внутри подразделения, но между разными отделами');
+          console.log('Задача внутри подразделения, но между разными отделами addNewTask');
         } else if (inDifDep && inDifSubDep) {
-          console.log('Задача между разными подразделениями разных отделов');
+          console.log('Задача между разными подразделениями разных отделов addNewTask');
           noticeToResponceLead()
         }
       } else {
-        console.log('Задача от сотрудника');
+        console.log('Задача от сотрудника addNewTask');
         noticeToLeadNewTask()
         await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
       }
@@ -192,8 +192,9 @@ class TasksControler {
   async getAllTasksBySubDep(req, res) {
     try {
       const authDecodeUserData = req.user
+      const user_id = authDecodeUserData.id
       const subDep_id = authDecodeUserData.subdepartment_id
-      const data = await getAllTasksBySubDepQ(subDep_id)
+      const data = await getAllTasksBySubDepQ(user_id, subDep_id)
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'getAllTasksBySubDep')
