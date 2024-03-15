@@ -29,6 +29,7 @@ export const TasksTable = ({ tasks, reRender }) => {
     { field: "responsible_subdepartment_name", headerName: "Для", description: "Для кого", width: 220 },
     { field: "responsible_department_name", headerName: "Для", description: "Для кого", width: 220 },
     { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 150 },
+    { field: "task_status", headerName: "Статус", description: "Статус задачи", width: 100 },
   ]
 
   const handleCellClick = (params, event) => {
