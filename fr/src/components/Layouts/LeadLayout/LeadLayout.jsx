@@ -31,7 +31,7 @@ export const LeadLayout = () => {
   useEffect(() => {
     socket.on("taskCreated", messageData => {
       setSnackbarMessage(messageData.message)
-      // notifyEvent("need-all-Tasks")
+      notifyEvent("need-all-Tasks")
       // setLogSnackbarMessage(prev => [...prev, messageData])
       setOpen(true)
     })
