@@ -85,8 +85,18 @@ const updateTaskDescription = async (taskId, newDescription) => {
   // Реализация обновления описания задачи
 }
 
-const updateTaskStatus = async (taskId, newStatus) => {
-  // Реализация обновления статуса задачи
+const updateTaskStatusQ = async (data) => {
+  const { task_id, task_status } = data
+  const command = `
+    UPDATE tasks
+    SET task_status = ?, approved_on = CURRENT_TIMESTAMP
+    WHERE task_id = ?
+  `;
+  try {
+    await executeDatabaseQueryAsync(command, [task_status, task_id])
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных')
+  }
 }
 
 // Delete (Удаление)
@@ -154,7 +164,7 @@ module.exports = {
   getTaskById,
   getTasksForUser,
   updateTaskDescription,
-  updateTaskStatus,
+  updateTaskStatusQ,
   deleteTask,
   getAllTasksBySubDepQ,
 };
