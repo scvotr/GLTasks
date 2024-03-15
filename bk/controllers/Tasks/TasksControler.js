@@ -53,7 +53,6 @@ class TasksControler {
         user_id
       }
 
-      console.log(data)
       try {
         await createTask(data)
       } catch (error) {
