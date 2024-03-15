@@ -5,7 +5,7 @@ const {
 } = require("../../Database/queries/Notification/pendingNotificationQueries");
 const { addReadStatusQ, updateReadStatusQ } = require("../../Database/queries/Task/readStatusQueries");
 const {
-  createTask, getAllTasksBySubDepQ, updateTaskStatusQ
+  createTask, getAllTasksBySubDepQ, updateTaskStatusQ, getAllUserTasksQ
 } = require("../../Database/queries/Task/taskQueries");
 const {
   saveAndConvert
@@ -263,23 +263,33 @@ class TasksControler {
 
       if (data.approved_on) {
         if (inOneDep && inOneSubDep) {
-          console.log('Задача внутри одного отдела в одном департаменте');
+          console.log('Задача внутри одного отдела в одном департаменте updateTaskStatus');
           noticeToAppointUser()
           updateReadStatusQ({task_id: data.data, user_id: data.appoint_user_id, read_status: 'unread' })
         } else if (inOneDep && inDifSubDep) {
-          console.log('Задача между отделами в одном департаменте');
+          console.log('Задача между отделами в одном департаменте updateTaskStatus');
           noticeToAppointUser()
           noticeToResponceLead()
         } else if (inDifDep && inOneSubDep) {
-          console.log('Задача внутри подразделения, но между разными отделами');
+          console.log('Задача внутри подразделения, но между разными отделами updateTaskStatus');
         } else if (inDifDep && inDifSubDep) {
-          console.log('Задача между разными подразделениями разных отделов');
+          console.log('Задача между разными подразделениями разных отделов updateTaskStatus');
         }
       }
 
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'updateTaskStatus')
+    }
+  }
+  async getAllUserTasks(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const user_id = authDecodeUserData.id
+      const data = await getAllUserTasksQ(user_id)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'getAllUserTasks')
     }
   }
 }
