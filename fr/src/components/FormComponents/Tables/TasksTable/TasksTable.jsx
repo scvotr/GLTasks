@@ -1,15 +1,20 @@
-import './TasksTable.css'
+import "./TasksTable.css"
 import { Box } from "@mui/material"
 import { DataGrid, ruRU } from "@mui/x-data-grid"
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined"
+import DraftsOutlinedIcon from "@mui/icons-material/DraftsOutlined"
 import { useState } from "react"
 import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../context/AuthProvider"
+import { ModalCustom } from "../../../ModalCustom/ModalCustom"
+import { RenderByAction } from "../RenderByAction/RenderByAction"
 
 export const TasksTable = ({ tasks, reRender }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedTask, setSelectedTask] = useState(null)
+  const [actionTypeTS, setActionTypeTS] = useState()
 
   const columns = [
     { field: "task_id", headerName: "Task ID", description: "This column description", width: 70 },
@@ -34,6 +39,10 @@ export const TasksTable = ({ tasks, reRender }) => {
 
   const handleCellClick = (params, event) => {
     console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
+
+    setActionTypeTS(params.row.task_status)
+    openModal(params.row)
+
     const updatedData = {
       task_id: params.row.task_id,
       user_id: params.row.appoint_subdepartment_id,
@@ -49,7 +58,7 @@ export const TasksTable = ({ tasks, reRender }) => {
         .catch(error => {
           setReqStatus({ loading: false, error: error.message })
         })
-      reRender(prevKey => prevKey + 1) 
+      reRender(prevKey => prevKey + 1)
     }
   }
 
@@ -64,8 +73,25 @@ export const TasksTable = ({ tasks, reRender }) => {
     }
   })
 
+  const openModal = task => {
+    setSelectedTask(task)
+    setModalOpen(true)
+  }
+  const closeModal = () => {
+    setSelectedTask(null)
+    setModalOpen(false)
+    reRender(prevKey => prevKey + 1)
+  }
+
   return (
     <>
+      <>
+        {selectedTask && (
+          <ModalCustom isOpen={modalOpen} onClose={closeModal}>
+            <RenderByAction actionByStatus={actionTypeTS} task={selectedTask} onTaskSubmit={closeModal} />
+          </ModalCustom>
+        )}
+      </>
       <Box
         style={{
           height: 500,
@@ -83,8 +109,8 @@ export const TasksTable = ({ tasks, reRender }) => {
           columns={columns}
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           onCellClick={handleCellClick}
-          getRowClassName={(params) => {
-            return params.row.read_status === "unread" ? "bold-row" : "";
+          getRowClassName={params => {
+            return params.row.read_status === "unread" ? "bold-row" : ""
           }}
           initialState={{
             pagination: {
