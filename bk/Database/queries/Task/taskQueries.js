@@ -205,15 +205,15 @@ const getAllUserTasksQ = async (user_id) => {
     LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
     LEFT JOIN task_files f ON t.task_id = f.task_id
     LEFT JOIN (
-      SELECT task_id, GROUP_CONCAT(read_status, '|') AS read_status
+      SELECT task_id, user_id, read_status
       FROM task_read_status
-      GROUP BY task_id
+      WHERE user_id = ?
     ) trs ON t.task_id = trs.task_id
   WHERE ? IN (t.appoint_user_id, t.responsible_user_id)
   GROUP BY t.task_id`
 
   try {
-    const taskFiles = await executeDatabaseQueryAsync(command, [user_id])
+    const taskFiles = await executeDatabaseQueryAsync(command, [user_id, user_id])
     return await getThumbnailFiles(taskFiles)
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
