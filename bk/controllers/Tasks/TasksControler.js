@@ -161,8 +161,8 @@ class TasksControler {
           // noticeToAppointUser()
           noticeToResponceLead()
           try {
-            // await addReadStatusQ({ task_id: fields.task_id, user_id: fields.responsible_subdepartment_id, read_status: 'unread' })
-            await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
+            await addReadStatusQ({ task_id: fields.task_id, user_id: fields.responsible_subdepartment_id, read_status: 'unread' })
+            await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'readed' })
           } catch (error) {
             
           }
@@ -192,9 +192,8 @@ class TasksControler {
   async getAllTasksBySubDep(req, res) {
     try {
       const authDecodeUserData = req.user
-      const user_id = authDecodeUserData.id
       const subDep_id = authDecodeUserData.subdepartment_id
-      const data = await getAllTasksBySubDepQ(user_id, subDep_id)
+      const data = await getAllTasksBySubDepQ(subDep_id)
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'getAllTasksBySubDep')
