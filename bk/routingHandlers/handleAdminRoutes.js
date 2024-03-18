@@ -1,18 +1,19 @@
-const MangeOrgStructControler = require("../controllers/Admin/MangeOrgStructControler");
-const UserControler = require("../controllers/Admin/UserControler")
+const MangeOrgStructController = require("../controllers/Admin/MangeOrgStructController");
+const TasksController = require("../controllers/Admin/TasksController");
+const UserController = require("../controllers/Admin/UserController");
 // const DepsControler = require('../controls/Admin/Deps/DepsControler')
 const { handleDefaultRoute } = require("../routingHandlers/handleDefaultRoute")
 const { protectRouteTkPl } = require("../utils/protectRouteTkPl")
 
 const routeHandlers = {
-  "/admin/getAllUsers": UserControler.getAllUsers,
-  "/admin/updateUserData": UserControler.updateUserData,
-  "/admin/createNewDep": MangeOrgStructControler.createNewDep,
-  "/admin/deleteDep": MangeOrgStructControler.deleteDep,
-  "/admin/createNewSubDep": MangeOrgStructControler.createNewSubDep,
-  "/admin/deleteSubDep": MangeOrgStructControler.deleteSubDep,
-  "/admin/createNewPosition": MangeOrgStructControler.createNewPosition,
-  // "/admin/getAllTasks": UserControler.getAllTasks,
+  "/admin/getAllUsers": UserController.getAllUsers,
+  "/admin/updateUserData": UserController.updateUserData,
+  "/admin/createNewDep": MangeOrgStructController.createNewDep,
+  "/admin/deleteDep": MangeOrgStructController.deleteDep,
+  "/admin/createNewSubDep": MangeOrgStructController.createNewSubDep,
+  "/admin/deleteSubDep": MangeOrgStructController.deleteSubDep,
+  "/admin/createNewPosition": MangeOrgStructController.createNewPosition,
+  "/admin/getAllTasks": TasksController.getAllTasks,
   // "/admin/removeDep": DepsControler.removeDep,
   // "/admin/createNewSubDep": DepsControler.createNewSubDep,
   // "/admin/createNewPosition": DepsControler.createNewPosition,
