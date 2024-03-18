@@ -10,9 +10,6 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allTasks, setAllTasks] = useState([])
-  console.log(allTasks)
-
-  console.log(allTasks)
 
   const updateAllTasks = tasks => {
     setAllTasks(tasks)
