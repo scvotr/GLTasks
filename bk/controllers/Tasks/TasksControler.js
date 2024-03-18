@@ -176,6 +176,7 @@ class TasksControler {
         console.log('Задача от сотрудника addNewTask');
         noticeToLeadNewTask()
         await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
+        await addReadStatusQ({ task_id: fields.task_id, user_id: data.user_id, read_status: 'readed' })
       }
 
       res.setHeader('Content-Type', 'application/json')
