@@ -5,8 +5,9 @@ const {
 } = require("../../Database/queries/Notification/pendingNotificationQueries");
 const { addReadStatusQ, updateReadStatusQ } = require("../../Database/queries/Task/readStatusQueries");
 const {
-  createTask, getAllTasksBySubDepQ, updateTaskStatusQ, getAllUserTasksQ
+  createTask, getAllTasksBySubDepQ, updateTaskStatusQ, getAllUserTasksQ, removeTaskQ
 } = require("../../Database/queries/Task/taskQueries");
+const { removeFolder } = require("../../utils/files/removeFolder");
 const {
   saveAndConvert
 } = require("../../utils/files/saveAndConvert");
@@ -293,8 +294,22 @@ class TasksControler {
       handleError(res, 'getAllUserTasks')
     }
   }
+  async removeTask(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      const taskFolderName = postPayload.task_id
+      console.log(postPayload, taskFolderName)
+      await removeTaskQ(postPayload)
+      await removeFolder('tasks', taskFolderName)
+      sendResponseWithData(res, {ok: 'ok'})
+    } catch (error) {
+      handleError(res, 'removeTask')
+    }
+  }
 }
 
+module.exports = new TasksControler()
 
 
 // task_id: '12ac8682-e241-45c2-9c53-949efbb06e60',
@@ -313,5 +328,3 @@ class TasksControler {
 // responsible_position_id: '',
 // filesToRemove: '',
 // task_files: '',
-
-module.exports = new TasksControler()
