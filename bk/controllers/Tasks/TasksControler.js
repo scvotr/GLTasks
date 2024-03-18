@@ -230,12 +230,12 @@ class TasksControler {
         io.in('user_' + data.appoint_user_id).allSockets()
         .then(client => {
           if(client.size === 0) {
-            addPendingNotification(data.appoint_user_id, data.task_id, false, 'Задача согласованна начальником')
+            addPendingNotification(data.appoint_user_id, data.task_id, false, 'Задача согласованна начальником updateTaskStatus')
             console.log('offline', client, data.appoint_user_id)
           } else {
-            addPendingNotification(data.appoint_user_id, data.task_id, true, 'Задача согласованна начальником')
+            addPendingNotification(data.appoint_user_id, data.task_id, true, 'Задача согласованна начальником updateTaskStatus')
             io.to('user_' + data.appoint_user_id)
-              .emit('taskApproved', {message: 'Задача согласованна начальником', taskData: data.task_id})
+              .emit('taskApproved', {message: 'Задача согласованна начальником updateTaskStatus', taskData: data.task_id})
             console.log('online', client, data.appoint_user_id); 
           }  
         })
@@ -247,10 +247,10 @@ class TasksControler {
         io.in('leadSubDep_' + data.responsible_subdepartment_id).allSockets()
         .then(client => {
           if(client.size === 0) {
-            addPendingNotification(data.responsible_subdepartment_id, data.task_id, false, 'Новая задача для отдела')
+            addPendingNotification(data.responsible_subdepartment_id, data.task_id, false, 'Новая задача для отдела updateTaskStatus')
             console.log('offline', client, data.responsible_subdepartment_id)
           } else {
-            addPendingNotification(data.responsible_subdepartment_id, data.task_id, true, 'Новая задача для отдела')
+            addPendingNotification(data.responsible_subdepartment_id, data.task_id, true, 'Новая задача для отдела updateTaskStatus')
             io.to('leadSubDep_' + data.responsible_subdepartment_id)
               .emit('taskApproved', {message: 'Новая задача для отдела', taskData: data.task_id})
             console.log('online', client, data.responsible_subdepartment_id); 
@@ -265,10 +265,11 @@ class TasksControler {
         if (inOneDep && inOneSubDep) {
           console.log('Задача внутри одного отдела в одном департаменте updateTaskStatus');
           noticeToAppointUser()
-          updateReadStatusQ({task_id: data.data, user_id: data.appoint_user_id, read_status: 'unread' })
+          updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' })
         } else if (inOneDep && inDifSubDep) {
-          console.log('Задача между отделами в одном департаменте updateTaskStatus');
+          console.log('Задача между отделами в одном департаменте updateTaskStatus', data.data);
           noticeToAppointUser()
+          updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' })
           noticeToResponceLead()
         } else if (inDifDep && inOneSubDep) {
           console.log('Задача внутри подразделения, но между разными отделами updateTaskStatus');
