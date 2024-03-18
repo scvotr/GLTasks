@@ -104,9 +104,27 @@ const updateTaskStatusQ = async (data) => {
   }
 }
 
-// Delete (Удаление)
-const deleteTask = async (taskId) => {
-  // Реализация удаления задачи по ее ID
+const removeTaskQ = async (data) => {
+  try {
+    const { task_id } = data
+    const command = `
+    DELETE FROM tasks
+    WHERE task_id = ?
+  `
+    const command2 = `
+    DELETE FROM task_files
+    WHERE task_id = ?
+  `
+    const command3 = `
+    DELETE FROM task_read_status
+    WHERE task_id = ?
+  `
+    await executeDatabaseQueryAsync(command, [task_id])
+    await executeDatabaseQueryAsync(command2, [task_id])
+    await executeDatabaseQueryAsync(command3, [task_id])
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных removeTaskQ')
+  }
 }
 
 const getAllTasksBySubDepQ = async (subDep_id) => {
@@ -226,7 +244,7 @@ module.exports = {
   getTasksForUser,
   updateTaskDescription,
   updateTaskStatusQ,
-  deleteTask,
+  removeTaskQ,
   getAllTasksBySubDepQ,
   getAllUserTasksQ,
 };
