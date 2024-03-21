@@ -58,6 +58,7 @@ export const UserSelect = props => {
               {selectedUser ? "Сотрудник" : "Выберите сотрудника"}
             </InputLabel>
             <Select
+              required
               value={selectedUser}
               name="responsible_user_id"
               labelId="user-select-label"
