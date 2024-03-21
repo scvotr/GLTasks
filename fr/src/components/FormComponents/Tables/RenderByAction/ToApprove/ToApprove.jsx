@@ -37,8 +37,9 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
   const handleApproveTask = async isApprove => {
+    let transferData = {}
     if (isApprove) {
-      const transferData = {
+      transferData = {
         task_id: task.task_id,
         task_status: "approved",
         approved_on: true,
@@ -59,7 +60,7 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
         setReqStatus({ loading: false, error: error.message })
       }
     } else {
-      const transferData = {
+      transferData = {
         task_id: task.task_id,
         task_status: "reject",
         reject_on: true,
