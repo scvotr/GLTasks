@@ -2,6 +2,7 @@
 const {
   getThumbnailFiles
 } = require("../../../utils/files/getThumbnailFiles");
+const { removeFolder } = require("../../../utils/files/removeFolder");
 const {
   executeDatabaseQueryAsync
 } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
@@ -104,7 +105,7 @@ const updateTaskStatusQ = async (data) => {
   }
 }
 
-const removeTaskQ = async (data) => {
+const removeTaskQ = async (data, taskFolderName) => {
   try {
     const { task_id } = data
     const command = `
@@ -122,6 +123,7 @@ const removeTaskQ = async (data) => {
     await executeDatabaseQueryAsync(command, [task_id])
     await executeDatabaseQueryAsync(command2, [task_id])
     await executeDatabaseQueryAsync(command3, [task_id])
+    await removeFolder(taskFolderName, 'tasks')
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных removeTaskQ')
   }
@@ -238,6 +240,20 @@ const getAllUserTasksQ = async (user_id) => {
   }
 }
 
+const updateTaskSetResponsibleUserQ = async (data) => {
+  try {
+    const { responsible_position_id, task_status, task_id, responsible_user_id } = data
+    const command = `
+      UPDATE tasks
+      SET responsible_position_id = ?, task_status = ?, responsible_user_id = ?, setResponseUser_on = CURRENT_TIMESTAMP
+      WHERE task_id = ?
+    `;
+    await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id,])
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных updateTaskSetResponsibleUserQ')
+  }
+}
+
 module.exports = {
   createTask,
   getTaskById,
@@ -247,4 +263,5 @@ module.exports = {
   removeTaskQ,
   getAllTasksBySubDepQ,
   getAllUserTasksQ,
+  updateTaskSetResponsibleUserQ,
 };
