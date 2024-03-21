@@ -1,3 +1,23 @@
 .bold-row {
   font-weight: bold;
 }
+
+.toApprove-row {
+  background-color: lightgreen; /* Choose your desired color */
+}
+
+.approved-row {
+  background-color: rgb(224, 255, 245); /* Choose your desired color */
+}
+
+.inWork-row {
+  background-color: rgb(136, 226, 156); /* Choose your desired color */
+}
+
+.needToConfirm-row {
+  background-color: rgb(136, 205, 226); /* Choose your desired color */
+}
+
+.closed-row {
+  background-color: lightgray; /* Choose your desired color */
+}
