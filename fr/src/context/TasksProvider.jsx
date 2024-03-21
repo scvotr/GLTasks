@@ -10,6 +10,7 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allTasks, setAllTasks] = useState([])
+  console.log(allTasks)
 
   const updateAllTasks = tasks => {
     setAllTasks(tasks)
@@ -31,8 +32,26 @@ export const TasksProvider = ({currentUser, children}) => {
             
                 const filteredTasks3 = tasks.filter(task => task.task_status === "approved" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
                 const uniqueTasks = new Set([...combinedFilteredTasks, ...filteredTasks3]);
-            
-                updateAllTasks([...uniqueTasks]);
+
+                const allTaskInWorkAL = tasks.filter(task => task.task_status === "inWork" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTaskInWorkRL = tasks.filter(task => task.task_status === "inWork" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTasksInWork = new Set([...allTaskInWorkAL, ...allTaskInWorkRL]);
+
+                const allTasks1 =  new Set([...uniqueTasks, ...allTasksInWork])
+
+                const allTaskOnRewievkAL = tasks.filter(task => task.task_status === "needToConfirm" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTaskInRewievRL = tasks.filter(task => task.task_status === "needToConfirm" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTasksRewiev = new Set([...allTaskOnRewievkAL, ...allTaskInRewievRL]);
+
+                const allTasks2 =  new Set([...allTasks1, ...allTasksRewiev])
+
+                const allTaskOnClosedkAL = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTaskInClosedRL = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTasksClosed = new Set([...allTaskOnClosedkAL, ...allTaskInClosedRL]);
+
+                const allTasks =  new Set([...allTasks2, ...allTasksClosed])
+                
+                updateAllTasks([...allTasks]);
               })
               .catch(error => console.error("Error fetching All sub dep tasks", error))
           } else if(currentUser.login && currentUser.role === "user") {
