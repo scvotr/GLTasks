@@ -1,13 +1,18 @@
 'use strict'
 
+const { error } = require('console');
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
+const { pipeline } = require('stream');
+const { promisify } = require('util');
+const pipelineAsync = promisify(pipeline);
+
 const currentDirectory = process.cwd();
 const defaultPath = path.join(currentDirectory, 'uploads')
 
-const saveAndConvert = async (file, rootCustomFolder , taskFolderName) => {
+const saveAndConvert = async (file, rootCustomFolder, taskFolderName) => {
   try {
     await fs.promises.access(defaultPath, fs.constants.W_OK);
     const ext = path.extname(file.originalFilename);
@@ -18,10 +23,21 @@ const saveAndConvert = async (file, rootCustomFolder , taskFolderName) => {
     await fs.promises.mkdir(folderFullPath, {
       recursive: true
     });
-    // Копируем файл из временной директории в целевую
-    await fs.promises.copyFile(file.filepath, newFilePath);
-    // Удаляем исходный файл
-    await fs.promises.unlink(file.filepath).catch(console.error);
+
+    console.log('>>>', file.filepath)
+
+    const readStream = fs.createReadStream(file.filepath);
+    const writeStream = fs.createWriteStream(newFilePath);
+
+    await pipelineAsync(readStream, writeStream);
+
+    // readStream.close(); // Закрываем поток чтения
+    // writeStream.close(); // Закрываем поток записи
+    readStream.destroy()
+    writeStream.destroy()
+
+    await fs.promises.unlink(file.filepath);
+
     let thumbnailFileName = '';
     let compersFileName = '';
     if (ext !== '.pdf') {
@@ -32,7 +48,19 @@ const saveAndConvert = async (file, rootCustomFolder , taskFolderName) => {
         await sharp(newFilePath)
           .rotate()
           .resize(100)
-          .toFile(thumbnailFilePath);
+          // .toFile(thumbnailFilePath, (err, info) => { console.log(info, err)});
+          .toBuffer()
+          .then( data => {
+            fs.writeFile(thumbnailFilePath, data, (err) => {
+              if (err) {
+                console.error('Ошибка при записи сжатого изображения:', err);
+              } else {
+                console.log('Сжатое изображение успешно создано и сохранено.');
+                sharp.cache(false); // Освободить все ресурсы после успешной операции
+              }
+            })
+          })
+          .catch( err => console.log(err));
       } catch (error) {
         console.log('thumbnailFileName', error);
       }
@@ -46,11 +74,24 @@ const saveAndConvert = async (file, rootCustomFolder , taskFolderName) => {
             mozjpeg: true,
             chromaSubsampling: '4:4:4',
           })
-          .toFile(compresFilePath);
+          // .toFile(compresFilePath);
+          .toBuffer()
+          .then( data => {
+            fs.writeFile(compresFilePath, data, (err) => {
+              if (err) {
+                console.error('Ошибка при записи сжатого изображения:', err);
+              } else {
+                console.log('Сжатое изображение успешно создано и сохранено.');
+                sharp.cache(false); // Освободить все ресурсы после успешной операции
+              }
+            })
+          })
+          .catch( err => console.log(err));
       } catch (error) {
         console.log('compersFileName', error);
       }
     }
+
     return {
       fileName,
       thumbnailFileName,
