@@ -5,7 +5,7 @@ const {
 } = require("../../Database/queries/Notification/pendingNotificationQueries");
 const { addReadStatusQ, updateReadStatusQ } = require("../../Database/queries/Task/readStatusQueries");
 const {
-  createTask, getAllTasksBySubDepQ, updateTaskStatusQ, getAllUserTasksQ, removeTaskQ
+  createTask, getAllTasksBySubDepQ, updateTaskStatusQ, getAllUserTasksQ, removeTaskQ, updateTaskSetResponsibleUserQ
 } = require("../../Database/queries/Task/taskQueries");
 const { removeFolder } = require("../../utils/files/removeFolder");
 const {
@@ -14,6 +14,7 @@ const {
 const {
   socketManager
 } = require("../../utils/socket/socketManager");
+const { noticeToAppointUserT, noticeToResponceLeadT, noticeToAppointLeadT, noticeToResponceUserT } = require("./noticeFor");
 
 const sendResponseWithData = (res, data) => {
   res.setHeader('Content-Type', 'application/json');
@@ -172,6 +173,12 @@ class TasksControler {
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов addNewTask');
           noticeToResponceLead()
+          try {
+            await addReadStatusQ({ task_id: fields.task_id, user_id: fields.responsible_subdepartment_id, read_status: 'unread' })
+            await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'readed' })
+          } catch (error) {
+            
+          }
         }
       } else {
         console.log('Задача от сотрудника addNewTask');
@@ -236,7 +243,7 @@ class TasksControler {
           } else {
             addPendingNotification(data.appoint_user_id, data.task_id, true, 'Задача согласованна начальником updateTaskStatus')
             io.to('user_' + data.appoint_user_id)
-              .emit('taskApproved', {message: 'Задача согласованна начальником updateTaskStatus', taskData: data.task_id})
+              .emit('taskApproved', {message: 'Задача согласованна начальником', taskData: data.task_id})
             console.log('online', client, data.appoint_user_id); 
           }  
         })
@@ -268,14 +275,20 @@ class TasksControler {
           noticeToAppointUser()
           updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' })
         } else if (inOneDep && inDifSubDep) {
-          console.log('Задача между отделами в одном департаменте updateTaskStatus', data.data);
+          console.log('Задача между отделами в одном департаменте updateTaskStatus');
           noticeToAppointUser()
-          updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' })
+          await updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' })
           noticeToResponceLead()
+          await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'unread' })
         } else if (inDifDep && inOneSubDep) {
           console.log('Задача внутри подразделения, но между разными отделами updateTaskStatus');
+          
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов updateTaskStatus');
+          noticeToAppointUser()
+          await updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' })
+          noticeToResponceLead()
+          await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'unread' })
         }
       }
 
@@ -299,12 +312,172 @@ class TasksControler {
       const authDecodeUserData = req.user
       const postPayload = JSON.parse(authDecodeUserData.payLoad)
       const taskFolderName = postPayload.task_id
-      console.log(postPayload, taskFolderName)
-      await removeTaskQ(postPayload)
-      await removeFolder('tasks', taskFolderName)
+      await removeTaskQ(postPayload, taskFolderName)
+      // await removeFolder(taskFolderName, 'tasks')
       sendResponseWithData(res, {ok: 'ok'})
     } catch (error) {
       handleError(res, 'removeTask')
+    }
+  }
+  async updateTaskSetResponsibleUser(req, res) {
+    try {
+      const io = socketManager.getIO()
+
+      const authDecodeUserData = req.user
+      const data = JSON.parse(authDecodeUserData.payLoad)
+      await updateTaskSetResponsibleUserQ(data)
+
+      const inOneDep = data.appoint_department_id === data.responsible_department_id;
+      const inDifDep = data.appoint_department_id !== data.responsible_department_id;
+      const inOneSubDep = data.appoint_subdepartment_id === data.responsible_subdepartment_id;
+      const inDifSubDep = data.appoint_subdepartment_id !== data.responsible_subdepartment_id;
+      
+      const noticeToAppointUser = async () => {
+        io.to('user_' + data.appoint_user_id)
+          .emit('taskApproved', { message: 'Назначен исполнитель', taskData: data.task_id });
+        await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' });
+      };
+
+      const noticeToAppointLead = async () => {
+        io.to('leadSubDep_' + data.appoint_subdepartment_id)
+          .emit('taskApproved', { message: 'Назначен исполнитель', taskData: data.task_id });
+        await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'unread' });
+      };
+      
+      const noticeToResponceUser = async () => {
+        io.to('user_' + data.responsible_user_id)
+          .emit('taskApproved', { message: 'Назначена новая задача', taskData: data.task_id });
+        await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' });
+      };
+      
+      const noticeToResponceLead = async () => {
+        io.to('leadSubDep_' + data.responsible_subdepartment_id)
+          .emit('taskApproved', { message: 'Назначен исполнитель', taskData: data.task_id });
+        await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'unread' });
+      };
+      
+      if (data.setResponseUser_on) {
+        if (inOneDep && inOneSubDep) {
+          console.log('Задача внутри одного отдела в одном департаменте setResponseUser_on');
+          await noticeToAppointUser();
+          await noticeToResponceUser();
+          await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' });
+          await noticeToAppointLead();
+        } else if (inOneDep && inDifSubDep) {
+          console.log('Задача между отделами в одном департаменте setResponseUser_on');
+          await noticeToAppointUser();
+          await noticeToAppointLead();
+          await noticeToResponceUser();
+          await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' });
+        } else if (inDifDep && inOneSubDep) {
+          console.log('Задача внутри подразделения, но между разными отделами setResponseUser_on');
+          // await noticeToAppointUser();
+          // await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' })
+        } else if (inDifDep && inDifSubDep) {
+          console.log('Задача между разными подразделениями разных отделов setResponseUser_on');
+          await noticeToAppointUser();
+          await noticeToResponceUser();
+          await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id ? data.responsible_user_id : 0, read_status: 'unread' });
+          await noticeToAppointLead();
+        }
+      }
+      if (data.confirmation_on) {
+        if (inOneDep && inOneSubDep) {
+          console.log('Задача внутри одного отдела в одном департаменте confirmation_on');
+          try {
+            await noticeToAppointUserT('Задача на проверку', data);
+            await noticeToResponceUserT('Задача на проверку', data);
+            await noticeToAppointLeadT('Задача на проверку', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error);
+          }
+        } else if (inOneDep && inDifSubDep) {
+          console.log('Задача между отделами в одном департаменте confirmation_on');
+          try {
+            await noticeToAppointUserT('Задача на проверку', data);
+            await noticeToAppointLeadT('Задача на проверку', data);
+            await noticeToResponceLeadT('Задача на проверку', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error);
+          }
+        } else if (inDifDep && inOneSubDep) {
+          console.log('Задача внутри подразделения, но между разными отделами confirmation_on');
+        } else if (inDifDep && inDifSubDep) {
+          console.log('Задача между разными подразделениями разных отделов confirmation_on');
+          try {
+            await noticeToAppointUserT('Задача на проверку', data);
+            await noticeToAppointLeadT('Задача на проверку', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error);
+          }
+        }
+      }
+      if (data.closed_on) {
+        if (inOneDep && inOneSubDep) {
+          console.log('Задача внутри одного отдела в одном департаменте closed_on');
+          try {
+            await noticeToAppointUserT('Задача закрыта', data);
+            await noticeToResponceUserT('Задача закрыта', data);
+            await noticeToAppointLeadT('Задача закрыта', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error)
+          }
+        } else if (inOneDep && inDifSubDep) {
+          console.log('Задача между отделами в одном департаменте closed_on');
+          try {
+            await noticeToAppointLeadT('Задача закрыта', data);
+            await noticeToResponceUserT('Задача закрыта', data);
+            await noticeToResponceLeadT('Задача закрыта', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error)
+          }
+        } else if (inDifDep && inOneSubDep) {
+          console.log('Задача внутри подразделения, но между разными отделами closed_on');
+        } else if (inDifDep && inDifSubDep) {
+          console.log('Задача между разными подразделениями разных отделов closed_on');
+          try {
+            await noticeToResponceUserT('Задача закрыта', data);
+            await noticeToResponceLeadT('Задача закрыта', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error)
+          }
+        }
+      }
+      if (data.reject_on) {
+        if (inOneDep && inOneSubDep) {
+          console.log('Задача внутри одного отдела в одном департаменте reject_on');
+          try {
+            await noticeToAppointUserT('Задача отклонена', data)
+            await noticeToResponceUserT('Задача отклонена', data);
+            await noticeToAppointLeadT('Задача отклонена', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error)
+          }
+        } else if (inOneDep && inDifSubDep) {
+          console.log('Задача между отделами в одном департаменте reject_on');
+          try {
+            await noticeToAppointLeadT('Задача отклонена', data)
+            await noticeToResponceUserT('Задача отклонена', data)
+            await noticeToResponceLeadT('Задача отклонена', data)
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error)
+          }
+        } else if (inDifDep && inOneSubDep) {
+          console.log('Задача внутри подразделения, но между разными отделами reject_on');
+        } else if (inDifDep && inDifSubDep) {
+          console.log('Задача между разными подразделениями разных отделов reject_on');
+          try {
+            await noticeToResponceUserT('Задача отклонена', data);
+            await noticeToResponceLeadT('Задача отклонена', data);
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных', error)
+          }
+        }
+      }
+
+      sendResponseWithData(res, 'updateTaskSetResponsibleUser')
+    } catch (error) {
+      handleError(res, 'updateTaskSetResponsibleUser')
     }
   }
 }
