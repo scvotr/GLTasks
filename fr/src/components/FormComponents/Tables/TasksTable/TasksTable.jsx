@@ -11,6 +11,7 @@ import { RenderByAction } from "../RenderByAction/RenderByAction"
 
 export const TasksTable = ({ tasks, reRender }) => {
   const currentUser = useAuthContext()
+  console.log(currentUser)
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
@@ -43,12 +44,38 @@ export const TasksTable = ({ tasks, reRender }) => {
     setActionTypeTS(params.row.task_status)
     openModal(params.row)
 
-    const updatedData = {
-      task_id: params.row.task_id,
-      user_id: params.row.appoint_subdepartment_id,
-      read_status: "readed",
-    }
+    let updatedData = {}
 
+    if (currentUser.role === "chife") {
+      if (currentUser.subDep.toString() === params.row.appoint_subdepartment_id.toString()) {
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.appoint_subdepartment_id,
+          read_status: "readed",
+        }
+      } else if (currentUser.subDep.toString() === params.row.responsible_subdepartment_id.toString()) {
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.responsible_subdepartment_id,
+          read_status: "readed",
+        }
+      }
+    } else if (currentUser.role === "user") {
+      if (currentUser.id.toString() === params.row.appoint_user_id.toString()) {
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.appoint_user_id,
+          read_status: "readed",
+        }
+      } else if (currentUser.id.toString() === params.row.responsible_user_id.toString()){
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.responsible_user_id,
+          read_status: "readed",
+        }
+      }
+    }
+    // если задача не прочитана то при клике на я чейку обновить статус в прочтено
     if (params.row.read_status === "unread") {
       setReqStatus({ loading: true, error: null })
       getDataFromEndpoint(currentUser.token, "/tasks/updateReadStatus", "POST", updatedData, setReqStatus)
@@ -94,7 +121,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       </>
       <Box
         style={{
-          height: 500,
+          height: '100%',
           width: "100%",
           boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
           border: "1px solid #e0e0e0",
@@ -110,7 +137,27 @@ export const TasksTable = ({ tasks, reRender }) => {
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           onCellClick={handleCellClick}
           getRowClassName={params => {
-            return params.row.read_status === "unread" ? "bold-row" : ""
+            if(params.row.read_status === "unread"){
+                return "bold-row"
+              // if (params.row.task_status === "approved") {
+              //   return "bold-row completed-row" 
+              // } else if(params.row.task_status === "inWork"){
+              // }
+            } 
+            if(params.row.read_status === "readed"){
+              if(params.row.task_status === "toApprove"){
+                return "toApprove-row" 
+              } else if (params.row.task_status === "approved") {
+                return "approved-row" 
+              } else if(params.row.task_status === "inWork"){
+                return "inWork-row"
+              } else if(params.row.task_status === "needToConfirm"){
+                return "needToConfirm-row"
+              } else if(params.row.task_status === "closed"){
+                return "closed-row"
+              }
+            }
+            // return params.row.read_status === "unread" ? "bold-row" : ""
           }}
           initialState={{
             pagination: {
