@@ -242,10 +242,25 @@ const getAllUserTasksQ = async (user_id) => {
 
 const updateTaskSetResponsibleUserQ = async (data) => {
   try {
-    const { responsible_position_id, task_status, task_id, responsible_user_id } = data
+    const { responsible_position_id, task_status, task_id, responsible_user_id, setResponseUser_on, confirmation_on, reject_on, closed_on } = data
+    let fieldsToUpdate = []
+
+    if(setResponseUser_on) {
+      fieldsToUpdate.push('setResponseUser_on = CURRENT_TIMESTAMP')
+    }
+    if(confirmation_on) {
+      fieldsToUpdate.push('confirmation_on = CURRENT_TIMESTAMP')
+    }
+    if(reject_on) {
+      fieldsToUpdate.push('reject_on = CURRENT_TIMESTAMP')
+    }
+    if(closed_on) {
+      fieldsToUpdate.push('closed_on = CURRENT_TIMESTAMP')
+    }
+    
     const command = `
       UPDATE tasks
-      SET responsible_position_id = ?, task_status = ?, responsible_user_id = ?, setResponseUser_on = CURRENT_TIMESTAMP
+      SET responsible_position_id = ?, task_status = ?, responsible_user_id = ?, ${fieldsToUpdate}
       WHERE task_id = ?
     `;
     await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id,])
