@@ -65,7 +65,7 @@ export const NestedListMenu = ({ isOpen }) => {
       settings: true,
       subItems: [
         { name: "Данные профиля", icon: <ManageAccountsOutlinedIcon fontSize="large" />, path: "/settings/profile", btn: true },
-        { name: "Изменить Пароль", icon: <PasswordOutlinedIcon fontSize="large" />, path: "/settings/password", btn: true },
+        { name: "Изменить Пароль", icon: <PasswordOutlinedIcon fontSize="large" />, path: "/settings/changePasPin", btn: true },
       ],
     },
   ]
