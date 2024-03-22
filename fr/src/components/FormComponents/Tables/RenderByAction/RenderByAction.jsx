@@ -7,11 +7,8 @@ import { ToApprove } from "./ToApprove/ToApprove"
 
 export const RenderByAction = ({ actionByStatus, task, onTaskSubmit }) => {
   const currentUser = useAuthContext()
-  console.log(task)
-  console.log(actionByStatus)
 
   const taskToSubDep = currentUser.role === "chife" && currentUser.subDep.toString() === task.responsible_subdepartment_id.toString()
-  const canClose = currentUser.role === "user" && currentUser.id.toString() === task.appoint_user_id.toString()
 
   const actionTypes = new Map([
     [
