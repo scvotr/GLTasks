@@ -27,7 +27,6 @@ const removeFolder = async (folder, folderPath = defaultPath) => {
         // Рекурсивно удалить подкаталог, если это каталог
         await removeFolder(file, fullFolderPath);
       } else {
-        console.log('!!!!!!', filePath)
         // Проверить доступ на запись перед удалением файла
         await fs.promises.access(filePath, fs.constants.W_OK);
         // Установить права доступа к файлу перед удалением
