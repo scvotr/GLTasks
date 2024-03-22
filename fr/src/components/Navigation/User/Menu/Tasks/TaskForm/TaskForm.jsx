@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from "uuid"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
-import { Box, Button, Divider } from "@mui/material"
+import { Box, Button, Divider, CircularProgress } from "@mui/material"
 import { TextDataField } from "./TextDataField/TextDataField"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SelectDataField } from "../TaskForm/SelectDataField/SelectDataField"
 import { ImageBlock } from "./ImageBlock/ImageBlock"
 import { sendNewTaskData } from "../../../../../../utils/sendNewTaskData"
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 
 export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   const currentUser = useAuthContext()
@@ -30,21 +31,23 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     task_files: [],
   }
   const [formData, setFormData] = useState(initValue)
-  const [isInternalTask, setIsInternalTask] =
-    useState(false)
-  const [reqStatus, setReqStatus] = useState({
-    loading: true,
-    error: null,
-  })
+  const [isInternalTask, setIsInternalTask] = useState(false)
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [isEdit, setIsEdit] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+
+  useEffect(() => {
+    if (taskToEdit) {
+      setIsEdit(true)
+    }
+  }, [taskToEdit])
 
   const getInputData = async e => {
     const { name, value, files, checked } = e.target
-    if (name === "add_new_files" || name === "append_new_files" ) {
-      const allowedTypes = [ "image/jpeg", "image/png", "application/pdf", ]
-      const data = Array.from(files).filter(file =>
-        allowedTypes.includes(file.type)
-      )
+    if (name === "add_new_files" || name === "append_new_files") {
+      setReqStatus({ loading: true })
+      const allowedTypes = ["image/jpeg", "image/png", "application/pdf"]
+      const data = Array.from(files).filter(file => allowedTypes.includes(file.type))
       const previews = await Promise.all(
         data.map(file => {
           return new Promise(resolve => {
@@ -56,9 +59,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
                 img.onload = () => {
                   resolve(e.target.result)
                 }
-              } else if (
-                file.type.startsWith("application/pdf")
-              ) {
+              } else if (file.type.startsWith("application/pdf")) {
                 resolve(e.target.result)
               }
             }
@@ -66,6 +67,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
           })
         })
       )
+      setReqStatus({ loading: false })
       setFormData(prev => ({
         ...prev,
         files: [...prev.files, ...data],
@@ -76,9 +78,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     // если отдел текущего пользователя совподает с отделом куда назначена задача
     // то Internal task = false
     if (name === "responsible_subdepartment_id") {
-      if (
-        value.toString() === currentUser.subDep.toString()
-      ) {
+      if (value.toString() === currentUser.subDep.toString()) {
         setIsInternalTask(true)
       } else {
         setIsInternalTask(false)
@@ -93,63 +93,39 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
 
   const handleSubmit = async event => {
     event.preventDefault()
-    // установка признака статуса задачи
-    // Если пользоваель руководитель то задача согласованна
-    // Если пользоваель не руководитель то задача требует согласования
-    // Два типа задач задачи от пользовтеля пользователю
-    // Два типа задач задачи от начальника начальнику на распределение
-    // сотрудник отдела ХПР назначет задачу сотруднику своего же отдела
-    // задача требует согласования начальником отдела ХПР
-    // сотрдуник создает задачу внешнему отделу
-    // задача требует согласования начальником его отдела
-    // начальник отдела ХПР создает задачу в нутри своего отдела
-    // задача согласования не требует и сразу назначается на пользователя
-    // ! responsible_user_id = 'сотрудник' task_status = approved appoint_user_id = 'начальник'
-    // начальник отдела ХПР создает задачу для внешнего отдела
-    // задача согласования не требует и сразу назначается отдел 
-    // ! responsible_subdepartment_id task_status
-
+    // Устанавливаем состояние loading в true перед отправкой данных
+    setReqStatus({ loading: true, error: null })
+    // Логика для определения статуса задачи
     if (isInternalTask && currentUser.role === "chife") {
-      console.log("Внутрення задача от начальника")
+      // console.log("Внутрення задача от начальника")
       formData.task_status = "approved"
       formData.approved_on = true
-    } else if (
-      !isInternalTask &&
-      currentUser.role === "chife"
-    ) {
-      console.log("Внешняя задача от начальника")
+    } else if (!isInternalTask && currentUser.role === "chife") {
+      // console.log("Внешняя задача от начальника")
       formData.task_status = "approved"
       formData.approved_on = true
-    } else if (
-      isInternalTask &&
-      currentUser.role === "user"
-    ) {
-      console.log("Внутрення задача от пользователя")
+    } else if (isInternalTask && currentUser.role === "user") {
+      // console.log("Внутрення задача от пользователя")
       formData.task_status = "toApprove"
       formData.approved_on = false
-    } else if (
-      !isInternalTask &&
-      currentUser.role === "user"
-    ) {
-      console.log("Внешняя задача от пользователя")
+    } else if (!isInternalTask && currentUser.role === "user") {
+      // console.log("Внешняя задача от пользователя")
       formData.task_status = "toApprove"
       formData.approved_on = false
     } else {
       // Логика для других случаев
     }
     try {
-      setReqStatus({ loading: true, error: null })
-      // нужно что придумать
-      await sendNewTaskData(
-        currentUser.token,
-        formData,
-        // "/tasks/addNewTask",
-        // "POST",
-        // setReqStatus
-        onTaskSubmit()
-      )
-      setReqStatus({ loading: false, error: null })
+      if (isEdit) {
+        console.log("EDIT TASK")
+      } else {
+        // Отправляем данные на сервер
+        await sendNewTaskData(currentUser.token, formData, onTaskSubmit)
+        // Если операция завершилась успешно, устанавливаем loading в false
+        setReqStatus({ loading: false, error: null })
+      }
     } catch (error) {
+      // Если произошла ошибка, устанавливаем loading в false и сохраняем ошибку
       setReqStatus({ loading: false, error: error.message })
     }
   }
@@ -167,20 +143,35 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     }))
   }
 
-  const removeTaskExistingFiles = (index) => {
-    const updatedFiles = [...formData.old_files]; //! поле для фалов с сервера
-    const nameRem = [...formData.file_names];
-    updatedFiles.splice(index, 1);
-    const removedNam = nameRem.splice(index, 1);
-    const updatedFilesToRemove = [...formData.filesToRemove, removedNam];
+  const removeTaskExistingFiles = index => {
+    const updatedFiles = [...formData.old_files] //! поле для фалов с сервера
+    const nameRem = [...formData.file_names]
+    updatedFiles.splice(index, 1)
+    const removedNam = nameRem.splice(index, 1)
+    const updatedFilesToRemove = [...formData.filesToRemove, removedNam]
 
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       old_files: updatedFiles, //!поле для фалов с сервера
       file_names: nameRem,
       filesToRemove: updatedFilesToRemove,
-    }));
-  };
+    }))
+  }
+
+  const handelRemoveTask = async e => {
+    e.preventDefault()
+    console.log("REMOVE TASK")
+  }
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true)
+  }
+
+  const handleConfirmDelete = () => {
+    setOpenDialog(false)
+    // Здесь добавьте логику удаления задачи
+    handelRemoveTask()
+  }
 
   return (
     <Box
@@ -199,30 +190,39 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <TextDataField
-        getData={getInputData}
-        value={formData}
-      />
-      <Divider />
-      <SelectDataField
-        getData={getInputData}
-        value={formData}
-        internalTask={isInternalTask}
-      />
-      <Divider />
-      <ImageBlock
-        files={formData}
-        getData={getInputData}
-        isEdit={isEdit}
-        takeAddedIndex={removeTaskAddedFiles}
-      />
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}>
-        Создать задачу
-      </Button>
+      {reqStatus.loading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <TextDataField getData={getInputData} value={formData} />
+          <Divider />
+          <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask} />
+          <Divider />
+          <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} toEdit={isEdit} />
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            {isEdit ? "Изменить" : "Создать задачу"}
+          </Button>
+          {isEdit && (
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleOpenDialog}>
+              удалить
+            </Button>
+          )}
+          <>
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+              <DialogTitle>Подтвердите удаление задачи</DialogTitle>
+              <DialogContent>
+                <DialogContentText>Вы уверены, что хотите удалить эту задачу?</DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setOpenDialog(false)}>Отмена</Button>
+                <Button onClick={handleConfirmDelete} variant="contained" color="error">
+                  Подтвердить удаление
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        </>
+      )}
     </Box>
   )
 }
