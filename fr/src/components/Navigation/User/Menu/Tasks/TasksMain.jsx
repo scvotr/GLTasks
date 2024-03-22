@@ -1,13 +1,13 @@
 import { AppBar, Toolbar, Typography, Fab } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
-import { useTaskContext } from "../../../../../context/TasksProvider"
+import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { useEffect, useState } from "react"
 import { TaskForm } from "./TaskForm/TaskForm"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
 
 export const TasksMain = () => {
-  const { allTasks, notifyEvent } = useTaskContext()
+  const { allTasks, notifyEvent, allTasksNoClosed, countAllTasksNoClosed} = useTaskContext()
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -47,7 +47,7 @@ export const TasksMain = () => {
           </Fab>
         </Toolbar>
       </AppBar>
-      <TasksTable tasks={allTasks} reRender={setFormKey} />
+      <TasksTable tasks={allTasks || []} reRender={setFormKey} />
     </>
   )
 }
