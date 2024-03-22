@@ -9,6 +9,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess"
 import ExpandMore from "@mui/icons-material/ExpandMore"
 import InboxIcon from "@mui/icons-material/MoveToInbox"
 import SendIcon from "@mui/icons-material/Send"
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -51,9 +52,9 @@ export const NestedListMenu = ({ isOpen }) => {
       path: "/tasks",
       tasksCount: 0,
       subItems: [
-        { name: "Создать задачу",
-          icon: <AddBoxOutlinedIcon fontSize="large" />,
-          path: "/tasks/newTask",
+        { name: "Архив",
+          icon: <Inventory2OutlinedIcon fontSize="large" />,
+          path: "/tasks/closedTask",
           btn: true }],
     },
   ]
