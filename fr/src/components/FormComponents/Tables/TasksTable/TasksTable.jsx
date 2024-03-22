@@ -8,10 +8,10 @@ import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../context/AuthProvider"
 import { ModalCustom } from "../../../ModalCustom/ModalCustom"
 import { RenderByAction } from "../RenderByAction/RenderByAction"
+import { FullScreenDialog } from "../../../FullScreenDialog/FullScreenDialog"
 
 export const TasksTable = ({ tasks, reRender }) => {
   const currentUser = useAuthContext()
-  console.log(currentUser)
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
@@ -39,7 +39,7 @@ export const TasksTable = ({ tasks, reRender }) => {
   ]
 
   const handleCellClick = (params, event) => {
-    console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
+    // console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
 
     setActionTypeTS(params.row.task_status)
     openModal(params.row)
@@ -114,9 +114,12 @@ export const TasksTable = ({ tasks, reRender }) => {
     <>
       <>
         {selectedTask && (
-          <ModalCustom isOpen={modalOpen} onClose={closeModal}>
+          // <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={selectedTask.task_status}>
+          //   <RenderByAction actionByStatus={actionTypeTS} task={selectedTask} onTaskSubmit={closeModal} />
+          // </ModalCustom>
+          <FullScreenDialog  isOpen={modalOpen} onClose={closeModal} infoText={selectedTask.task_status}>
             <RenderByAction actionByStatus={actionTypeTS} task={selectedTask} onTaskSubmit={closeModal} />
-          </ModalCustom>
+          </FullScreenDialog>
         )}
       </>
       <Box
@@ -139,10 +142,6 @@ export const TasksTable = ({ tasks, reRender }) => {
           getRowClassName={params => {
             if(params.row.read_status === "unread"){
                 return "bold-row"
-              // if (params.row.task_status === "approved") {
-              //   return "bold-row completed-row" 
-              // } else if(params.row.task_status === "inWork"){
-              // }
             } 
             if(params.row.read_status === "readed"){
               if(params.row.task_status === "toApprove"){
