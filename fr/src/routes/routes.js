@@ -10,9 +10,10 @@ import { Users } from "../components/Navigation/Admin/Menu/Users/Users";
 import { Struct } from "../components/Navigation/Admin/Menu/Struct/Struct";
 import { NewStruct } from "../components/Navigation/Admin/Menu/Struct/NewStruct";
 import { TasksMain } from "../components/Navigation/User/Menu/Tasks/TasksMain";
-import { NewTask } from "../components/Navigation/User/Menu/Tasks/NewTask";
 import { Tasks } from "../components/Navigation/Admin/Menu/Tasks/Tasks";
 import { AllTasks } from "../components/Navigation/Admin/Menu/Tasks/AllTasks";
+import { ClosedTask } from "../components/Navigation/User/Menu/Tasks/ClosedTask";
+
 
 export const routes = createBrowserRouter([
   {
@@ -60,8 +61,8 @@ export const routes = createBrowserRouter([
         element: <PrivateRoutes component={TasksMain} roles={["chife", "user"]}/>,
       },
       {
-        path: '/tasks/newTask',
-        element: <PrivateRoutes component={NewTask} roles={["chife", "user"]}/>,
+        path: '/tasks/closedTask',
+        element: <PrivateRoutes component={ClosedTask} roles={["chife", "user"]}/>,
       },
     ]
   }
