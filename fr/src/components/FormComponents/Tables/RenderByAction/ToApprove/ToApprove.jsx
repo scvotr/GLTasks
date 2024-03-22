@@ -4,7 +4,7 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown"
 import Stack from "@mui/material/Stack"
 import { useState } from "react"
 import { HOST_ADDR } from "../../../../../utils/remoteHosts"
-import { useTaskContext } from "../../../../../context/TasksProvider"
+import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { FullTaskInfo } from "../../../Tasks/FullTaskInfo/FullTaskInfo"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 

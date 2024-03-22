@@ -1,5 +1,5 @@
 import { useAuthContext } from "../context/AuthProvider"
-import { TasksProvider } from "../context/TasksProvider"
+import { TasksProvider } from "../context/Tasks/TasksProvider"
 import { AdminLayout } from "./Layouts/AdminLayout/AdminLayout"
 import { DefaultLayoutMain } from "./Layouts/DefaultLayoutMain/DefaultLayoutMain"
 import { LeadLayout } from "./Layouts/LeadLayout/LeadLayout"

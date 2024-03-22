@@ -5,7 +5,7 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown"
 import { FullTaskInfo } from "../../../Tasks/FullTaskInfo/FullTaskInfo"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { useState } from "react"
-import { useTaskContext } from "../../../../../context/TasksProvider"
+import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 
 export const CloseTask = ({ task, onTaskSubmit }) => {

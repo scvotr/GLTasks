@@ -5,7 +5,7 @@ import CancelIcon from "@mui/icons-material/Cancel"
 import { FullTaskInfo } from "../../../Tasks/FullTaskInfo/FullTaskInfo"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { useState } from "react"
-import { useTaskContext } from "../../../../../context/TasksProvider"
+import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 
 export const SendToReview = ({ task, onTaskSubmit }) => {

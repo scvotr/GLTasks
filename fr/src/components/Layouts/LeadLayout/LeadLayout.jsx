@@ -5,7 +5,7 @@ import { useSocketContext } from "../../../context/SocketProvider"
 import { Box } from "@mui/material"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
-import { useTaskContext } from "../../../context/TasksProvider"
+import { useTaskContext } from "../../../context/Tasks/TasksProvider"
 
 export const LeadLayout = () => {
   const currentUser = useAuthContext()

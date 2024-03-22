@@ -7,7 +7,7 @@ import { PositionSelect } from "../../../Select/PositionSelect/PositionSelect"
 import { UserSelect } from "../../../Select/UserSelect/UserSelect"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { useState } from "react"
-import { useTaskContext } from "../../../../../context/TasksProvider"
+import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 
 export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
@@ -43,7 +43,6 @@ export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
         responsible_subdepartment_id: task.responsible_subdepartment_id,
       }
       setReqStatus({ loading: true, error: null })
-      console.log("sss", transferData, )
       await getDataFromEndpoint(currentUser.token, "/tasks/updateTaskSetResponsibleUser", "POST", transferData, setReqStatus)
       setReqStatus({ loading: false, error: null })
       notifyEvent("need-all-Tasks")

@@ -6,7 +6,7 @@ import MuiAlert from "@mui/material/Alert"
 
 import { useAuthContext } from "../../../context/AuthProvider"
 import { useSocketContext } from "../../../context/SocketProvider"
-import { useTaskContext } from "../../../context/TasksProvider"
+import { useTaskContext } from "../../../context/Tasks/TasksProvider"
 
 export const UserLayout = () => {
   const currentUser = useAuthContext()
