@@ -370,10 +370,7 @@ class TasksControler {
           await noticeToResponceUser();
           await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' });
         } else if (inDifDep && inOneSubDep) {
-          console.log('Задача внутри подразделения, но между разными отделами setResponseUser_on');
-          // await noticeToAppointUser();
-          // await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' })
-        } else if (inDifDep && inDifSubDep) {
+          console.log('Задача внутри подразделения, но между разными отделами setResponseUser_on');        } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов setResponseUser_on');
           await noticeToAppointUser();
           await noticeToResponceUser();
