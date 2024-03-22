@@ -24,8 +24,6 @@ const saveAndConvert = async (file, rootCustomFolder, taskFolderName) => {
       recursive: true
     });
 
-    console.log('>>>', file.filepath)
-
     const readStream = fs.createReadStream(file.filepath);
     const writeStream = fs.createWriteStream(newFilePath);
 
@@ -55,7 +53,7 @@ const saveAndConvert = async (file, rootCustomFolder, taskFolderName) => {
               if (err) {
                 console.error('Ошибка при записи сжатого изображения:', err);
               } else {
-                console.log('Сжатое изображение успешно создано и сохранено.');
+                // console.log('Сжатое изображение успешно создано и сохранено.');
                 sharp.cache(false); // Освободить все ресурсы после успешной операции
               }
             })
@@ -81,7 +79,7 @@ const saveAndConvert = async (file, rootCustomFolder, taskFolderName) => {
               if (err) {
                 console.error('Ошибка при записи сжатого изображения:', err);
               } else {
-                console.log('Сжатое изображение успешно создано и сохранено.');
+                // console.log('Сжатое изображение успешно создано и сохранено.');
                 sharp.cache(false); // Освободить все ресурсы после успешной операции
               }
             })
