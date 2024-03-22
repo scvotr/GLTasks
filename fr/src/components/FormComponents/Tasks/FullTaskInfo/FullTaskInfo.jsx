@@ -1,4 +1,3 @@
-import { Box } from "@mui/material"
 import { Typography, Grid, Card, CardContent, Divider } from "@mui/material"
 import { formatDate } from "../../../../utils/formatDate"
 
@@ -9,13 +8,14 @@ export const FullTaskInfo = ({ task }) => {
     created_on,
     deadline,
     approved_on,
-    setResponseSubDep_on,
+    setResponseUser_on,
     confirmation_on,
     reject_on,
     closed_on,
     appoint_department_name,
     appoint_subdepartment_name,
     appoint_user_name,
+    responsible_user_name,
     responsible_department_name,
     responsible_subdepartment_name,
     responsible_position_name,
@@ -28,7 +28,7 @@ export const FullTaskInfo = ({ task }) => {
         <CardContent>
           <Typography variant="h4">Task ID: {task_id.slice(0, 4)}</Typography>
           <Divider />
-          <Grid container spacing={2}>
+          <Grid container spacing={2} >
             <Grid item xs={12} md={6}>
               <Typography variant="body1">
                 <strong>Статус:</strong> {task_status}
@@ -44,9 +44,14 @@ export const FullTaskInfo = ({ task }) => {
                   <strong>Согласованна:</strong> {formatDate(approved_on)}
                 </Typography>
               )}
-              {setResponseSubDep_on && (
+              {setResponseUser_on && (
                 <Typography variant="body1">
-                  <strong>В работе с:</strong> {formatDate(setResponseSubDep_on)}
+                  <strong>В работе с:</strong> {formatDate(setResponseUser_on)}
+                </Typography>
+              )}
+              {responsible_user_name && (
+                <Typography variant="body1">
+                  <strong>Ответственный:</strong> {responsible_user_name}
                 </Typography>
               )}
               {confirmation_on && (
@@ -65,36 +70,38 @@ export const FullTaskInfo = ({ task }) => {
                 </Typography>
               )}
             </Grid>
+            
             <Grid item xs={12} md={6}>
               <div>
                 <Typography variant="subtitle1">
-                  <strong>От Департамента:</strong>
+                  <strong>От Департамента:</strong> {appoint_department_name}
                 </Typography>
-                <Typography variant="body1">{appoint_department_name}</Typography>
                 <Typography variant="subtitle1">
-                  <strong>От Отдела:</strong>
+                  <strong>От Отдела:</strong> {appoint_subdepartment_name}
                 </Typography>
-                <Typography variant="body1">{appoint_subdepartment_name}</Typography>
                 <Typography variant="subtitle1">
-                  <strong>От Сотрудника:</strong>
+                  <strong>От Сотрудника:</strong> {appoint_user_name}
                 </Typography>
-                <Typography variant="body1">{appoint_user_name}</Typography>
               </div>
               <div>
                 <Typography variant="subtitle1">
-                  <strong>Для Департамента:</strong>
+                  <strong>Для Департамента:</strong> {responsible_department_name}
                 </Typography>
-                <Typography variant="body1">{responsible_department_name}</Typography>
                 <Typography variant="subtitle1">
-                  <strong>Для Отдела:</strong>
+                  <strong>Для Отдела:</strong> {responsible_subdepartment_name}
                 </Typography>
-                <Typography variant="body1">{responsible_subdepartment_name}</Typography>
                 {responsible_position_name && (
                   <>
                     <Typography variant="subtitle1">
-                      <strong>Для Службы:</strong>
+                      <strong>Для Службы:</strong> {responsible_position_name}
                     </Typography>
-                    <Typography variant="body1">{responsible_position_name}</Typography>
+                  </>
+                )}
+                {responsible_user_name && (
+                  <>
+                    <Typography variant="subtitle1">
+                      <strong>Для:</strong> {responsible_user_name}
+                    </Typography>
                   </>
                 )}
               </div>
