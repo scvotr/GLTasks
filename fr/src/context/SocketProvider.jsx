@@ -24,7 +24,7 @@ export const SocketProvider = ({ children }) => {
       socket.emit("getMyRooms")
     })
     socket.on("yourRooms", rooms => {
-      console.log("Я подключен к комнатам:", rooms)
+      // console.log("Я подключен к комнатам:", rooms)
     })
     socket.on(leadSubDep, data => {
       console.log(`подключен к комнате leadSubDep: ${leadSubDep}`, data.taskData)
