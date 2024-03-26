@@ -18,38 +18,43 @@ export const AuthProvider = ({children}) => {
   const [login, setLogin] = useState(false)
   
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem('token')
     if (storedToken) {
-      setToken(storedToken);
-      setId(localStorage.getItem('userId'));
-      setRole(localStorage.getItem('userRole'));
-      setName(localStorage.getItem('userName'));
-      setDep(localStorage.getItem('dep'));
-      setSubDep(localStorage.getItem('subDep'));
-      setPosition(localStorage.getItem('position'));
+      setToken(storedToken)
+      setId(localStorage.getItem('userId'))
+      setRole(localStorage.getItem('userRole'))
+      setName(localStorage.getItem('userName'))
+      setDep(localStorage.getItem('dep'))
+      setSubDep(localStorage.getItem('subDep'))
+      setPosition(localStorage.getItem('position'))
       setLogin(true);
     }
   }, []);
 
+  const updateToken = (newToken) => {
+    setToken(newToken);
+    localStorage.setItem('token', newToken)
+  }
+
   const handleServerResponse = useCallback((response) => {
     if (response) {
-      const { id, role, name, dep, subDep, position, token } = response;
-      setId(id);
-      setRole(role);
-      setName(name);
-      setDep(dep);
-      setSubDep(subDep);
-      setPosition(position);
-      setToken(token);
-      setLogin(true);
+      const { id, role, name, dep, subDep, position, token } = response
+      setId(id)
+      setRole(role)
+      setName(name)
+      setDep(dep)
+      setSubDep(subDep)
+      setPosition(position)
+      setToken(token)
+      setLogin(true)
       // Сохранение данных в localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("userName", name);
-      localStorage.setItem("userRole", role);
-      localStorage.setItem("userId", id);
-      localStorage.setItem("dep", dep);
-      localStorage.setItem("subDep", subDep);
-      localStorage.setItem("position", position);
+      localStorage.setItem("token", token)
+      localStorage.setItem("userName", name)
+      localStorage.setItem("userRole", role)
+      localStorage.setItem("userId", id)
+      localStorage.setItem("dep", dep)
+      localStorage.setItem("subDep", subDep)
+      localStorage.setItem("position", position)
     } else {
       setLogin(false);
     }
@@ -80,6 +85,7 @@ export const AuthProvider = ({children}) => {
         subDep,
         position,
         handleServerResponse,
+        updateToken,
         logout,
       }}
     >
