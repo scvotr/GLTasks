@@ -145,13 +145,17 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
       t.closed_on,            -- Дата закрытия задачи
       t.setResponseSubDep_on, -- Дата назначения отдела
       t.setResponseUser_on,   -- Дата назначения пользователя
-      appoint_user.name AS appoint_user_name,
+      appoint_user_f_name.first_name AS appoint_user_name,
+      appoint_user_l_name.last_name AS appoint_user_last_name,
+      appoint_user_m_name.middle_name AS appoint_user_middle_name,
       t.appoint_department_id, 
       appoint_departments.name AS appoint_department_name,
       t.appoint_subdepartment_id,
       appoint_subdepartments.name AS appoint_subdepartment_name,
       t.responsible_user_id,
-      responsible_user.name AS responsible_user_name,
+      responsible_f_user.first_name AS responsible_user_name,
+      responsible_l_user.last_name AS responsible_user_last_name,
+      responsible_m_user.middle_name AS responsible_user_middle_name,
       t.responsible_department_id, 
       responsible_departments.name AS responsible_department_name,
       t.responsible_subdepartment_id,
@@ -161,10 +165,14 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
       GROUP_CONCAT(f.file_name, '|') AS file_names,
       trs.read_status AS read_status
     FROM tasks t
-      LEFT JOIN users AS appoint_user ON t.appoint_user_id = appoint_user.id
+      LEFT JOIN users AS appoint_user_f_name ON t.appoint_user_id = appoint_user_f_name.id
+      LEFT JOIN users AS appoint_user_l_name ON t.appoint_user_id = appoint_user_l_name.id
+      LEFT JOIN users AS appoint_user_m_name ON t.appoint_user_id = appoint_user_m_name.id
       LEFT JOIN departments AS appoint_departments ON t.appoint_department_id = appoint_departments.id
       LEFT JOIN subdepartments AS appoint_subdepartments ON t.appoint_subdepartment_id = appoint_subdepartments.id
-      LEFT JOIN users AS responsible_user ON t.responsible_user_id = responsible_user.id
+      LEFT JOIN users AS responsible_f_user ON t.responsible_user_id = responsible_f_user.id
+      LEFT JOIN users AS responsible_l_user ON t.responsible_user_id = responsible_l_user.id
+      LEFT JOIN users AS responsible_m_user ON t.responsible_user_id = responsible_m_user.id
       LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
       LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
       LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
@@ -200,13 +208,17 @@ const getAllUserTasksQ = async (user_id) => {
     closed_on ,                                -- Дата закрытия задачи
     setResponseSubDep_on ,                     -- Дата назначения отдела
     setResponseUser_on ,                       -- Дата назначения пользователя
-    appoint_user.name AS appoint_user_name,
+    appoint_user_f_name.first_name AS appoint_user_name,
+    appoint_user_l_name.last_name AS appoint_user_last_name,
+    appoint_user_m_name.middle_name AS appoint_user_middle_name,
     t.appoint_department_id, 
     appoint_departments.name AS appoint_department_name,
     t.appoint_subdepartment_id,
     appoint_subdepartments.name AS appoint_subdepartment_name,
     t.responsible_user_id, -- ПОЛЬЗОВТЕЛЬ
-    responsible_user.name AS responsible_user_name,
+    responsible_f_user.first_name AS responsible_user_name,
+    responsible_l_user.last_name AS responsible_user_last_name,
+    responsible_m_user.middle_name AS responsible_user_middle_name,
     t.responsible_department_id,  -- ДЕПАРТАМЕНТ
     responsible_departments.name AS responsible_department_name,
     t.responsible_subdepartment_id, -- ПОДРАЗДЕЛЕНИ
@@ -216,10 +228,14 @@ const getAllUserTasksQ = async (user_id) => {
     GROUP_CONCAT(f.file_name, '|') AS file_names,
     trs.read_status AS read_status
   FROM tasks t
-    LEFT JOIN users AS appoint_user ON t.appoint_user_id = appoint_user.id
+    LEFT JOIN users AS appoint_user_f_name ON t.appoint_user_id = appoint_user_f_name.id
+    LEFT JOIN users AS appoint_user_l_name ON t.appoint_user_id = appoint_user_l_name.id
+    LEFT JOIN users AS appoint_user_m_name ON t.appoint_user_id = appoint_user_m_name.id
     LEFT JOIN departments AS appoint_departments ON t.appoint_department_id = appoint_departments.id
     LEFT JOIN subdepartments AS appoint_subdepartments ON t.appoint_subdepartment_id = appoint_subdepartments.id
-    LEFT JOIN users AS responsible_user ON t.responsible_user_id = responsible_user.id
+    LEFT JOIN users AS responsible_f_user ON t.responsible_user_id = responsible_f_user.id
+    LEFT JOIN users AS responsible_l_user ON t.responsible_user_id = responsible_l_user.id
+    LEFT JOIN users AS responsible_m_user ON t.responsible_user_id = responsible_m_user.id
     LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
     LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
     LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
