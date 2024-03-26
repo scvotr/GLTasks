@@ -11,7 +11,7 @@ export const useFilteredTasks = (allTasks, currentUser, filterFunction) => {
   useEffect(() => {
     setTasks(filteredTasks)
     setCount(filteredTasks.length)
-  }, [filteredTasks])
+  }, [filteredTasks, currentUser])
 
   return [tasks, count]
 }
