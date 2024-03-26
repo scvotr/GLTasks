@@ -36,9 +36,9 @@ const createTableUsers = async () => {
       const hashedPassword = await bcrypt.hash('0091', HASH_SALT);
       const hashedPincode = await bcrypt.hash('0099', HASH_SALT);
       const objUser = { id: 999, name: 'admin', email: 'admin', password: hashedPassword, role: 'admin', pin_code: hashedPincode}
-      const { name, email, password, role, pin_code } = objUser
-      const command = `INSERT INTO users(name, email, password, role, role_ref, pin_code, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      await queryAsyncWraperParam(command, [name, email, password, role || 'user', 1, pin_code, 1, 1, 1], 'run', )
+      const { id, name, email, password, role, pin_code } = objUser
+      const command = `INSERT INTO users(id, name, email, password, role, role_ref, pin_code, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      await queryAsyncWraperParam(command, [id, name, email, password, role || 'user', 1, pin_code, 1, 1, 1], 'run', )
     }
   } catch (error) {
     console.error('createTableUsers ERROR: ', error)
