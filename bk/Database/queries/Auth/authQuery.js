@@ -35,9 +35,20 @@ const getNewUserQ = async (name, pass) => {
   }
 }
 
+const changeUserPasswordQ = async (user) => {
+  try {
+    const { id, password } = user;
+    const command = `UPDATE users SET password = ? WHERE id = ?`;
+    await executeDatabaseQueryAsync(command, [password, id], 'run');    
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных changeUserPasswordQ')
+  }
+}
+
 module.exports ={
   checkEqualNameQ,
   checkEqualEmailQ,
   createNewUserQ,
   getNewUserQ,
+  changeUserPasswordQ,
 }
