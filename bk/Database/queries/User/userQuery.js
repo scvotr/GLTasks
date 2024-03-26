@@ -7,7 +7,7 @@ const getUserByIdQ = async (userId) => {
     const command = `
     SELECT 
       users.id, 
-      users.name, 
+      users.login, 
       users.email, 
       users.role,
       users.pin_code,
