@@ -16,6 +16,7 @@ import { ClosedTask } from "../components/Navigation/User/Menu/Tasks/ClosedTask"
 import { ChangePasPin } from "../components/Navigation/User/Menu/Tasks/UserSettings/ChangePasPin";
 import { EditProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EditProfile";
 import { SettingsMain } from "../components/Navigation/User/Menu/Tasks/UserSettings/SettingsMain";
+import { EmptyProfile, emptyProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EmptyProfile";
 
 
 export const routes = createBrowserRouter([
@@ -78,6 +79,10 @@ export const routes = createBrowserRouter([
       {
         path: '/settings/changePasPin',
         element: <PrivateRoutes component={ChangePasPin} roles={["chife", "user"]}/>,
+      },
+      {
+        path: '/settings/emptyProfile',
+        element: <PrivateRoutes component={EmptyProfile} roles={["chife", "user"]}/>,
       },
     ]
   }
