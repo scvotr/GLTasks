@@ -6,7 +6,7 @@ const getAllUsersQ = async () => {
     const command = `
     SELECT 
     users.id, 
-      users.name, 
+      users.login, 
       users.email, 
       users.role,
       users.pin_code,
@@ -36,10 +36,11 @@ const getAllUsersQ = async () => {
 }
 
 const updateUserDataQ = async(data) => {
+  console.log(data)
   try {
-    const {id, name, role, department_id, subdepartment_id, position_id} = data
-    const command = `UPDATE users SET name = ?, role = ?, department_id = ?, subdepartment_id = ?, position_id = ? WHERE id = ?`;
-    await executeDatabaseQueryAsync(command, [name, role, department_id, subdepartment_id, position_id, id], 'run')
+    const {id, loginName, role, department_id, subdepartment_id, position_id} = data
+    const command = `UPDATE users SET login = ?, role = ?, department_id = ?, subdepartment_id = ?, position_id = ? WHERE id = ?`;
+    await executeDatabaseQueryAsync(command, [loginName, role, department_id, subdepartment_id, position_id, id], 'run')
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }
