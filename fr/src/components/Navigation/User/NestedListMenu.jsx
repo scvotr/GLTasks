@@ -11,14 +11,14 @@ import InboxIcon from "@mui/icons-material/MoveToInbox"
 import SendIcon from "@mui/icons-material/Send"
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined"
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
 import styled from "@emotion/styled"
 import ConnectWithoutContactIcon from "@mui/icons-material/ConnectWithoutContact"
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined"
-import PasswordOutlinedIcon from '@mui/icons-material/PasswordOutlined';
+import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { Divider } from "@mui/material"
 
@@ -53,9 +53,16 @@ export const NestedListMenu = ({ isOpen }) => {
     {
       name: "Задачи",
       icon: <ConnectWithoutContactIcon fontSize="large" />,
-      path: "/tasks",
+      path: currentUser.emptyProfile || currentUser.notDistributed ? "/settings/emptyProfile" : "/tasks",
       tasksCount: 0,
-      subItems: [{ name: "Архив", icon: <Inventory2OutlinedIcon fontSize="large" />, path: "/tasks/closedTask", btn: true }],
+      subItems: [
+        {
+          name: "Архив",
+          icon: <Inventory2OutlinedIcon fontSize="large" />,
+          path: currentUser.emptyProfile || currentUser.notDistributed ? "/settings/emptyProfile" : "/tasks/closedTask",
+          btn: true,
+        },
+      ],
     },
     {
       name: "Настройки",
@@ -86,7 +93,7 @@ export const NestedListMenu = ({ isOpen }) => {
 
   return (
     <>
-      <List style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", marginBottom: "20px"}}>
+      <List style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", marginBottom: "20px" }}>
         <div>
           {sectionsWithoutSettings.map((section, index) => (
             <div key={index}>
@@ -207,7 +214,7 @@ export const NestedListMenu = ({ isOpen }) => {
           ))}
           <Divider />
         </div>
-{/* ----------------------------------------------------------------- */}
+        {/* ----------------------------------------------------------------- */}
         <div>
           <Divider />
           {sectionsWithSettings.map((section, index) => (
@@ -224,7 +231,7 @@ export const NestedListMenu = ({ isOpen }) => {
                     }}></Badge>
                   <ListItemIcon>{section.icon}</ListItemIcon>
                   <ListItemText primary={section.name} />
-                  {openSections[section.name.toLowerCase()] ? <ExpandMore /> :<ExpandLess />}
+                  {openSections[section.name.toLowerCase()] ? <ExpandMore /> : <ExpandLess />}
                 </ListItemButton>
               </NavLink>
               <Collapse in={openSections[section.name.toLowerCase()]} timeout="auto" unmountOnExit>
