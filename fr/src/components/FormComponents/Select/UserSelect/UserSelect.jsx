@@ -12,6 +12,7 @@ export const UserSelect = props => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allUser, setAllUser] = useState([])
+  console.log(allUser)
   const [selectedUser, setSelectedUser] = useState("")
   const hasUsers = allUser.length !== 0
 
@@ -67,7 +68,7 @@ export const UserSelect = props => {
               {allUser &&
                 allUser.map(user => (
                   <MenuItem key={user.id} value={user.id}>
-                    {user.name}
+                    {user.last_name}
                   </MenuItem>
                 ))}
             </Select>
