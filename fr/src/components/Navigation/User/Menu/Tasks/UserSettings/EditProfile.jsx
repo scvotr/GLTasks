@@ -6,7 +6,7 @@ import { useAuthContext } from "../../../../../../context/AuthProvider"
 export const EditProfile = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
-  const [userData, setUserData] = useState({})
+  const [userData, setUserData] = useState()
   const [errorPin, setErrorPin] = useState("")
 
   useEffect(() => {
@@ -30,6 +30,7 @@ export const EditProfile = () => {
       console.log(userData)
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, "/user/editUserData", "POST", userData, setReqStatus)
+      currentUser.setEmptyProfile(false)
       setReqStatus({ loading: false, error: null })
     } catch (error) {
       setReqStatus({ loading: false, error: null })
@@ -48,7 +49,7 @@ export const EditProfile = () => {
                 disabled
                 label="Login"
                 name="name"
-                value={userData.name}
+                value={userData.login || ''}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
                 helperText={"Обязательно к заполнению"}
@@ -62,7 +63,7 @@ export const EditProfile = () => {
                 required
                 label="Имя"
                 name="first_name"
-                value={userData.first_name}
+                value={userData.first_name || ''}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
                 error={!!errorPin}
@@ -77,7 +78,7 @@ export const EditProfile = () => {
                 required
                 label="Отчество"
                 name="middle_name"
-                value={userData.middle_name}
+                value={userData.middle_name || ''}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
                 error={!!errorPin}
@@ -92,7 +93,7 @@ export const EditProfile = () => {
                 required
                 label="Фамилия"
                 name="last_name"
-                value={userData.last_name}
+                value={userData.last_name || ''}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
                 error={!!errorPin}
@@ -107,7 +108,7 @@ export const EditProfile = () => {
                 required
                 label="№ внеш. тел."
                 name="external_phone"
-                value={userData.external_phone}
+                value={userData.external_phone || ''}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
                 error={!!errorPin}
@@ -123,7 +124,7 @@ export const EditProfile = () => {
                 required
                 label="№ внутр. тел."
                 name="internal_phone"
-                value={userData.internal_phone}
+                value={userData.internal_phone || ''}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
                 error={!!errorPin}
@@ -139,7 +140,7 @@ export const EditProfile = () => {
                 required
                 label="№ каб."
                 name="office_number"
-                value={userData.office_number}
+                value={userData.office_number || ''}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
                 error={!!errorPin}
