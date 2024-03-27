@@ -9,6 +9,16 @@ import { useAuthContext } from "../../../../context/AuthProvider"
 import { ModalCustom } from "../../../ModalCustom/ModalCustom"
 import { RenderByAction } from "../RenderByAction/RenderByAction"
 import { FullScreenDialog } from "../../../FullScreenDialog/FullScreenDialog"
+import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined"
+import SportsKabaddiOutlinedIcon from "@mui/icons-material/SportsKabaddiOutlined"
+import RoundaboutRightOutlinedIcon from "@mui/icons-material/RoundaboutRightOutlined"
+import RoundaboutLeftOutlinedIcon from "@mui/icons-material/RoundaboutLeftOutlined"
+
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty"
+import AssignmentIcon from "@mui/icons-material/Assignment"
+import CancelIcon from "@mui/icons-material/Cancel"
+import DoneAllIcon from "@mui/icons-material/DoneAll"
 
 export const TasksTable = ({ tasks, reRender }) => {
   console.log(tasks)
@@ -19,7 +29,7 @@ export const TasksTable = ({ tasks, reRender }) => {
   const [actionTypeTS, setActionTypeTS] = useState()
 
   const columns = [
-    { field: "task_id", headerName: "Task ID", description: "This column description", width: 70 },
+    { field: "task_id", headerName: "№", description: "This column description", width: 70 },
     {
       field: "read_status",
       headerName: "",
@@ -32,11 +42,66 @@ export const TasksTable = ({ tasks, reRender }) => {
       ),
     },
     // { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
-    { field: "appoint_user_last_name", headerName: "От", description: "От кого", width: 150 },
-    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для кого", width: 220 },
-    { field: "responsible_department_name", headerName: "Для", description: "Для кого", width: 220 },
-    { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 150 },
-    { field: "task_status", headerName: "Статус", description: "Статус задачи", width: 100 },
+
+    // { field: "appoint_department_name", headerName: "Назначил", description: "От кого", width: 150 },
+    // { field: "appoint_subdepartment_name", headerName: "Отдел", description: "От кого", width: 170 },
+    {
+      field: "appoint_user_last_name",
+      headerName: "От ",
+      description: "От кого",
+      width: 150,
+      renderCell: params => (
+        <div>
+          <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
+          {params.value}
+        </div>
+      ),
+    },
+
+    // { field: "responsible_department_name", headerName: "Исполнитель", description: "Для кого", width: 220 },
+    { field: "responsible_subdepartment_name", headerName: "Для", description: "От кого", width: 150 },
+    {
+      field: "responsible_user_last_name",
+      headerName: "Ответсвеный",
+      description: "Кому",
+      width: 150,
+      renderCell: params => (
+        <div>
+          <DriveFileMoveOutlinedIcon style={{ marginRight: "5px" }} />
+          {params.value}
+        </div>
+      ),
+    },
+
+    { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 350 },
+    {
+      field: "task_status",
+      headerName: "Статус",
+      description: "Статус задачи",
+      width: 100,
+      renderCell: params => {
+        let iconComponent
+
+        if (params.row.task_status === "toApprove") {
+          iconComponent = <HourglassEmptyIcon />
+        } else if (params.row.task_status === "approved") {
+          iconComponent = <CheckCircleOutlineIcon />
+        } else if (params.row.task_status === "inWork") {
+          iconComponent = <AssignmentIcon />
+        } else if (params.row.task_status === "needToConfirm") {
+          iconComponent = <CancelIcon />
+        } else if (params.row.task_status === "closed") {
+          iconComponent = <DoneAllIcon />
+        }
+
+        return (
+          <div>
+            {iconComponent}
+            {params.value}
+          </div>
+        )
+      },
+    },
   ]
 
   const handleCellClick = (params, event) => {
@@ -68,7 +133,7 @@ export const TasksTable = ({ tasks, reRender }) => {
           user_id: params.row.appoint_user_id,
           read_status: "readed",
         }
-      } else if (currentUser.id.toString() === params.row.responsible_user_id.toString()){
+      } else if (currentUser.id.toString() === params.row.responsible_user_id.toString()) {
         updatedData = {
           task_id: params.row.task_id,
           user_id: params.row.responsible_user_id,
@@ -118,14 +183,14 @@ export const TasksTable = ({ tasks, reRender }) => {
           // <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={selectedTask.task_status}>
           //   <RenderByAction actionByStatus={actionTypeTS} task={selectedTask} onTaskSubmit={closeModal} />
           // </ModalCustom>
-          <FullScreenDialog  isOpen={modalOpen} onClose={closeModal} infoText={selectedTask.task_status}>
+          <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText={selectedTask.task_status}>
             <RenderByAction actionByStatus={actionTypeTS} task={selectedTask} onTaskSubmit={closeModal} />
           </FullScreenDialog>
         )}
       </>
       <Box
         style={{
-          height: '100%',
+          height: "100%",
           width: "100%",
           boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
           border: "1px solid #e0e0e0",
@@ -141,19 +206,19 @@ export const TasksTable = ({ tasks, reRender }) => {
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           onCellClick={handleCellClick}
           getRowClassName={params => {
-            if(params.row.read_status === "unread"){
-                return "bold-row"
-            } 
-            if(params.row.read_status === "readed"){
-              if(params.row.task_status === "toApprove"){
-                return "toApprove-row" 
+            if (params.row.read_status === "unread") {
+              return "bold-row"
+            }
+            if (params.row.read_status === "readed") {
+              if (params.row.task_status === "toApprove") {
+                return "toApprove-row"
               } else if (params.row.task_status === "approved") {
-                return "approved-row" 
-              } else if(params.row.task_status === "inWork"){
+                return "approved-row"
+              } else if (params.row.task_status === "inWork") {
                 return "inWork-row"
-              } else if(params.row.task_status === "needToConfirm"){
+              } else if (params.row.task_status === "needToConfirm") {
                 return "needToConfirm-row"
-              } else if(params.row.task_status === "closed"){
+              } else if (params.row.task_status === "closed") {
                 return "closed-row"
               }
             }
