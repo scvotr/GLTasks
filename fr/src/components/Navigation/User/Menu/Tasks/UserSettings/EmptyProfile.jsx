@@ -34,7 +34,7 @@ export const EmptyProfile = () => {
         setMsg2("Перейти в настройки профиля")
         renderCmp = (
           <>
-            <StyledListItemButton component={NavLink} to="/settings/profile" activeClassName="active">
+            <StyledListItemButton component={NavLink} to="/settings/profile" activeclassname ="active">
               <ListItemIcon>
                 <ManageAccountsOutlinedIcon fontSize="large" />
               </ListItemIcon>
