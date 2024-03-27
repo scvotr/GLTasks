@@ -27,7 +27,6 @@ export const EditProfile = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     try {
-      console.log(userData)
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, "/user/editUserData", "POST", userData, setReqStatus)
       currentUser.setEmptyProfile(false)
