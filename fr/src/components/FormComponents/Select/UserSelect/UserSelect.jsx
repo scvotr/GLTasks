@@ -12,7 +12,6 @@ export const UserSelect = props => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allUser, setAllUser] = useState([])
-  console.log(allUser)
   const [selectedUser, setSelectedUser] = useState("")
   const hasUsers = allUser.length !== 0
 
