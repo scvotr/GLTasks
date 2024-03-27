@@ -25,7 +25,7 @@ export const AuthProvider = ({children}) => {
     if (storedToken) {
       setToken(storedToken)
       setId(localStorage.getItem('userId'))
-      setId(localStorage.getItem('loginName'))
+      // setId(localStorage.getItem('loginName'))
       setRole(localStorage.getItem('userRole'))
       setName(localStorage.getItem('userName'))
       setDep(localStorage.getItem('dep'))
