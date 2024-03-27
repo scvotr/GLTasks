@@ -8,9 +8,9 @@ export const PrivateRoutes = ({ component: Component, roles: RequiredRoles }) =>
   if (currentUser.login) {
     if (RequiredRoles.includes(currentUser.role)) {
       renderCmp = <Component />
-    } else {
-      return <Navigate to="/" replace />
     }
+  } else {
+    return <Navigate to="/" replace />
   }
   renderCmp = <Component />
   return <>{renderCmp}</>
