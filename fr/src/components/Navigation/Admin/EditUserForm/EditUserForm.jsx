@@ -12,7 +12,7 @@ export const EditUserForm = ({ user, onUserSubmit }) => {
 
   const [formData, setFormData] = useState({
     id: user.id,
-    name: user.name,
+    loginName: user.login,
     role: user.role,
     first_name: user.first_name,
     middle_name: user.middle_name,
@@ -65,8 +65,8 @@ export const EditUserForm = ({ user, onUserSubmit }) => {
         alignItems: "center",
       }}>
       <TextField
-        name="name"
-        value={formData.name}
+        name="loginName"
+        value={formData.loginName}
         onChange={e => {
           getInputData(e)
         }}
