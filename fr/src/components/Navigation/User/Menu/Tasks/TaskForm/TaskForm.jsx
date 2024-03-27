@@ -98,8 +98,9 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     // Логика для определения статуса задачи
     if (isInternalTask && currentUser.role === "chife") {
       // console.log("Внутрення задача от начальника")
-      formData.task_status = "approved"
-      formData.approved_on = true
+      formData.task_status = "inWork"
+      //! formData.approved_on = true
+      formData.setResponseUser_on = true
     } else if (!isInternalTask && currentUser.role === "chife") {
       // console.log("Внешняя задача от начальника")
       formData.task_status = "approved"
