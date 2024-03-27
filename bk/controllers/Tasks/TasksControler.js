@@ -37,6 +37,7 @@ class TasksControler {
       const user_id = authDecodeUserData.id
       const postPayload = authDecodeUserData.payLoad
       const fields = postPayload.fields;
+      console.log(fields)
       const files = postPayload.files
       const taskFolderName = fields.task_id
       const fileNames = [];
@@ -185,6 +186,12 @@ class TasksControler {
         noticeToLeadNewTask()
         await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
         await addReadStatusQ({ task_id: fields.task_id, user_id: data.user_id, read_status: 'readed' })
+      }
+
+      if(data.fields.setResponseUser_on === 'true') {
+        console.log('!!!!!!!!!!!!!!!!!')
+      } else {
+        
       }
 
       res.setHeader('Content-Type', 'application/json')
