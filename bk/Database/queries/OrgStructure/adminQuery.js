@@ -49,6 +49,16 @@ const createNewPosition = async (data) => {
   }
 }
 
+const deletePositionQ = async (id) => {
+  try {
+    console.log('deletePositionQ', id)
+    const command = `DELETE FROM positions WHERE id = ?`
+    await executeDatabaseQueryAsync(command, [id], 'run')
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных')
+  }
+}
+
 
 module.exports = {
   createNewDep,
@@ -56,4 +66,5 @@ module.exports = {
   createNewSubDep,
   deleteSubDep,
   createNewPosition,
+  deletePositionQ,
 }
