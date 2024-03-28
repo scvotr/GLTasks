@@ -3,7 +3,7 @@ import { TextField, Button, Grid, Box, CircularProgress, Stack, Typography } fro
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
 
-export const EditProfile = () => {
+export const EditProfile = ({text}) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [userData, setUserData] = useState()
@@ -42,6 +42,9 @@ export const EditProfile = () => {
         <CircularProgress />
       ) : (
         <>
+          <Typography variant="h4" gutterBottom>
+            {text}
+          </Typography>
           <Typography variant="h6" gutterBottom>
             Логин: {userData.login || ""}
           </Typography>
