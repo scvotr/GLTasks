@@ -20,9 +20,10 @@ const columns = [
     ),
   },
   // { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
-  { field: "appoint_user_name", headerName: "От", description: "От кого", width: 150 },
+  { field: "appoint_user_last_name", headerName: "От", description: "От кого", width: 150 },
   { field: "responsible_subdepartment_name", headerName: "Для", description: "Для кого", width: 220 },
   { field: "responsible_department_name", headerName: "Для", description: "Для кого", width: 220 },
+  { field: "responsible_user_last_name", headerName: "От", description: "От кого", width: 150 },
   { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 150 },
   { field: "task_status", headerName: "Статус", description: "Статус задачи", width: 100 },
 ]
