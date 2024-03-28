@@ -9,7 +9,7 @@ function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
-        <SocketProvider>
+        {/* <SocketProvider> */}
           <Container maxWidth={false}>
             <Box>
               <SnackbarProvider>
@@ -17,7 +17,7 @@ function App() {
               </SnackbarProvider>
             </Box>
           </Container>
-        </SocketProvider>
+        {/* </SocketProvider> */}
     </ThemeProvider>
   )
 }
