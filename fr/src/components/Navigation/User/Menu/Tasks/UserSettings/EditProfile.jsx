@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { TextField, Button, Grid, Box, CircularProgress } from "@mui/material"
+import { TextField, Button, Grid, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
 
@@ -37,123 +37,110 @@ export const EditProfile = () => {
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, textAlign: 'center' }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, textAlign: "center" }}>
       {reqStatus.loading ? (
         <CircularProgress />
       ) : (
         <>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                disabled
-                label="Login"
-                name="name"
-                value={userData.login || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                helperText={"Обязательно к заполнению"}
-                inputProps={{
-                  minLength: 4,
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                label="Имя"
-                name="first_name"
-                value={userData.first_name || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                error={!!errorPin}
-                helperText={errorPin || "Введите Ваше имя"}
-                inputProps={{
-                  minLength: 4,
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                label="Отчество"
-                name="middle_name"
-                value={userData.middle_name || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                error={!!errorPin}
-                helperText={errorPin || "Введите Ваше отчество"}
-                inputProps={{
-                  minLength: 4,
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                label="Фамилия"
-                name="last_name"
-                value={userData.last_name || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                error={!!errorPin}
-                helperText={errorPin || "Введите Вашу фамилию"}
-                inputProps={{
-                  minLength: 4,
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                label="№ внеш. тел."
-                name="external_phone"
-                value={userData.external_phone || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                error={!!errorPin}
-                helperText={errorPin || "введите цифры"}
-                inputProps={{
-                  minLength: 6,
-                  maxLength: 8,
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                label="№ внутр. тел."
-                name="internal_phone"
-                value={userData.internal_phone || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                error={!!errorPin}
-                helperText={errorPin || "введите цифры"}
-                inputProps={{
-                  minLength: 4,
-                  maxLength: 6,
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                label="№ каб."
-                name="office_number"
-                value={userData.office_number || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                error={!!errorPin}
-                helperText={errorPin || "введите цифры"}
-                inputProps={{
-                  pattern: "[0-9]*",
-                  minLength: 3,
-                  maxLength: 5,
-                }}
-              />
-            </Grid>
-          </Grid>
+          <Typography variant="h6" gutterBottom>
+            Логин: {userData.login || ""}
+          </Typography>
 
-          <Button type="submit" variant="contained" color="primary">
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              sx={{ mr: 2 }}
+              required
+              label="Имя"
+              name="first_name"
+              value={userData.first_name || ""}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              error={!!errorPin}
+              helperText={errorPin || "Введите Ваше имя"}
+              inputProps={{
+                minLength: 4,
+              }}
+            />
+            <TextField
+              sx={{ mr: 2 }}
+              required
+              label="Отчество"
+              name="middle_name"
+              value={userData.middle_name || ""}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              error={!!errorPin}
+              helperText={errorPin || "Введите Ваше отчество"}
+              inputProps={{
+                minLength: 4,
+              }}
+            />
+            <TextField
+              required
+              label="Фамилия"
+              name="last_name"
+              value={userData.last_name || ""}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              error={!!errorPin}
+              helperText={errorPin || "Введите Вашу фамилию"}
+              inputProps={{
+                minLength: 4,
+              }}
+            />
+          </Box>
+
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              required
+              sx={{ mr: 2 }}
+              label="№ внеш. тел."
+              name="external_phone"
+              value={userData.external_phone || ""}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              error={!!errorPin}
+              helperText={errorPin || "введите цифры"}
+              inputProps={{
+                minLength: 6,
+                maxLength: 8,
+              }}
+            />
+            <TextField
+              required
+              label="№ внутр. тел."
+              name="internal_phone"
+              value={userData.internal_phone || ""}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              error={!!errorPin}
+              helperText={errorPin || "введите цифры"}
+              inputProps={{
+                minLength: 4,
+                maxLength: 6,
+              }}
+            />
+          </Box>
+
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              required
+              label="№ каб."
+              name="office_number"
+              value={userData.office_number || ""}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              error={!!errorPin}
+              helperText={errorPin || "введите цифры"}
+              inputProps={{
+                pattern: "[0-9]*",
+                minLength: 3,
+                maxLength: 5,
+              }}
+            />
+          </Box>
+
+          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
             Сохранить
           </Button>
         </>
