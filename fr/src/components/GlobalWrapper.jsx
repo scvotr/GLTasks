@@ -8,10 +8,11 @@ import { UserLayout } from "./Layouts/UserLayout/UserLayout"
 import { LefSideAdmin } from "./Navigation/Admin/LefSideAdmin/LefSideAdmin"
 import { LeftSideDrawer } from "./Navigation/User/LeftSideDrawer/LeftSideDrawer"
 import { EditProfile } from "./Navigation/User/Menu/Tasks/UserSettings/EditProfile"
+import { NotDistributed } from "./Navigation/User/Menu/Tasks/UserSettings/NotDistributed"
 
 export const GlobalWrapper = () => {
   const currentUser = useAuthContext()
-  // console.log(currentUser)
+  console.log(currentUser)
 
   const comtentMap = new Map([
     ["admin", () => (<LefSideAdmin currentUser={currentUser}><SocketProvider><AdminLayout /></SocketProvider></LefSideAdmin>),],
@@ -21,9 +22,12 @@ export const GlobalWrapper = () => {
 
   const renderContent = () => {
     if (currentUser && currentUser.login) {
-      // if(currentUser.emptyProfile) {
-      //   return  <LeftSideDrawer currentUser={currentUser}><SocketProvider><EditProfile /></SocketProvider></LeftSideDrawer>
-      // } 
+      if(currentUser.emptyProfile) {
+        console.log(currentUser.emptyProfile && currentUser.role !== 'admin')
+        return  <LeftSideDrawer currentUser={currentUser}><SocketProvider><EditProfile text={'Для дальнейшей работы заполните профиль!'}/></SocketProvider></LeftSideDrawer>
+      } else if(currentUser.notDistributed && currentUser.role !== 'admin') {
+        return <LeftSideDrawer currentUser={currentUser}><SocketProvider><NotDistributed/></SocketProvider></LeftSideDrawer>
+      }
       const getContentByRole = comtentMap.get(currentUser.role)
       return getContentByRole ? getContentByRole() : <DefaultLayoutMain />
     } else {
