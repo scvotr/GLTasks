@@ -36,7 +36,7 @@ export const PositionSelect = props => {
 
   useEffect(() => {
     setSelectedPosition("")
-  }, [props.selectedSubDep])
+  }, [props.selectedSubDep, props.reRender])
 
   useEffect(() => {
     fetchData()
