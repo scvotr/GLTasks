@@ -64,14 +64,12 @@ class AuthControler {
       res.setHeader("Content-Type", "application/json")
       const postPayload = await getPostDataset(req)
       const postData = JSON.parse(postPayload)
-      console.log(postData)
       const {login, password} = postData
       const isEmpty = login && password
       if(!isEmpty) return res.end(JSON.stringify({Authtorisation: "Пустые поля"}))
       const nameIsEqual = await checkEqualNameQ(login)
       if(!nameIsEqual.length) return res.end(JSON.stringify({Authtorisation: "Пользователь не найден"}))
       const userData = {...nameIsEqual[0]}
-      console.log(userData)
       const checkPassword = await bcrypt.compare(password, userData.password)
       if(!checkPassword) return res.end(JSON.stringify({Authtorisation: "Не верный пароль"}))
       const token = await getTokenQ(userData.id)
@@ -151,7 +149,6 @@ class AuthControler {
       const postPayload = await getPostDataset(req);
       const postData = JSON.parse(postPayload);
       const { name, newPassword,  psPincode} = postData;
-      console.log('>>>>>>>>>>>>>>>>...', name, newPassword,  psPincode)
       const isEmpty = !name || !newPassword || !psPincode;
       if(isEmpty) {
         return res.end(JSON.stringify({ dropPasswordByPincode: "Пустые поля" }));
