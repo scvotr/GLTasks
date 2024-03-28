@@ -181,18 +181,21 @@ class TasksControler {
             
           }
         }
+      } else if(data.fields.setResponseUser_on === 'true') {
+        console.log('!!!!!!!!!!!!!!!!!')
       } else {
         console.log('Задача от сотрудника addNewTask');
         noticeToLeadNewTask()
         await addReadStatusQ({ task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
         await addReadStatusQ({ task_id: fields.task_id, user_id: data.user_id, read_status: 'readed' })
-      }
-
-      if(data.fields.setResponseUser_on === 'true') {
-        console.log('!!!!!!!!!!!!!!!!!')
-      } else {
         
       }
+
+      // if(data.fields.setResponseUser_on === 'true') {
+      //   console.log('!!!!!!!!!!!!!!!!!')
+      // } else {
+        
+      // }
 
       res.setHeader('Content-Type', 'application/json')
       res.statusCode = 200;
