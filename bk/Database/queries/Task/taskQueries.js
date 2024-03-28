@@ -2,40 +2,73 @@
 const {
   getThumbnailFiles
 } = require("../../../utils/files/getThumbnailFiles");
-const { removeFolder } = require("../../../utils/files/removeFolder");
+const {
+  removeFolder
+} = require("../../../utils/files/removeFolder");
 const {
   executeDatabaseQueryAsync
 } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
 
 const createTask = async (data) => {
-  let taskID;
-
-  const command = `
-  INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-`;
-
   try {
-    await executeDatabaseQueryAsync(
-      command,
-      [
-        data.fields.task_id,
-        data.fields.task_descript,
-        data.fields.task_priority,
+    let taskID;
+    if (!data.fields.setResponseUser_on) {
+      console.log('НОВАЯ ЗАДАЧА')
+      const command = `
+        INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      `;
 
-        data.fields.appoint_user_id,
-        data.fields.appoint_department_id,
-        data.fields.appoint_subdepartment_id,
+      await executeDatabaseQueryAsync(
+        command,
+        [
+          data.fields.task_id,
+          data.fields.task_descript,
+          data.fields.task_priority,
 
-        // data.fields.responsible_user_id,
-        data.fields.responsible_position_id,
-        data.fields.responsible_department_id,
-        data.fields.responsible_subdepartment_id,
+          data.fields.appoint_user_id,
+          data.fields.appoint_department_id,
+          data.fields.appoint_subdepartment_id,
 
-        data.fields.task_status,
-        data.fields.deadline,
-      ], "run");
-    taskID = data.fields.task_id;
+          // data.fields.setResponseUser_on ? data.fields.responsible_user_id : null,
+
+          data.fields.responsible_position_id,
+          data.fields.responsible_department_id,
+          data.fields.responsible_subdepartment_id,
+
+          data.fields.task_status,
+          data.fields.deadline,
+        ], "run");
+      taskID = data.fields.task_id;
+    } else {
+      console.log('Задача от начальника своему сотруднику!!!')
+      const command = `
+        INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_user_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline, setResponseUser_on)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);
+      `;
+
+      await executeDatabaseQueryAsync(
+        command,
+        [
+          data.fields.task_id,
+          data.fields.task_descript,
+          data.fields.task_priority,
+
+          data.fields.appoint_user_id,
+          data.fields.appoint_department_id,
+          data.fields.appoint_subdepartment_id,
+
+          data.fields.responsible_user_id, //!?
+
+          data.fields.responsible_position_id,
+          data.fields.responsible_department_id,
+          data.fields.responsible_subdepartment_id,
+
+          data.fields.task_status,
+          data.fields.deadline,
+        ], "run");
+      taskID = data.fields.task_id;
+    }
   } catch (error) {
     console.error("createTask ERROR: ", error);
     throw new Error('Ошибка запроса к базе данных')
@@ -107,7 +140,9 @@ const updateTaskStatusQ = async (data) => {
 
 const removeTaskQ = async (data, taskFolderName) => {
   try {
-    const { task_id } = data
+    const {
+      task_id
+    } = data
     const command = `
     DELETE FROM tasks
     WHERE task_id = ?
@@ -258,28 +293,37 @@ const getAllUserTasksQ = async (user_id) => {
 
 const updateTaskSetResponsibleUserQ = async (data) => {
   try {
-    const { responsible_position_id, task_status, task_id, responsible_user_id, setResponseUser_on, confirmation_on, reject_on, closed_on } = data
+    const {
+      responsible_position_id,
+      task_status,
+      task_id,
+      responsible_user_id,
+      setResponseUser_on,
+      confirmation_on,
+      reject_on,
+      closed_on
+    } = data
     let fieldsToUpdate = []
 
-    if(setResponseUser_on) {
+    if (setResponseUser_on) {
       fieldsToUpdate.push('setResponseUser_on = CURRENT_TIMESTAMP')
     }
-    if(confirmation_on) {
+    if (confirmation_on) {
       fieldsToUpdate.push('confirmation_on = CURRENT_TIMESTAMP')
     }
-    if(reject_on) {
+    if (reject_on) {
       fieldsToUpdate.push('reject_on = CURRENT_TIMESTAMP')
     }
-    if(closed_on) {
+    if (closed_on) {
       fieldsToUpdate.push('closed_on = CURRENT_TIMESTAMP')
     }
-    
+
     const command = `
       UPDATE tasks
       SET responsible_position_id = ?, task_status = ?, responsible_user_id = ?, ${fieldsToUpdate}
       WHERE task_id = ?
     `;
-    await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id,])
+    await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id, ])
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных updateTaskSetResponsibleUserQ')
   }
