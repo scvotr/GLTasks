@@ -6,12 +6,14 @@ import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { StructTable } from "../../Tables/StructTable/StructTableView"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
 import { AddStuctForm } from "./AddStuctForm"
+import { Loader } from "../../../../FormComponents/Loader/Loader"
 
 export const NewStruct = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [dataFromEndpoint, setDataFromEndpoint] = useState([])
-  const [formKey, setFormKey] = useState(0)
+  const [formKey, setFormKey] = useState(1)
+  console.log('NewStruct', formKey)
 
   const [modalOpen, setModalOpen] = useState(false)
   const openModal = user => {
@@ -19,7 +21,7 @@ export const NewStruct = () => {
   }
   const closeModal = () => {
     setModalOpen(false)
-    // reRender(prevKey => prevKey + 1)
+    setFormKey(prevKey => prevKey + 1)
   }
 
   const fetchData = useCallback(async () => {
@@ -33,17 +35,17 @@ export const NewStruct = () => {
         setReqStatus({ loading: false, error: error.message })
       }
     }
-  }, [currentUser, formKey])
+  }, [currentUser])
 
   useEffect(() => {
     fetchData()
-  }, [fetchData])
+  }, [fetchData, formKey])
 
   return (
     <>
       <>
         <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText='Добавить отдел'>
-          <AddStuctForm  onTaskSubmit={closeModal}/>
+          <AddStuctForm  reRender={setFormKey} />
         </ModalCustom>
         <Box>
           <AppBar
@@ -64,7 +66,9 @@ export const NewStruct = () => {
             </Toolbar>
           </AppBar>
         </Box>
-        <StructTable users={dataFromEndpoint} reRender={setFormKey} />
+        <Loader reqStatus={reqStatus}>
+          <StructTable users={dataFromEndpoint} reRender={setFormKey} />
+        </Loader>
       </>
     </>
   )
