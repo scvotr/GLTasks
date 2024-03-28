@@ -7,9 +7,11 @@ import { LeadLayout } from "./Layouts/LeadLayout/LeadLayout"
 import { UserLayout } from "./Layouts/UserLayout/UserLayout"
 import { LefSideAdmin } from "./Navigation/Admin/LefSideAdmin/LefSideAdmin"
 import { LeftSideDrawer } from "./Navigation/User/LeftSideDrawer/LeftSideDrawer"
+import { EditProfile } from "./Navigation/User/Menu/Tasks/UserSettings/EditProfile"
 
 export const GlobalWrapper = () => {
   const currentUser = useAuthContext()
+  // console.log(currentUser)
 
   const comtentMap = new Map([
     ["admin", () => (<LefSideAdmin currentUser={currentUser}><SocketProvider><AdminLayout /></SocketProvider></LefSideAdmin>),],
@@ -19,6 +21,9 @@ export const GlobalWrapper = () => {
 
   const renderContent = () => {
     if (currentUser && currentUser.login) {
+      // if(currentUser.emptyProfile) {
+      //   return  <LeftSideDrawer currentUser={currentUser}><SocketProvider><EditProfile /></SocketProvider></LeftSideDrawer>
+      // } 
       const getContentByRole = comtentMap.get(currentUser.role)
       return getContentByRole ? getContentByRole() : <DefaultLayoutMain />
     } else {
