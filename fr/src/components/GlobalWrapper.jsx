@@ -1,4 +1,5 @@
 import { useAuthContext } from "../context/AuthProvider"
+import { SocketProvider } from "../context/SocketProvider"
 import { TasksProvider } from "../context/Tasks/TasksProvider"
 import { AdminLayout } from "./Layouts/AdminLayout/AdminLayout"
 import { DefaultLayoutMain } from "./Layouts/DefaultLayoutMain/DefaultLayoutMain"
@@ -11,9 +12,9 @@ export const GlobalWrapper = () => {
   const currentUser = useAuthContext()
 
   const comtentMap = new Map([
-    ["admin", () => (<LefSideAdmin currentUser={currentUser}><AdminLayout /></LefSideAdmin>),],
-    ["chife", () => (<LeftSideDrawer currentUser={currentUser}><LeadLayout /></LeftSideDrawer>),],
-    ["user", () => (<LeftSideDrawer currentUser={currentUser}><UserLayout /></LeftSideDrawer>),],
+    ["admin", () => (<LefSideAdmin currentUser={currentUser}><SocketProvider><AdminLayout /></SocketProvider></LefSideAdmin>),],
+    ["chife", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><LeadLayout /></SocketProvider></LeftSideDrawer>),],
+    ["user", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><UserLayout /></SocketProvider></LeftSideDrawer>),],
   ])
 
   const renderContent = () => {
