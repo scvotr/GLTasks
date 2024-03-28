@@ -199,7 +199,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
           <Divider />
           <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask} />
           <Divider />
-          <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} toEdit={isEdit} />
+          {/* <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} toEdit={isEdit} /> */}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             {isEdit ? "Изменить" : "Создать задачу"}
           </Button>
