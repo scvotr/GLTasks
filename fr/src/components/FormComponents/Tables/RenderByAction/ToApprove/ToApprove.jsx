@@ -8,7 +8,6 @@ import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { FullTaskInfo } from "../../../Tasks/FullTaskInfo/FullTaskInfo"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 
-
 export const updateTaskStatus = async (token, data, onSuccess) => {
   try {
     const res = await fetch(HOST_ADDR + "/tasks/updateTaskStatus", {
@@ -49,6 +48,8 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
         appoint_subdepartment_id: task.appoint_subdepartment_id, // Отдел в котором создали задачу
         responsible_department_id: task.responsible_department_id, // Департамент для кого создали задачу
         responsible_subdepartment_id: task.responsible_subdepartment_id, // Отдел для кого создали задачу
+        // -----
+        user_role: currentUser.role,
       }
       try {
         setReqStatus({ loading: true, error: null })
