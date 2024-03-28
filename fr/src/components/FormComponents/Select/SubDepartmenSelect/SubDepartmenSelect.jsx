@@ -33,7 +33,7 @@ export const SubDepartmenSelect = props => {
         setReqStatus({ loading: false, error: error.message })
       }
     }
-  }, [currentUser, props.selectedDep])
+  }, [currentUser, props.selectedDep, props.reRender])
 
   useEffect(() => {
     setSelectedSubDep("")
