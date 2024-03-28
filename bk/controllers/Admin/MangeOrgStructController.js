@@ -1,4 +1,4 @@
-const { createNewDep, createNewSubDep, createNewPosition, deleteDep, deleteSubDep } = require("../../Database/queries/OrgStructure/adminQuery");
+const { createNewDep, createNewSubDep, createNewPosition, deleteDep, deleteSubDep, deletePositionQ } = require("../../Database/queries/OrgStructure/adminQuery");
 
 class MangeOrgStructController {
   async createNewDep(req, res) {
@@ -108,6 +108,28 @@ class MangeOrgStructController {
       res.end(
         JSON.stringify({
           error: "createNewPosition - ERROR",
+        })
+      );
+    }
+  }
+  async deletePosition(req, res) {
+    try {
+      const authDecodeUserData = req.user;
+      const data = JSON.parse(authDecodeUserData.payLoad);
+      if (authDecodeUserData.role !== "admin") {
+        return res.end(
+          JSON.stringify({
+            createNewDep: "Нет прав на доступ",
+          })
+        );
+      }
+      await deletePositionQ(data)
+    } catch (error) {
+      console.log(error);
+      res.statusCode = 500;
+      res.end(
+        JSON.stringify({
+          error: "deletePosition - ERROR",
         })
       );
     }
