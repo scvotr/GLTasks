@@ -182,7 +182,10 @@ class TasksControler {
           }
         }
       } else if(data.fields.setResponseUser_on === 'true') {
-        console.log('!!!!!!!!!!!!!!!!!')
+        if (inOneDep && inOneSubDep) {
+             noticeToResponsibleUser()
+          await addReadStatusQ({ task_id: fields.task_id, user_id: fields.responsible_user_id, read_status: 'unread' })
+        }
       } else {
         console.log('Задача от сотрудника addNewTask');
         noticeToLeadNewTask()
@@ -191,11 +194,6 @@ class TasksControler {
         
       }
 
-      // if(data.fields.setResponseUser_on === 'true') {
-      //   console.log('!!!!!!!!!!!!!!!!!')
-      // } else {
-        
-      // }
 
       res.setHeader('Content-Type', 'application/json')
       res.statusCode = 200;
@@ -372,7 +370,7 @@ class TasksControler {
           await noticeToAppointUser();
           await noticeToResponceUser();
           await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' });
-          await noticeToAppointLead();
+          // await noticeToAppointLead();
         } else if (inOneDep && inDifSubDep) {
           console.log('Задача между отделами в одном департаменте setResponseUser_on');
           await noticeToAppointUser();
@@ -393,8 +391,8 @@ class TasksControler {
           console.log('Задача внутри одного отдела в одном департаменте confirmation_on');
           try {
             await noticeToAppointUserT('Задача на проверку', data);
-            await noticeToResponceUserT('Задача на проверку', data);
-            await noticeToAppointLeadT('Задача на проверку', data);
+            // await noticeToResponceUserT('Задача на проверку', data);
+            // await noticeToAppointLeadT('Задача на проверку', data);
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error);
           }
@@ -423,7 +421,7 @@ class TasksControler {
         if (inOneDep && inOneSubDep) {
           console.log('Задача внутри одного отдела в одном департаменте closed_on');
           try {
-            await noticeToAppointUserT('Задача закрыта', data);
+            // await noticeToAppointUserT('Задача закрыта', data);
             await noticeToResponceUserT('Задача закрыта', data);
             await noticeToAppointLeadT('Задача закрыта', data);
           } catch (error) {
