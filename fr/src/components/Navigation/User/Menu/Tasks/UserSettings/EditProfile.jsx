@@ -92,7 +92,7 @@ export const EditProfile = ({ text }) => {
             {"Для дальнейшей работы заполните профиль!"}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Логин: {userData.login || ""}
+            Логин: {userData && userData.login || ""}
           </Typography>
 
           <Box sx={{ mt: 2 }}>
@@ -101,7 +101,7 @@ export const EditProfile = ({ text }) => {
               required
               label="Имя"
               name="first_name"
-              value={userData.first_name || ""}
+              value={userData && userData.first_name || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -115,7 +115,7 @@ export const EditProfile = ({ text }) => {
               required
               label="Отчество"
               name="middle_name"
-              value={userData.middle_name || ""}
+              value={userData && userData.middle_name || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -128,7 +128,7 @@ export const EditProfile = ({ text }) => {
               required
               label="Фамилия"
               name="last_name"
-              value={userData.last_name || ""}
+              value={userData && userData.last_name || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -145,7 +145,7 @@ export const EditProfile = ({ text }) => {
               sx={{ mr: 2 }}
               label="№ внеш. тел."
               name="external_phone"
-              value={userData.external_phone || ""}
+              value={userData && userData.external_phone || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -159,7 +159,7 @@ export const EditProfile = ({ text }) => {
               required
               label="№ внутр. тел."
               name="internal_phone"
-              value={userData.internal_phone || ""}
+              value={userData && userData.internal_phone || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -176,7 +176,7 @@ export const EditProfile = ({ text }) => {
               required
               label="№ каб."
               name="office_number"
-              value={userData.office_number || ""}
+              value={userData && userData.office_number || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
