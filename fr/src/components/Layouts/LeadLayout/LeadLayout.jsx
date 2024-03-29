@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { useEffect, useState } from "react"
 import { useSocketContext } from "../../../context/SocketProvider"
@@ -9,16 +9,28 @@ import { useTaskContext } from "../../../context/Tasks/TasksProvider"
 
 export const LeadLayout = () => {
   const currentUser = useAuthContext()
-  const {notifyEvent} = useTaskContext()
+  const { notifyEvent } = useTaskContext()
 
   useEffect(() => {
-    if(currentUser.login) {
+    if (currentUser.login) {
       notifyEvent("need-all-Tasks")
     }
   }, [currentUser])
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
+
+  //!------------------------
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const savedRoute = localStorage.getItem("currentRoute")
+    if (savedRoute && savedRoute !== location.pathname) {
+      navigate(savedRoute)
+    }
+  }, [location, navigate])
+  //!------------------------
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -53,14 +65,14 @@ export const LeadLayout = () => {
 
   useEffect(() => {
     window.addEventListener("beforeunload", () => {
-      socket.disconnect();
-    });
+      socket.disconnect()
+    })
     return () => {
       window.removeEventListener("beforeunload", () => {
-        socket.disconnect();
-      });
-    };
-  }, [socket]);
+        socket.disconnect()
+      })
+    }
+  }, [socket])
 
   return (
     <>
