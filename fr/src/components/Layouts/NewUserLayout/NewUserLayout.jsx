@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import { Outlet, useNavigate  } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
@@ -9,12 +9,25 @@ import { useSocketContext } from "../../../context/SocketProvider"
 
 export const NewUserLayout = () => {
   const currentUser = useAuthContext()
-  console.log('emptyProfile', currentUser.emptyProfile)
-  console.log('notDistributed', currentUser.notDistributed)
+
+  console.log("emptyProfile", currentUser.emptyProfile)
+  console.log("notDistributed", currentUser.notDistributed)
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
-  
+
+  //!------------------------
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const savedRoute = localStorage.getItem("currentRoute")
+    if (savedRoute && savedRoute !== location.pathname) {
+      navigate(savedRoute)
+    }
+  }, [location, navigate])
+  //!------------------------
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return
