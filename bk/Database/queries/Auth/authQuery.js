@@ -21,7 +21,7 @@ const createNewUserQ = async (user) => {
   const { login, email, password, pincode, role, department_id, subdepartment_id, position_id } = user;
   const command = `INSERT INTO users(login, email, password, pin_code, role, role_ref, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   try {
-    await executeDatabaseQueryAsync(command, [ login, email, password, pincode, role || 'user', 2, department_id || 1, subdepartment_id || 1, position_id || 1 ], 'run')
+    await executeDatabaseQueryAsync(command, [ login, email, password, pincode, role || 'new', 2, department_id || 1, subdepartment_id || 1, position_id || 1 ], 'run')
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }
