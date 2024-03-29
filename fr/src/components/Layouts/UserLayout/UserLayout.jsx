@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
@@ -20,7 +20,17 @@ export const UserLayout = () => {
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
+  //!------------------------
+  const location = useLocation()
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    const savedRoute = localStorage.getItem("currentRoute")
+    if (savedRoute && savedRoute !== location.pathname) {
+      navigate(savedRoute)
+    }
+  }, [location, navigate])
+  //!------------------------
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return
