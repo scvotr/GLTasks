@@ -2,8 +2,11 @@ import { useEffect, useState } from "react"
 import { TextField, Button, Grid, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
+import { useSocketContext } from "../../../../../../context/SocketProvider"
+import Snackbar from "@mui/material/Snackbar"
+import MuiAlert from "@mui/material/Alert"
 
-export const EditProfile = ({text}) => {
+export const EditProfile = ({ text }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [userData, setUserData] = useState()
@@ -36,14 +39,57 @@ export const EditProfile = ({text}) => {
     }
   }
 
+  const [snackbarMessage, setSnackbarMessage] = useState()
+  const [open, setOpen] = useState(false)
+
+  const socket = useSocketContext()
+  useEffect(() => {
+    // socket.on('need-logout', messageData => {
+    socket.on("taskApproved", messageData => {
+      console.log(messageData.message)
+      setSnackbarMessage(messageData.message)
+      setOpen(true)
+    })
+
+    return () => {
+      socket.off("yourRooms")
+      socket.off("taskApproved")
+      // socket.off("need-logout")
+      socket.disconnect()
+      window.removeEventListener("beforeunload", () => socket.disconnect())
+    }
+  }, [])
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      socket.disconnect()
+    })
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        socket.disconnect()
+      })
+    }
+  }, [socket])
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setOpen(false)
+  }
+
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, textAlign: "center" }}>
       {reqStatus.loading ? (
         <CircularProgress />
       ) : (
         <>
+          <Snackbar open={open} autoHideDuration={16000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+            <MuiAlert onClose={handleClose} severity="warning" variant="filled" sx={{ width: "100%" }}>
+              {snackbarMessage}
+            </MuiAlert>
+          </Snackbar>
           <Typography variant="h4" gutterBottom>
-            {text}
+            {"Для дальнейшей работы заполните профиль!"}
           </Typography>
           <Typography variant="h6" gutterBottom>
             Логин: {userData.login || ""}
