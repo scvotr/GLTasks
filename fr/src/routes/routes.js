@@ -78,7 +78,7 @@ export const routes = createBrowserRouter([
       },
       {
         path: '/settings/changePasPin',
-        element: <PrivateRoutes component={ChangePasPin} roles={["chife", "user"]}/>,
+        element: <PrivateRoutes component={ChangePasPin} roles={["chife", "user", "new"]}/>,
       },
       {
         path: '/settings/emptyProfile',
