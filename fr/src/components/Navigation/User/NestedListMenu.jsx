@@ -36,9 +36,6 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
 
 export const NestedListMenu = ({ isOpen }) => {
   const currentUser = useAuthContext()
-  
-  console.log(currentUser.emptyProfile, currentUser.notDistributed)
-
   const [openSections, setOpenSections] = useState(() => {
     const localSections = JSON.parse(localStorage.getItem("openSections"))
     return localSections || { tasks: false, projects: false, documents: false }
@@ -54,15 +51,13 @@ export const NestedListMenu = ({ isOpen }) => {
   const sectionsData = [
     {
       name: "Задачи",
-      icon: <ConnectWithoutContactIcon fontSize="large" />,
-      //! path: currentUser.emptyProfile && currentUser.notDistributed ? "/settings/emptyProfile" : "/tasks",
+      icon:  <ConnectWithoutContactIcon fontSize="large" />,
       path: "/tasks",
       tasksCount: 0,
       subItems: [
         {
           name: "Архив",
           icon: <Inventory2OutlinedIcon fontSize="large" />,
-          //! path: currentUser.emptyProfile || currentUser.notDistributed ? "/settings/emptyProfile" : "/tasks/closedTask",
           path: "/tasks/closedTask",
           btn: true,
         },
