@@ -8,9 +8,10 @@ import MuiAlert from "@mui/material/Alert"
 
 export const EditProfile = ({ text }) => {
   const currentUser = useAuthContext()
+
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [userData, setUserData] = useState()
-  const [errorPin, setErrorPin] = useState("")
+  const [errorPin, setErrorPin] = useState()
 
   useEffect(() => {
     setReqStatus({ loading: true, error: null })
@@ -32,8 +33,8 @@ export const EditProfile = ({ text }) => {
     try {
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, "/user/editUserData", "POST", userData, setReqStatus)
-      currentUser.setEmptyProfile(false)
-      setReqStatus({ loading: false, error: null })
+      localStorage.setItem("emptyProfile", 'false')
+        setReqStatus({ loading: false, error: null })
     } catch (error) {
       setReqStatus({ loading: false, error: null })
     }
@@ -89,19 +90,21 @@ export const EditProfile = ({ text }) => {
             </MuiAlert>
           </Snackbar>
           <Typography variant="h4" gutterBottom>
-            {"Для дальнейшей работы заполните профиль!"}
+            {currentUser.profile.toString() === 'true' ? "Для дальнейшей работы заполните данне профиль!" : ""}
+          </Typography>{" "}
+          <Typography variant="h5" gutterBottom>
+            {currentUser.notDistributed.toString() === 'true' ? "Отдел не назначен. Обратитесь к администратору для назначения отдела" : "отдел назначен"}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Логин: {userData && userData.login || ""}
+            Логин: {(userData && userData.login) || ""}
           </Typography>
-
           <Box sx={{ mt: 2 }}>
             <TextField
               sx={{ mr: 2 }}
               required
               label="Имя"
               name="first_name"
-              value={userData && userData.first_name || ""}
+              value={(userData && userData.first_name) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -115,7 +118,7 @@ export const EditProfile = ({ text }) => {
               required
               label="Отчество"
               name="middle_name"
-              value={userData && userData.middle_name || ""}
+              value={(userData && userData.middle_name) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -128,7 +131,7 @@ export const EditProfile = ({ text }) => {
               required
               label="Фамилия"
               name="last_name"
-              value={userData && userData.last_name || ""}
+              value={(userData && userData.last_name) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -138,14 +141,13 @@ export const EditProfile = ({ text }) => {
               }}
             />
           </Box>
-
           <Box sx={{ mt: 2 }}>
             <TextField
               required
               sx={{ mr: 2 }}
               label="№ внеш. тел."
               name="external_phone"
-              value={userData && userData.external_phone || ""}
+              value={(userData && userData.external_phone) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -159,7 +161,7 @@ export const EditProfile = ({ text }) => {
               required
               label="№ внутр. тел."
               name="internal_phone"
-              value={userData && userData.internal_phone || ""}
+              value={(userData && userData.internal_phone) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -170,13 +172,12 @@ export const EditProfile = ({ text }) => {
               }}
             />
           </Box>
-
           <Box sx={{ mt: 2 }}>
             <TextField
               required
               label="№ каб."
               name="office_number"
-              value={userData && userData.office_number || ""}
+              value={(userData && userData.office_number) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               error={!!errorPin}
@@ -188,7 +189,6 @@ export const EditProfile = ({ text }) => {
               }}
             />
           </Box>
-
           <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
             Сохранить
           </Button>
