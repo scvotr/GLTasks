@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 import { useEffect, useState } from "react"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
@@ -7,6 +7,7 @@ import MuiAlert from "@mui/material/Alert"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { useSocketContext } from "../../../context/SocketProvider"
 import { useTaskContext } from "../../../context/Tasks/TasksProvider"
+import useLocalStorageRoute from "../../../utils/useLocalStorageRoute"
 
 export const UserLayout = () => {
   const currentUser = useAuthContext()
@@ -20,17 +21,9 @@ export const UserLayout = () => {
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
-  //!------------------------
-  const location = useLocation()
-  const navigate = useNavigate()
 
-  useEffect(() => {
-    const savedRoute = localStorage.getItem("currentRoute")
-    if (savedRoute && savedRoute !== location.pathname) {
-      navigate(savedRoute)
-    }
-  }, [location, navigate])
-  //!------------------------
+  useLocalStorageRoute()
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return
