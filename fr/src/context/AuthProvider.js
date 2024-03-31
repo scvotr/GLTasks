@@ -17,8 +17,10 @@ export const AuthProvider = ({children}) => {
   const [subDep, setSubDep] = useState('')
   const [position, setPosition] = useState('')
   const [login, setLogin] = useState(false)
-  const [emptyProfile, setEmptyProfile] = useState('')
-  const [notDistributed, setNotDistributed] = useState('')
+  // const [emptyProfile, setEmptyProfile] = useState(); console.log('emptyProfile >>>', emptyProfile)
+  const [notDistributed, setNotDistributed] = useState(); console.log('notDistributed', notDistributed)
+
+  const [profile ,setProfile] =useState();   console.log('sss', profile)
   
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
@@ -32,7 +34,10 @@ export const AuthProvider = ({children}) => {
       setSubDep(localStorage.getItem('subDep'))
       setPosition(localStorage.getItem('position'))
       setLogin(true);
-      setEmptyProfile(localStorage.getItem("emptyProfile"))
+   
+      setProfile(localStorage.getItem("emptyProfile"))
+      // setEmptyProfile(localStorage.getItem("emptyProfile"))
+      console.log('22222', localStorage.getItem("notDistributed"))
       setNotDistributed(localStorage.getItem("notDistributed"))
     }
   }, []);
@@ -40,11 +45,12 @@ export const AuthProvider = ({children}) => {
   const updateToken = (newToken) => {
     setToken(newToken);
     localStorage.setItem('token', newToken)
-  }
+  } 
 
   const handleServerResponse = useCallback((response) => {
     if (response) {
       const { id, role, name, loginName, dep, subDep, position, token, emptyProfile, notDistributed} = response
+      console.log('!!!!!!', emptyProfile, notDistributed)
       setId(id)
       setRole(role)
       setLoginName(loginName)
@@ -54,7 +60,8 @@ export const AuthProvider = ({children}) => {
       setPosition(position)
       setToken(token)
       setLogin(true)
-      setEmptyProfile(emptyProfile)
+      // setEmptyProfile(emptyProfile)
+      setProfile(emptyProfile)
       setNotDistributed(notDistributed)
       // Сохранение данных в localStorage
       localStorage.setItem("token", token)
@@ -100,12 +107,13 @@ export const AuthProvider = ({children}) => {
         dep,
         subDep,
         position,
-        emptyProfile,
+        // emptyProfile,
+        profile,
         notDistributed,
         handleServerResponse,
         updateToken,
         logout,
-        setEmptyProfile,
+        setProfile,
       }}
     >
       {children}
