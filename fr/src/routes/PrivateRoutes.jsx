@@ -6,9 +6,7 @@ import { useEffect } from 'react';
 export const PrivateRoutes = ({ component: Component, roles: RequiredRoles }) => {
   const location = useLocation();
   
-
   useEffect(()=> {
-    console.log(location)
     localStorage.setItem('currentRoute', location.pathname);
   }, [location])
 
