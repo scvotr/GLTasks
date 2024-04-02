@@ -2,11 +2,8 @@ import { useEffect, useState } from "react"
 import { TextField, Button, Grid, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
-import { useSocketContext } from "../../../../../../context/SocketProvider"
-import Snackbar from "@mui/material/Snackbar"
-import MuiAlert from "@mui/material/Alert"
 
-export const EditProfile = ({ text }) => {
+export const EditProfile = () => {
   const currentUser = useAuthContext()
 
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
@@ -33,49 +30,11 @@ export const EditProfile = ({ text }) => {
     try {
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, "/user/editUserData", "POST", userData, setReqStatus)
-      localStorage.setItem("emptyProfile", 'false')
+      currentUser.setProfile(false)
         setReqStatus({ loading: false, error: null })
     } catch (error) {
       setReqStatus({ loading: false, error: null })
     }
-  }
-
-  const [snackbarMessage, setSnackbarMessage] = useState()
-  const [open, setOpen] = useState(false)
-
-  const socket = useSocketContext()
-  useEffect(() => {
-    // socket.on('need-logout', messageData => {
-    socket.on("taskApproved", messageData => {
-      console.log(messageData.message)
-      setSnackbarMessage(messageData.message)
-      setOpen(true)
-    })
-
-    return () => {
-      socket.off("yourRooms")
-      socket.off("taskApproved")
-      // socket.off("need-logout")
-      socket.disconnect()
-      window.removeEventListener("beforeunload", () => socket.disconnect())
-    }
-  }, [])
-  useEffect(() => {
-    window.addEventListener("beforeunload", () => {
-      socket.disconnect()
-    })
-    return () => {
-      window.removeEventListener("beforeunload", () => {
-        socket.disconnect()
-      })
-    }
-  }, [socket])
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return
-    }
-    setOpen(false)
   }
 
   return (
@@ -84,11 +43,6 @@ export const EditProfile = ({ text }) => {
         <CircularProgress />
       ) : (
         <>
-          <Snackbar open={open} autoHideDuration={16000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-            <MuiAlert onClose={handleClose} severity="warning" variant="filled" sx={{ width: "100%" }}>
-              {snackbarMessage}
-            </MuiAlert>
-          </Snackbar>
           <Typography variant="h4" gutterBottom>
             {currentUser.profile.toString() === 'true' ? "Для дальнейшей работы заполните данне профиль!" : ""}
           </Typography>{" "}
@@ -111,6 +65,7 @@ export const EditProfile = ({ text }) => {
               helperText={errorPin || "Введите Ваше имя"}
               inputProps={{
                 minLength: 4,
+                autoComplete: "middle_name"
               }}
             />
             <TextField
@@ -125,6 +80,7 @@ export const EditProfile = ({ text }) => {
               helperText={errorPin || "Введите Ваше отчество"}
               inputProps={{
                 minLength: 4,
+                autoComplete: "last_name"
               }}
             />
             <TextField
@@ -138,6 +94,7 @@ export const EditProfile = ({ text }) => {
               helperText={errorPin || "Введите Вашу фамилию"}
               inputProps={{
                 minLength: 4,
+                autoComplete: "external_phone"
               }}
             />
           </Box>
@@ -153,8 +110,9 @@ export const EditProfile = ({ text }) => {
               error={!!errorPin}
               helperText={errorPin || "введите цифры"}
               inputProps={{
-                minLength: 6,
-                maxLength: 8,
+                minLength: 11,
+                maxLength: 11,
+                autoComplete: "internal_phone"
               }}
             />
             <TextField
@@ -169,6 +127,7 @@ export const EditProfile = ({ text }) => {
               inputProps={{
                 minLength: 4,
                 maxLength: 6,
+                autoComplete: "office_number"
               }}
             />
           </Box>
