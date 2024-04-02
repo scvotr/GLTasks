@@ -21,7 +21,6 @@ import CancelIcon from "@mui/icons-material/Cancel"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
 
 export const TasksTable = ({ tasks, reRender }) => {
-  console.log(tasks)
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [modalOpen, setModalOpen] = useState(false)
