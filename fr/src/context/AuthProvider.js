@@ -17,17 +17,14 @@ export const AuthProvider = ({children}) => {
   const [subDep, setSubDep] = useState('')
   const [position, setPosition] = useState('')
   const [login, setLogin] = useState(false)
-  // const [emptyProfile, setEmptyProfile] = useState(); console.log('emptyProfile >>>', emptyProfile)
-  const [notDistributed, setNotDistributed] = useState(); console.log('notDistributed', notDistributed)
-
-  const [profile ,setProfile] =useState();   console.log('sss', profile)
+  const [notDistributed, setNotDistributed] = useState()
+  const [profile ,setProfile] = useState()
   
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
     if (storedToken) {
       setToken(storedToken)
       setId(localStorage.getItem('userId'))
-      // setId(localStorage.getItem('loginName'))
       setRole(localStorage.getItem('userRole'))
       setName(localStorage.getItem('userName'))
       setDep(localStorage.getItem('dep'))
@@ -36,8 +33,6 @@ export const AuthProvider = ({children}) => {
       setLogin(true);
    
       setProfile(localStorage.getItem("emptyProfile"))
-      // setEmptyProfile(localStorage.getItem("emptyProfile"))
-      console.log('22222', localStorage.getItem("notDistributed"))
       setNotDistributed(localStorage.getItem("notDistributed"))
     }
   }, []);
@@ -50,7 +45,6 @@ export const AuthProvider = ({children}) => {
   const handleServerResponse = useCallback((response) => {
     if (response) {
       const { id, role, name, loginName, dep, subDep, position, token, emptyProfile, notDistributed} = response
-      console.log('!!!!!!', emptyProfile, notDistributed)
       setId(id)
       setRole(role)
       setLoginName(loginName)
@@ -60,7 +54,6 @@ export const AuthProvider = ({children}) => {
       setPosition(position)
       setToken(token)
       setLogin(true)
-      // setEmptyProfile(emptyProfile)
       setProfile(emptyProfile)
       setNotDistributed(notDistributed)
       // Сохранение данных в localStorage
@@ -107,7 +100,6 @@ export const AuthProvider = ({children}) => {
         dep,
         subDep,
         position,
-        // emptyProfile,
         profile,
         notDistributed,
         handleServerResponse,
