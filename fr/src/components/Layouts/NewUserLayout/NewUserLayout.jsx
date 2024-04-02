@@ -51,10 +51,9 @@ export const NewUserLayout = () => {
 
   useEffect(() => {
     // Проверяем, пустой ли профиль и перенаправляем на /settings/profile
-    if (currentUser.emptyProfile) {
+    if (currentUser.profile.toString() === 'true') {
       navigate('/settings/profile')
-      currentUser.setEmptyProfile('false')
-    } else if (currentUser.notDistributed) {
+    } if (currentUser.notDistributed.toString() === 'true') {
       // Показываем сообщение
       setSnackbarMessage("Обратитесь к администратору для назначения отдела")
       setOpen(true)
