@@ -57,7 +57,7 @@ export const EditProfile = () => {
               sx={{ mr: 2 }}
               required
               label="Имя"
-              name="first_name"
+              name="given-name"
               value={(userData && userData.first_name) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
@@ -65,7 +65,7 @@ export const EditProfile = () => {
               helperText={errorPin || "Введите Ваше имя"}
               inputProps={{
                 minLength: 4,
-                autoComplete: "middle_name"
+                autoComplete: "additional-name"
               }}
             />
             <TextField
@@ -80,7 +80,7 @@ export const EditProfile = () => {
               helperText={errorPin || "Введите Ваше отчество"}
               inputProps={{
                 minLength: 4,
-                autoComplete: "last_name"
+                autoComplete: "family-name"
               }}
             />
             <TextField
@@ -94,7 +94,7 @@ export const EditProfile = () => {
               helperText={errorPin || "Введите Вашу фамилию"}
               inputProps={{
                 minLength: 4,
-                autoComplete: "external_phone"
+                autoComplete: "tel"
               }}
             />
           </Box>
@@ -112,7 +112,7 @@ export const EditProfile = () => {
               inputProps={{
                 minLength: 11,
                 maxLength: 11,
-                autoComplete: "internal_phone"
+                autoComplete: "tel"
               }}
             />
             <TextField
@@ -127,7 +127,7 @@ export const EditProfile = () => {
               inputProps={{
                 minLength: 4,
                 maxLength: 6,
-                autoComplete: "office_number"
+                autoComplete: "tel"
               }}
             />
           </Box>
