@@ -19,7 +19,9 @@ export const sendAuthData = async (authData, apiHostAddr, resError) => {
         id: data.id,
         dep: data.dep,
         subDep: data.subDep,
-        position: data.position
+        position: data.position,
+        emptyProfile: data.emptyProfile,
+        notDistributed: data.notDistributed,
       };
 
       return userData;

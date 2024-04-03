@@ -16,9 +16,10 @@ export const sendNewTaskData = async (token, formData, onSuccess) => {
       const responseData = await res.json();
       onSuccess(responseData);
     } else {
-      throw new Error("Server response was not ok");
+      throw new Error("Server response was not ok")
     }
   } catch (error) {
-    onSuccess(error);
+    onSuccess(error)
+    throw new Error("Произошла ошибка при обработке других ошибок.")
   }
 };

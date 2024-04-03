@@ -5,6 +5,7 @@ bk/error.log
 bk/errorAuth.log
 bk/warnAuth.log
 bk/uploads/
+fr/package-lock.json
 
 /.pnp
 .pnp.js

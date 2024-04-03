@@ -2,40 +2,73 @@
 const {
   getThumbnailFiles
 } = require("../../../utils/files/getThumbnailFiles");
-const { removeFolder } = require("../../../utils/files/removeFolder");
+const {
+  removeFolder
+} = require("../../../utils/files/removeFolder");
 const {
   executeDatabaseQueryAsync
 } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
 
 const createTask = async (data) => {
-  let taskID;
-
-  const command = `
-  INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-`;
-
   try {
-    await executeDatabaseQueryAsync(
-      command,
-      [
-        data.fields.task_id,
-        data.fields.task_descript,
-        data.fields.task_priority,
+    let taskID;
+    if (!data.fields.setResponseUser_on) {
+      console.log('НОВАЯ ЗАДАЧА')
+      const command = `
+        INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      `;
 
-        data.fields.appoint_user_id,
-        data.fields.appoint_department_id,
-        data.fields.appoint_subdepartment_id,
+      await executeDatabaseQueryAsync(
+        command,
+        [
+          data.fields.task_id,
+          data.fields.task_descript,
+          data.fields.task_priority,
 
-        // data.fields.responsible_user_id,
-        data.fields.responsible_position_id,
-        data.fields.responsible_department_id,
-        data.fields.responsible_subdepartment_id,
+          data.fields.appoint_user_id,
+          data.fields.appoint_department_id,
+          data.fields.appoint_subdepartment_id,
 
-        data.fields.task_status,
-        data.fields.deadline,
-      ], "run");
-    taskID = data.fields.task_id;
+          // data.fields.setResponseUser_on ? data.fields.responsible_user_id : null,
+
+          data.fields.responsible_position_id,
+          data.fields.responsible_department_id,
+          data.fields.responsible_subdepartment_id,
+
+          data.fields.task_status,
+          data.fields.deadline,
+        ], "run");
+      taskID = data.fields.task_id;
+    } else {
+      console.log('Задача от начальника своему сотруднику!!!')
+      const command = `
+        INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_user_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline, setResponseUser_on)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);
+      `;
+
+      await executeDatabaseQueryAsync(
+        command,
+        [
+          data.fields.task_id,
+          data.fields.task_descript,
+          data.fields.task_priority,
+
+          data.fields.appoint_user_id,
+          data.fields.appoint_department_id,
+          data.fields.appoint_subdepartment_id,
+
+          data.fields.responsible_user_id, //!?
+
+          data.fields.responsible_position_id,
+          data.fields.responsible_department_id,
+          data.fields.responsible_subdepartment_id,
+
+          data.fields.task_status,
+          data.fields.deadline,
+        ], "run");
+      taskID = data.fields.task_id;
+    }
   } catch (error) {
     console.error("createTask ERROR: ", error);
     throw new Error('Ошибка запроса к базе данных')
@@ -107,7 +140,9 @@ const updateTaskStatusQ = async (data) => {
 
 const removeTaskQ = async (data, taskFolderName) => {
   try {
-    const { task_id } = data
+    const {
+      task_id
+    } = data
     const command = `
     DELETE FROM tasks
     WHERE task_id = ?
@@ -145,13 +180,17 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
       t.closed_on,            -- Дата закрытия задачи
       t.setResponseSubDep_on, -- Дата назначения отдела
       t.setResponseUser_on,   -- Дата назначения пользователя
-      appoint_user.name AS appoint_user_name,
+      appoint_user_f_name.first_name AS appoint_user_name,
+      appoint_user_l_name.last_name AS appoint_user_last_name,
+      appoint_user_m_name.middle_name AS appoint_user_middle_name,
       t.appoint_department_id, 
       appoint_departments.name AS appoint_department_name,
       t.appoint_subdepartment_id,
       appoint_subdepartments.name AS appoint_subdepartment_name,
       t.responsible_user_id,
-      responsible_user.name AS responsible_user_name,
+      responsible_f_user.first_name AS responsible_user_name,
+      responsible_l_user.last_name AS responsible_user_last_name,
+      responsible_m_user.middle_name AS responsible_user_middle_name,
       t.responsible_department_id, 
       responsible_departments.name AS responsible_department_name,
       t.responsible_subdepartment_id,
@@ -161,10 +200,14 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
       GROUP_CONCAT(f.file_name, '|') AS file_names,
       trs.read_status AS read_status
     FROM tasks t
-      LEFT JOIN users AS appoint_user ON t.appoint_user_id = appoint_user.id
+      LEFT JOIN users AS appoint_user_f_name ON t.appoint_user_id = appoint_user_f_name.id
+      LEFT JOIN users AS appoint_user_l_name ON t.appoint_user_id = appoint_user_l_name.id
+      LEFT JOIN users AS appoint_user_m_name ON t.appoint_user_id = appoint_user_m_name.id
       LEFT JOIN departments AS appoint_departments ON t.appoint_department_id = appoint_departments.id
       LEFT JOIN subdepartments AS appoint_subdepartments ON t.appoint_subdepartment_id = appoint_subdepartments.id
-      LEFT JOIN users AS responsible_user ON t.responsible_user_id = responsible_user.id
+      LEFT JOIN users AS responsible_f_user ON t.responsible_user_id = responsible_f_user.id
+      LEFT JOIN users AS responsible_l_user ON t.responsible_user_id = responsible_l_user.id
+      LEFT JOIN users AS responsible_m_user ON t.responsible_user_id = responsible_m_user.id
       LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
       LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
       LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
@@ -200,13 +243,17 @@ const getAllUserTasksQ = async (user_id) => {
     closed_on ,                                -- Дата закрытия задачи
     setResponseSubDep_on ,                     -- Дата назначения отдела
     setResponseUser_on ,                       -- Дата назначения пользователя
-    appoint_user.name AS appoint_user_name,
+    appoint_user_f_name.first_name AS appoint_user_name,
+    appoint_user_l_name.last_name AS appoint_user_last_name,
+    appoint_user_m_name.middle_name AS appoint_user_middle_name,
     t.appoint_department_id, 
     appoint_departments.name AS appoint_department_name,
     t.appoint_subdepartment_id,
     appoint_subdepartments.name AS appoint_subdepartment_name,
     t.responsible_user_id, -- ПОЛЬЗОВТЕЛЬ
-    responsible_user.name AS responsible_user_name,
+    responsible_f_user.first_name AS responsible_user_name,
+    responsible_l_user.last_name AS responsible_user_last_name,
+    responsible_m_user.middle_name AS responsible_user_middle_name,
     t.responsible_department_id,  -- ДЕПАРТАМЕНТ
     responsible_departments.name AS responsible_department_name,
     t.responsible_subdepartment_id, -- ПОДРАЗДЕЛЕНИ
@@ -216,10 +263,14 @@ const getAllUserTasksQ = async (user_id) => {
     GROUP_CONCAT(f.file_name, '|') AS file_names,
     trs.read_status AS read_status
   FROM tasks t
-    LEFT JOIN users AS appoint_user ON t.appoint_user_id = appoint_user.id
+    LEFT JOIN users AS appoint_user_f_name ON t.appoint_user_id = appoint_user_f_name.id
+    LEFT JOIN users AS appoint_user_l_name ON t.appoint_user_id = appoint_user_l_name.id
+    LEFT JOIN users AS appoint_user_m_name ON t.appoint_user_id = appoint_user_m_name.id
     LEFT JOIN departments AS appoint_departments ON t.appoint_department_id = appoint_departments.id
     LEFT JOIN subdepartments AS appoint_subdepartments ON t.appoint_subdepartment_id = appoint_subdepartments.id
-    LEFT JOIN users AS responsible_user ON t.responsible_user_id = responsible_user.id
+    LEFT JOIN users AS responsible_f_user ON t.responsible_user_id = responsible_f_user.id
+    LEFT JOIN users AS responsible_l_user ON t.responsible_user_id = responsible_l_user.id
+    LEFT JOIN users AS responsible_m_user ON t.responsible_user_id = responsible_m_user.id
     LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
     LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
     LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
@@ -242,28 +293,37 @@ const getAllUserTasksQ = async (user_id) => {
 
 const updateTaskSetResponsibleUserQ = async (data) => {
   try {
-    const { responsible_position_id, task_status, task_id, responsible_user_id, setResponseUser_on, confirmation_on, reject_on, closed_on } = data
+    const {
+      responsible_position_id,
+      task_status,
+      task_id,
+      responsible_user_id,
+      setResponseUser_on,
+      confirmation_on,
+      reject_on,
+      closed_on
+    } = data
     let fieldsToUpdate = []
 
-    if(setResponseUser_on) {
+    if (setResponseUser_on) {
       fieldsToUpdate.push('setResponseUser_on = CURRENT_TIMESTAMP')
     }
-    if(confirmation_on) {
+    if (confirmation_on) {
       fieldsToUpdate.push('confirmation_on = CURRENT_TIMESTAMP')
     }
-    if(reject_on) {
+    if (reject_on) {
       fieldsToUpdate.push('reject_on = CURRENT_TIMESTAMP')
     }
-    if(closed_on) {
+    if (closed_on) {
       fieldsToUpdate.push('closed_on = CURRENT_TIMESTAMP')
     }
-    
+
     const command = `
       UPDATE tasks
       SET responsible_position_id = ?, task_status = ?, responsible_user_id = ?, ${fieldsToUpdate}
       WHERE task_id = ?
     `;
-    await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id,])
+    await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id, ])
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных updateTaskSetResponsibleUserQ')
   }

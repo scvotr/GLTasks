@@ -68,6 +68,14 @@ function setupSocket(io) {
           io.to(leadRoomName).emit('messageReceived', message);
         });
       }
+      if(socket.decoded.role === 'admin') {
+        let adminRoomName = 'admin_' + socket.decoded.id
+        socket.join(adminRoomName)
+
+        socket.on('newMessage', (message) => {
+          io.to(adminRoomName).emit('messageReceived', message);
+        });
+      }
 
       socket.on('getMyRooms', () => {
         const allRooms = Array.from(socket.rooms)

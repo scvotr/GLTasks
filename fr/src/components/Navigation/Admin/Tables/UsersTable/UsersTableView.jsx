@@ -12,7 +12,7 @@ const columns = [
     width: 90,
   },
   {
-    field: "name",
+    field: "login",
     headerName: "Имя",
     description: "Логин пользователя",
     width: 90,

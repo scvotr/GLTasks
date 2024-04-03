@@ -31,7 +31,7 @@ export const DepartmentSelect = props => {
         setReqStatus({ loading: false, error: error.message })
       }
     }
-  }, [currentUser])
+  }, [currentUser, props.reRender])
 
   useEffect(() => {
     fetchData()

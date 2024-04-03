@@ -20,9 +20,10 @@ const columns = [
     ),
   },
   // { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
-  { field: "appoint_user_name", headerName: "От", description: "От кого", width: 150 },
+  { field: "appoint_user_last_name", headerName: "От", description: "От кого", width: 150 },
   { field: "responsible_subdepartment_name", headerName: "Для", description: "Для кого", width: 220 },
   { field: "responsible_department_name", headerName: "Для", description: "Для кого", width: 220 },
+  { field: "responsible_user_last_name", headerName: "От", description: "От кого", width: 150 },
   { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 150 },
   { field: "task_status", headerName: "Статус", description: "Статус задачи", width: 100 },
 ]
@@ -32,7 +33,7 @@ export const AdminTasksTable = ({ tasks, reRender }) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
   const handleCellClick = params => {
-    console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
+    // console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
     const data = {
       task_id: params.row.task_id,
       file_name: params.row.file_names,

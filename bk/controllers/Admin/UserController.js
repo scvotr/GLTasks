@@ -1,8 +1,17 @@
 'use strict'
 
 const jwt = require("jsonwebtoken")
-const { getAllUsersQ, updateUserDataQ, findUserByIdQ } = require("../../Database/queries/User/adminQuery")
-const { updateTokenQ } = require("../../Database/queries/Auth/tokenQuery")
+const {
+  getAllUsersQ,
+  updateUserDataQ,
+  findUserByIdQ
+} = require("../../Database/queries/User/adminQuery")
+const {
+  updateTokenQ
+} = require("../../Database/queries/Auth/tokenQuery")
+const {
+  socketManager
+} = require("../../utils/socket/socketManager")
 require("dotenv").config()
 const SECRET_KEY = process.env.KEY_TOKEN
 
@@ -10,16 +19,16 @@ class UserController {
   async getAllUsers(req, res) {
     try {
       const authDecodeUserData = req.user
-      if(authDecodeUserData.role !== "admin") {
+      if (authDecodeUserData.role !== "admin") {
         return res.end(
           JSON.stringify({
             getAllUsers: "Нет прав на доступ",
           })
-        )  
+        )
       }
       const data = await getAllUsersQ()
       data.length === 0 ? res.statusCode = 204 :
-      res.statusCode = 200
+        res.statusCode = 200
       res.setHeader("Content-Type", "application/json")
       res.write(JSON.stringify(data))
       res.end()
@@ -32,7 +41,9 @@ class UserController {
       );
     }
   }
-  async updateUserData(req,res) {
+  async updateUserData(req, res) {
+    const io = socketManager.getIO()
+
     const authDecodeUserData = req.user
     const userData = JSON.parse(authDecodeUserData.payLoad)
     if (authDecodeUserData.role !== "admin") {
@@ -42,22 +53,57 @@ class UserController {
         })
       );
     }
+
+    const updateUserAndSendNotification = async () => {
+      try {
+        await updateUserDataQ(userData);
+        const updatedUser = await findUserByIdQ(userData.id);
+        const token = jwt.sign(...updatedUser, SECRET_KEY);
+        await updateTokenQ(updatedUser[0].id, token);
+  
+        res.setHeader("Access-Control-Expose-Headers", "Authorization");
+        res.setHeader("Authorization", `Bearer ${token}`);
+        res.statusCode = 201;
+        res.end(JSON.stringify({
+          Registration: "Пользователь обновлен",
+        }));
+      } catch (error) {
+        console.error(error);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({
+          error: "updateUserData - ERROR",
+        }));
+      }
+    };
+
+    const checkAndSetUser = () => {
+      io.in('user_' + userData.id).allSockets()
+        .then(client => {
+          if (client.size === 0) {
+            console.log('offline', client, userData.id)
+            updateUserAndSendNotification()
+          } else {
+            io.to('user_' + userData.id)
+              .emit('taskApproved', {
+                message: 'Сообщение от администратора: Пожалуйста, выйдите из системы! Вам будет назначен отдел и должность.',
+                taskData: userData.loginName
+              })
+            console.log('online', client, userData.id);
+          }
+        })
+        .catch(error => {
+          console.error(error); // Обработка ошибки
+        });
+    };
     try {
-      await updateUserDataQ(userData)
-      const udapdedUser = await findUserByIdQ(userData.id)
-      const token = jwt.sign(...udapdedUser, SECRET_KEY)
-      await updateTokenQ(udapdedUser[0].id, token)
-
-      res.setHeader("Access-Control-Expose-Headers", "Authorization");
-      res.setHeader("Authorization", `Bearer ${token}`);
-      res.statusCode = 201
-      res.end(JSON.stringify({ Registration: "Пользователь обновлен" }))
-
+      checkAndSetUser()
     } catch (error) {
       res.statusCode = 500;
       res.setHeader("Content-Type", "application/json")
-      res.end( JSON.stringify({error: "updateUserData - ERROR" })
-      )
+      res.end(JSON.stringify({
+        error: "updateUserData - ERROR"
+      }))
     }
   }
 }

@@ -1,23 +1,16 @@
 import { Box } from "@mui/material"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
 
 import { useAuthContext } from "../../../context/AuthProvider"
 import { useSocketContext } from "../../../context/SocketProvider"
-import { useTaskContext } from "../../../context/Tasks/TasksProvider"
 import useLocalStorageRoute from "../../../utils/useLocalStorageRoute"
 
-export const UserLayout = () => {
+export const NewUserLayout = () => {
   const currentUser = useAuthContext()
-  const { notifyEvent } = useTaskContext()
-
-  useEffect(() => {
-    if (currentUser.login) {
-      notifyEvent("need-all-Tasks")
-    }
-  }, [currentUser])
+  const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
@@ -35,10 +28,8 @@ export const UserLayout = () => {
   useEffect(() => {
     socket.on("taskApproved", messageData => {
       setSnackbarMessage(messageData.message)
-      notifyEvent("need-all-Tasks")
       setOpen(true)
     })
-
     return () => {
       socket.off("yourRooms")
       socket.off("taskApproved")
@@ -57,6 +48,17 @@ export const UserLayout = () => {
       })
     }
   }, [socket])
+
+  useEffect(() => {
+    // Проверяем, пустой ли профиль и перенаправляем на /settings/profile
+    if (currentUser.profile.toString() === 'true') {
+      navigate('/settings/profile')
+    } if (currentUser.notDistributed.toString() === 'true') {
+      // Показываем сообщение
+      setSnackbarMessage("Обратитесь к администратору для назначения отдела")
+      setOpen(true)
+    }
+  }, [currentUser, navigate])
 
   return (
     <>

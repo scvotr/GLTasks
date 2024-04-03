@@ -13,6 +13,7 @@ const routeHandlers = {
   "/admin/createNewSubDep": MangeOrgStructController.createNewSubDep,
   "/admin/deleteSubDep": MangeOrgStructController.deleteSubDep,
   "/admin/createNewPosition": MangeOrgStructController.createNewPosition,
+  "/admin/deletePosition": MangeOrgStructController.deletePosition,
   "/admin/getAllTasks": TasksController.getAllTasks,
   // "/admin/removeDep": DepsControler.removeDep,
   // "/admin/createNewSubDep": DepsControler.createNewSubDep,

@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react"
 import { Box, FormControl, TextField, Select, MenuItem, Stack, Divider, Button } from "@mui/material"
 import ThumbUpIcon from "@mui/icons-material/ThumbUp"
 import ThumbDownIcon from "@mui/icons-material/ThumbDown"
-import { useCallback } from "react"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { SelectDep } from "./SelectDataField/SelectDep"
 import { SelectSubDep } from "./SelectDataField/SelectSubDep"
+import { PositionSelect } from "../../../../FormComponents/Select/PositionSelect/PositionSelect"
 
-export const AddStuctForm = () => {
+export const AddStuctForm = ({reRender}) => {
   const currentUser = useAuthContext()
+  const [updatedForm, setUpdatedForm] = useState(1)
+
   const [reqStatus, setReqStatus] = useState({
     loading: true,
     error: null,
@@ -21,7 +23,9 @@ export const AddStuctForm = () => {
     position_id: "",
   })
 
-  console.log('111', formData)
+  useEffect(()=> {
+    reRender(prevKey => prevKey + 1)
+  }, [updatedForm])
 
   const handleSubmitAddNewDep = (isApprove, event) => {
     event.preventDefault()
@@ -29,17 +33,19 @@ export const AddStuctForm = () => {
       try {
         setReqStatus({ loading: true, error: null })
         getDataFromEndpoint(currentUser.token, "/admin/createNewDep", "POST", formData, setReqStatus)
+        setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     } else {
       try {
         setReqStatus({ loading: true, error: null })
         getDataFromEndpoint(currentUser.token, "/admin/deleteDep", "POST", formData.department_id, setReqStatus)
+        setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     }
   }
@@ -50,17 +56,19 @@ export const AddStuctForm = () => {
       try {
         setReqStatus({ loading: true, error: null })
         getDataFromEndpoint(currentUser.token, "/admin/createNewSubDep", "POST", formData, setReqStatus)
+        setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     } else {
       try {
         setReqStatus({ loading: true, error: null })
         getDataFromEndpoint(currentUser.token, "/admin/deleteSubDep", "POST", formData.subdepartment_id, setReqStatus)
+        setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     }
   }
@@ -71,9 +79,19 @@ export const AddStuctForm = () => {
       try {
         setReqStatus({ loading: true, error: null })
         getDataFromEndpoint(currentUser.token, "/admin/createNewPosition", "POST", formData, setReqStatus)
+        setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
+      }
+    } else {
+      try {
+        setReqStatus({ loading: true, error: null })
+        getDataFromEndpoint(currentUser.token, "/admin/deletePosition", "POST", formData.position_id, setReqStatus)
+        setUpdatedForm(prevKey => prevKey + 1)
+        setReqStatus({ loading: false, error: null })
+      } catch (error) {
+        setReqStatus({ loading: false, error: error })
       }
     }
   }
@@ -105,7 +123,7 @@ export const AddStuctForm = () => {
             alignItems: "center",
           }}>
           <TextField
-            name="dep_name"
+             name="dep_name"
             value={formData.dep_name}
             onChange={e => {
               getInputData(e)
@@ -137,7 +155,7 @@ export const AddStuctForm = () => {
             justifyContent: "center",
             alignItems: "center",
           }}>
-          <SelectDep getData={getInputData} value={formData} />
+          <SelectDep getData={getInputData} value={formData} reRender={updatedForm}/>
           <TextField
             name="subdep_name"
             value={formData.subdep_name}
@@ -171,7 +189,7 @@ export const AddStuctForm = () => {
             justifyContent: "center",
             alignItems: "center",
           }}>
-          <SelectSubDep getData={getInputData} selectedDep={formData.department_id} />
+          <SelectSubDep getData={getInputData} selectedDep={formData.department_id} reRender={updatedForm}/>
           <TextField
             name="position_name"
             value={formData.position_name}
@@ -182,11 +200,15 @@ export const AddStuctForm = () => {
           <Divider />
           <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
             <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={e => handleSubmitAddNewPosition(false, e)}>
-              Отмена
+              Удалить должность
             </Button>
             <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={e => handleSubmitAddNewPosition(true, e)}>
               Добавть должность
             </Button>
+          </Stack>
+          <Divider />
+          <Stack sx={{mt:2}}>
+            <PositionSelect getData={getInputData} selectedSubDep={formData.subdepartment_id} reRender={updatedForm}/>
           </Stack>
         </Box>
       </FormControl>

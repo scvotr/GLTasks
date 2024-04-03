@@ -67,7 +67,7 @@ export const UserSelect = props => {
               {allUser &&
                 allUser.map(user => (
                   <MenuItem key={user.id} value={user.id}>
-                    {user.name}
+                    {user.last_name}
                   </MenuItem>
                 ))}
             </Select>

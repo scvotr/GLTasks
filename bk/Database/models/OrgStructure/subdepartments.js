@@ -11,7 +11,7 @@ const createTableSubdepartments = async () => {
       )`, [])
     const rows = await queryAsyncWraper('SELECT COUNT(*) FROM subdepartments ', 'get');
     if (rows['COUNT(*)'] === 0) { 
-      await queryAsyncWraper("INSERT INTO subdepartments (department_id, name) VALUES (1, 'новый'), (2, 'ХПР'), (3, 'Служба Гл. Инженера'), (4, 'Служба Гл. Инженера'), (3, 'Служба Качества'), (4, 'Служба Качества')", 'run');
+      await queryAsyncWraper("INSERT INTO subdepartments (department_id, name) VALUES (1, 'новый'), (2, 'ХПР'), (3, 'АЕ Гл. Инженера'), (4, 'ПЕ Гл. Инженера'), (3, ' АЕ Служба Качества'), (4, 'ПЕ Служба Качества')", 'run');
     }
   } catch (error) {
     console.error('DB ERROR - createTableSubdepartments: ', error);

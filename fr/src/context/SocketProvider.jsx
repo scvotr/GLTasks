@@ -14,6 +14,7 @@ export const SocketProvider = ({ children }) => {
   const currentUser = useAuthContext()
   const leadSubDep = "leadSubDep_" + currentUser.subDep
   const userSocket = "user" + currentUser.id
+  const adminSocket = (currentUser.role === 'admin') ? "adm" + currentUser.id : null; 
 
   const socket = io(HOST_SOCKET, {
     extraHeaders: { Authorization: currentUser.token },
@@ -32,6 +33,9 @@ export const SocketProvider = ({ children }) => {
     socket.on(userSocket, data => {
       console.log(`подключен к комнате userSocket: ${userSocket}`, data.taskData)
     })
+    socket.on(adminSocket, data => {
+      console.log(`подключен к комнате admSocket: ${adminSocket}`, data.taskData)
+    })
 
     window.addEventListener("beforeunload", () => {
       socket.disconnect()
@@ -46,7 +50,7 @@ export const SocketProvider = ({ children }) => {
     }
   }, [currentUser])
 
-  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+  return currentUser ? <SocketContext.Provider value={socket}>{children}</SocketContext.Provider> : <>d</>
 }
 
 export default function SocketConnectedApp() {

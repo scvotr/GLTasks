@@ -7,7 +7,7 @@ import { HOST_ADDR } from "../../../utils/remoteHosts"
 
 export const Registration = () => {
   const [reqStatus, setReqStatus] = useState(null)
-  const [formData, setFormData] = useState({ name: "", password: "", confirmPassword: "" })
+  const [formData, setFormData] = useState({ login: "", password: "", confirmPassword: "" })
   const [error, setError] = useState("")
   const [fieldColor, setFieldColor] = useState("")
   const [errorPin, setErrorPin] = useState("")
@@ -18,7 +18,7 @@ export const Registration = () => {
     try {
       await sendRegData(formData, HOST_ADDR, setReqStatus)
     } catch (error) {
-      console.log('sendRegData - handleSubmit: ', error)
+      throw new Error(error)
     }
   }
 
@@ -76,8 +76,8 @@ export const Registration = () => {
             required
             fullWidth
             label="Введите ваш логин"
-            name="name"
-            autoComplete="name"
+            name="login"
+            autoComplete="login"
             autoFocus
             onChange={handleChange}
             helperText={"Это поле обязательно к заполнению"}

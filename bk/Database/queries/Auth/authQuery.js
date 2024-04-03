@@ -1,9 +1,9 @@
 'use strict'
 const { executeDatabaseQueryAsync } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
 
-const checkEqualNameQ = async (name) => {
+const checkEqualNameQ = async (login) => {
   try {
-    return await executeDatabaseQueryAsync(`SELECT * FROM users WHERE name = ?`, [name])
+    return await executeDatabaseQueryAsync(`SELECT * FROM users WHERE login = ?`, [login])
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }
@@ -18,18 +18,18 @@ const checkEqualEmailQ = async (email) => {
 }
 
 const createNewUserQ = async (user) => {
-  const { name, email, password, pincode, role, department_id, subdepartment_id, position_id } = user;
-  const command = `INSERT INTO users(name, email, password, pin_code, role, role_ref, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  const { login, email, password, pincode, role, department_id, subdepartment_id, position_id } = user;
+  const command = `INSERT INTO users(login, email, password, pin_code, role, role_ref, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   try {
-    await executeDatabaseQueryAsync(command, [ name, email, password, pincode, role || 'user', 2, department_id || 1, subdepartment_id || 1, position_id || 1 ], 'run')
+    await executeDatabaseQueryAsync(command, [ login, email, password, pincode, role || 'new', 2, department_id || 1, subdepartment_id || 1, position_id || 1 ], 'run')
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }
 }
 
-const getNewUserQ = async (name, pass) => {
+const getNewUserQ = async (login, pass) => {
   try {
-    return await executeDatabaseQueryAsync(`SELECT * FROM users WHERE name = ? AND password = ?`, [name, pass]);
+    return await executeDatabaseQueryAsync(`SELECT * FROM users WHERE login = ? AND password = ?`, [login, pass]);
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }

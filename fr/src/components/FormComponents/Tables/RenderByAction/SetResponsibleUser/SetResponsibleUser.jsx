@@ -41,6 +41,9 @@ export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
         responsible_department_id: task.responsible_department_id,
         appoint_subdepartment_id: task.appoint_subdepartment_id,
         responsible_subdepartment_id: task.responsible_subdepartment_id,
+        // -----
+        user_role: currentUser.role,
+        user_name: task.appoint_user_last_name,
       }
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, "/tasks/updateTaskSetResponsibleUser", "POST", transferData, setReqStatus)

@@ -14,8 +14,12 @@ export const FullTaskInfo = ({ task }) => {
     closed_on,
     appoint_department_name,
     appoint_subdepartment_name,
+    appoint_user_last_name,
     appoint_user_name,
+    appoint_user_middle_name,
+    responsible_user_last_name,
     responsible_user_name,
+    responsible_user_middle_name,
     responsible_department_name,
     responsible_subdepartment_name,
     responsible_position_name,
@@ -59,7 +63,7 @@ export const FullTaskInfo = ({ task }) => {
                   )}
                   {responsible_user_name && (
                     <Typography variant="body1">
-                      <strong>Ответственный:</strong> {responsible_user_name}
+                      <strong>Ответственный:</strong> {responsible_user_last_name}
                     </Typography>
                   )}
                   {confirmation_on && (
@@ -97,7 +101,7 @@ export const FullTaskInfo = ({ task }) => {
                     <strong>От Отдела:</strong> {appoint_subdepartment_name}
                   </Typography>
                   <Typography variant="subtitle1">
-                    <strong>От Сотрудника:</strong> {appoint_user_name}
+                    <strong>От Сотрудника:</strong> {appoint_user_last_name}
                   </Typography>
 
                   <Typography variant="subtitle1">
@@ -116,7 +120,7 @@ export const FullTaskInfo = ({ task }) => {
                   {responsible_user_name && (
                     <>
                       <Typography variant="subtitle1">
-                        <strong>Для:</strong> {responsible_user_name}
+                        <strong>Для:</strong> {responsible_user_last_name}
                       </Typography>
                     </>
                   )}

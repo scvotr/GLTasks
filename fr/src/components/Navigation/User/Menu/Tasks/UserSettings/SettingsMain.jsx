@@ -16,32 +16,33 @@ export const SettingsMain = () => {
         setUserData(data)
         setReqStatus({ loading: false, error: null })
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        setReqStatus({ loading: false, error: error })
+      })
   }, [currentUser])
   return (
     <>
       <Card>
         <CardContent>
-          <Typography variant="body1">{userData.last_name}</Typography>
+          <Typography variant="body1">{(userData && userData.last_name) || ""}</Typography>
           <Typography variant="body1">{userData.first_name}</Typography>
           <Typography variant="body1">{userData.middle_name}</Typography>
         </CardContent>
         <CardContent>
-          <Typography variant="body1">{userData.department}</Typography>
-          <Typography variant="body1">{userData.subdepartment}</Typography>
-          <Typography variant="body1">{userData.position}</Typography>
+          <Typography variant="body1">{(userData && userData.department) || ""}</Typography>
+          <Typography variant="body1">{(userData && userData.subdepartment) || ""}</Typography>
+          <Typography variant="body1">{(userData && userData.position) || ""}</Typography>
         </CardContent>
         <CardContent>
           <Typography variant="body1">
-            <strong>№ внутр. тел.:</strong> {userData.external_phone}
+            <strong>№ внутр. тел.:</strong> {(userData && userData.external_phone) || ""}
           </Typography>
           <Typography variant="body1">
-            <strong>№ тел./факс. :</strong> {userData.internal_phone}
+            <strong>№ тел./факс. :</strong> {(userData && userData.internal_phone) || ""}
           </Typography>
           <Typography variant="body1">
-            <strong>№ каб. :</strong> {userData.office_number}
+            <strong>№ каб. :</strong> {(userData && userData.office_number) || ""}
           </Typography>
-
         </CardContent>
       </Card>
     </>

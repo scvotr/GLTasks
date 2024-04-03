@@ -42,7 +42,7 @@ const getPositionsBySubDepIdQ = async (subDep_id) => {
 }
 const getUserByPositionIdQ = async (position_id) => {
   try {
-    const command = `SELECT id, name FROM users WHERE position_id = ?`
+    const command = `SELECT id, last_name FROM users WHERE position_id = ?`
     return await executeDatabaseQueryAsync(command, [position_id])
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')

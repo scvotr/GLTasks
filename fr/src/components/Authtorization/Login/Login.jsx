@@ -8,7 +8,7 @@ import { useAuthContext } from "../../../context/AuthProvider"
 
 export const Login = () => {
   const currentUser = useAuthContext()
-  const [formData, setFormData] = useState({ name: "", password: "" })
+  const [formData, setFormData] = useState({ login: "", password: "" })
   const [reqStatus, setReqStatus] = useState(null)
 
 
@@ -59,8 +59,8 @@ export const Login = () => {
             required
             fullWidth
             label="Введите ваш логин"
-            name="name"
-            autoComplete="name"
+            name="login"
+            autoComplete="login"
             autoFocus
             onChange={handleChange}
             error={!!reqStatus}

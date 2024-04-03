@@ -26,6 +26,7 @@ export const sendDataToChangePasPin = async(  token,
       return data.Authtorisation
     }
   } catch (error) {
-    console.log(error);
+    onSuccess(error)
+    throw new Error("Произошла ошибка при обработке других ошибок.")
   }
 }

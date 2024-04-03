@@ -9,7 +9,7 @@ const createTableUsers = async () => {
     await executeDatabaseQueryAsync(
       `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
+        login TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         pin_code INTEGER NOT NULL, --временно 
@@ -35,10 +35,10 @@ const createTableUsers = async () => {
     if (rows['COUNT(*)'] === 0) { 
       const hashedPassword = await bcrypt.hash('0091', HASH_SALT);
       const hashedPincode = await bcrypt.hash('0099', HASH_SALT);
-      const objUser = { id: 999, name: 'admin', email: 'admin', password: hashedPassword, role: 'admin', pin_code: hashedPincode}
-      const { id, name, email, password, role, pin_code } = objUser
-      const command = `INSERT INTO users(id, name, email, password, role, role_ref, pin_code, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      await queryAsyncWraperParam(command, [id, name, email, password, role || 'user', 1, pin_code, 1, 1, 1], 'run', )
+      const objUser = { id: 999, login: 'admin', email: 'admin', password: hashedPassword, role: 'admin', pin_code: hashedPincode}
+      const { id, login, email, password, role, pin_code } = objUser
+      const command = `INSERT INTO users(id, login, email, password, role, role_ref, pin_code, department_id, subdepartment_id, position_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      await queryAsyncWraperParam(command, [id, login, email, password, role || 'user', 1, pin_code, 1, 1, 1], 'run', )
     }
   } catch (error) {
     console.error('createTableUsers ERROR: ', error)
