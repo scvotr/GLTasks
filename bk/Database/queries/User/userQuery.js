@@ -16,7 +16,8 @@ const getUserByIdQ = async (userId) => {
       users.middle_name,
       users.internal_phone,
       users.external_phone,
-      users.office_number, 
+      users.office_number,
+      users.email_for_notify,
       users.created_on,
       departments.id AS department_id,
       departments.name AS department, 
@@ -40,9 +41,17 @@ const getUserByIdQ = async (userId) => {
 const editUserDataQ = async(data) => {
   try {
     console.log('>>>>>>', data)
-    const {id, last_name, first_name, middle_name, internal_phone, external_phone, office_number} = data
-    const command = `UPDATE users SET last_name = ?, first_name = ?, middle_name = ?, internal_phone = ?, external_phone = ?, office_number = ? WHERE id = ?`;
-    await executeDatabaseQueryAsync(command, [last_name, first_name, middle_name, internal_phone, external_phone, office_number, id], 'run')
+    const {id, last_name, first_name, middle_name, internal_phone, external_phone, office_number, email_for_notify} = data
+    const command = `UPDATE users SET last_name = ?, first_name = ?, middle_name = ?, internal_phone = ?, external_phone = ?, office_number = ?, email_for_notify = ? WHERE id = ?`;
+    await executeDatabaseQueryAsync(command, [last_name, first_name, middle_name, internal_phone, external_phone, office_number, email_for_notify, id], 'run')
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных')
+  }
+}
+
+const getEmailQ = async(user_id) => {
+  try {
+    return await executeDatabaseQueryAsync(`SELECT email_for_notify FROM users WHERE id = ?`, [user_id])
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }
@@ -51,4 +60,5 @@ const editUserDataQ = async(data) => {
 module.exports = {
   editUserDataQ,
   getUserByIdQ,
+  getEmailQ,
 }
