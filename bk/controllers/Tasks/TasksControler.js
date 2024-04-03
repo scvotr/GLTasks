@@ -24,6 +24,7 @@ const {
 const {
   socketManager
 } = require("../../utils/socket/socketManager");
+const { sendEmailToLead, sendEmailToUser } = require("./mailFor");
 const {
   noticeToAppointUserT,
   noticeToResponceLeadT,
@@ -171,6 +172,7 @@ class TasksControler {
       if (data.fields.approved_on === 'true') {
         console.log('Задача от начальника');
         if (inOneDep && inOneSubDep) {
+          tyr
           console.log('Задача внутри одного отдела в одном департаменте addNewTask');
           noticeToResponsibleUser()
           await addReadStatusQ({
@@ -178,6 +180,7 @@ class TasksControler {
             user_id: fields.appoint_subdepartment_id,
             read_status: 'unread'
           })
+          await sendEmailToUser(fields)
         } else if (inOneDep && inDifSubDep) {
           console.log('Задача между отделами в одном департаменте addNewTask');
           // noticeToAppointUser()
@@ -193,6 +196,7 @@ class TasksControler {
               user_id: fields.appoint_subdepartment_id,
               read_status: 'readed'
             })
+            await sendEmailToLead(fields.responsible_subdepartment_id)
           } catch (error) {
 
           }
@@ -238,10 +242,9 @@ class TasksControler {
           user_id: data.user_id,
           read_status: 'readed'
         })
-
+        // ! ---------------------
+        await sendEmailToLead(fields.appoint_subdepartment_id, 'Новая задача на согласование')
       }
-
-
       res.setHeader('Content-Type', 'application/json')
       res.statusCode = 200;
       res.end(JSON.stringify({

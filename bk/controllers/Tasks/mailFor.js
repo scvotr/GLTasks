@@ -1,55 +1,54 @@
 const nodemailer = require('nodemailer');
+const {
+  getLeadEmailQ
+} = require('../../Database/queries/User/userQuery');
 
-const transpoter = nodemailer.createTransport({
-    host: 'smtp.mail.ru',
-    port: 465,
-    secure: true,
-    auth: {
-        user: 'stasforeva23@mail.ru',
-        pass: 'pass',
-    },
-    tls: {
-        rejectUnauthorized: false,
-    },
-});
+require("dotenv").config()
+const MAIL_USER = process.env.MAIL_USER
+const MAIL_PASS = process.env.MAIL_PASS
 
-const mailOptions = {
-  from: '"The Idea project" <stasforeva23@mail.ru>',
-    to: '<it.ae@geliopax.ru>',
-    subject: 'Send message from project',
-    text: 'Hello',
-};
+const sendEmail = async (recipientEmail, text) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: 'mail.nic.ru',
+      port: 587,
+      secure: false,
+      auth: {
+        user: MAIL_USER,
+        pass: MAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: true,
+      },
+    });
 
-transpoter.sendMail(mailOptions, (err, info) => {
-    console.log(err, info);
-});
+    const mailOptions = {
+      from: `"${text}" <${MAIL_USER}>`,
+      to: recipientEmail,
+      subject: text,
+      text: text,
+    };
 
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.response);
+  } catch (error) {
+    console.error('Error occurred while sending email:', error);
+  }
+}
 
+const sendEmailToLead = async (subdepartment_id, text) => {
+  const email = await getLeadEmailQ(subdepartment_id);
+  console.log('sendEmailToLead', email[0].email_for_notify);
+  await sendEmail(email[0].email_for_notify, text);
+}
 
-// const transporter = nodemailer.createTransport({
-//   // настройки для вашего почтового сервера
-//   host: 'smtp.mail.ru',
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     user: 'mail@mail.ru',
-//     pass: 'pass',
-//   },
-//   tls: {
-//     rejectUnauthorized: false,
-//   },
-// });
+const sendEmailToUser = async (user_id, text) => {
+  const email = await getUserEmailQ(user_id);
+  console.log(email);
+  await sendEmail(email[0].email_for_notify, text);
+}
 
-// const sendMail = async (recipient, subject, message) => {
-//   try {
-//     await transporter.sendMail({
-//       from: '<mail.mailru>', // ваш адрес электронной почты
-//       to: recipient,
-//       subject: subject,
-//       text: message,
-//     });
-//     console.log('Письмо успешно отправлено');
-//   } catch (error) {
-//     console.error('Ошибка отправки письма:', error);
-//   }
-// };
+module.exports = {
+  sendEmailToUser,
+  sendEmailToLead,
+}

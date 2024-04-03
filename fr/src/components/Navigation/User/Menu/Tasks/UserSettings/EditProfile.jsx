@@ -150,6 +150,18 @@ export const EditProfile = () => {
               }}
             />
           </Box>
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              required
+              type="email"
+              label="Email"
+              name="email_for_notify"
+              value={(userData && userData.email_for_notify) || ""}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              inputProps={{}}
+            />
+          </Box>
           <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
             Сохранить
           </Button>
