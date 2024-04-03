@@ -59,7 +59,7 @@ export const EditProfile = () => {
               sx={{ mr: 2 }}
               required
               label="Имя"
-              name="given-name"
+              name="first_name"
               value={(userData && userData.first_name) || ""}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
