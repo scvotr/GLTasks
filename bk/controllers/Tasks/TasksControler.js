@@ -24,6 +24,7 @@ const {
 const {
   socketManager
 } = require("../../utils/socket/socketManager");
+const { sendEmail } = require("./mailFor");
 const {
   noticeToAppointUserT,
   noticeToResponceLeadT,
@@ -238,10 +239,9 @@ class TasksControler {
           user_id: data.user_id,
           read_status: 'readed'
         })
-
+        // !-------------------------------------fk
+        await sendEmail(data.user_id)
       }
-
-
       res.setHeader('Content-Type', 'application/json')
       res.statusCode = 200;
       res.end(JSON.stringify({
