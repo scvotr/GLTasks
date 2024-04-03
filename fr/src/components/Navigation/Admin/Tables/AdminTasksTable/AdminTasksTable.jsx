@@ -5,6 +5,7 @@ import DraftsOutlinedIcon from "@mui/icons-material/DraftsOutlined"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { useState } from "react"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
+import { ConfirmationDialog } from "../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 
 const columns = [
   { field: "task_id", headerName: "Task ID", description: "This column description", width: 70 },
@@ -31,27 +32,44 @@ const columns = [
 export const AdminTasksTable = ({ tasks, reRender }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedTask, setSelectedTask] = useState(null)
 
   const handleCellClick = params => {
     // console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
-    const data = {
+    setSelectedTask({
       task_id: params.row.task_id,
       file_name: params.row.file_names,
-    }
+    })
+    setOpenDialog(true)
+  }
 
+  const handleConfirmDelete = () => {
+    if (!selectedTask) return
     setReqStatus({ loading: true, error: null })
-    getDataFromEndpoint(currentUser.token, "/tasks/removeTask", "POST", data, setReqStatus)
+    getDataFromEndpoint(currentUser.token, "/tasks/removeTask", "POST", selectedTask, setReqStatus)
       .then(data => {
         setReqStatus({ loading: false, error: null })
+        setOpenDialog(false) // Закрыть диалог после удаления
+        reRender(prevKey => prevKey + 1)
       })
       .catch(error => {
         setReqStatus({ loading: false, error: error.message })
+        setOpenDialog(false)
       })
-    reRender(prevKey => prevKey + 1)
   }
 
   return (
     <>
+      <>
+        <ConfirmationDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onConfirm={handleConfirmDelete}
+          title="Подтвердите удаление задачи"
+          message="Вы уверены, что хотите удалить эту задачу?"
+        />
+      </>
       <Box
         style={{
           height: 500,
