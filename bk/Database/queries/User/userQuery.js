@@ -49,7 +49,7 @@ const editUserDataQ = async(data) => {
   }
 }
 
-const getEmailQ = async(user_id) => {
+const getUserEmailQ = async(user_id) => {
   try {
     return await executeDatabaseQueryAsync(`SELECT email_for_notify FROM users WHERE id = ?`, [user_id])
   } catch (error) {
@@ -57,8 +57,22 @@ const getEmailQ = async(user_id) => {
   }
 }
 
+const getLeadEmailQ = async (subdepartment_id) => {
+  try {
+    const query = `
+      SELECT email_for_notify 
+      FROM users 
+      WHERE subdepartment_id = ? AND role = 'chife'
+    `;
+    return await executeDatabaseQueryAsync(query, [subdepartment_id]);
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных');
+  }
+}
+
 module.exports = {
   editUserDataQ,
   getUserByIdQ,
-  getEmailQ,
+  getUserEmailQ,
+  getLeadEmailQ,
 }
