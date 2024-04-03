@@ -22,7 +22,6 @@ export const convertToFormDataV2 = (formData) => {
     if (key === "files") {
       const files = formData[key];
       for (let i = 0; i < files.length; i++) {
-        console.log('!!!!!!!!!!!!', files)
         data.append(`files${i}`, files[i]);
       }
     } else {

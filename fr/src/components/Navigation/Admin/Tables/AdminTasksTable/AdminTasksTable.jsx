@@ -33,7 +33,7 @@ export const AdminTasksTable = ({ tasks, reRender }) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
 
   const handleCellClick = params => {
-    console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
+    // console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
     const data = {
       task_id: params.row.task_id,
       file_name: params.row.file_names,

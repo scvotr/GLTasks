@@ -11,7 +11,6 @@ import { PositionSelect } from "../../../../FormComponents/Select/PositionSelect
 export const AddStuctForm = ({reRender}) => {
   const currentUser = useAuthContext()
   const [updatedForm, setUpdatedForm] = useState(1)
-  console.log('updatedForm', updatedForm)
 
   const [reqStatus, setReqStatus] = useState({
     loading: true,
@@ -23,8 +22,6 @@ export const AddStuctForm = ({reRender}) => {
     subdepartment_id: "",
     position_id: "",
   })
-
-  console.log(formData)
 
   useEffect(()=> {
     reRender(prevKey => prevKey + 1)
@@ -39,7 +36,7 @@ export const AddStuctForm = ({reRender}) => {
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     } else {
       try {
@@ -48,7 +45,7 @@ export const AddStuctForm = ({reRender}) => {
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     }
   }
@@ -62,7 +59,7 @@ export const AddStuctForm = ({reRender}) => {
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     } else {
       try {
@@ -71,7 +68,7 @@ export const AddStuctForm = ({reRender}) => {
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     }
   }
@@ -85,7 +82,7 @@ export const AddStuctForm = ({reRender}) => {
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     } else {
       try {
@@ -94,7 +91,7 @@ export const AddStuctForm = ({reRender}) => {
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
-        console.log(error)
+        setReqStatus({ loading: false, error: error })
       }
     }
   }

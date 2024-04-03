@@ -18,7 +18,7 @@ export const Registration = () => {
     try {
       await sendRegData(formData, HOST_ADDR, setReqStatus)
     } catch (error) {
-      console.log('sendRegData - handleSubmit: ', error)
+      throw new Error(error)
     }
   }
 

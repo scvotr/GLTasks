@@ -11,7 +11,6 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allTasks, setAllTasks] = useState([])
-  // console.log(allTasks)
 
   const updateAllTasks = tasks => {
     setAllTasks(tasks)
@@ -62,7 +61,7 @@ export const TasksProvider = ({currentUser, children}) => {
           }
         break
       default:
-        console.log(`Unknown event: ${eventName}`)
+        throw new Error(`Неизвестное событие: ${eventName}`)
     }
   }
 

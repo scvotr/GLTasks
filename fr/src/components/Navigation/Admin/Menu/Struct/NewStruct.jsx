@@ -13,7 +13,7 @@ export const NewStruct = () => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [dataFromEndpoint, setDataFromEndpoint] = useState([])
   const [formKey, setFormKey] = useState(1)
-  console.log('NewStruct', formKey)
+  // console.log('NewStruct', formKey)
 
   const [modalOpen, setModalOpen] = useState(false)
   const openModal = user => {

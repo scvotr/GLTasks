@@ -16,7 +16,9 @@ export const SettingsMain = () => {
         setUserData(data)
         setReqStatus({ loading: false, error: null })
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        setReqStatus({ loading: false, error: error })
+      })
   }, [currentUser])
   return (
     <>
