@@ -39,13 +39,13 @@ const columns = [
     field: "role",
     headerName: "Роль",
     description: "Роль пользователя",
-    width: 200,
+    width: 100,
   },
   {
     field: "first_name",
     headerName: "Имя",
     description: "Имя пользователя",
-    width: 100,
+    width: 140,
   },
   {
     field: "middle_name",
@@ -58,6 +58,12 @@ const columns = [
     headerName: "Отчество",
     description: "Отчество пользователя",
     width: 100,
+  },
+  {
+    field: "email_for_notify",
+    headerName: "Отчество",
+    description: "Отчество пользователя",
+    width: 160,
   },
 ]
 
