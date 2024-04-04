@@ -452,18 +452,26 @@ class TasksControler {
           await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread'});
         } else if (inOneDep && inDifSubDep) {
           console.log('Задача между отделами в одном департаменте setResponseUser_on');
-          await noticeToAppointUser();
-          await noticeToAppointLead();
-          await noticeToResponceUser();
-          await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread'});
+          try {
+            await noticeToAppointUser();
+            await noticeToAppointLead();
+            await noticeToResponceUser();
+            await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread'});
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
         } else if (inDifDep && inOneSubDep) {
           console.log('Задача внутри подразделения, но между разными отделами setResponseUser_on');
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов setResponseUser_on');
-          await noticeToAppointUser();
-          await noticeToResponceUser();
-          await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id ? data.responsible_user_id : 0, read_status: 'unread'});
-          await noticeToAppointLead();
+          try {
+            await noticeToAppointUser();
+            await noticeToAppointLead();
+            await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id ? data.responsible_user_id : 0, read_status: 'unread'});
+            await noticeToResponceUser();
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
         }
       }
       if (data.confirmation_on) {
@@ -472,12 +480,20 @@ class TasksControler {
           try {
             if (data.user_role === 'user') {
               console.log('На проверку внутри отдела от пользователя')
-              await noticeToAppointUserT(`Задача на проверку от пользователя ${data.user_name}`, data);
-              await noticeToAppointLeadT(`Задача на проверку от пользователя ${data.user_name}`, data);
+              try {
+                await noticeToAppointUserT(`Задача на проверку от пользователя ${data.user_name}`, data);
+                await noticeToAppointLeadT(`Задача на проверку от пользователя ${data.user_name}`, data);
+              } catch (error) {
+                throw new Error('Ошибка запроса к базе данных')
+              }
             } else if (data.user_role === 'chife') {
               console.log('На проверку внутри отдела от Начальника')
-              await noticeToAppointUserT('Задача на проверку от Руководителя', data);
-              await noticeToResponceUserT('Задача на проверку от Руководителя', data);
+              try {
+                await noticeToAppointUserT('Задача на проверку от Руководителя', data);
+                await noticeToResponceUserT('Задача на проверку от Руководителя', data);
+              } catch (error) {
+                throw new Error('Ошибка запроса к базе данных')
+              }
             }
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error);
