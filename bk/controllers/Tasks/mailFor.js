@@ -7,7 +7,7 @@ require("dotenv").config()
 const MAIL_USER = process.env.MAIL_USER
 const MAIL_PASS = process.env.MAIL_PASS
 
-const sendEmail = async (recipientEmail, text) => {
+const sendEmail = async (recipientEmail, text, descript) => {
   try {
     const transporter = nodemailer.createTransport({
       host: 'mail.nic.ru',
@@ -26,7 +26,7 @@ const sendEmail = async (recipientEmail, text) => {
       from: `"${text}" <${MAIL_USER}>`,
       to: recipientEmail,
       subject: text,
-      text: text,
+      text: descript ? descript : text,
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -40,7 +40,7 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   const email = await getLeadEmailQ(subdepartment_id);
   if (email && email[0] && email[0].email_for_notify) {
     console.log('sendEmailToLead', email[0].email_for_notify);
-    await sendEmail(email[0].email_for_notify, text);
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript );
   } else {
     console.log('Адрес электронной почты руководителя не найден');
     throw new Error('Адрес электронной почты руководителя не найден');
@@ -48,7 +48,6 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
 }
 
 const sendEmailToUser = async (user_id, text, fields = {}) => {
-  console.log('>>>>>>>>>>', fields)
   const email = await getUserEmailQ(user_id);
   if (email && email[0] && email[0].email_for_notify) {
     console.log(email);
