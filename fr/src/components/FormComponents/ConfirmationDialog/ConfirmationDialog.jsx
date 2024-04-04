@@ -27,3 +27,13 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, title, message })
     </Dialog>
   );
 };
+
+// usege
+
+{/* <ConfirmationDialog
+  open={openDialog}
+  onClose={() => setOpenDialog(false)}
+  onConfirm={handleConfirmDelete}
+  title="Подтвердите удаление задачи"
+  message="Вы уверены, что хотите удалить эту задачу?"
+/> */}
