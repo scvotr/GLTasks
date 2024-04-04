@@ -127,7 +127,7 @@ export const EditProfile = () => {
               error={!!errorPin}
               helperText={errorPin || "введите цифры"}
               inputProps={{
-                minLength: 4,
+                minLength: 2,
                 maxLength: 6,
                 autoComplete: "tel"
               }}
