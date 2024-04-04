@@ -225,7 +225,6 @@ class TasksControler {
       handleError(res, `addNewTask: ${error}`)
     }
   }
-// !-----------------------------------------------------------------------------------------------------------------------
   async getAllTasksBySubDep(req, res) {
     try {
       const authDecodeUserData = req.user
@@ -236,6 +235,7 @@ class TasksControler {
       handleError(res, 'getAllTasksBySubDep')
     }
   }
+  // !-----------------------------------------------------------------------------------------------------------------------
   async updateReadStatus(req, res) {
     try {
       const authDecodeUserData = req.user
@@ -305,47 +305,43 @@ class TasksControler {
 
       if (data.approved_on) {
         if (inOneDep && inOneSubDep) {
-          console.log('Задача внутри одного отдела в одном департаменте updateTaskStatus');
-          noticeToAppointUser()
-          updateReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.appoint_user_id,
-            read_status: 'unread'
-          })
+          console.log('Задача внутри одного отдела в одном департаменте updateTaskStatus')
+          try {
+            noticeToAppointUser()
+            updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread'})
+            await sendEmailToUser(data.appoint_user_id, 'Задача согласованна')
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
         } else if (inOneDep && inDifSubDep) {
           console.log('Задача между отделами в одном департаменте updateTaskStatus');
-          noticeToAppointUser()
-          await updateReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.appoint_user_id,
-            read_status: 'unread'
-          })
-          noticeToResponceLead()
-          await addReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.responsible_subdepartment_id,
-            read_status: 'unread'
-          })
+          try {
+            noticeToAppointUser()
+            await updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread'})
+            await sendEmailToUser(data.appoint_user_id, 'Задача согласованна')
+            noticeToResponceLead()
+            await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_subdepartment_id,read_status: 'unread'})
+            await sendEmailToLead(data.responsible_subdepartment_id, 'Задача согласованна')
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
         } else if (inDifDep && inOneSubDep) {
           console.log('Задача внутри подразделения, но между разными отделами updateTaskStatus');
 
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов updateTaskStatus');
-          noticeToAppointUser()
-          await updateReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.appoint_user_id,
-            read_status: 'unread'
-          })
-          noticeToResponceLead()
-          await addReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.responsible_subdepartment_id,
-            read_status: 'unread'
-          })
+          try {
+            noticeToAppointUser()
+            await updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread'})
+            await sendEmailToUser(data.appoint_user_id, 'Задача согласованна')
+            noticeToResponceLead()
+            await addReadStatusQ({ task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'unread'})
+            await sendEmailToLead(data.responsible_subdepartment_id, 'Задача согласованна')
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
         }
       }
-
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'updateTaskStatus')
@@ -394,11 +390,12 @@ class TasksControler {
             message: 'Назначен исполнитель',
             taskData: data.task_id
           });
-        await updateReadStatusQ({
-          task_id: data.task_id,
-          user_id: data.appoint_user_id,
-          read_status: 'unread'
-        });
+          try {
+            await updateReadStatusQ({task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread'});
+            await sendEmailToUser(data.appoint_user_id, 'Назначен исполнитель')
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
       };
 
       const noticeToAppointLead = async () => {
@@ -407,11 +404,12 @@ class TasksControler {
             message: 'Назначен исполнитель',
             taskData: data.task_id
           });
-        await updateReadStatusQ({
-          task_id: data.task_id,
-          user_id: data.appoint_subdepartment_id,
-          read_status: 'unread'
-        });
+          try {
+            await updateReadStatusQ({task_id: data.task_id,user_id: data.appoint_subdepartment_id,read_status: 'unread'});
+            await sendEmailToLead(data.appoint_subdepartment_id, 'Назначен исполнитель')
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
       };
 
       const noticeToResponceUser = async () => {
@@ -420,11 +418,12 @@ class TasksControler {
             message: 'Назначена новая задача',
             taskData: data.task_id
           });
-        await updateReadStatusQ({
-          task_id: data.task_id,
-          user_id: data.responsible_user_id,
-          read_status: 'unread'
-        });
+          try {
+            await updateReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread'})
+            await sendEmailToUser(data.responsible_user_id, 'Назначена новая задача')
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
       };
 
       const noticeToResponceLead = async () => {
@@ -433,11 +432,12 @@ class TasksControler {
             message: 'Назначен исполнитель',
             taskData: data.task_id
           });
-        await updateReadStatusQ({
-          task_id: data.task_id,
-          user_id: data.responsible_subdepartment_id,
-          read_status: 'unread'
-        });
+          try {
+            await updateReadStatusQ({task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'unread'})
+            await sendEmailToLead(data.responsible_subdepartment_id, 'Назначен исполнитель')
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
       };
 //!------------------------------------------------------------------------------------------------------------
       if (data.setResponseUser_on) {
@@ -449,32 +449,20 @@ class TasksControler {
           // await noticeToAppointUserT(`Задача на проверку от пользователя ${data.user_name}`, data);
           // await noticeToAppointLeadT(`Задача на проверку от пользователя ${data.user_name}`, data);
 
-          await addReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.responsible_user_id,
-            read_status: 'unread'
-          });
+          await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread'});
         } else if (inOneDep && inDifSubDep) {
           console.log('Задача между отделами в одном департаменте setResponseUser_on');
           await noticeToAppointUser();
           await noticeToAppointLead();
           await noticeToResponceUser();
-          await addReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.responsible_user_id,
-            read_status: 'unread'
-          });
+          await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread'});
         } else if (inDifDep && inOneSubDep) {
           console.log('Задача внутри подразделения, но между разными отделами setResponseUser_on');
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов setResponseUser_on');
           await noticeToAppointUser();
           await noticeToResponceUser();
-          await addReadStatusQ({
-            task_id: data.task_id,
-            user_id: data.responsible_user_id ? data.responsible_user_id : 0,
-            read_status: 'unread'
-          });
+          await addReadStatusQ({task_id: data.task_id, user_id: data.responsible_user_id ? data.responsible_user_id : 0, read_status: 'unread'});
           await noticeToAppointLead();
         }
       }
