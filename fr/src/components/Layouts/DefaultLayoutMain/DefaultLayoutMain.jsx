@@ -1,5 +1,4 @@
-import { AppBar, Box, Button, IconButton, Stack, Toolbar, Typography } from "@mui/material"
-import MenuIcon from "@mui/icons-material/Menu"
+import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material"
 import { NavLink, Outlet } from "react-router-dom"
 import styled from "@emotion/styled"
 
@@ -21,9 +20,6 @@ export const DefaultLayoutMain = () => {
       <Box>
         <AppBar>
           <Toolbar>
-            <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-              <MenuIcon />
-            </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Gelio Tasks
             </Typography>
