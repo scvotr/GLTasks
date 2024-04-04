@@ -17,6 +17,7 @@ const getAllUsersQ = async () => {
       users.external_phone,
       users.office_number, 
       users.created_on,
+      users.email_for_notify,
       departments.id AS department_id,
       departments.name AS department, 
       subdepartments.id AS subdepartment_id,
