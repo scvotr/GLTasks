@@ -549,8 +549,9 @@ class TasksControler {
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов closed_on');
           try {
-            await noticeToResponceUserT('Задача закрыта', data);
+            await noticeToAppointLeadT('Задача закрыта', data);
             await noticeToResponceLeadT('Задача закрыта', data);
+            await noticeToResponceUserT('Задача закрыта', data);
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
           }
@@ -586,6 +587,7 @@ class TasksControler {
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов reject_on');
           try {
+            await noticeToAppointLeadT('Задача отклонена', data);
             await noticeToResponceUserT('Задача отклонена', data);
             await noticeToResponceLeadT('Задача отклонена', data);
           } catch (error) {
