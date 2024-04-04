@@ -46,7 +46,7 @@ export const EditProfile = () => {
       ) : (
         <>
           <Typography variant="h4" gutterBottom>
-            {currentUser.profile.toString() === 'true' ? "Для дальнейшей работы заполните данне профиль!" : ""}
+            {currentUser.profile.toString() === 'true' ? "Для дальнейшей работы заполните данные профиля!" : ""}
           </Typography>{" "}
           <Typography variant="h5" gutterBottom>
             {currentUser.notDistributed.toString() === 'true' ? "Отдел не назначен. Обратитесь к администратору для назначения отдела" : "отдел назначен"}
