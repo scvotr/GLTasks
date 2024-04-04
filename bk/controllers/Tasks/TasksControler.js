@@ -53,7 +53,6 @@ class TasksControler {
       const user_id = authDecodeUserData.id
       const postPayload = authDecodeUserData.payLoad
       const fields = postPayload.fields;
-      console.log(fields)
       const files = postPayload.files
       const taskFolderName = fields.task_id
       const fileNames = [];
@@ -65,17 +64,12 @@ class TasksControler {
           console.error('Error saving file:', error);
         }
       }
-
-      const data = {
-        fields,
-        fileNames,
-        user_id
-      }
+      const data = { fields, fileNames, user_id }
 
       try {
         await createTask(data)
       } catch (error) {
-        console.log(error)
+        handleError(res, `addNewTask: ${error}`)
       }
 
       const io = socketManager.getIO()
@@ -172,90 +166,66 @@ class TasksControler {
       if (data.fields.approved_on === 'true') {
         console.log('Задача от начальника');
         if (inOneDep && inOneSubDep) {
-          tyr
-          console.log('Задача внутри одного отдела в одном департаменте addNewTask');
-          noticeToResponsibleUser()
-          await addReadStatusQ({
-            task_id: fields.task_id,
-            user_id: fields.appoint_subdepartment_id,
-            read_status: 'unread'
-          })
-          await sendEmailToUser(fields)
+          console.log('Задача внутри одного отдела в одном департаменте addNewTask')
+          try {
+            noticeToResponsibleUser()
+            await addReadStatusQ({task_id: fields.task_id,user_id: fields.appoint_subdepartment_id, read_status: 'unread'})
+            await sendEmailToUser(fields)
+              } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
         } else if (inOneDep && inDifSubDep) {
           console.log('Задача между отделами в одном департаменте addNewTask');
-          // noticeToAppointUser()
-          noticeToResponceLead()
           try {
-            await addReadStatusQ({
-              task_id: fields.task_id,
-              user_id: fields.responsible_subdepartment_id,
-              read_status: 'unread'
-            })
-            await addReadStatusQ({
-              task_id: fields.task_id,
-              user_id: fields.appoint_subdepartment_id,
-              read_status: 'readed'
-            })
-            await sendEmailToLead(fields.responsible_subdepartment_id)
-          } catch (error) {
-
+            noticeToResponceLead()
+            await addReadStatusQ({task_id: fields.task_id, user_id: fields.responsible_subdepartment_id, read_status: 'unread' })
+            await addReadStatusQ({task_id: fields.task_id,user_id: fields.appoint_subdepartment_id,read_status: 'readed'})
+            await sendEmailToLead(fields.responsible_subdepartment_id, 'Новая задача', fields)
+           } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
           }
         } else if (inDifDep && inOneSubDep) {
           console.log('Задача внутри подразделения, но между разными отделами addNewTask');
         } else if (inDifDep && inDifSubDep) {
           console.log('Задача между разными подразделениями разных отделов addNewTask');
-          noticeToResponceLead()
           try {
-            await addReadStatusQ({
-              task_id: fields.task_id,
-              user_id: fields.responsible_subdepartment_id,
-              read_status: 'unread'
-            })
-            await addReadStatusQ({
-              task_id: fields.task_id,
-              user_id: fields.appoint_subdepartment_id,
-              read_status: 'readed'
-            })
+            noticeToResponceLead()
+            await addReadStatusQ({task_id: fields.task_id,user_id: fields.responsible_subdepartment_id,read_status: 'unread'})
+            await addReadStatusQ({task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'readed'})
+            await sendEmailToLead(fields.responsible_subdepartment_id, 'Новая задача', fields)
           } catch (error) {
-
+            throw new Error('Ошибка запроса к базе данных')
           }
         }
       } else if (data.fields.setResponseUser_on === 'true') {
         if (inOneDep && inOneSubDep) {
-          noticeToResponsibleUser()
-          await addReadStatusQ({
-            task_id: fields.task_id,
-            user_id: fields.responsible_user_id,
-            read_status: 'unread'
-          })
+          try {
+            noticeToResponsibleUser()
+            await addReadStatusQ({task_id: fields.task_id, user_id: fields.responsible_user_id, read_status: 'unread' })
+            await sendEmailToUser(fields.responsible_user_id, 'Назначена новая задача', fields)
+          } catch (error) {
+            throw new Error('Ошибка запроса к базе данных')
+          }
         }
-      } else {
+      } else { //!-------------------------------------------------------------------------------------------
         console.log('Задача от сотрудника addNewTask');
-        noticeToLeadNewTask()
-        await addReadStatusQ({
-          task_id: fields.task_id,
-          user_id: fields.appoint_subdepartment_id,
-          read_status: 'unread'
-        })
-        await addReadStatusQ({
-          task_id: fields.task_id,
-          user_id: data.user_id,
-          read_status: 'readed'
-        })
-        // ! ---------------------
-        await sendEmailToLead(fields.appoint_subdepartment_id, 'Новая задача на согласование')
+        try {
+          noticeToLeadNewTask()
+          await addReadStatusQ({task_id: fields.task_id, user_id: fields.appoint_subdepartment_id, read_status: 'unread' })
+          await addReadStatusQ({task_id: fields.task_id, user_id: data.user_id, read_status: 'readed'})
+          await sendEmailToLead(fields.appoint_subdepartment_id, 'Новая задача на согласование', fields)
+         } catch (error) {
+          throw new Error('Ошибка запроса к базе данных')
+        }
       }
       res.setHeader('Content-Type', 'application/json')
       res.statusCode = 200;
-      res.end(JSON.stringify({
-        message: 'Status accepted'
-      }));
-
+      res.end(JSON.stringify({message: 'Status accepted'}));
     } catch (error) {
       handleError(res, `addNewTask: ${error}`)
     }
   }
-
+// !-----------------------------------------------------------------------------------------------------------------------
   async getAllTasksBySubDep(req, res) {
     try {
       const authDecodeUserData = req.user

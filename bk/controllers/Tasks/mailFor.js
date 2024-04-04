@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const {
-  getLeadEmailQ
+  getLeadEmailQ, getUserEmailQ
 } = require('../../Database/queries/User/userQuery');
 
 require("dotenv").config()
@@ -36,16 +36,27 @@ const sendEmail = async (recipientEmail, text) => {
   }
 }
 
-const sendEmailToLead = async (subdepartment_id, text) => {
+const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   const email = await getLeadEmailQ(subdepartment_id);
-  console.log('sendEmailToLead', email[0].email_for_notify);
-  await sendEmail(email[0].email_for_notify, text);
+  if (email && email[0] && email[0].email_for_notify) {
+    console.log('sendEmailToLead', email[0].email_for_notify);
+    await sendEmail(email[0].email_for_notify, text);
+  } else {
+    console.log('Адрес электронной почты руководителя не найден');
+    throw new Error('Адрес электронной почты руководителя не найден');
+  }
 }
 
-const sendEmailToUser = async (user_id, text) => {
+const sendEmailToUser = async (user_id, text, fields = {}) => {
+  console.log('>>>>>>>>>>', fields)
   const email = await getUserEmailQ(user_id);
-  console.log(email);
-  await sendEmail(email[0].email_for_notify, text);
+  if (email && email[0] && email[0].email_for_notify) {
+    console.log(email);
+    await sendEmail(email[0].email_for_notify, text);
+  } else {
+    console.log('Адрес электронной почты пользователя не найден');
+    throw new Error('Адрес электронной почты пользователя не найден');
+  }
 }
 
 module.exports = {
