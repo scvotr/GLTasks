@@ -7,11 +7,12 @@ import { useAuthContext } from "../../../../../context/AuthProvider"
 import { useState } from "react"
 import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
+import { Loader } from "../../../Loader/Loader"
 
 export const SendToReview = ({ task, onTaskSubmit }) => {
   const currentUser = useAuthContext()
   const { notifyEvent } = useTaskContext()
-  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [formData, setFormData] = useState({})
 
   const handleClick = async toReview => {
@@ -50,14 +51,16 @@ export const SendToReview = ({ task, onTaskSubmit }) => {
       <Box>
         <FullTaskInfo task={task} />{" "}
         <Box sx={{ mt: 2 }}>
-          <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
-            <Button variant="outlined" color="error" startIcon={<CancelIcon />} onClick={e => handleClick(false)}>
-              Отмена
-            </Button>
-            <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={e => handleClick(true)}>
-              Отправить на проверку
-            </Button>
-          </Stack>
+          <Loader reqStatus={reqStatus}>
+            <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
+              <Button variant="outlined" color="error" startIcon={<CancelIcon />} onClick={e => handleClick(false)}>
+                Отмена
+              </Button>
+              <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={e => handleClick(true)}>
+                Отправить на проверку
+              </Button>
+            </Stack>
+          </Loader>
         </Box>
       </Box>
     </>
