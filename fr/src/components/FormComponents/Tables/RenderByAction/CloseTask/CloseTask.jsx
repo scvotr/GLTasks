@@ -7,11 +7,12 @@ import { useAuthContext } from "../../../../../context/AuthProvider"
 import { useState } from "react"
 import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
+import { Loader } from "../../../Loader/Loader"
 
 export const CloseTask = ({ task, onTaskSubmit }) => {
   const currentUser = useAuthContext()
   const { notifyEvent } = useTaskContext()
-  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [formData, setFormData] = useState({})
 
   const handleClosedTask = async isClose => {
@@ -74,14 +75,16 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
       <Box>
         <FullTaskInfo task={task} />
         <Box sx={{ mt: 2 }}>
-          <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
-            <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={() => handleClosedTask(false)}>
-              Отклонить
-            </Button>
-            <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={() => handleClosedTask(true)}>
-              Подтвердить
-            </Button>
-          </Stack>
+          <Loader reqStatus={reqStatus}>
+            <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
+              <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={() => handleClosedTask(false)}>
+                Отклонить
+              </Button>
+              <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={() => handleClosedTask(true)}>
+                Подтвердить
+              </Button>
+            </Stack>
+          </Loader>
         </Box>
       </Box>
     </>
