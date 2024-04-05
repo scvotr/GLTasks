@@ -208,20 +208,20 @@ export const TasksTable = ({ tasks, reRender }) => {
             if (params.row.read_status === "unread") {
               return "bold-row"
             }
-            if (params.row.read_status === "readed") {
-              if (params.row.task_status === "toApprove") {
-                return "toApprove-row"
-              } else if (params.row.task_status === "approved") {
-                return "approved-row"
-              } else if (params.row.task_status === "inWork") {
-                return "inWork-row"
-              } else if (params.row.task_status === "needToConfirm") {
-                return "needToConfirm-row"
-              } else if (params.row.task_status === "closed") {
-                return "closed-row"
-              }
-            }
-            // return params.row.read_status === "unread" ? "bold-row" : ""
+            // if (params.row.read_status === "readed") {
+            //   if (params.row.task_status === "toApprove") {
+            //     return "toApprove-row"
+            //   } else if (params.row.task_status === "approved") {
+            //     return "approved-row"
+            //   } else if (params.row.task_status === "inWork") {
+            //     return "inWork-row"
+            //   } else if (params.row.task_status === "needToConfirm") {
+            //     return "needToConfirm-row"
+            //   } else if (params.row.task_status === "closed") {
+            //     return "closed-row"
+            //   }
+            // }
+            return params.row.read_status === "unread" ? "bold-row" : ""
           }}
           initialState={{
             pagination: {

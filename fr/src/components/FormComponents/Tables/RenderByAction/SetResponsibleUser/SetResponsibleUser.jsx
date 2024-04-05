@@ -9,11 +9,12 @@ import { useAuthContext } from "../../../../../context/AuthProvider"
 import { useState } from "react"
 import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
+import { Loader } from "../../../Loader/Loader"
 
 export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
   const currentUser = useAuthContext()
   const { notifyEvent } = useTaskContext()
-  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [formData, setFormData] = useState({})
 
   const getInputData = e => {
@@ -43,7 +44,10 @@ export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
         responsible_subdepartment_id: task.responsible_subdepartment_id,
         // -----
         user_role: currentUser.role,
+        // ----to mail
         user_name: task.appoint_user_last_name,
+        appoint_department_name: task.appoint_department_name,
+        task_descript: task.task_descript,
       }
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, "/tasks/updateTaskSetResponsibleUser", "POST", transferData, setReqStatus)
@@ -73,10 +77,10 @@ export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
 
   return (
     <>
-      <>
-        <Box>
-          <FullTaskInfo task={task} />
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+      <Box>
+        <FullTaskInfo task={task} />
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <Loader reqStatus={reqStatus}>
             <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
               <PositionSelect getData={getInputData} selectedSubDep={+currentUser.subDep}>
                 <UserSelect getData={getInputData} />
@@ -90,9 +94,9 @@ export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
                 Назначить
               </Button>
             </Stack>
-          </Box>
+          </Loader>
         </Box>
-      </>
+      </Box>
     </>
   )
 }
