@@ -7,6 +7,7 @@ const routeHandlers = {
   "/tasks/updateReadStatus": TasksControler.updateReadStatus,
   "/tasks/getAllTasksBySubDep": TasksControler.getAllTasksBySubDep,
   "/tasks/updateTaskStatus": TasksControler.updateTaskStatus,
+  "/tasks/updateTaskStatusNew": TasksControler.updateTaskStatusNew,
   "/tasks/getAllUserTasks": TasksControler.getAllUserTasks,
   "/tasks/removeTask": TasksControler.removeTask,
   "/tasks/updateTaskSetResponsibleUser": TasksControler.updateTaskSetResponsibleUser,
