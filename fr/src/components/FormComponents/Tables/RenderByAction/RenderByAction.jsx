@@ -62,7 +62,7 @@ export const RenderByAction = ({ actionByStatus, task, onTaskSubmit }) => {
 
   const renderByActionType = () => {
     const render = actionTypes.get(actionByStatus)
-    return render ? render() : <>!!!</>
+    return render ? render() : <>Неизвестное событие</>
   }
 
   return <>{renderByActionType()}</>
