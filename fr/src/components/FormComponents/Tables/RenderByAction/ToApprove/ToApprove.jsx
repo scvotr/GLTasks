@@ -7,10 +7,12 @@ import { HOST_ADDR } from "../../../../../utils/remoteHosts"
 import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { FullTaskInfo } from "../../../Tasks/FullTaskInfo/FullTaskInfo"
 import { useAuthContext } from "../../../../../context/AuthProvider"
+import { Loader } from "../../../Loader/Loader"
 
 export const updateTaskStatus = async (token, data, onSuccess) => {
   try {
-    const res = await fetch(HOST_ADDR + "/tasks/updateTaskStatus", {
+    // const res = await fetch(HOST_ADDR + "/tasks/updateTaskStatus", {
+    const res = await fetch(HOST_ADDR + "/tasks/updateTaskStatusNew", {
       method: "POST",
       headers: {
         Authorization: token,
@@ -33,7 +35,7 @@ export const updateTaskStatus = async (token, data, onSuccess) => {
 export const ToApprove = ({ task, onTaskSubmit }) => {
   const currentUser = useAuthContext()
   const { notifyEvent } = useTaskContext()
-  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
   const handleApproveTask = async isApprove => {
     let transferData = {}
@@ -50,6 +52,7 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
         responsible_subdepartment_id: task.responsible_subdepartment_id, // Отдел для кого создали задачу
         // -----
         user_role: currentUser.role,
+        ...task,
       }
       try {
         setReqStatus({ loading: true, error: null })
@@ -63,7 +66,8 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
     } else {
       transferData = {
         task_id: task.task_id,
-        task_status: "reject",
+        // task_status: "reject",
+        task_status: "toApprove",
         reject_on: true,
       }
       try {
@@ -83,14 +87,16 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
       <Box>
         <FullTaskInfo task={task} />
         <Box sx={{ mt: 2 }}>
-          <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
-            <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={() => handleApproveTask(false)}>
-              Отклонить
-            </Button>
-            <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={() => handleApproveTask(true)}>
-              Согласовать
-            </Button>
-          </Stack>
+          <Loader reqStatus={reqStatus}>
+            <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
+              <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={() => handleApproveTask(false)}>
+                Отклонить
+              </Button>
+              <Button variant="contained" color="success" endIcon={<ThumbUpIcon />} onClick={() => handleApproveTask(true)}>
+                Согласовать
+              </Button>
+            </Stack>
+          </Loader>
         </Box>
       </Box>
     </>
