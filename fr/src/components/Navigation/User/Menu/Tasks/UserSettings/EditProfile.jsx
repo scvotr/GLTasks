@@ -67,6 +67,8 @@ export const EditProfile = () => {
               helperText={errorPin || "Введите Ваше имя"}
               inputProps={{
                 minLength: 4,
+                pattern: '[А-Яа-я]+',
+                title: 'Можно вводить только буквы Ru-ru',
                 autoComplete: "additional-name"
               }}
             />
@@ -82,6 +84,8 @@ export const EditProfile = () => {
               helperText={errorPin || "Введите Ваше отчество"}
               inputProps={{
                 minLength: 4,
+                pattern: '[А-Яа-я]+',
+                title: 'Можно вводить только буквы Ru-ru',
                 autoComplete: "family-name"
               }}
             />
@@ -96,6 +100,8 @@ export const EditProfile = () => {
               helperText={errorPin || "Введите Вашу фамилию"}
               inputProps={{
                 minLength: 4,
+                pattern: '[А-Яа-я]+',
+                title: 'Можно вводить только буквы Ru-ru',
                 autoComplete: "tel"
               }}
             />

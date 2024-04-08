@@ -35,10 +35,10 @@ export const SettingsMain = () => {
         </CardContent>
         <CardContent>
           <Typography variant="body1">
-            <strong>№ внутр. тел.:</strong> {(userData && userData.external_phone) || ""}
+            <strong>№ тел.:</strong> {(userData && userData.external_phone) || ""}
           </Typography>
           <Typography variant="body1">
-            <strong>№ тел./факс. :</strong> {(userData && userData.internal_phone) || ""}
+            <strong>№ внутр. тел./факс. :</strong> {(userData && userData.internal_phone) || ""}
           </Typography>
           <Typography variant="body1">
             <strong>№ каб. :</strong> {(userData && userData.office_number) || ""}
