@@ -52,7 +52,10 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
         responsible_subdepartment_id: task.responsible_subdepartment_id, // Отдел для кого создали задачу
         // -----
         user_role: currentUser.role,
-        ...task,
+        // ----to mail
+        user_name: task.appoint_user_last_name,
+        appoint_department_name: task.appoint_department_name,
+        task_descript: task.task_descript,
       }
       try {
         setReqStatus({ loading: true, error: null })
