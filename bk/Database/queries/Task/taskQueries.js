@@ -291,7 +291,7 @@ const getAllUserTasksQ = async (user_id) => {
   }
 }
 
-const updateTaskSetResponsibleUserQ = async (data) => {
+const updateTaskByEventrQ = async (data) => {
   try {
     const {
       responsible_position_id,
@@ -325,7 +325,7 @@ const updateTaskSetResponsibleUserQ = async (data) => {
     `;
     await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id, ])
   } catch (error) {
-    throw new Error('Ошибка запроса к базе данных updateTaskSetResponsibleUserQ')
+    throw new Error('Ошибка запроса к базе данных updateTaskByEventrQ')
   }
 }
 
@@ -338,5 +338,5 @@ module.exports = {
   removeTaskQ,
   getAllTasksBySubDepQ,
   getAllUserTasksQ,
-  updateTaskSetResponsibleUserQ,
+  updateTaskByEventrQ,
 };
