@@ -70,9 +70,23 @@ const getLeadEmailQ = async (subdepartment_id) => {
   }
 }
 
+const getLeadIdQ = async (subdepartment_id) => {
+  try {
+    const query = `
+      SELECT id 
+      FROM users 
+      WHERE subdepartment_id = ? AND role = 'chife'
+    `;
+    return await executeDatabaseQueryAsync(query, [subdepartment_id]);
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных');
+  }
+}
+
 module.exports = {
   editUserDataQ,
   getUserByIdQ,
   getUserEmailQ,
   getLeadEmailQ,
+  getLeadIdQ,
 }

@@ -7,10 +7,10 @@ const routeHandlers = {
   "/tasks/updateReadStatus": TasksControler.updateReadStatus,
   "/tasks/getAllTasksBySubDep": TasksControler.getAllTasksBySubDep,
   "/tasks/updateTaskStatus": TasksControler.updateTaskStatus,
-  "/tasks/updateTaskStatusNew": TasksControler.updateTaskStatusNew,
+  "/tasks/updateTaskStatusNew": TasksControler.updateTaskStatusNew, //? новый обработчик
   "/tasks/getAllUserTasks": TasksControler.getAllUserTasks,
   "/tasks/removeTask": TasksControler.removeTask,
-  "/tasks/updateTaskSetResponsibleUser": TasksControler.updateTaskSetResponsibleUser,
+  //! "/tasks/updateTaskSetResponsibleUser": TasksControler.updateTaskSetResponsibleUser,
   // "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
   // "/tasks/getAllResponsibleTasksByDep": TasksControler.getAllResponsibleTasksByDep,
   // "/tasks/getAllAppointTasksFromDep": TasksControler.getAllAppointTasksFromDep,

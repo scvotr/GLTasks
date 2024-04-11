@@ -101,6 +101,7 @@ export const TasksTable = ({ tasks, reRender }) => {
         )
       },
     },
+    { field: "deadline", headerName: "Выполнить до:", description: "This column description", width: 120 },
   ]
 
   const handleCellClick = (params, event) => {

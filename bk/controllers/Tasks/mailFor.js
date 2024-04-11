@@ -39,7 +39,7 @@ const sendEmail = async (recipientEmail, text, descript) => {
 const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   const email = await getLeadEmailQ(subdepartment_id);
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToLead', email, text);
+    console.log('sendEmailToLead', email, text, fields.task_descript);
     await sendEmail(email[0].email_for_notify, text, fields.task_descript );
   } else {
     console.log('Адрес электронной почты руководителя не найден');
@@ -50,8 +50,8 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
 const sendEmailToUser = async (user_id, text, fields = {}) => {
   const email = await getUserEmailQ(user_id);
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToUser', email, text);
-    await sendEmail(email[0].email_for_notify, text);
+    console.log('sendEmailToUser', email, text, fields.task_descript);
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript);
   } else {
     console.log('Адрес электронной почты пользователя не найден');
     throw new Error('Адрес электронной почты пользователя не найден');

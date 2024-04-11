@@ -25,7 +25,7 @@ const columns = [
   { field: "responsible_subdepartment_name", headerName: "Для", description: "Для кого", width: 220 },
   { field: "responsible_department_name", headerName: "Для", description: "Для кого", width: 220 },
   { field: "responsible_user_last_name", headerName: "От", description: "От кого", width: 150 },
-  { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 150 },
+  { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 200 },
   { field: "task_status", headerName: "Статус", description: "Статус задачи", width: 100 },
 ]
 

@@ -31,13 +31,14 @@ export const SendToReview = ({ task, onTaskSubmit }) => {
         // -----
         user_role: currentUser.role,
         // ----to mail
+        current_user: currentUser.id,
         user_name: task.appoint_user_last_name,
         appoint_department_name: task.appoint_department_name,
         task_descript: task.task_descript,
       }
       try {
         setReqStatus({ loading: true, error: null })
-        await getDataFromEndpoint(currentUser.token, "/tasks/updateTaskSetResponsibleUser", "POST", transferData, setReqStatus)
+        await getDataFromEndpoint(currentUser.token, "/tasks/updateTaskStatusNew", "POST", transferData, setReqStatus)
         setReqStatus({ loading: false, error: null })
         notifyEvent("need-all-Tasks")
         onTaskSubmit()

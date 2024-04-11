@@ -11,8 +11,7 @@ import { Loader } from "../../../Loader/Loader"
 
 export const updateTaskStatus = async (token, data, onSuccess) => {
   try {
-    const res = await fetch(HOST_ADDR + "/tasks/updateTaskStatus", {
-    // const res = await fetch(HOST_ADDR + "/tasks/updateTaskStatusNew", {
+    const res = await fetch(HOST_ADDR + "/tasks/updateTaskStatusNew", {
       method: "POST",
       headers: {
         Authorization: token,
@@ -53,6 +52,7 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
         // -----
         user_role: currentUser.role,
         // ----to mail
+        current_user: currentUser.id,
         user_name: task.appoint_user_last_name,
         appoint_department_name: task.appoint_department_name,
         task_descript: task.task_descript,
