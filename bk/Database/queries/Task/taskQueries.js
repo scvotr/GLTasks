@@ -166,7 +166,8 @@ const removeTaskQ = async (data, taskFolderName) => {
 
 const getAllTasksBySubDepQ = async (subDep_id) => {
   const command = `
-    SELECT 
+    SELECT
+      t.id, 
       t.task_id,
       t.task_descript,
       t.task_priority,
@@ -230,6 +231,7 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
 const getAllUserTasksQ = async (user_id) => {
   const command = `
     SELECT 
+    t.id,
     t.task_id,
     t.task_descript,
     t.task_priority,
