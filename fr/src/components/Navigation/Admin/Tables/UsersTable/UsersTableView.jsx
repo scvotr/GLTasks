@@ -99,7 +99,7 @@ export const UsersTableView = ({ actionType, users, reRender  }) => {
         )}
         <Box
           sx={{
-            height: 500,
+            height: '75vh',
             width: "100%",
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
             border: "1px solid #e0e0e0",
@@ -120,13 +120,13 @@ export const UsersTableView = ({ actionType, users, reRender  }) => {
             onCellClick={handleCellClick}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 15 },
+                paginationModel: { page: 0, pageSize: 24 },
               },
               sorting: {
                 sortModel: [{ field: "created_on", sort: "desc" }], // Направление сортировки: 'asc' - по возрастанию, 'desc' - по убыванию
               },
             }}
-            pageSizeOptions={[15, 20, 25]}
+            pageSizeOptions={[15, 20, 24]}
           />
         </Box>
       </>
