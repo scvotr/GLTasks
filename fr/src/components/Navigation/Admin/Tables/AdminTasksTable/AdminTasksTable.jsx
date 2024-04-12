@@ -72,7 +72,7 @@ export const AdminTasksTable = ({ tasks, reRender }) => {
       </>
       <Box
         style={{
-          height: 500,
+          height: '75vh',
           width: "100%",
           boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
           border: "1px solid #e0e0e0",

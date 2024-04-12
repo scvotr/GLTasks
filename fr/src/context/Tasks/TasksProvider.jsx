@@ -11,6 +11,7 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allTasks, setAllTasks] = useState([])
+  const [readedTasks, setReadedTasks ] = useState([])
 
   const updateAllTasks = tasks => {
     setAllTasks(tasks)
@@ -44,9 +45,13 @@ export const TasksProvider = ({currentUser, children}) => {
                 const allTasksRewiev = new Set([...allTaskOnRewievkAL, ...allTaskInRewievRL]);
 
                 const allTasks2 =  new Set([...allTasks1, ...allTasksRewiev])
+                // !!!
+                setReadedTasks([...allTasks1])
 
-                const allTaskOnClosedkAL = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
-                const allTaskInClosedRL = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTaskOnClosedkAL = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()) 
+                // && task.read_status === "unread");
+                const allTaskInClosedRL = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString())
+                // && task.read_status === "unread");
                 const allTasksClosed = new Set([...allTaskOnClosedkAL, ...allTaskInClosedRL]);
 
                 const allTasks =  new Set([...allTasks2, ...allTasksClosed])
@@ -72,10 +77,16 @@ export const TasksProvider = ({currentUser, children}) => {
     return await getDataFromEndpoint(currentUserToken, "/tasks/getAllUserTasks", "POST", null, setReqStatus)
   }
 // !---------------------------------------------------------------------------------------
-  const [allTasksClosed, countAllTasksClosed] = useFilteredTasks( allTasks, currentUser, task => 
-    (task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()) ||
-    (task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString())
-  )
+  const [allTasksClosed, countAllTasksClosed] = useFilteredTasks(allTasks, currentUser, task => 
+    (task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString() &&
+    task.read_status === "readed") ||
+    (task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString() &&
+    task.read_status === "readed")
+  );  
+  // const [allTasksClosed, countAllTasksClosed] = useFilteredTasks( allTasks, currentUser, task => 
+  //   (task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()) ||
+  //   (task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString())
+  // )
   const [allTasksNoClosed, countAllTasksNoClosed] = useFilteredTasks( allTasks, currentUser, task => 
     (task.task_status !== "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()) ||
     (task.task_status !== "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString())
@@ -98,6 +109,7 @@ export const TasksProvider = ({currentUser, children}) => {
         allUserTasksClosed,
         countAllUserTasksClosed,
         notifyEvent,
+        readedTasks,
       }}
     >
       {children}

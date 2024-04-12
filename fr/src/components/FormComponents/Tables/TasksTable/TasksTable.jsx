@@ -9,26 +9,35 @@ import { useAuthContext } from "../../../../context/AuthProvider"
 import { ModalCustom } from "../../../ModalCustom/ModalCustom"
 import { RenderByAction } from "../RenderByAction/RenderByAction"
 import { FullScreenDialog } from "../../../FullScreenDialog/FullScreenDialog"
-import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined"
-import SportsKabaddiOutlinedIcon from "@mui/icons-material/SportsKabaddiOutlined"
-import RoundaboutRightOutlinedIcon from "@mui/icons-material/RoundaboutRightOutlined"
-import RoundaboutLeftOutlinedIcon from "@mui/icons-material/RoundaboutLeftOutlined"
+import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined"
+import UnarchiveOutlinedIcon from "@mui/icons-material/UnarchiveOutlined"
+import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined"
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty"
 import AssignmentIcon from "@mui/icons-material/Assignment"
-import CancelIcon from "@mui/icons-material/Cancel"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
+import { Loader } from "../../Loader/Loader"
 
 export const TasksTable = ({ tasks, reRender }) => {
   const currentUser = useAuthContext()
-  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
   const [actionTypeTS, setActionTypeTS] = useState()
 
   const columns = [
-    { field: "task_id", headerName: "№", description: "This column description", width: 70 },
+    {
+      field: "id",
+      headerName: "№",
+      description: "This column description",
+      width: 70,
+      // renderCell: params => {
+      //   let test
+      //   test = params.value.match(/\d{4}/)[0]
+      //   return <div> {test} </div>
+      // },
+    },
     {
       field: "read_status",
       headerName: "",
@@ -40,6 +49,55 @@ export const TasksTable = ({ tasks, reRender }) => {
         </div>
       ),
     },
+    {
+      field: "appoint_subdepartment_id",
+      headerName: "",
+      description: "This column description",
+      width: 20,
+      renderCell: params => {
+        let render
+        if (params.row.appoint_subdepartment_id.toString() === currentUser.subDep.toString()) {
+          render = <UnarchiveOutlinedIcon />
+        } else {
+          render = <ArchiveOutlinedIcon />
+        }
+        return <div>{render}</div>
+      },
+    },
+    {
+      field: "task_status",
+      headerName: "Статус",
+      description: "Статус задачи",
+      width: 130,
+      renderCell: params => {
+        let iconComponent
+        let statusText
+
+        if (params.row.task_status === "toApprove") {
+          iconComponent = <HourglassEmptyIcon />
+          statusText = "новая"
+        } else if (params.row.task_status === "approved") {
+          iconComponent = <CheckCircleOutlineIcon />
+          statusText = "Согласована"
+        } else if (params.row.task_status === "inWork") {
+          iconComponent = <AssignmentIcon />
+          statusText = "В работе"
+        } else if (params.row.task_status === "needToConfirm") {
+          iconComponent = <DoneOutlinedIcon />
+          statusText = "На проверке"
+        } else if (params.row.task_status === "closed") {
+          iconComponent = <DoneAllIcon />
+          statusText = "Закрыта"
+        }
+
+        return (
+          <div>
+            {iconComponent} {statusText}
+            {/* {params.value} */}
+          </div>
+        )
+      },
+    },
     // { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
 
     // { field: "appoint_department_name", headerName: "Назначил", description: "От кого", width: 150 },
@@ -49,59 +107,67 @@ export const TasksTable = ({ tasks, reRender }) => {
       headerName: "От ",
       description: "От кого",
       width: 150,
-      renderCell: params => (
-        <div>
-          <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
-          {params.value}
-        </div>
-      ),
+      // renderCell: params => (
+      //   <div>
+      //     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
+      //     {params.value}
+      //   </div>
+      // ),
     },
 
     // { field: "responsible_department_name", headerName: "Исполнитель", description: "Для кого", width: 220 },
-    { field: "responsible_subdepartment_name", headerName: "Для", description: "От кого", width: 150 },
+    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 150 },
     {
       field: "responsible_user_last_name",
-      headerName: "Ответсвеный",
-      description: "Кому",
+      headerName: "Ответственный",
+      description: "Ответсвенное лицо",
       width: 150,
-      renderCell: params => (
-        <div>
-          <DriveFileMoveOutlinedIcon style={{ marginRight: "5px" }} />
-          {params.value}
-        </div>
-      ),
-    },
-
-    { field: "task_descript", headerName: "Задача", description: "Краткое описание", width: 350 },
-    {
-      field: "task_status",
-      headerName: "Статус",
-      description: "Статус задачи",
-      width: 100,
+      cellClassName: "super-app-theme--cell",
       renderCell: params => {
-        let iconComponent
-
-        if (params.row.task_status === "toApprove") {
-          iconComponent = <HourglassEmptyIcon />
-        } else if (params.row.task_status === "approved") {
-          iconComponent = <CheckCircleOutlineIcon />
-        } else if (params.row.task_status === "inWork") {
-          iconComponent = <AssignmentIcon />
-        } else if (params.row.task_status === "needToConfirm") {
-          iconComponent = <CancelIcon />
-        } else if (params.row.task_status === "closed") {
-          iconComponent = <DoneAllIcon />
+        let render
+        if (params.value) {
+          render = params.value
+        } else {
+          render = '------'
         }
-
-        return (
-          <div>
-            {iconComponent}
-            {params.value}
-          </div>
-        )
+        return <div>{render}</div>
       },
     },
-    { field: "deadline", headerName: "Выполнить до:", description: "This column description", width: 120 },
+
+    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 250 },
+
+    {
+      field: "deadline",
+      headerName: "Выполнить до:",
+      description: "This column description",
+      width: 120,
+      headerClassName: "super-app-theme--header",
+      type: "date",
+      valueGetter: params => new Date(params.value),
+      filter: "datePicker",
+      renderCell: params => {
+        // Получаем дату из строки
+        const date = new Date(params.value)
+        // Форматируем дату в нужный формат (день-месяц-год)
+        const formattedDate = `${date.getDate()}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}`
+
+        return <div>{formattedDate}</div>
+      },
+      comparator: (date1, date2) => {
+        // Преобразуем значения в объекты Date
+        const dateObj1 = new Date(date1)
+        const dateObj2 = new Date(date2)
+
+        // Сравниваем даты
+        if (dateObj1 < dateObj2) {
+          return -1
+        }
+        if (dateObj1 > dateObj2) {
+          return 1
+        }
+        return 0
+      },
+    },
   ]
 
   const handleCellClick = (params, event) => {
@@ -188,50 +254,63 @@ export const TasksTable = ({ tasks, reRender }) => {
           </FullScreenDialog>
         )}
       </>
-      <Box
-        style={{
-          height: "100%",
-          width: "100%",
-          boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-          border: "1px solid #e0e0e0",
-          borderRadius: "5px",
-        }}>
-        <DataGrid
-          rowHeight={25}
-          rows={sortedTasks.map(task => ({
-            ...task,
-            id: task.task_id,
-          }))}
-          columns={columns}
-          localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
-          onCellClick={handleCellClick}
-          getRowClassName={params => {
-            if (params.row.read_status === "unread") {
-              return "bold-row"
-            }
-            // if (params.row.read_status === "readed") {
-            //   if (params.row.task_status === "toApprove") {
-            //     return "toApprove-row"
-            //   } else if (params.row.task_status === "approved") {
-            //     return "approved-row"
-            //   } else if (params.row.task_status === "inWork") {
-            //     return "inWork-row"
-            //   } else if (params.row.task_status === "needToConfirm") {
-            //     return "needToConfirm-row"
-            //   } else if (params.row.task_status === "closed") {
-            //     return "closed-row"
-            //   }
-            // }
-            return params.row.read_status === "unread" ? "bold-row" : ""
-          }}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 15 },
-            },
-          }}
-          pageSizeOptions={[15, 25, 75]}
-        />
-      </Box>
+      <Loader reqStatus={reqStatus}>
+        <Box
+          sx={{
+            height: "75vh",
+            width: "100%",
+            boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+            border: "1px solid #e0e0e0",
+            borderRadius: "5px",
+            overflowX: "auto", // Добавляем горизонтальную прокрутку, если содержимое таблицы не помещается
+          }}>
+          <DataGrid
+            sx={{
+              "& .MuiDataGrid-cell": {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center", // Если требуется центрировать текст в ячейках
+              },
+              "& .MuiDataGrid-columnHeaderTitleContainer": {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center", // Если требуется центрировать текст в заголовках столбцов
+              },
+              "& .super-app-theme--header": {
+                backgroundColor: "rgba(255, 7, 0, 0.55)",
+              },
+              "& .super-app-theme--cell": {
+                backgroundColor: "rgba(224, 183, 60, 0.55)",
+                color: "#1a3e72",
+                fontWeight: "600",
+              },
+            }}
+            // autoHeight
+            rowHeight={25}
+            rows={sortedTasks.map(task => ({
+              ...task,
+              id: task.id,
+            }))}
+            columns={columns}
+            localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+            onCellClick={handleCellClick}
+            getRowClassName={params => {
+              if (params.row.read_status === "unread") {
+                return "bold-row"
+              }
+              return params.row.read_status === "unread" ? "bold-row" : ""
+            }}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 25 },
+              },
+            }}
+            pageSizeOptions={[10, 15, 25]}
+          />
+        </Box>
+      </Loader>
     </>
   )
 }
