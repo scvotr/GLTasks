@@ -4,8 +4,7 @@ import { useEffect, useState } from "react"
 import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
 
 export const ClosedTask = () => {
-  const { allTasks, allTasksClosed, countAllTasksClosed, allUserTasksClosed, countAllUserTasksClosed, notifyEvent } = useTaskContext()
-  // console.log('1',allTasksClosed, countAllTasksClosed, '2',allUserTasksClosed, countAllUserTasksClosed)
+  const { allTasks, allTasksClosed } = useTaskContext()
   const [formKey, setFormKey] = useState(0)
   const [closedTasks, setClosedTasks] = useState()
 
