@@ -4,16 +4,12 @@ import { useEffect, useState } from "react"
 import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
 
 export const ClosedTask = () => {
-  const { allTasks, allTasksClosed } = useTaskContext()
+  const { closedAndReadedTasks } = useTaskContext()
   const [formKey, setFormKey] = useState(0)
-  const [closedTasks, setClosedTasks] = useState()
 
   useEffect(() => {
-    if (allTasks) {
-      const filteredClosedTasks = allTasks.filter(task => task.task_status === "closed");
-      setClosedTasks(filteredClosedTasks);
-    }
-  }, [formKey, allTasks]);
+
+  }, [formKey]);
 
   return (
     <>
@@ -32,7 +28,7 @@ export const ClosedTask = () => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <TasksTable tasks={allTasksClosed || []} reRender={setFormKey}/>
+        <TasksTable tasks={closedAndReadedTasks || []} reRender={setFormKey}/>
       </Box>
     </>
   )
