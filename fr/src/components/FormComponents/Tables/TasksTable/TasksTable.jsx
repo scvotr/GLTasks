@@ -134,7 +134,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       },
     },
 
-    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 250 },
+    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 500 },
 
     {
       field: "deadline",
