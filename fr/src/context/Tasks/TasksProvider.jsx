@@ -11,7 +11,7 @@ export const useTaskContext = () => {
 export const TasksProvider = ({currentUser, children}) => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allTasks, setAllTasks] = useState([])
-  const [readedTasks, setReadedTasks ] = useState([])
+  const [closedAndReadedTasks, setClosedAndReadedTasks ] = useState([])
 
   const updateAllTasks = tasks => {
     setAllTasks(tasks)
@@ -45,23 +45,56 @@ export const TasksProvider = ({currentUser, children}) => {
                 const allTasksRewiev = new Set([...allTaskOnRewievkAL, ...allTaskInRewievRL]);
 
                 const allTasks2 =  new Set([...allTasks1, ...allTasksRewiev])
-                // !!!
-                setReadedTasks([...allTasks1])
 
-                const allTaskOnClosedkAL = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()) 
-                // && task.read_status === "unread");
-                const allTaskInClosedRL = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString())
-                // && task.read_status === "unread");
+                const allTaskOnClosedkAL = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "unread") 
+                const allTaskInClosedRL = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "unread")
                 const allTasksClosed = new Set([...allTaskOnClosedkAL, ...allTaskInClosedRL]);
 
                 const allTasks =  new Set([...allTasks2, ...allTasksClosed])
+                // выбрать все закрытые и прочитаные задачи прочитаные задачи
+                const allTaskOnClosedAndReaded = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "readed") 
+                const allTaskInClosedAndReaded = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "readed")
+                const allClosedAndReaded = new Set([...allTaskOnClosedAndReaded, ...allTaskInClosedAndReaded])
+                setClosedAndReadedTasks([...allClosedAndReaded])
                 
                 updateAllTasks([...allTasks]);
               })
               .catch(error => console.error("Error fetching All sub dep tasks", error))
           } else if(currentUser.login && currentUser.role === "user") {
             fetchAllUserTasks(currentUser.token)
-              .then(tasks => updateAllTasks(tasks))
+              .then(tasks => {
+                const filteredTasks = tasks.filter(task => task.task_status === "toApprove" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
+                const filteredTasks2 = tasks.filter(task => task.task_status === "approved" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
+                const combinedFilteredTasks = new Set([...filteredTasks, ...filteredTasks2]);
+            
+                const filteredTasks3 = tasks.filter(task => task.task_status === "approved" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
+                const uniqueTasks = new Set([...combinedFilteredTasks, ...filteredTasks3]);
+
+                const allTaskInWorkAL = tasks.filter(task => task.task_status === "inWork" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTaskInWorkRL = tasks.filter(task => task.task_status === "inWork" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTasksInWork = new Set([...allTaskInWorkAL, ...allTaskInWorkRL]);
+
+                const allTasks1 =  new Set([...uniqueTasks, ...allTasksInWork])
+
+                const allTaskOnRewievkAL = tasks.filter(task => task.task_status === "needToConfirm" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTaskInRewievRL = tasks.filter(task => task.task_status === "needToConfirm" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString());
+                const allTasksRewiev = new Set([...allTaskOnRewievkAL, ...allTaskInRewievRL]);
+
+                const allTasks2 =  new Set([...allTasks1, ...allTasksRewiev])
+
+                const allTaskOnClosedkAL = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "unread") 
+                const allTaskInClosedRL = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "unread")
+                const allTasksClosed = new Set([...allTaskOnClosedkAL, ...allTaskInClosedRL]);
+
+                const allTasks =  new Set([...allTasks2, ...allTasksClosed])
+                // выбрать все закрытые и прочитаные задачи прочитаные задачи
+                const allTaskOnClosedAndReaded = tasks.filter(task => task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "readed") 
+                const allTaskInClosedAndReaded = tasks.filter(task => task.task_status === "closed" && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString()  && task.read_status === "readed")
+                const allClosedAndReaded = new Set([...allTaskOnClosedAndReaded, ...allTaskInClosedAndReaded])
+                setClosedAndReadedTasks([...allClosedAndReaded])
+                
+                updateAllTasks([...allTasks]);
+              })
               .catch(error => console.error("Error fetching ALL tasks", error))
           }
         break
@@ -109,7 +142,7 @@ export const TasksProvider = ({currentUser, children}) => {
         allUserTasksClosed,
         countAllUserTasksClosed,
         notifyEvent,
-        readedTasks,
+        closedAndReadedTasks,
       }}
     >
       {children}
