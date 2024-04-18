@@ -9,7 +9,7 @@ export const useTaskContext = () => {
 }
 
 export const TasksProvider = ({currentUser, children}) => {
-  const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [allTasks, setAllTasks] = useState([])
   const [closedAndReadedTasks, setClosedAndReadedTasks ] = useState([])
 
@@ -23,6 +23,41 @@ export const TasksProvider = ({currentUser, children}) => {
 
   const handleEvent = eventName => {
     switch (eventName) {
+      case 'need-all-dep-Tasks':
+        fetchAllTasksByDep(currentUser.token)
+          .then( tasks => {
+            const filteredTasks = tasks.filter(task => task.task_status === "toApprove" && task.appoint_department_id.toString() === currentUser.dep.toString());
+            const filteredTasks2 = tasks.filter(task => task.task_status === "approved" && task.appoint_department_id.toString() === currentUser.dep.toString());
+            const combinedFilteredTasks = new Set([...filteredTasks, ...filteredTasks2]);
+            const filteredTasks3 = tasks.filter(task => task.task_status === "approved" && task.responsible_department_id.toString() === currentUser.dep.toString());
+            const uniqueTasks = new Set([...combinedFilteredTasks, ...filteredTasks3]);
+
+            const allTaskInWorkAL = tasks.filter(task => task.task_status === "inWork" && task.appoint_department_id.toString() === currentUser.dep.toString());
+            const allTaskInWorkRL = tasks.filter(task => task.task_status === "inWork" && task.responsible_department_id.toString() === currentUser.dep.toString());
+            const allTasksInWork = new Set([...allTaskInWorkAL, ...allTaskInWorkRL]);
+
+            const allTasks1 =  new Set([...uniqueTasks, ...allTasksInWork])
+
+            const allTaskOnRewievkAL = tasks.filter(task => task.task_status === "needToConfirm" && task.appoint_department_id.toString() === currentUser.dep.toString());
+            const allTaskInRewievRL = tasks.filter(task => task.task_status === "needToConfirm" && task.responsible_department_id.toString() === currentUser.dep.toString());
+            const allTasksRewiev = new Set([...allTaskOnRewievkAL, ...allTaskInRewievRL]);
+
+            const allTasks2 =  new Set([...allTasks1, ...allTasksRewiev])
+
+            const allTaskOnClosedkAL = tasks.filter(task => task.task_status === "closed" && task.appoint_department_id.toString() === currentUser.dep.toString()  && task.read_status === "unread") 
+            const allTaskInClosedRL = tasks.filter(task => task.task_status === "closed" && task.responsible_department_id.toString() === currentUser.dep.toString()  && task.read_status === "unread")
+            const allTasksClosed = new Set([...allTaskOnClosedkAL, ...allTaskInClosedRL]);
+
+            const allTasks =  new Set([...allTasks2, ...allTasksClosed])
+            // выбрать все закрытые и прочитаные задачи прочитаные задачи
+            const allTaskOnClosedAndReaded = tasks.filter(task => task.task_status === "closed" && task.appoint_department_id.toString() === currentUser.dep.toString()  && task.read_status === "readed") 
+            const allTaskInClosedAndReaded = tasks.filter(task => task.task_status === "closed" && task.responsible_department_id.toString() === currentUser.dep.toString()  && task.read_status === "readed")
+            const allClosedAndReaded = new Set([...allTaskOnClosedAndReaded, ...allTaskInClosedAndReaded])
+            setClosedAndReadedTasks([...allClosedAndReaded])
+
+            updateAllTasks([...allTasks]);
+          })
+        break
       case "need-all-Tasks":
           if(currentUser.login && currentUser.role === "chife") {
             fetchAllTasksBySubDep(currentUser.token)
@@ -103,11 +138,15 @@ export const TasksProvider = ({currentUser, children}) => {
     }
   }
 
+
+  const fetchAllTasksByDep = async(token) => {
+    return await getDataFromEndpoint(token, "/tasks/getAllTasksByDep", "POST", null, setReqStatus)
+  }
   const fetchAllTasksBySubDep = async(token) => {
     return await getDataFromEndpoint(token, "/tasks/getAllTasksBySubDep", "POST", null, setReqStatus)
   }
-  const fetchAllUserTasks = async currentUserToken => {
-    return await getDataFromEndpoint(currentUserToken, "/tasks/getAllUserTasks", "POST", null, setReqStatus)
+  const fetchAllUserTasks = async(token) => {
+    return await getDataFromEndpoint(token, "/tasks/getAllUserTasks", "POST", null, setReqStatus)
   }
 // !---------------------------------------------------------------------------------------
   const [allTasksClosed, countAllTasksClosed] = useFilteredTasks(allTasks, currentUser, task => 

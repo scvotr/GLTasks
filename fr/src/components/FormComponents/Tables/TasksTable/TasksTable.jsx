@@ -134,7 +134,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       },
     },
 
-    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 250 },
+    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 500 },
 
     {
       field: "deadline",
@@ -189,6 +189,20 @@ export const TasksTable = ({ tasks, reRender }) => {
         updatedData = {
           task_id: params.row.task_id,
           user_id: params.row.responsible_subdepartment_id,
+          read_status: "readed",
+        }
+      }
+    } else if (currentUser.role.toString() === "general") {
+      if (currentUser.dep.toString() === params.row.appoint_department_id.toString()) {
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.appoint_department_id,
+          read_status: "readed",
+        }
+      } else if (currentUser.dep.toString() === params.row.responsible_department_id.toString()) {
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.responsible_department_id,
           read_status: "readed",
         }
       }

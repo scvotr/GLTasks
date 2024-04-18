@@ -17,6 +17,7 @@ import { ChangePasPin } from "../components/Navigation/User/Menu/Tasks/UserSetti
 import { EditProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EditProfile";
 import { SettingsMain } from "../components/Navigation/User/Menu/Tasks/UserSettings/SettingsMain";
 import { EmptyProfile, emptyProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EmptyProfile";
+import { GeneralTasksMain } from "../components/Navigation/User/Menu/Tasks/General/GeneralTasksMain";
 
 
 export const routes = createBrowserRouter([
@@ -65,24 +66,28 @@ export const routes = createBrowserRouter([
         element: <PrivateRoutes component={TasksMain} roles={["chife", "user"]}/>,
       },
       {
+        path: '/general/tasks',
+        element: <PrivateRoutes component={GeneralTasksMain} roles={["general"]}/>,
+      },
+      {
         path: '/tasks/closedTask',
-        element: <PrivateRoutes component={ClosedTask} roles={["chife", "user"]}/>,
+        element: <PrivateRoutes component={ClosedTask} roles={["chife", "user", "general"]}/>,
       },
       {
         path: '/settings',
-        element: <PrivateRoutes component={SettingsMain} roles={["chife", "user"]}/>,
+        element: <PrivateRoutes component={SettingsMain} roles={["chife", "user", "general"]}/>,
       },
       {
         path: '/settings/profile',
-        element: <PrivateRoutes component={EditProfile} roles={["chife", "user", "new"]}/>,
+        element: <PrivateRoutes component={EditProfile} roles={["chife", "user", "new", "general"]}/>,
       },
       {
         path: '/settings/changePasPin',
-        element: <PrivateRoutes component={ChangePasPin} roles={["chife", "user", "new"]}/>,
+        element: <PrivateRoutes component={ChangePasPin} roles={["chife", "user", "new", "general"]}/>,
       },
       {
         path: '/settings/emptyProfile',
-        element: <PrivateRoutes component={EmptyProfile} roles={["chife", "user"]}/>,
+        element: <PrivateRoutes component={EmptyProfile} roles={["chife", "user", "general"]}/>,
       },
     ]
   }

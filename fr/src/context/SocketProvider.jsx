@@ -12,6 +12,7 @@ export const useSocketContext = () => {
 
 export const SocketProvider = ({ children }) => {
   const currentUser = useAuthContext()
+  const generalDep = "generalDep_" + currentUser.dep
   const leadSubDep = "leadSubDep_" + currentUser.subDep
   const userSocket = "user" + currentUser.id
   const adminSocket = (currentUser.role === 'admin') ? "adm" + currentUser.id : null; 
@@ -26,6 +27,9 @@ export const SocketProvider = ({ children }) => {
     })
     socket.on("yourRooms", rooms => {
       // console.log("Я подключен к комнатам:", rooms)
+    })
+    socket.on(generalDep, data => {
+      console.log(`подключен к комнате generalDep: ${generalDep}`, data.taskData)
     })
     socket.on(leadSubDep, data => {
       console.log(`подключен к комнате leadSubDep: ${leadSubDep}`, data.taskData)
@@ -43,6 +47,7 @@ export const SocketProvider = ({ children }) => {
 
     return () => {
       socket.off("connect")
+      socket.off(generalDep)
       socket.off(leadSubDep)
       socket.off(userSocket)
       socket.disconnect()

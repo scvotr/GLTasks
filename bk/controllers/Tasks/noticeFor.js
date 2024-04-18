@@ -3,7 +3,7 @@ const { updateReadStatusQ } = require("../../Database/queries/Task/readStatusQue
 const {
   socketManager
 } = require("../../utils/socket/socketManager");
-const { sendEmailToUser, sendEmailToLead } = require("./mailFor");
+const { sendEmailToUser, sendEmailToLead, sendEmailToGeneral } = require("./mailFor");
 
 const noticeToAppointUserT = async (text, data) => {
   const io = socketManager.getIO()
@@ -24,6 +24,39 @@ const noticeToAppointLeadT = async (text, data) => {
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'unread' });
       await sendEmailToLead(data.appoint_subdepartment_id, text, data)
+    } catch (error) {
+      throw new Error('Ошибка запроса к базе данных', error)
+    }
+};
+const noticeToGeneralT = async (text, data) => {
+  const io = socketManager.getIO()
+  io.to('generalDep_' + data.appoint_department_id)
+    .emit('taskApproved', { message: text, taskData: data.task_id });
+    try {
+      await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_department_id, read_status: 'unread' });
+      await sendEmailToGeneral(data.appoint_department_id, text, data)
+    } catch (error) {
+      throw new Error('Ошибка запроса к базе данных', error)
+    }
+};
+const noticeAppoinToGeneralT = async (text, data) => {
+  const io = socketManager.getIO()
+  io.to('generalDep_' + data.appoint_department_id)
+    .emit('taskApproved', { message: text, taskData: data.task_id });
+    try {
+      await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_department_id, read_status: 'unread' });
+      await sendEmailToGeneral(data.appoint_department_id, text, data)
+    } catch (error) {
+      throw new Error('Ошибка запроса к базе данных', error)
+    }
+};
+const noticeResponceToGeneralT = async (text, data) => {
+  const io = socketManager.getIO()
+  io.to('generalDep_' + data.responsible_department_id)
+    .emit('taskApproved', { message: text, taskData: data.task_id });
+    try {
+      await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_department_id, read_status: 'unread' });
+      await sendEmailToGeneral(data.responsible_department_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
@@ -58,4 +91,7 @@ module.exports ={
   noticeToAppointLeadT,
   noticeToResponceUserT,
   noticeToResponceLeadT,
+  noticeAppoinToGeneralT,
+  noticeResponceToGeneralT,
+  noticeToGeneralT,
 }
