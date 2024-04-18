@@ -10,8 +10,8 @@ const {
 } = require("../../utils/executeDatabaseQuery/executeDatabaseQuery")
 
 const createTask = async (data) => {
+  let taskID;
   try {
-    let taskID;
     if (!data.fields.setResponseUser_on) {
       console.log('НОВАЯ ЗАДАЧА')
       const command = `
@@ -198,7 +198,9 @@ const getAllTasksByDepQ = async (dep_id) => {
       responsible_subdepartments.name AS responsible_subdepartment_name,
       t.responsible_position_id,
       responsible_position.name AS responsible_position_name,
-      GROUP_CONCAT(f.file_name, '|') AS file_names,
+      --GROUP_CONCAT(f.file_name, '|') AS file_names,
+      --GROUP_CONCAT(DISTINCT f.file_name) AS file_names,
+      REPLACE(GROUP_CONCAT(DISTINCT f.file_name), ',', '|') AS file_names,
       trs.read_status AS read_status
     FROM tasks t
       LEFT JOIN users AS appoint_user_f_name ON t.appoint_user_id = appoint_user_f_name.id
@@ -261,7 +263,9 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
       responsible_subdepartments.name AS responsible_subdepartment_name,
       t.responsible_position_id,
       responsible_position.name AS responsible_position_name,
-      GROUP_CONCAT(f.file_name, '|') AS file_names,
+      --GROUP_CONCAT(f.file_name, '|') AS file_names,
+      --GROUP_CONCAT(DISTINCT f.file_name) AS file_names,
+      REPLACE(GROUP_CONCAT(DISTINCT f.file_name), ',', '|') AS file_names,
       trs.read_status AS read_status
     FROM tasks t
       LEFT JOIN users AS appoint_user_f_name ON t.appoint_user_id = appoint_user_f_name.id
@@ -350,7 +354,7 @@ const getAllUserTasksQ = async (user_id) => {
 
   try {
     const taskFiles = await executeDatabaseQueryAsync(command, [user_id, user_id])
-    return await getThumbnailFiles(taskFiles)
+    return await getThumbnailFiles(taskFiles, 'tasks')
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных')
   }
