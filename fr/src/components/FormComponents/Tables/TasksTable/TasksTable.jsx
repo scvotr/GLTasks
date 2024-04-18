@@ -20,7 +20,6 @@ import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Loader } from "../../Loader/Loader"
 
 export const TasksTable = ({ tasks, reRender }) => {
-  console.log(tasks)
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [modalOpen, setModalOpen] = useState(false)
