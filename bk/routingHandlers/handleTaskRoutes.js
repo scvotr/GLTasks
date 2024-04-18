@@ -10,6 +10,7 @@ const routeHandlers = {
   "/tasks/updateTaskStatusNew": TasksControler.updateTaskStatusNew, //? новый обработчик
   "/tasks/getAllUserTasks": TasksControler.getAllUserTasks,
   "/tasks/removeTask": TasksControler.removeTask,
+  "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
   //! "/tasks/updateTaskSetResponsibleUser": TasksControler.updateTaskSetResponsibleUser,
   // "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
   // "/tasks/getAllResponsibleTasksByDep": TasksControler.getAllResponsibleTasksByDep,
