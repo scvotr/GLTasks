@@ -13,7 +13,8 @@ const {
   updateTaskStatusQ,
   getAllUserTasksQ,
   removeTaskQ,
-  updateTaskByEventrQ
+  updateTaskByEventrQ,
+  getAllTasksByDepQ
 } = require("../../Database/queries/Task/taskQueries");
 const {
   getLeadIdQ
@@ -29,13 +30,17 @@ const {
 } = require("../../utils/socket/socketManager");
 const {
   sendEmailToLead,
-  sendEmailToUser
+  sendEmailToUser,
+  sendEmailToGeneral
 } = require("./mailFor");
 const {
   noticeToAppointUserT,
   noticeToResponceLeadT,
   noticeToAppointLeadT,
-  noticeToResponceUserT
+  noticeToResponceUserT,
+  noticeToGeneralT,
+  noticeAppoinToGeneralT,
+  noticeResponceToGeneralT
 } = require("./noticeFor");
 
 const sendResponseWithData = (res, data) => {
@@ -223,6 +228,15 @@ class TasksControler {
               read_status: 'readed'
             })
             await sendEmailToLead(fields.responsible_subdepartment_id, 'Новая задача', fields)
+
+            // !------------------------
+            await noticeResponceToGeneralT('Новая задача', fields)
+            await addReadStatusQ({
+              task_id: fields.task_id,
+              user_id: fields.appoint_department_id,
+              read_status: 'unread'
+            })
+            await noticeAppoinToGeneralT('Новая задача', fields)
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных')
           }
@@ -414,8 +428,19 @@ class TasksControler {
           try {
             await updateTaskStatusQ(data)
             await noticeToAppointUserT('Задача согласованна Руководителем', data)
-            await addReadStatusQ({task_id: data.task_id,user_id: data.responsible_subdepartment_id,read_status: 'unread'})
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.responsible_subdepartment_id,
+              read_status: 'unread'
+            })
             await noticeToResponceLeadT('Новая задача', data)
+            // !------------------------
+            await noticeAppoinToGeneralT('Задача согласованна Руководителем', data)
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.appoint_department_id,
+              read_status: 'unread'
+            })
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
           }
@@ -424,8 +449,25 @@ class TasksControler {
           try {
             await updateTaskStatusQ(data)
             await noticeToAppointUserT('Задача согласованна Руководителем', data)
-            await addReadStatusQ({task_id: data.task_id,user_id: data.responsible_subdepartment_id,read_status: 'unread'})
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.responsible_subdepartment_id,
+              read_status: 'unread'
+            })
             await noticeToResponceLeadT('Новая задача', data)
+            // !------------------------work
+            await noticeAppoinToGeneralT('Задача согласованна Руководителем', data)
+            await noticeResponceToGeneralT('Задача согласованна Руководителем', data)
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.appoint_department_id,
+              read_status: 'unread'
+            })
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.responsible_department_id,
+              read_status: 'unread'
+            })
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
           }
@@ -438,7 +480,11 @@ class TasksControler {
           try {
             await updateTaskByEventrQ(data)
             await noticeToAppointUserT('Назанчен отвественный', data)
-            await addReadStatusQ({task_id: data.task_id,user_id: data.responsible_user_id ? data.responsible_user_id : 0,read_status: 'unread'})
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.responsible_user_id ? data.responsible_user_id : 0,
+              read_status: 'unread'
+            })
             await noticeToResponceUserT('Новая задача', data)
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
@@ -452,8 +498,16 @@ class TasksControler {
             await noticeToAppointUserT('Назанчен отвественный', data)
             leadIsCreator ? null : await noticeToAppointLeadT('Назанчен отвественный', data)
             // ! WTF!!!
-            await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'unread' })
-            await addReadStatusQ({task_id: data.task_id,user_id: data.responsible_user_id ? data.responsible_user_id : 0,read_status: 'unread'})
+            await updateReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.appoint_subdepartment_id,
+              read_status: 'unread'
+            })
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.responsible_user_id ? data.responsible_user_id : 0,
+              read_status: 'unread'
+            })
             await noticeToResponceUserT('Новая задача', data)
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
@@ -467,9 +521,19 @@ class TasksControler {
             await noticeToAppointUserT('Назанчен отвественный', data)
             leadIsCreator ? null : await noticeToAppointLeadT('Назанчен отвественный', data)
             // ! WTF!!!
-            await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'unread' })
-            await addReadStatusQ({task_id: data.task_id,user_id: data.responsible_user_id ? data.responsible_user_id : 0,read_status: 'unread'})
+            await updateReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.appoint_subdepartment_id,
+              read_status: 'unread'
+            })
+            await addReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.responsible_user_id ? data.responsible_user_id : 0,
+              read_status: 'unread'
+            })
             await noticeToResponceUserT('Новая задача', data)
+            await noticeAppoinToGeneralT('Назанчен отвественный', data) //?
+            await noticeResponceToGeneralT('Назанчен отвественный', data) //?
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
           }
@@ -485,7 +549,7 @@ class TasksControler {
             const leadIsCreator = lead_id[0].id === data.appoint_user_id ? true : false
             if (data.user_role === 'user' && leadIsCreator) {
               await noticeToAppointLeadT('Задача отправленна на проверку', data)
-            }else if(data.user_role === 'user' && !leadIsCreator) {
+            } else if (data.user_role === 'user' && !leadIsCreator) {
               await noticeToAppointLeadT('Задача отправленна на проверку', data)
               await noticeToAppointUserT('Задача отправленна на проверку', data)
             } else if (data.user_role === 'chife' && data.appoint_user_id === data.current_user) {
@@ -493,7 +557,7 @@ class TasksControler {
             } else if (data.user_role === 'chife' && data.appoint_user_id !== data.current_user) {
               await noticeToAppointUserT('Задача на проверку', data)
               await noticeToResponceUserT('Задача на проверку', data)
-            }  
+            }
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
           }
@@ -506,12 +570,16 @@ class TasksControler {
             await noticeToAppointUserT('Задача на проверку', data)
             leadIsCreator ? null : await noticeToAppointLeadT('Задача на проверку', data)
             // ! WTF!!!
-            await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'unread' })
+            await updateReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.appoint_subdepartment_id,
+              read_status: 'unread'
+            })
             data.current_user === data.responsible_user_id ? await noticeToResponceLeadT('Задача отправленна на проверку', data) : await noticeToResponceUserT('Задача отправленна на проверку', data)
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
           }
-         } else if (inDifDep && inDifSubDep) {
+        } else if (inDifDep && inDifSubDep) {
           console.log('Задача между департаментов confirmation_on')
           try {
             await updateTaskByEventrQ(data)
@@ -519,8 +587,14 @@ class TasksControler {
             const leadIsCreator = lead_id[0].id === data.appoint_user_id ? true : false
             await noticeToAppointUserT('Задача на проверку', data)
             leadIsCreator ? null : await noticeToAppointLeadT('Задача на проверку', data)
+            await noticeAppoinToGeneralT('Задача на проверку', data) //?
+            await noticeResponceToGeneralT('Задача на проверку', data) //?
             // ! WTF!!!
-            await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'unread' })
+            await updateReadStatusQ({
+              task_id: data.task_id,
+              user_id: data.appoint_subdepartment_id,
+              read_status: 'unread'
+            })
             data.current_user === data.responsible_user_id ? await noticeToResponceLeadT('Задача отправленна на проверку', data) : await noticeToResponceUserT('Задача отправленна на проверку', data)
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
@@ -537,7 +611,7 @@ class TasksControler {
             const leadIsCreator = lead_id[0].id === data.appoint_user_id ? true : false
             if (data.user_role === 'user' && leadIsCreator) {
               await noticeToAppointLeadT('Задача закрыта', data)
-            }else if(data.user_role === 'user' && !leadIsCreator) {
+            } else if (data.user_role === 'user' && !leadIsCreator) {
               await noticeToAppointLeadT('Задача закрыта', data)
               await noticeToResponceUserT('Задача закрыта', data)
             } else if (data.user_role === 'chife' && data.appoint_user_id === data.current_user) {
@@ -545,7 +619,7 @@ class TasksControler {
             } else if (data.user_role === 'chife' && data.appoint_user_id !== data.current_user) {
               await noticeToAppointUserT('Задача закрыта Руководителем', data)
               await noticeToResponceUserT('Задача закрыта Руководителем', data)
-            }  
+            }
           } catch (error) {
             throw new Error('Ошибка запроса к базе данных', error)
           }
@@ -571,6 +645,8 @@ class TasksControler {
             await updateTaskByEventrQ(data)
             await noticeToResponceUserT('Задача закрыта', data)
             await noticeToResponceLeadT('Задача закрыта', data)
+            await noticeAppoinToGeneralT('Задача закрыта', data) //?
+            await noticeResponceToGeneralT('Задача закрыта', data) //?
             if (data.user_role === 'user') {
               await noticeToAppointLeadT('Задача закрыта', data)
             } else if (data.user_role === 'chife' && data.appoint_user_id === data.current_user) {
@@ -595,6 +671,16 @@ class TasksControler {
 
   //?-------------------------------------------------------------------------- 
   //?-------------------------------------------------------------------------- 
+  async getAllTasksByDep(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const dep_id = authDecodeUserData.department_id
+      const data = await getAllTasksByDepQ(dep_id)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'getAllTasksByDep')
+    }
+  }
   async getAllTasksBySubDep(req, res) {
     try {
       const authDecodeUserData = req.user
