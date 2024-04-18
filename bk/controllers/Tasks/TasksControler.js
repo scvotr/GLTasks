@@ -3,6 +3,7 @@
 const {
   addPendingNotification
 } = require("../../Database/queries/Notification/pendingNotificationQueries");
+const { addNewCommentQ, getAllCommentsQ } = require("../../Database/queries/Task/commentQueries");
 const { getPreviewFileContent, getFullFileContent } = require("../../Database/queries/Task/fileQueries");
 const {
   addReadStatusQ,
@@ -747,6 +748,26 @@ class TasksControler {
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'getFullFileContent')
+    }
+  }
+  async addTaskComment(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      await addNewCommentQ(postPayload)
+      sendResponseWithData(res, 'addTaskCommet')
+    } catch (error) {
+      handleError(res, 'addTaskCommet')
+    }
+  }
+  async getAllTaskComments(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      const data = await getAllCommentsQ(postPayload)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'getAllTaskCommets')
     }
   }
 }
