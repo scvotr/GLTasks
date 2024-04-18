@@ -3,6 +3,8 @@
 const {
   addPendingNotification
 } = require("../../Database/queries/Notification/pendingNotificationQueries");
+const { addNewCommentQ, getAllCommentsQ } = require("../../Database/queries/Task/commentQueries");
+const { getPreviewFileContent, getFullFileContent } = require("../../Database/queries/Task/fileQueries");
 const {
   addReadStatusQ,
   updateReadStatusQ
@@ -409,7 +411,6 @@ class TasksControler {
       const io = socketManager.getIO()
       const authDecodeUserData = req.user
       const data = JSON.parse(authDecodeUserData.payLoad)
-
       const inOneDep = data.appoint_department_id === data.responsible_department_id
       const inDifDep = data.appoint_department_id !== data.responsible_department_id
       const inOneSubDep = data.appoint_subdepartment_id === data.responsible_subdepartment_id
@@ -727,6 +728,46 @@ class TasksControler {
       })
     } catch (error) {
       handleError(res, 'removeTask')
+    }
+  }
+  async getPreviewFileContent(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      const data = await getPreviewFileContent(postPayload)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'getPreviewFileContent')
+    }
+  }
+  async getFullFileContent(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      const data = await getFullFileContent(postPayload)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'getFullFileContent')
+    }
+  }
+  async addTaskComment(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      await addNewCommentQ(postPayload)
+      sendResponseWithData(res, 'addTaskCommet')
+    } catch (error) {
+      handleError(res, 'addTaskCommet')
+    }
+  }
+  async getAllTaskComments(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      const data = await getAllCommentsQ(postPayload)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'getAllTaskCommets')
     }
   }
 }

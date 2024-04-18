@@ -15,7 +15,7 @@ const columns = [
     field: "login",
     headerName: "Имя",
     description: "Логин пользователя",
-    width: 90,
+    width: 190,
   },
   {
     field: "department",
