@@ -54,7 +54,7 @@ const getAllTasksQ = async () => {
 
   try {
     const files = await executeDatabaseQueryAsync(command, [])
-    return await getThumbnailFiles(files)
+    return await getThumbnailFiles(files, 'tasks')
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных getAllTasksQ')
   }
