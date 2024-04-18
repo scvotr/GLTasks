@@ -70,6 +70,19 @@ const getLeadEmailQ = async (subdepartment_id) => {
   }
 }
 
+const getGeneralEmailQ = async (department_id) => {
+  try {
+    const query = `
+      SELECT email_for_notify 
+      FROM users 
+      WHERE department_id = ? AND role = 'general'
+    `;
+    return await executeDatabaseQueryAsync(query, [department_id]);
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных');
+  }
+}
+
 const getLeadIdQ = async (subdepartment_id) => {
   try {
     const query = `
@@ -83,10 +96,25 @@ const getLeadIdQ = async (subdepartment_id) => {
   }
 }
 
+const getGeneralIdQ = async (department_id) => {
+  try {
+    const query = `
+      SELECT id 
+      FROM users 
+      WHERE department_id = ? AND role = 'general'
+    `;
+    return await executeDatabaseQueryAsync(query, [department_id]);
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных');
+  }
+}
+
 module.exports = {
   editUserDataQ,
   getUserByIdQ,
   getUserEmailQ,
   getLeadEmailQ,
   getLeadIdQ,
+  getGeneralEmailQ,
+  getGeneralIdQ,
 }
