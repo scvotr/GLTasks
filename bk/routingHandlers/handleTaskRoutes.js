@@ -13,6 +13,8 @@ const routeHandlers = {
   "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
   "/tasks/getPreviewFileContent" : TasksControler.getPreviewFileContent,
   "/tasks/getFullFileContent" : TasksControler.getFullFileContent,
+  "/tasks/addTaskComment" : TasksControler.addTaskComment,
+  "/tasks/getAllTaskComments" : TasksControler.getAllTaskComments,
   //! "/tasks/updateTaskSetResponsibleUser": TasksControler.updateTaskSetResponsibleUser,
   // "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
   // "/tasks/getAllResponsibleTasksByDep": TasksControler.getAllResponsibleTasksByDep,
