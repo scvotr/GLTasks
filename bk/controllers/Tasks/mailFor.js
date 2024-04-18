@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const {
-  getLeadEmailQ, getUserEmailQ
+  getLeadEmailQ, getUserEmailQ, getGeneralEmailQ
 } = require('../../Database/queries/User/userQuery');
 
 require("dotenv").config()
@@ -8,6 +8,7 @@ const MAIL_USER = process.env.MAIL_USER
 const MAIL_PASS = process.env.MAIL_PASS
 
 const sendEmail = async (recipientEmail, text, descript) => {
+  console.log('sendEmail', descript)
   try {
     const transporter = nodemailer.createTransport({
       host: 'mail.nic.ru',
@@ -47,6 +48,18 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   }
 }
 
+const sendEmailToGeneral = async (department_id, text, fields = {}) => {
+  console.log(department_id)
+  const email = await getGeneralEmailQ(department_id);
+  if (email && email[0] && email[0].email_for_notify) {
+    console.log('sendEmailToGeneral', email, text, fields.task_descript);
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript );
+  } else {
+    console.log('Адрес электронной почты директора не найден');
+    // throw new Error('Адрес электронной почты директора не найден');
+  }
+}
+
 const sendEmailToUser = async (user_id, text, fields = {}) => {
   const email = await getUserEmailQ(user_id);
   if (email && email[0] && email[0].email_for_notify) {
@@ -61,4 +74,5 @@ const sendEmailToUser = async (user_id, text, fields = {}) => {
 module.exports = {
   sendEmailToUser,
   sendEmailToLead,
+  sendEmailToGeneral,
 }
