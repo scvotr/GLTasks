@@ -1,5 +1,59 @@
-import { Typography, Grid, Card, CardContent, Divider, Box, Stack } from "@mui/material"
+import { Typography, Grid, Card, CardContent, Divider, Box, Stack, ImageList, ImageListItem } from "@mui/material"
 import { formatDate } from "../../../../utils/formatDate"
+import { HOST_ADDR } from "../../../../utils/remoteHosts"
+import { useEffect, useState } from "react"
+import { useAuthContext } from "../../../../context/AuthProvider"
+import { ModalCustom } from "../../../ModalCustom/ModalCustom"
+import { Loader } from "../../Loader/Loader"
+
+export const getPreviewFileContent = async (token, data, onSuccess) => {
+  try {
+    const res = await fetch(HOST_ADDR + "/tasks/getPreviewFileContent", {
+      method: "POST",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+    if (res.ok) {
+      const responseData = await res.json()
+      onSuccess(responseData)
+      return responseData
+    } else {
+      throw new Error("Server response was not ok")
+    }
+  } catch (error) {
+    onSuccess(error)
+  }
+}
+
+const getFullFile = async (file, task_id, token) => {
+  const { type, name } = file
+  const data = {
+    type,
+    name,
+    task_id,
+  }
+  try {
+    const res = await fetch(HOST_ADDR + "/tasks/getFullFileContent", {
+      method: "POST",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+    if (res.ok) {
+      const resData = await res.json()
+      return resData
+    } else {
+      throw new Error("Server response was not ok or content type is not JSON")
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 export const FullTaskInfo = ({ task }) => {
   const {
@@ -24,7 +78,51 @@ export const FullTaskInfo = ({ task }) => {
     responsible_subdepartment_name,
     responsible_position_name,
     task_descript,
+    old_files,
   } = task
+
+  const currentUser = useAuthContext()
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
+  const [taskData, setTaskData] = useState(task)
+
+  useEffect(() => {
+    if (task.old_files) {
+      getPreviewFileContent(currentUser.token, task, setReqStatus)
+        .then(data => {
+          const updatedTaskToEdit = { ...task, old_files: data }
+          setTaskData({ ...task, ...updatedTaskToEdit })
+        })
+        .catch(error => {
+          // Обработка ошибки, если необходимо
+        })
+    } else {
+      setTaskData(task)
+    }
+  }, [task])
+
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const openModal = task => {
+    // setSelectedTask(task)
+    setModalOpen(true)
+  }
+  const closeModal = () => {
+    // setSelectedTask(null)
+    setModalOpen(false)
+    // reRender(prevKey => prevKey + 1)
+  }
+
+  const [selectedImage, setSelectedImage] = useState("")
+
+  const handleImageClick = async file => {
+    try {
+      setReqStatus({ loading: true, error: null })
+      const test = await getFullFile(file, task_id, currentUser.token)
+      setReqStatus({ loading: false, error: null })
+      setSelectedImage(test)
+      setModalOpen(true)
+    } catch (error) {}
+  }
 
   return (
     <>
@@ -145,6 +243,43 @@ export const FullTaskInfo = ({ task }) => {
           </Box>
         </CardContent>
       </Card>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            mt: 2,
+          }}>
+          <Divider />
+          <Loader reqStatus={reqStatus}>
+          <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
+            {taskData.old_files &&
+              taskData.old_files.map((file, index) => (
+                <ImageListItem key={index}>
+                  <img
+                    key={index}
+                    src={`data:${file.type};base64,${file.content}`}
+                    alt="File Preview"
+                    loading="lazy"
+                    onClick={() => handleImageClick(file)}
+                    title="Нажмите, чтобы удалить"
+                  />
+                </ImageListItem>
+              ))}
+          </ImageList>
+          </Loader>
+        </Box>
+
+      <>
+        <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="dsdsdsd">
+          <ImageList sx={{ width: 800, height: 600 }} cols={1} rowHeight={164}>
+            <ImageListItem>
+              <img src={`data:${selectedImage.type};base64,${selectedImage.content}`} alt="File Preview" loading="lazy" title="Нажмите, чтобы удалить" />
+            </ImageListItem>
+          </ImageList>
+        </ModalCustom>
+      </>
     </>
   )
 }
