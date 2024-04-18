@@ -11,6 +11,8 @@ const routeHandlers = {
   "/tasks/getAllUserTasks": TasksControler.getAllUserTasks,
   "/tasks/removeTask": TasksControler.removeTask,
   "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
+  "/tasks/getPreviewFileContent" : TasksControler.getPreviewFileContent,
+  "/tasks/getFullFileContent" : TasksControler.getFullFileContent,
   //! "/tasks/updateTaskSetResponsibleUser": TasksControler.updateTaskSetResponsibleUser,
   // "/tasks/getAllTasksByDep": TasksControler.getAllTasksByDep,
   // "/tasks/getAllResponsibleTasksByDep": TasksControler.getAllResponsibleTasksByDep,
