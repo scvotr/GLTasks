@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { useAuthContext } from "../../../../context/AuthProvider"
 import { ModalCustom } from "../../../ModalCustom/ModalCustom"
 import { Loader } from "../../Loader/Loader"
+import { TaskCommets } from "../TaskCommets/TaskCommets"
 
 export const getPreviewFileContent = async (token, data, onSuccess) => {
   try {
@@ -268,6 +269,7 @@ export const FullTaskInfo = ({ task }) => {
                 </ImageListItem>
               ))}
           </ImageList>
+          <TaskCommets task={task}/>
           </Loader>
         </Box>
 
