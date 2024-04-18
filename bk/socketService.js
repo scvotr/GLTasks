@@ -59,6 +59,15 @@ function setupSocket(io) {
       socket.join('dep_' + socket.decoded.department_id) //? для каждого подразделения
       socket.join('subDep_' + socket.decoded.subdepartment_id) //? для каждого отдела
 
+      if (socket.decoded.role === 'general') {
+        let generalRoomName = 'generalDep_' + socket.decoded.department_id
+        socket.join(generalRoomName)
+
+        socket.on('newMessage', (message) => {
+          // Это пример, внутренняя логика зависит от вашего предназначения
+          io.to(generalRoomName).emit('messageReceived', message);
+        });
+      }
       if (socket.decoded.role === 'chife') {
         let leadRoomName = 'leadSubDep_' + socket.decoded.subdepartment_id
         socket.join(leadRoomName)
