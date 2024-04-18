@@ -20,6 +20,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Loader } from "../../Loader/Loader"
 
 export const TasksTable = ({ tasks, reRender }) => {
+  console.log(tasks)
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [modalOpen, setModalOpen] = useState(false)
@@ -189,6 +190,20 @@ export const TasksTable = ({ tasks, reRender }) => {
         updatedData = {
           task_id: params.row.task_id,
           user_id: params.row.responsible_subdepartment_id,
+          read_status: "readed",
+        }
+      }
+    } else if (currentUser.role.toString() === "general") {
+      if (currentUser.dep.toString() === params.row.appoint_department_id.toString()) {
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.appoint_department_id,
+          read_status: "readed",
+        }
+      } else if (currentUser.dep.toString() === params.row.responsible_department_id.toString()) {
+        updatedData = {
+          task_id: params.row.task_id,
+          user_id: params.row.responsible_department_id,
           read_status: "readed",
         }
       }
