@@ -49,7 +49,6 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
 }
 
 const sendEmailToGeneral = async (department_id, text, fields = {}) => {
-  console.log(department_id)
   const email = await getGeneralEmailQ(department_id);
   if (email && email[0] && email[0].email_for_notify) {
     console.log('sendEmailToGeneral', email, text, fields.task_descript);
