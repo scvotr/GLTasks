@@ -82,7 +82,8 @@ export const Registration = () => {
             onChange={handleChange}
             helperText={"Это поле обязательно к заполнению"}
             inputProps={{
-              minLength: 4,
+              pattern: "^[^\\s]+$", // Регулярное выражение, запрещающее пробелы
+              title: "Пробелы не допускаются" // Текст, который будет показан при несоответствии регулярному выражению
             }}
           />
           <TextField
