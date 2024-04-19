@@ -9,6 +9,7 @@ const routeHandlers = {
   "/auth/login": AuthControler.login,
   "/auth/changePassword": AuthControler.changePassword,
   "/auth/changePasswordByPincode": AuthControler.changePasswordByPincode,
+  "/auth/resetPassword": AuthControler.resetPassword,
 };
 
 const handleAuthRoutes = async (req, res) => {

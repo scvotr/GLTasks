@@ -187,6 +187,44 @@ class AuthControler {
       );
     }
   }
+  async resetPassword(req, res) {
+    try {
+      const postPayload = await getPostDataset(req)
+      const postData = JSON.parse(postPayload)
+      const { loginName } = postData
+      const isEmpty = !loginName
+      if(isEmpty) {
+        return res.end(JSON.stringify({ resetPassword: "Пустые поля. Empty fields" }));
+      } 
+      const userName = await checkEqualNameQ(loginName);
+      if (!userName.length)
+      return res.end(
+        JSON.stringify({ resetPassword: "Пользователь не найден. User not found" })
+      );
+      const objDataUser = userName.find((item) => item);
+
+      const hashedNewPassword = await bcrypt.hash('1111', HASH_SALT);
+      const userData = {
+        id: objDataUser.id, 
+        password: hashedNewPassword, 
+      };
+      await changeUserPasswordQ(userData)
+      const arrDataUser = await getNewUserQ(postData.loginName, hashedNewPassword); //шаг выглядит избыточным
+      const objDataToken = arrDataUser.find((item) => item);
+      const token = jwt.sign(objDataToken, SECRET_KEY)
+      await updateTokenQ(objDataToken.id, token);
+      res.setHeader("Access-Control-Expose-Headers", "Authorization");
+      res.setHeader("Authorization", `Bearer ${token}`);
+      res.statusCode = 201;
+      res.end(JSON.stringify({ resetPassword: "Пароль успешно сброшен/ Succes" }));
+    } catch (error) {
+      console.error(error);
+      res.statusCode = 500;
+      res.end(
+        JSON.stringify({ error: "Ошибка при сбросе пароля. Reset pass error" })
+      );
+    }
+  } 
 }
 
 module.exports = new AuthControler();
