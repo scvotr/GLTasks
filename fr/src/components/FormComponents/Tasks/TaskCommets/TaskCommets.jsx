@@ -28,7 +28,6 @@ export const TaskCommets = ({ comments, onSubmit, task }) => {
   useEffect(()=> {
     getDataFromEndpoint(currentUser.token, "/tasks/getAllTaskComments", "POST", task.task_id, setReqStatus)
       .then(data => {
-        // console.log(data)
         setCommentList(data)
       })
   }, [formKey])
@@ -50,17 +49,16 @@ export const TaskCommets = ({ comments, onSubmit, task }) => {
     <Box sx={{ 
       boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', 
       borderRadius: '5px',
-      
-      // overflow: 'hidden'
       }}>
       <TextField
         multiline
-        rows={3}
+        rows={4}
         variant="outlined"
         label="Напишите комментарий"
         value={comment}
         onChange={handleChange}
         fullWidth
+        inputProps={{ maxLength: 190 }}
       />
       <Button variant="contained" onClick={handleSubmit}>
         Добавить комментарий
