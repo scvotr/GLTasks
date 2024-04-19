@@ -22,7 +22,7 @@ export const TextDataField = props => {
       />
       <TextField
         id="date"
-        label="Выберите дату"
+        label="Выпонить до:"
         type="date"
         name="deadline"
         InputLabelProps={{
