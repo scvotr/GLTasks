@@ -65,7 +65,7 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
         current_user: currentUser.id,
         user_name: task.appoint_user_last_name,
         appoint_department_name: task.appoint_department_name,
-        task_descript: task.task_descript
+        task_descript: task.task_descript,
       }
       try {
         setReqStatus({ loading: true, error: null })
@@ -82,7 +82,6 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
   return (
     <>
       <Box>
-        <FullTaskInfo task={task} />
         <Box sx={{ mt: 2 }}>
           <Loader reqStatus={reqStatus}>
             <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
@@ -95,6 +94,7 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
             </Stack>
           </Loader>
         </Box>
+        <FullTaskInfo task={task} />
       </Box>
     </>
   )
