@@ -1,4 +1,4 @@
-import { Typography, Grid, Card, CardContent, Divider, Box, Stack, ImageList, ImageListItem } from "@mui/material"
+import { Typography, Grid, Card, CardContent, Divider, Box, Stack, ImageList, ImageListItem, Stepper, Step, StepLabel } from "@mui/material"
 import { formatDate } from "../../../../utils/formatDate"
 import { HOST_ADDR } from "../../../../utils/remoteHosts"
 import { useEffect, useState } from "react"
@@ -6,6 +6,16 @@ import { useAuthContext } from "../../../../context/AuthProvider"
 import { ModalCustom } from "../../../ModalCustom/ModalCustom"
 import { Loader } from "../../Loader/Loader"
 import { TaskCommets } from "../TaskCommets/TaskCommets"
+import { styled } from "@mui/material/styles"
+import Paper from "@mui/material/Paper"
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.primary,
+}))
 
 export const getPreviewFileContent = async (token, data, onSuccess) => {
   try {
@@ -58,6 +68,7 @@ const getFullFile = async (file, task_id, token) => {
 
 export const FullTaskInfo = ({ task }) => {
   const {
+    id,
     task_id,
     task_status,
     created_on,
@@ -81,6 +92,51 @@ export const FullTaskInfo = ({ task }) => {
     task_descript,
     old_files,
   } = task
+
+  console.log(task)
+
+  const timeSteps = [
+    { key: "created_on", value: "Создана: " + formatDate(created_on) },
+    { key: "deadline", value: "Выполнить до: " + formatDate(deadline) },
+    { key: "approved_on", value: approved_on ? "Согласованна: " + formatDate(approved_on) : null, default: "На согласовании" },
+    {
+      key: "setResponseUser_on",
+      value: setResponseUser_on ? "Ответственный назначен: " + formatDate(setResponseUser_on) : null,
+      default: "Назначение ответственного",
+    },
+    {
+      key: "responsible_user_last_name",
+      value: responsible_user_last_name ? "Ответственный: " + responsible_user_last_name : null,
+      default: "ФИО ответсвенного",
+    },
+    { key: "responsible_position_name", value: responsible_position_name ? "Должность: " + responsible_position_name : null, default: "Должность" },
+    { key: "confirmation_on", value: confirmation_on ? "Отправлена на проверку: " + formatDate(confirmation_on) : null, default: "Проверка" },
+    { key: "closed_on", value: closed_on ? "Закрыта: " + formatDate(closed_on) : null, default: "Закрытие" },
+  ]
+
+  if (reject_on !== null) {
+    timeSteps.push({ key: "reject_on", value: reject_on ? "Отклонена: " + formatDate(reject_on) : null })
+  }
+
+  const nonNullCountTimeSteps = timeSteps.filter(item => item.value !== null).length
+
+  const unitSteps = [
+    { key: "appoint_department_name", value: "От Департамента:: " + appoint_department_name },
+    { key: "appoint_subdepartment_name", value: "От Отдела: " + appoint_subdepartment_name },
+    { key: "appoint_user_last_name", value: appoint_user_last_name ? "От Сотрудника: " + appoint_user_last_name : null, default: "Назначивший" },
+    {
+      key: "responsible_department_name",
+      value: responsible_department_name ? "Для Департамента: " + responsible_department_name : null,
+      default: "Для Департамента",
+    },
+    {
+      key: "responsible_subdepartment_name",
+      value: responsible_subdepartment_name ? "Для Департамента: " + responsible_subdepartment_name : null,
+      default: "Для Отдела",
+    },
+  ]
+
+  const nonNullCountUnitSteps = unitSteps.filter(item => item.value !== null).length
 
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -129,150 +185,84 @@ export const FullTaskInfo = ({ task }) => {
     <>
       <Card>
         <CardContent>
-          <Typography variant="h4">Task ID: {task_id.slice(0, 4)}</Typography>
-          <Divider />
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  mt: 5,
-                }}>
-                <Stack direction="column">
-                  <Typography variant="body1">
-                    <strong>Статус:</strong> {task_status}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Создана:</strong> {formatDate(created_on)}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Выполнить до:</strong> {formatDate(deadline)}
-                  </Typography>
-                  {approved_on && (
-                    <Typography variant="body1">
-                      <strong>Согласованна:</strong> {formatDate(approved_on)}
-                    </Typography>
-                  )}
-                  {setResponseUser_on && (
-                    <Typography variant="body1">
-                      <strong>В работе с:</strong> {formatDate(setResponseUser_on)}
-                    </Typography>
-                  )}
-                  {responsible_user_name && (
-                    <Typography variant="body1">
-                      <strong>Ответственный:</strong> {responsible_user_last_name}
-                    </Typography>
-                  )}
-                  {confirmation_on && (
-                    <Typography variant="body1">
-                      <strong>Отправлена на проверку:</strong> {formatDate(confirmation_on)}
-                    </Typography>
-                  )}
-                  {reject_on && (
-                    <Typography variant="body1">
-                      <strong>Отклонена:</strong> {formatDate(reject_on)}
-                    </Typography>
-                  )}
-                  {closed_on && (
-                    <Typography variant="body1">
-                      <strong>Закрыта:</strong> {formatDate(closed_on)}
-                    </Typography>
-                  )}
-                </Stack>
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  mt: 5,
-                }}>
-                <Stack direction="column">
-                  <Typography variant="subtitle1">
-                    <strong>От Департамента:</strong> {appoint_department_name}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>От Отдела:</strong> {appoint_subdepartment_name}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>От Сотрудника:</strong> {appoint_user_last_name}
-                  </Typography>
-
-                  <Typography variant="subtitle1">
-                    <strong>Для Департамента:</strong> {responsible_department_name}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Для Отдела:</strong> {responsible_subdepartment_name}
-                  </Typography>
-                  {responsible_position_name && (
-                    <>
+          <Grid container spacing={2} >
+            {/* --------MAIN PLACE------------ */}
+            <Grid item xs={8}>
+              {/* <Item> */}
+              {/* --------LEFT SIDE------------ */}
+              <Grid container spacing={2} justifyContent="center" alignItems="center">
+                <Grid item xs={8}>
+                  <Item>
+                    <Stepper activeStep={nonNullCountUnitSteps} alternativeLabel>
+                      {unitSteps &&
+                        unitSteps.map(label => (
+                          <Step key={label}>
+                            <StepLabel>{label.value === null ? label.default : label.value}</StepLabel>
+                          </Step>
+                        ))}
+                    </Stepper>
+                  </Item>
+                </Grid>
+                <Grid item xs={6}>
+                  <Item>
+                    <Stack direction="column">
                       <Typography variant="subtitle1">
-                        <strong>Для Службы:</strong> {responsible_position_name}
+                        <strong>Задача:</strong>
                       </Typography>
-                    </>
-                  )}
-                  {responsible_user_name && (
-                    <>
-                      <Typography variant="subtitle1">
-                        <strong>Для:</strong> {responsible_user_last_name}
-                      </Typography>
-                    </>
-                  )}
-                </Stack>
-              </Box>
+                      <Typography variant="body1">{task_descript}</Typography>
+                    </Stack>
+                  </Item>
+                </Grid>
+                <Grid item xs={12}>
+                  <Item>
+                    <Stepper activeStep={nonNullCountTimeSteps} alternativeLabel>
+                      {timeSteps &&
+                        timeSteps.map(label => (
+                          <Step key={label}>
+                            <StepLabel>{label.value === null ? label.default : label.value}</StepLabel>
+                          </Step>
+                        ))}
+                    </Stepper>
+                  </Item>
+                </Grid>
+                <Grid item xs={8}>
+                  <Item>
+                    <Loader reqStatus={reqStatus}>
+                      <Box display="flex" justifyContent="center" >
+                        {" "}
+                        {/* Центрируем содержимое */}
+                        <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
+                          {taskData.old_files &&
+                            taskData.old_files.map((file, index) => (
+                              <ImageListItem key={index}>
+                                <img
+                                  key={index}
+                                  src={`data:${file.type};base64,${file.content}`}
+                                  alt="File Preview"
+                                  loading="lazy"
+                                  onClick={() => handleImageClick(file)}
+                                  title="Нажмите, чтобы удалить"
+                                />
+                              </ImageListItem>
+                            ))}
+                        </ImageList>
+                      </Box>
+                    </Loader>
+                  </Item>
+                </Grid>
+              </Grid>
+              {/* </Item> */}
             </Grid>
+            {/* --------RIGHT SIDE------------ */}
+            <Grid item xs={4} >
+              <Item>
+                <TaskCommets task={task} />
+              </Item>
+            </Grid>
+            {/* --------RIGHT SIDE------------END */}
           </Grid>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              mt: 5,
-            }}>
-            <Divider />
-            <Stack direction="column">
-              <Typography variant="subtitle1">
-                <strong>Задача:</strong>
-              </Typography>
-              <Typography variant="body1">{task_descript}</Typography>
-            </Stack>
-          </Box>
         </CardContent>
       </Card>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            mt: 2,
-          }}>
-          <Divider />
-          <Loader reqStatus={reqStatus}>
-          <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
-            {taskData.old_files &&
-              taskData.old_files.map((file, index) => (
-                <ImageListItem key={index}>
-                  <img
-                    key={index}
-                    src={`data:${file.type};base64,${file.content}`}
-                    alt="File Preview"
-                    loading="lazy"
-                    onClick={() => handleImageClick(file)}
-                    title="Нажмите, чтобы удалить"
-                  />
-                </ImageListItem>
-              ))}
-          </ImageList>
-          <TaskCommets task={task}/>
-          </Loader>
-        </Box>
-
       <>
         <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="dsdsdsd">
           <ImageList sx={{ width: 800, height: 600 }} cols={1} rowHeight={164}>

@@ -53,7 +53,6 @@ export const SendToReview = ({ task, onTaskSubmit }) => {
   return (
     <>
       <Box>
-        <FullTaskInfo task={task} />{" "}
         <Box sx={{ mt: 2 }}>
           <Loader reqStatus={reqStatus}>
             <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
@@ -66,6 +65,7 @@ export const SendToReview = ({ task, onTaskSubmit }) => {
             </Stack>
           </Loader>
         </Box>
+        <FullTaskInfo task={task} />
       </Box>
     </>
   )
