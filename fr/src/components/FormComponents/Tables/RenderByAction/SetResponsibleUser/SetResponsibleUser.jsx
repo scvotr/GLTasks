@@ -79,7 +79,6 @@ export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
   return (
     <>
       <Box>
-        <FullTaskInfo task={task} />
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
           <Loader reqStatus={reqStatus}>
             <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
@@ -97,6 +96,7 @@ export const SetResponsibleUser = ({ task, onTaskSubmit }) => {
             </Stack>
           </Loader>
         </Box>
+        <FullTaskInfo task={task} />
       </Box>
     </>
   )
