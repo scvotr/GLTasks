@@ -25,6 +25,7 @@ export const TasksTable = ({ tasks, reRender }) => {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
   const [actionTypeTS, setActionTypeTS] = useState()
+  const [statusText, setStatusText] = useState("")
 
   const columns = [
     {
@@ -76,18 +77,23 @@ export const TasksTable = ({ tasks, reRender }) => {
         if (params.row.task_status === "toApprove") {
           iconComponent = <HourglassEmptyIcon />
           statusText = "новая"
+          setStatusText(statusText)
         } else if (params.row.task_status === "approved") {
           iconComponent = <CheckCircleOutlineIcon />
           statusText = "Согласована"
+          setStatusText(statusText)
         } else if (params.row.task_status === "inWork") {
           iconComponent = <AssignmentIcon />
           statusText = "В работе"
+          setStatusText(statusText)
         } else if (params.row.task_status === "needToConfirm") {
           iconComponent = <DoneOutlinedIcon />
           statusText = "На проверке"
+          setStatusText(statusText)
         } else if (params.row.task_status === "closed") {
           iconComponent = <DoneAllIcon />
           statusText = "Закрыта"
+          setStatusText(statusText)
         }
 
         return (
@@ -116,7 +122,7 @@ export const TasksTable = ({ tasks, reRender }) => {
     },
 
     // { field: "responsible_department_name", headerName: "Исполнитель", description: "Для кого", width: 220 },
-    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 150 },
+    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 200 },
     {
       field: "responsible_user_last_name",
       headerName: "Ответственный",
@@ -263,7 +269,7 @@ export const TasksTable = ({ tasks, reRender }) => {
           // <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={selectedTask.task_status}>
           //   <RenderByAction actionByStatus={actionTypeTS} task={selectedTask} onTaskSubmit={closeModal} />
           // </ModalCustom>
-          <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText={selectedTask.task_status}>
+          <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText={statusText}>
             <RenderByAction actionByStatus={actionTypeTS} task={selectedTask} onTaskSubmit={closeModal} />
           </FullScreenDialog>
         )}
