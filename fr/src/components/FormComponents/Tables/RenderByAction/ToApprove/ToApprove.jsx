@@ -88,7 +88,6 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
   return (
     <>
       <Box>
-        <FullTaskInfo task={task} />
         <Box sx={{ mt: 2 }}>
           <Loader reqStatus={reqStatus}>
             <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
@@ -101,6 +100,7 @@ export const ToApprove = ({ task, onTaskSubmit }) => {
             </Stack>
           </Loader>
         </Box>
+        <FullTaskInfo task={task} />
       </Box>
     </>
   )
