@@ -18,6 +18,7 @@ import { EditProfile } from "../components/Navigation/User/Menu/Tasks/UserSettin
 import { SettingsMain } from "../components/Navigation/User/Menu/Tasks/UserSettings/SettingsMain";
 import { EmptyProfile, emptyProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EmptyProfile";
 import { GeneralTasksMain } from "../components/Navigation/User/Menu/Tasks/General/GeneralTasksMain";
+import InstructionComponent from "../components/Layouts/DefaultLayoutMain/FAQ/InstructionComponent";
 
 
 export const routes = createBrowserRouter([
@@ -25,6 +26,10 @@ export const routes = createBrowserRouter([
     path: '/',
     element: <App/>,
     children: [
+      {
+        path: '/main',
+        element: <AuthRotes component={InstructionComponent} />,
+      },
       {
         path: '/login',
         element: <AuthRotes component={Login} />,
