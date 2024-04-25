@@ -24,7 +24,7 @@ export const DefaultLayoutMain = () => {
               Gelio Tasks
             </Typography>
             <Stack spacing={2} direction="row">
-              <StyledButton color="inherit" variant="outlined" component={NavLink} to="/">
+              <StyledButton color="inherit" variant="outlined" component={NavLink} to="/main">
                 На главную
               </StyledButton>
               <StyledButton color="inherit" variant="outlined" component={NavLink} to="/login">
