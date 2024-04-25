@@ -21,6 +21,7 @@ export const SendToReview = ({ task, onTaskSubmit }) => {
         task_id: task.task_id,
         confirmation_on: true,
         task_status: "needToConfirm",
+        responsible_position_id: task.responsible_position_id,
         // ------------------
         responsible_user_id: task.responsible_user_id,
         appoint_user_id: task.appoint_user_id,

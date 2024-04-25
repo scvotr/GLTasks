@@ -23,6 +23,7 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
         task_id: task.task_id,
         closed_on: true,
         task_status: "closed",
+        responsible_position_id: task.responsible_position_id,
         // -----
         responsible_user_id: task.responsible_user_id,
         appoint_user_id: task.appoint_user_id,
