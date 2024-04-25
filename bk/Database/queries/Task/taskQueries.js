@@ -13,10 +13,9 @@ const createTask = async (data) => {
   let taskID;
   try {
     if (!data.fields.setResponseUser_on) {
-      console.log('НОВАЯ ЗАДАЧА')
-      const command = `
-        INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+       const command = `
+        INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_position_id, appoint_department_id, appoint_subdepartment_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
       `;
 
       await executeDatabaseQueryAsync(
@@ -27,6 +26,7 @@ const createTask = async (data) => {
           data.fields.task_priority,
 
           data.fields.appoint_user_id,
+          data.fields.appoint_position_id,
           data.fields.appoint_department_id,
           data.fields.appoint_subdepartment_id,
 
@@ -44,7 +44,7 @@ const createTask = async (data) => {
       console.log('Задача от начальника своему сотруднику!!!')
       const command = `
         INSERT INTO tasks (task_id, task_descript, task_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, responsible_user_id, responsible_position_id, responsible_department_id, responsible_subdepartment_id, task_status, deadline, setResponseUser_on)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
       `;
 
       await executeDatabaseQueryAsync(
@@ -53,19 +53,16 @@ const createTask = async (data) => {
           data.fields.task_id,
           data.fields.task_descript,
           data.fields.task_priority,
-
           data.fields.appoint_user_id,
           data.fields.appoint_department_id,
           data.fields.appoint_subdepartment_id,
-
-          data.fields.responsible_user_id, //!?
-
+          data.fields.responsible_user_id,
           data.fields.responsible_position_id,
           data.fields.responsible_department_id,
           data.fields.responsible_subdepartment_id,
-
           data.fields.task_status,
           data.fields.deadline,
+          // Возможно, здесь также нужно передать значение для setResponseUser_on
         ], "run");
       taskID = data.fields.task_id;
     }
@@ -196,6 +193,8 @@ const getAllTasksByDepQ = async (dep_id) => {
       responsible_departments.name AS responsible_department_name,
       t.responsible_subdepartment_id,
       responsible_subdepartments.name AS responsible_subdepartment_name,
+      t.appoint_position_id,
+      appoint_position.name AS appoint_position_name,
       t.responsible_position_id,
       responsible_position.name AS responsible_position_name,
       --GROUP_CONCAT(f.file_name, '|') AS file_names,
@@ -213,6 +212,7 @@ const getAllTasksByDepQ = async (dep_id) => {
       LEFT JOIN users AS responsible_m_user ON t.responsible_user_id = responsible_m_user.id
       LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
       LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
+      LEFT JOIN positions AS appoint_position ON t.appoint_position_id = appoint_position.id
       LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
       LEFT JOIN task_files f ON t.task_id = f.task_id
       LEFT JOIN (
@@ -261,6 +261,8 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
       responsible_departments.name AS responsible_department_name,
       t.responsible_subdepartment_id,
       responsible_subdepartments.name AS responsible_subdepartment_name,
+      t.appoint_position_id,
+      appoint_position.name AS appoint_position_name,
       t.responsible_position_id,
       responsible_position.name AS responsible_position_name,
       --GROUP_CONCAT(f.file_name, '|') AS file_names,
@@ -279,6 +281,7 @@ const getAllTasksBySubDepQ = async (subDep_id) => {
       LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
       LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
       LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
+      LEFT JOIN positions AS appoint_position ON t.appoint_position_id = appoint_position.id
       LEFT JOIN task_files f ON t.task_id = f.task_id
       LEFT JOIN (
         SELECT task_id, user_id, read_status
@@ -327,6 +330,8 @@ const getAllUserTasksQ = async (user_id) => {
     responsible_departments.name AS responsible_department_name,
     t.responsible_subdepartment_id, -- ПОДРАЗДЕЛЕНИ
     responsible_subdepartments.name AS responsible_subdepartment_name,
+    t.appoint_position_id, -- ОТДЕЛ
+    appoint_position.name AS appoint_position_name,
     t.responsible_position_id, -- ОТДЕЛ
     responsible_position.name AS responsible_position_name,
     GROUP_CONCAT(f.file_name, '|') AS file_names,
@@ -342,6 +347,7 @@ const getAllUserTasksQ = async (user_id) => {
     LEFT JOIN users AS responsible_m_user ON t.responsible_user_id = responsible_m_user.id
     LEFT JOIN departments AS responsible_departments ON t.responsible_department_id = responsible_departments.id
     LEFT JOIN subdepartments AS responsible_subdepartments ON t.responsible_subdepartment_id = responsible_subdepartments.id
+    LEFT JOIN positions AS appoint_position ON t.appoint_position_id = appoint_position.id
     LEFT JOIN positions AS responsible_position ON t.responsible_position_id = responsible_position.id
     LEFT JOIN task_files f ON t.task_id = f.task_id
     LEFT JOIN (
@@ -361,6 +367,7 @@ const getAllUserTasksQ = async (user_id) => {
 }
 
 const updateTaskByEventrQ = async (data) => {
+  console.log('updateTaskByEventrQ', data)
   try {
     const {
       responsible_position_id,
