@@ -17,7 +17,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     task_comment: [],
     deadline: "",
     task_priority: false,
-    appoint_user_id: currentUser.id, // кто назначил = текущий пользователь
+    appoint_user_id: currentUser.id,
     appoint_department_id: currentUser.dep,
     appoint_subdepartment_id: currentUser.subDep,
     appoint_position_id: currentUser.position,
