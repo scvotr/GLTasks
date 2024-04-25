@@ -88,16 +88,13 @@ export const FullTaskInfo = ({ task }) => {
     responsible_user_middle_name,
     responsible_department_name,
     responsible_subdepartment_name,
+    appoint_position_name,
     responsible_position_name,
     task_descript,
     old_files,
   } = task
 
-  console.log(task)
-
   const timeSteps = [
-    { key: "created_on", value: "Создана: " + formatDate(created_on) },
-    { key: "deadline", value: "Выполнить до: " + formatDate(deadline) },
     { key: "approved_on", value: approved_on ? "Согласованна: " + formatDate(approved_on) : null, default: "На согласовании" },
     {
       key: "setResponseUser_on",
@@ -106,12 +103,11 @@ export const FullTaskInfo = ({ task }) => {
     },
     {
       key: "responsible_user_last_name",
-      value: responsible_user_last_name ? "Ответственный: " + responsible_user_last_name : null,
+      value: responsible_user_last_name ? "Ответственный: " + responsible_user_last_name + " " + responsible_position_name : null,
       default: "ФИО ответсвенного",
     },
-    { key: "responsible_position_name", value: responsible_position_name ? "Должность: " + responsible_position_name : null, default: "Должность" },
-    { key: "confirmation_on", value: confirmation_on ? "Отправлена на проверку: " + formatDate(confirmation_on) : null, default: "Проверка" },
-    { key: "closed_on", value: closed_on ? "Закрыта: " + formatDate(closed_on) : null, default: "Закрытие" },
+    { key: "confirmation_on", value: confirmation_on ? "Отправлена на проверку: " + formatDate(confirmation_on) : null, default: "В работе" },
+    { key: "closed_on", value: closed_on ? "Закрыта: " + formatDate(closed_on) : null, default: "Требует подтверждения" },
   ]
 
   if (reject_on !== null) {
@@ -121,19 +117,20 @@ export const FullTaskInfo = ({ task }) => {
   const nonNullCountTimeSteps = timeSteps.filter(item => item.value !== null).length
 
   const unitSteps = [
-    { key: "appoint_department_name", value: "От Департамента:: " + appoint_department_name },
-    { key: "appoint_subdepartment_name", value: "От Отдела: " + appoint_subdepartment_name },
-    { key: "appoint_user_last_name", value: appoint_user_last_name ? "От Сотрудника: " + appoint_user_last_name : null, default: "Назначивший" },
+    { key: "appoint_department_name", value: `От: ${appoint_department_name} Отдел: ${appoint_subdepartment_name}` },
+    // { key: "appoint_department_name", value: "От: " + appoint_department_name + " " + "Отдел: " + appoint_subdepartment_name },
+    {
+      key: "appoint_user_last_name",
+      value: appoint_user_last_name ? "От: " + appoint_position_name + " " + appoint_user_last_name : null,
+      default: "Назначивший",
+    },
     {
       key: "responsible_department_name",
-      value: responsible_department_name ? "Для Департамента: " + responsible_department_name : null,
-      default: "Для Департамента",
+      value: responsible_department_name ? "Для: " + responsible_department_name + " Службы: " + responsible_subdepartment_name : null,
+      default: "Для Департамента:",
     },
-    {
-      key: "responsible_subdepartment_name",
-      value: responsible_subdepartment_name ? "Для Департамента: " + responsible_subdepartment_name : null,
-      default: "Для Отдела",
-    },
+    { key: "created_on", value: "Создана: " + formatDate(created_on) },
+    { key: "deadline", value: "Выполнить до: " + formatDate(deadline) },
   ]
 
   const nonNullCountUnitSteps = unitSteps.filter(item => item.value !== null).length
@@ -185,7 +182,7 @@ export const FullTaskInfo = ({ task }) => {
     <>
       <Card>
         <CardContent>
-          <Grid container spacing={2} >
+          <Grid container spacing={2}>
             {/* --------MAIN PLACE------------ */}
             <Grid item xs={8}>
               {/* <Item> */}
@@ -193,10 +190,15 @@ export const FullTaskInfo = ({ task }) => {
               <Grid container spacing={2} justifyContent="center" alignItems="center">
                 <Grid item xs={8}>
                   <Item>
+                    <Typography variant="h4">Номер задачи: {id}</Typography>
+                  </Item>
+                </Grid>
+                <Grid item xs={8}>
+                  <Item>
                     <Stepper activeStep={nonNullCountUnitSteps} alternativeLabel>
                       {unitSteps &&
-                        unitSteps.map(label => (
-                          <Step key={label}>
+                        unitSteps.map((label, index) => (
+                          <Step key={index}>
                             <StepLabel>{label.value === null ? label.default : label.value}</StepLabel>
                           </Step>
                         ))}
@@ -217,8 +219,8 @@ export const FullTaskInfo = ({ task }) => {
                   <Item>
                     <Stepper activeStep={nonNullCountTimeSteps} alternativeLabel>
                       {timeSteps &&
-                        timeSteps.map(label => (
-                          <Step key={label}>
+                        timeSteps.map((label, index) => (
+                          <Step key={index}>
                             <StepLabel>{label.value === null ? label.default : label.value}</StepLabel>
                           </Step>
                         ))}
@@ -227,11 +229,11 @@ export const FullTaskInfo = ({ task }) => {
                 </Grid>
                 <Grid item xs={8}>
                   <Item>
-                    <Loader reqStatus={reqStatus}>
-                      <Box display="flex" justifyContent="center" >
-                        {" "}
-                        {/* Центрируем содержимое */}
-                        <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
+                    <Box display="flex" justifyContent="center">
+                      {" "}
+                      {/* Центрируем содержимое */}
+                      <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
+                        <Loader reqStatus={reqStatus}>
                           {taskData.old_files &&
                             taskData.old_files.map((file, index) => (
                               <ImageListItem key={index}>
@@ -245,16 +247,16 @@ export const FullTaskInfo = ({ task }) => {
                                 />
                               </ImageListItem>
                             ))}
-                        </ImageList>
-                      </Box>
-                    </Loader>
+                        </Loader>
+                      </ImageList>
+                    </Box>
                   </Item>
                 </Grid>
               </Grid>
               {/* </Item> */}
             </Grid>
             {/* --------RIGHT SIDE------------ */}
-            <Grid item xs={4} >
+            <Grid item xs={4}>
               <Item>
                 <TaskCommets task={task} />
               </Item>
