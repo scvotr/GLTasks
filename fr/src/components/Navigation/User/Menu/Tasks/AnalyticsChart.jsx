@@ -48,7 +48,7 @@ export const AnalyticsChart = ({ data }) => {
         </Grid>
         <Grid item xs={6}>
           <Item>
-          <CountTasksByUser data={[...allTasks, ...closedAndReadedTasks]}/>
+          <CountUserActivity data={[...allTasks, ...closedAndReadedTasks]}/>
           </Item>
         </Grid>
         </Grid>
