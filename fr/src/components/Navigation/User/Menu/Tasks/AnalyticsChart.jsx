@@ -1,8 +1,20 @@
-import { AppBar, Box, Toolbar, Typography } from "@mui/material"
+import { AppBar, Box, Toolbar, Typography, Grid } from "@mui/material"
 import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
+import { styled } from "@mui/material/styles"
 import { CountUserActivity } from "../../../../FormComponents/Statistics/CountUserActivity"
-import { CountTasksBySubDepartment } from "../../../../FormComponents/Statistics/CountTasksBySubDepartment"
 import { CountTasksByUser } from "../../../../FormComponents/Statistics/CountTasksByUser"
+import { RoundCountTasksByUser } from "../../../../FormComponents/Statistics/RoundCountTasksByUser"
+
+
+const Item = styled("div")(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  border: "1px solid",
+  borderColor: theme.palette.mode === "dark" ? "#444d58" : "#ced7e0",
+  padding: theme.spacing(1),
+  margin:theme.spacing(2),
+  borderRadius: "4px",
+  textAlign: "center",
+}))
 
 export const AnalyticsChart = ({ data }) => {
   const { allTasks, closedAndReadedTasks } = useTaskContext()
@@ -23,9 +35,25 @@ export const AnalyticsChart = ({ data }) => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <CountUserActivity data={[...allTasks, ...closedAndReadedTasks]}/>
-        {/* <CountTasksBySubDepartment data={[...allTasks, ...closedAndReadedTasks]}/> */}
-        <CountTasksByUser data={[...allTasks, ...closedAndReadedTasks]}/>
+        <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Item>
+            <CountTasksByUser data={[...allTasks, ...closedAndReadedTasks]}/>
+          </Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item>
+            <RoundCountTasksByUser data={[...allTasks, ...closedAndReadedTasks]}/>
+          </Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item>
+          <CountTasksByUser data={[...allTasks, ...closedAndReadedTasks]}/>
+          </Item>
+        </Grid>
+        </Grid>
+       
+        
       </Box>
     </>
   )
