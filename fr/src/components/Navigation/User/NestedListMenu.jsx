@@ -63,7 +63,7 @@ export const NestedListMenu = ({ isOpen }) => {
           btn: true,
         },
         {
-          name: "Статистика",
+          name: "Статистика(alfa)",
           icon: <AssessmentOutlinedIcon fontSize="large" />,
           path: "/tasks/AnalyticsChart",
           btn: true,
