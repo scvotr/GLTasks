@@ -12,6 +12,7 @@ import SendIcon from "@mui/icons-material/Send"
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined"
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -60,6 +61,12 @@ export const NestedGeneralListMenu = ({ isOpen }) => {
           name: "Архив",
           icon: <Inventory2OutlinedIcon fontSize="large" />,
           path: "/tasks/closedTask",
+          btn: true,
+        },
+        {
+          name: "Статистика",
+          icon: <AssessmentOutlinedIcon fontSize="large" />,
+          path: "/tasks/AnalyticsChart",
           btn: true,
         },
       ],

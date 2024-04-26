@@ -3,6 +3,7 @@ import { AdminTasksTable } from "../../Tables/AdminTasksTable/AdminTasksTable"
 import { useCallback, useEffect, useState } from "react"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
+import  InstructionComponent  from "../../../../Layouts/DefaultLayoutMain/FAQ/InstructionComponent"
 
 export const AllTasks = () => {
   const currentUser = useAuthContext()
@@ -46,6 +47,7 @@ export const AllTasks = () => {
         </AppBar>
       </Box>
       <AdminTasksTable tasks={dataFromEndpoint} reRender={setFormKey} />
+      <InstructionComponent data={dataFromEndpoint}/>
     </>
   )
 }
