@@ -24,7 +24,7 @@ export const AnalyticsChart = ({ data }) => {
           </Toolbar>
         </AppBar>
         <CountUserActivity data={[...allTasks, ...closedAndReadedTasks]}/>
-        <CountTasksBySubDepartment data={[...allTasks, ...closedAndReadedTasks]}/>
+        {/* <CountTasksBySubDepartment data={[...allTasks, ...closedAndReadedTasks]}/> */}
         <CountTasksByUser data={[...allTasks, ...closedAndReadedTasks]}/>
       </Box>
     </>
