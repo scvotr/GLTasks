@@ -1,7 +1,6 @@
 import React from "react"
 import { Paper, Typography, Box, Grid } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { AnalyticsComponent } from "./AnalyticsComponent"
 import { CountTasksByDepartment } from "../../../FormComponents/Statistics/CountTasksByDepartment"
 import { RoundCountTasksByDepartment } from "../../../FormComponents/Statistics/RoundCountTasksByDepartment"
 import { CountTasksBySubDepartment } from "../../../FormComponents/Statistics/CountTasksBySubDepartment"
