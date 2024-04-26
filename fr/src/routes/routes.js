@@ -19,6 +19,7 @@ import { SettingsMain } from "../components/Navigation/User/Menu/Tasks/UserSetti
 import { EmptyProfile, emptyProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EmptyProfile";
 import { GeneralTasksMain } from "../components/Navigation/User/Menu/Tasks/General/GeneralTasksMain";
 import InstructionComponent from "../components/Layouts/DefaultLayoutMain/FAQ/InstructionComponent";
+import { AnalyticsChart } from "../components/Navigation/User/Menu/Tasks/AnalyticsChart";
 
 
 export const routes = createBrowserRouter([
@@ -77,6 +78,10 @@ export const routes = createBrowserRouter([
       {
         path: '/tasks/closedTask',
         element: <PrivateRoutes component={ClosedTask} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/tasks/AnalyticsChart',
+        element: <PrivateRoutes component={AnalyticsChart} roles={["chife", "user", "general"]}/>,
       },
       {
         path: '/settings',
