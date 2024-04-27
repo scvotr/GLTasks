@@ -13,6 +13,9 @@ fr/package-lock.json
 *.rar
 *.txt
 *.db
+*.doc
+*.docx
+*.pdf
 
 # testing
 /coverage

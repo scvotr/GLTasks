@@ -18,7 +18,7 @@ import { NavLink } from "react-router-dom"
 // import getTasksData from "./MenuListData/TasksData.jsx"
 import styled from "@emotion/styled"
 import ConnectWithoutContactIcon from "@mui/icons-material/ConnectWithoutContact"
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined"
+import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { Divider } from "@mui/material"
@@ -64,6 +64,26 @@ export const NestedListMenu = ({ isOpen }) => {
         },
         {
           name: "Статистика(alfa)",
+          icon: <AssessmentOutlinedIcon fontSize="large" />,
+          path: "/tasks/AnalyticsChart",
+          btn: true,
+        },
+      ],
+    },
+    {
+      name: "Документы",
+      icon:  <FilePresentOutlinedIcon fontSize="large" />,
+      path: "/docs",
+      tasksCount: 0,
+      subItems: [
+        {
+          name: "Архив",
+          icon: <Inventory2OutlinedIcon fontSize="large" />,
+          path: "/tasks/closedTask",
+          btn: true,
+        },
+        {
+          name: "doc2(alfa)",
           icon: <AssessmentOutlinedIcon fontSize="large" />,
           path: "/tasks/AnalyticsChart",
           btn: true,
