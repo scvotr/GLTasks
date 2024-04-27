@@ -30,7 +30,7 @@ const sendEmail = async (recipientEmail, text, descript) => {
       text: descript ? descript : text,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    // const info = await transporter.sendMail(mailOptions);
     // console.log('Email sent:', info.response);
   } catch (error) {
     console.error('Error occurred while sending email:', error);
