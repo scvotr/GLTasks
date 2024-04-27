@@ -21,6 +21,8 @@ import { GeneralTasksMain } from "../components/Navigation/User/Menu/Tasks/Gener
 import InstructionComponent from "../components/Layouts/DefaultLayoutMain/FAQ/InstructionComponent";
 import { AnalyticsChart } from "../components/Navigation/User/Menu/Tasks/AnalyticsChart";
 import { DocsMain } from "../components/Navigation/User/Menu/Docs/DocsMain";
+import { DocsAtchive } from "../components/Navigation/User/Menu/Docs/DocsAtchive";
+import { DocsOrdinance } from "../components/Navigation/User/Menu/Docs/DocsOrdinance";
 
 
 export const routes = createBrowserRouter([
@@ -103,6 +105,14 @@ export const routes = createBrowserRouter([
       {
         path: '/docs',
         element: <PrivateRoutes component={DocsMain} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/docs/docsArchive',
+        element: <PrivateRoutes component={DocsAtchive} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/docs/ordinance',
+        element: <PrivateRoutes component={DocsOrdinance} roles={["chife", "user", "general"]}/>,
       },
     ]
   }
