@@ -81,13 +81,13 @@ export const NestedListMenu = ({ isOpen }) => {
         {
           name: "Архив(alfa)",
           icon: <FileCopyOutlinedIcon fontSize="large" />,
-          path: "/tasks/closedTask",
+          path: "/docs/docsArchive",
           btn: true,
         },
         {
-          name: "doc2(alfa)",
+          name: "Распоряжения(alfa)",
           icon: <FolderCopyOutlinedIcon fontSize="large" />,
-          path: "/tasks/AnalyticsChart",
+          path: "/docs/ordinance",
           btn: true,
         },
       ],
