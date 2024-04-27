@@ -6,6 +6,8 @@ bk/errorAuth.log
 bk/warnAuth.log
 bk/uploads/
 fr/package-lock.json
+bk/controllers/Tasks/mailFor.js
+bk/.env
 
 /.pnp
 .pnp.js
