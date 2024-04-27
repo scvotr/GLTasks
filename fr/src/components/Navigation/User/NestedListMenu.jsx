@@ -12,7 +12,9 @@ import SendIcon from "@mui/icons-material/Send"
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined"
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined'
+import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined'
+import FolderCopyOutlinedIcon from '@mui/icons-material/FolderCopyOutlined'
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -78,13 +80,13 @@ export const NestedListMenu = ({ isOpen }) => {
       subItems: [
         {
           name: "Архив(alfa)",
-          icon: <Inventory2OutlinedIcon fontSize="large" />,
+          icon: <FileCopyOutlinedIcon fontSize="large" />,
           path: "/tasks/closedTask",
           btn: true,
         },
         {
           name: "doc2(alfa)",
-          icon: <AssessmentOutlinedIcon fontSize="large" />,
+          icon: <FolderCopyOutlinedIcon fontSize="large" />,
           path: "/tasks/AnalyticsChart",
           btn: true,
         },
