@@ -20,6 +20,7 @@ import { EmptyProfile, emptyProfile } from "../components/Navigation/User/Menu/T
 import { GeneralTasksMain } from "../components/Navigation/User/Menu/Tasks/General/GeneralTasksMain";
 import InstructionComponent from "../components/Layouts/DefaultLayoutMain/FAQ/InstructionComponent";
 import { AnalyticsChart } from "../components/Navigation/User/Menu/Tasks/AnalyticsChart";
+import { DocsMain } from "../components/Navigation/User/Menu/Docs/DocsMain";
 
 
 export const routes = createBrowserRouter([
@@ -98,6 +99,10 @@ export const routes = createBrowserRouter([
       {
         path: '/settings/emptyProfile',
         element: <PrivateRoutes component={EmptyProfile} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/docs',
+        element: <PrivateRoutes component={DocsMain} roles={["chife", "user", "general"]}/>,
       },
     ]
   }
