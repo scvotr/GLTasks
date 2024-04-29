@@ -8,7 +8,7 @@ export const PlanTask = ({ onClose }) => {
   const [planeTasks, setPlaneTasks] = useState([{ description: "", dueDate: "", completed: false }])
 
   const handleAddTask = () => {
-    setPlaneTasks([...planeTasks, { description: "", dueDate: "", completed: false }])
+    setPlaneTasks([{ description: "", dueDate: "", completed: false }, ...planeTasks])
   }
 
   const handleDeleteTask = index => {
@@ -35,6 +35,18 @@ export const PlanTask = ({ onClose }) => {
         <Typography variant="h6" gutterBottom>
           Планирование:
         </Typography>
+        <Grid container justifyContent="center" spacing={2}>
+          <Grid item>
+            <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddTask}>
+              Добавить задачу
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" type="submit">
+              Создать
+            </Button>
+          </Grid>
+        </Grid>
         {planeTasks.map((task, index) => (
           <Box key={index} sx={{ m: "15px" }}>
             <Stack direction="column" justifyContent="center" alignItems="flex-start" spacing={2}>
@@ -45,7 +57,7 @@ export const PlanTask = ({ onClose }) => {
                 minRows={4}
                 maxRows={10}
                 variant="outlined"
-                label={`Задача ${index + 1}`}
+                label={`Задача ${planeTasks.length - index}`}
                 value={task.description}
                 onChange={e => handleTaskChange(index, "description", e.target.value)}
                 fullWidth
@@ -78,18 +90,6 @@ export const PlanTask = ({ onClose }) => {
             </Stack>
           </Box>
         ))}
-        <Grid container justifyContent="center" spacing={2}>
-          <Grid item>
-            <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddTask}>
-              Добавить задачу
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="contained" color="primary" type="submit">
-              Создать
-            </Button>
-          </Grid>
-        </Grid>
       </Box>
     </>
   )
