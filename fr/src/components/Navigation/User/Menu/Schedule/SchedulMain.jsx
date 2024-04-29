@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
-import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
+import { PlanTask } from "./PlanTask/PlanTask"
+import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
 
 export const SchedulMain = () => {
   const [formKey, setFormKey] = useState(0)
@@ -14,12 +15,14 @@ export const SchedulMain = () => {
     setFormKey(prevKey => prevKey + 1)
   }
 
+  useEffect(() => {}, [formKey])
+
   return (
     <>
-      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
-
-      </ModalCustom>
-      <AppBarForPage title="Планирование: " openModal={openModal}/>
+      <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
+        <PlanTask reRender={setFormKey} onClose={closeModal}/>
+      </FullScreenDialog>
+      <AppBarForPage title="Планирование: " openModal={openModal} />
     </>
   )
 }
