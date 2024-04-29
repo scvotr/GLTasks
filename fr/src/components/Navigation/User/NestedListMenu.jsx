@@ -12,15 +12,16 @@ import SendIcon from "@mui/icons-material/Send"
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined"
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined'
-import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined'
-import FolderCopyOutlinedIcon from '@mui/icons-material/FolderCopyOutlined'
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined"
+import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined"
+import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined"
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
 import styled from "@emotion/styled"
 import ConnectWithoutContactIcon from "@mui/icons-material/ConnectWithoutContact"
-import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
+import FilePresentOutlinedIcon from "@mui/icons-material/FilePresentOutlined"
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { Divider } from "@mui/material"
@@ -54,7 +55,7 @@ export const NestedListMenu = ({ isOpen }) => {
   const sectionsData = [
     {
       name: "Задачи",
-      icon:  <ConnectWithoutContactIcon fontSize="large" />,
+      icon: <ConnectWithoutContactIcon fontSize="large" />,
       path: "/tasks",
       tasksCount: 0,
       subItems: [
@@ -74,7 +75,7 @@ export const NestedListMenu = ({ isOpen }) => {
     },
     {
       name: "Документы(alfa)",
-      icon:  <FilePresentOutlinedIcon fontSize="large" />,
+      icon: <FilePresentOutlinedIcon fontSize="large" />,
       path: "/docs",
       tasksCount: 0,
       subItems: [
@@ -88,6 +89,32 @@ export const NestedListMenu = ({ isOpen }) => {
           name: "Распоряжения(alfa)",
           icon: <FolderCopyOutlinedIcon fontSize="large" />,
           path: "/docs/ordinance",
+          btn: true,
+        },
+      ],
+    },
+    {
+      name: "Планирование(alfa)",
+      icon: <CalendarMonthOutlinedIcon fontSize="large" />,
+      path: "/schedule",
+      tasksCount: 0,
+      subItems: [
+        {
+          name: "Планировщик(alfa)",
+          icon: <FolderCopyOutlinedIcon fontSize="large" />,
+          path: "/schedule/taskScheduler",
+          btn: true,
+        },
+        {
+          name: "Тест(alfa)",
+          icon: <FolderCopyOutlinedIcon fontSize="large" />,
+          path: "/schedule/testScheduler",
+          btn: true,
+        },
+        {
+          name: "Архив(alfa)",
+          icon: <FileCopyOutlinedIcon fontSize="large" />,
+          path: "/schedule/schedulesArchive",
           btn: true,
         },
       ],
