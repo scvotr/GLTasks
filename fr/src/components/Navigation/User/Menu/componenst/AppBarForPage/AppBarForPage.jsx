@@ -1,6 +1,7 @@
-import { AppBar, Toolbar, Typography } from "@mui/material"
+import { AppBar, Toolbar, Typography, Fab } from "@mui/material"
+import AddIcon from "@mui/icons-material/Add"
 
-export const AppBarForPage = ({title}) => {
+export const AppBarForPage = ({ title, openModal }) => {
   return (
     <AppBar
       position="static"
@@ -14,6 +15,11 @@ export const AppBarForPage = ({title}) => {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           {title}
         </Typography>
+        {openModal && (
+          <Fab color="secondary" aria-label="add" onClick={openModal}>
+            <AddIcon />
+          </Fab>
+        )}
       </Toolbar>
     </AppBar>
   )
