@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
-import { PlanTask } from "./PlanTask/PlanTask"
+import { SchedulePlane } from "./PlanTask/SchedulePlane"
 import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
 
 export const SchedulMain = () => {
@@ -20,7 +20,7 @@ export const SchedulMain = () => {
   return (
     <>
       <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
-        <PlanTask reRender={setFormKey} onClose={closeModal}/>
+        <SchedulePlane reRender={setFormKey} onClose={closeModal}/>
       </FullScreenDialog>
       <AppBarForPage title="Планирование: " openModal={openModal} />
     </>
