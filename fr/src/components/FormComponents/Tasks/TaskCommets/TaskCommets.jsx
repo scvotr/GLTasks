@@ -56,7 +56,7 @@ export const TaskCommets = ({ comments, onSubmit, task }) => {
         value={comment}
         onChange={handleChange}
         fullWidth
-        inputProps={{ maxLength: 190 }}
+        inputProps={{ maxLength: 700 }}
         sx={{
           mt: 2,
         }}

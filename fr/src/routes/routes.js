@@ -23,6 +23,10 @@ import { AnalyticsChart } from "../components/Navigation/User/Menu/Tasks/Analyti
 import { DocsMain } from "../components/Navigation/User/Menu/Docs/DocsMain";
 import { DocsAtchive } from "../components/Navigation/User/Menu/Docs/DocsAtchive";
 import { DocsOrdinance } from "../components/Navigation/User/Menu/Docs/DocsOrdinance";
+import { SchedulMain } from "../components/Navigation/User/Menu/Schedule/SchedulMain";
+import { SchedulsArchive } from "../components/Navigation/User/Menu/Schedule/SchedulsArchive";
+import { TaskScheduler } from "../components/Navigation/User/Menu/Schedule/TaskScheduler";
+import { TestSchedule } from "../components/Navigation/User/Menu/Schedule/TestSchedule";
 
 
 export const routes = createBrowserRouter([
@@ -113,6 +117,26 @@ export const routes = createBrowserRouter([
       {
         path: '/docs/ordinance',
         element: <PrivateRoutes component={DocsOrdinance} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/docs/ordinance',
+        element: <PrivateRoutes component={DocsOrdinance} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/schedule',
+        element: <PrivateRoutes component={SchedulMain} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/schedule/schedulesArchive',
+        element: <PrivateRoutes component={SchedulsArchive} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/schedule/taskScheduler',
+        element: <PrivateRoutes component={TaskScheduler} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/schedule/testScheduler',
+        element: <PrivateRoutes component={TestSchedule} roles={["chife", "user", "general"]}/>,
       },
     ]
   }
