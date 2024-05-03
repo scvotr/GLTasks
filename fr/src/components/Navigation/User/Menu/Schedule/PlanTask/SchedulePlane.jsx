@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
-import { useEffect, useState } from "react"
-import { Button, TextField, Typography, IconButton, Grid, Box, Stack, Fab } from "@mui/material"
+import { useState } from "react"
+import { Button, TextField, Typography, IconButton, Grid, Box, Stack } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
@@ -9,7 +9,7 @@ import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint
 export const SchedulePlane = ({ onClose, reRender }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null, })
-  const [updatedForm, setUpdatedForm] = useState(0)
+
   const initVal = {
     schedule_id: uuidv4(),
     assign_user_id: currentUser.id,
@@ -46,22 +46,17 @@ export const SchedulePlane = ({ onClose, reRender }) => {
     setPlaneTasks(updatedTasks)
   }
 
-  useEffect(()=> {
-    reRender(prevKey => prevKey + 1)
-  }, [updatedForm])
-
   const handleCreate = async event => {
     event.preventDefault()
-    console.log(planeTasks)
     try {
       setReqStatus({ loading: true, error: null })
       getDataFromEndpoint(currentUser.token, "/schedule/addSchedules", "POST", planeTasks, setReqStatus)
-      setUpdatedForm(prevKey => prevKey + 1)
+       reRender(prevKey => prevKey + 1)
       setReqStatus({ loading: false, error: null })
     } catch (error) {
       setReqStatus({ loading: false, error: error })
     }
-    // onClose()
+    onClose()
   }
 
   return (
