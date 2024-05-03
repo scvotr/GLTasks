@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, Card, CardContent, Typography, TextField, Button } from "@mui/material"
+import { Grid, Card, CardContent, Typography, TextField, Button, Stack } from "@mui/material"
 import { formatDate } from "../../../utils/formatDate"
 
 export const ScheduleCardView = ({ schedules }) => {
@@ -31,12 +31,10 @@ export const ScheduleCardView = ({ schedules }) => {
     })
   }
 
-  console.log(sortedSchedules)
-
   return (
-    <div>
+    <>
       <TextField label="Фильтр по описанию" value={filter} onChange={e => setFilter(e.target.value)} variant="outlined" fullWidth margin="normal" />
-      <div>
+      <Stack direction="row" spacing={2} sx={{mb: '1%'}}>
         <Button variant={sortOrder === "asc" ? "contained" : "outlined"} onClick={() => setSortOrder("asc")}>
           Сортировка по возрастанию
         </Button>
@@ -46,7 +44,7 @@ export const ScheduleCardView = ({ schedules }) => {
         <Button variant={sortOrder === "complex" ? "contained" : "outlined"} onClick={() => setSortOrder("complex")}>
           Сложная сортировка
         </Button>
-      </div>
+      </Stack>
       <Grid container spacing={2}>
         {sortedSchedules.map((schedule, index) => (
           <Grid item xs={4} key={index}>
@@ -63,7 +61,7 @@ export const ScheduleCardView = ({ schedules }) => {
           </Grid>
         ))}
       </Grid>
-    </div>
+    </>
   )
 }
 
