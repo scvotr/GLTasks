@@ -1,19 +1,22 @@
 import { v4 as uuidv4 } from "uuid"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, TextField, Typography, IconButton, Grid, Box, Stack, Fab } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
+import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 
-export const SchedulePlane = ({ onClose }) => {
+export const SchedulePlane = ({ onClose, reRender }) => {
   const currentUser = useAuthContext()
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null, })
+  const [updatedForm, setUpdatedForm] = useState(0)
   const initVal = {
     schedule_id: uuidv4(),
     assign_user_id: currentUser.id,
-    schedule_status: 'new',
+    schedule_status: "new",
     schedule_type: "",
     schedule_title: "",
-    schedule_description: '',
+    schedule_description: "",
     schedule_comment: [],
     deadline_time: "",
     estimated_time: 0,
@@ -24,12 +27,11 @@ export const SchedulePlane = ({ onClose }) => {
     appoint_position_id: currentUser.position,
   }
 
-
   const today = new Date().toISOString().split("T")[0]
   const [planeTasks, setPlaneTasks] = useState([initVal])
 
   const handleAddTask = () => {
-    setPlaneTasks([initVal , ...planeTasks])
+    setPlaneTasks([initVal, ...planeTasks])
   }
 
   const handleDeleteTask = index => {
@@ -44,11 +46,22 @@ export const SchedulePlane = ({ onClose }) => {
     setPlaneTasks(updatedTasks)
   }
 
-  const handleCreate = event => {
-    event.preventDefault()
+  useEffect(()=> {
+    reRender(prevKey => prevKey + 1)
+  }, [updatedForm])
 
+  const handleCreate = async event => {
+    event.preventDefault()
     console.log(planeTasks)
-    onClose()
+    try {
+      setReqStatus({ loading: true, error: null })
+      getDataFromEndpoint(currentUser.token, "/schedule/addSchedules", "POST", planeTasks, setReqStatus)
+      setUpdatedForm(prevKey => prevKey + 1)
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error })
+    }
+    // onClose()
   }
 
   return (
