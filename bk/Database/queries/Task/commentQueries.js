@@ -2,7 +2,6 @@ const { executeDatabaseQueryAsync } = require("../../utils/executeDatabaseQuery/
 
 
 const addNewCommentQ = async(data) => {
-  console.log(addNewCommentQ)
   const { task_id, user_id, comment } = data;
   try {
     const command = `INSERT INTO task_comments (task_id, user_id, comment) VALUES (?, ?, ?)`;
