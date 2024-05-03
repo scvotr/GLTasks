@@ -40,7 +40,7 @@ export const SchedulMain = () => {
         <SchedulePlane reRender={setFormKey} onClose={closeModal} />
       </FullScreenDialog>
       <AppBarForPage title="Планирование: " openModal={openModal} />
-      <ScheduleCardView schedules={allScheduls}/>
+      <ScheduleCardView schedules={allScheduls} reRender={setFormKey}/>
     </>
   )
 }
