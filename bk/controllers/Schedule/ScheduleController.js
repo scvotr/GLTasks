@@ -1,4 +1,4 @@
-const { createSchedulesQ, getAllSchedulesByUserIdQ } = require("../../Database/queries/Schedules/scheduleQueries")
+const { createSchedulesQ, getAllSchedulesByUserIdQ, removeScheduleByIdQ } = require("../../Database/queries/Schedules/scheduleQueries")
 
 const sendResponseWithData = (res, data) => {
   res.setHeader('Content-Type', 'application/json')
@@ -17,13 +17,13 @@ const handleError = (res, error) => {
 }
 
 class ScheduleController {
-  async authDecodeUserData(req, res) {
+  async addNewSchedules(req, res) {
     try {
       const authDecodeUserData = req.user
       await createSchedulesQ(authDecodeUserData)
-        sendResponseWithData(res, 'authDecodeUserData -ok')
+        sendResponseWithData(res, 'addNewSchedules -ok')
     } catch (error) {
-      handleError(res, 'addSchedules')
+      handleError(res, 'addNewSchedules')
     }
   }
   async getAllSchedulesByUserId(req, res) {
@@ -45,6 +45,16 @@ class ScheduleController {
       //   sendResponseWithData(res, 'editUserData - ok')
     } catch (error) {
       handleError(res, 'getAllSchedulesBySubDepId')
+    }
+  }
+  async removeSchedule(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const data = JSON.parse(authDecodeUserData.payLoad)
+      await removeScheduleByIdQ(data)
+        sendResponseWithData(res, 'removeSchedule - ok')
+    } catch (error) {
+      handleError(res, 'removeSchedule')
     }
   }
 }
