@@ -30,6 +30,7 @@ const createSchedulesQ = async data => {
     }
   } catch (error) {
     console.error('Error - createSchedules:', error)
+    throw error;
   }
 }
 
@@ -49,9 +50,28 @@ const getAllSchedulesByUserIdQ = async (user_id) => {
     console.error('Error fetching schedules by user ID:', error);
     throw error; // Пробрасываем ошибку для дальнейшей обработки
   }
+}
+
+const removeScheduleByIdQ = async (schedule_id) => {
+  console.log('>>>>>>>', schedule_id)
+  const command = `
+    DELETE FROM schedules
+    WHERE schedule_id = ?
+  `;
+
+  //! REMOVE COMMENTS
+
+  try {
+    const result = await executeDatabaseQueryAsync(command, [schedule_id]);
+    return result
+  } catch (error) {
+    console.error('Error fetching remove schedules by schedule ID:', error);
+    throw error
+  }
 };
 
 module.exports = {
   createSchedulesQ,
   getAllSchedulesByUserIdQ,
+  removeScheduleByIdQ,
 }
