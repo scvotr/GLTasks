@@ -1,8 +1,17 @@
 import { useState } from "react"
-import { Grid, Card, CardContent, Typography, TextField, Button, Stack } from "@mui/material"
+import { Grid, Card, CardContent, Typography, TextField, Button, Stack, IconButton } from "@mui/material"
+import DeleteIcon from "@mui/icons-material/Delete"
 import { formatDate } from "../../../utils/formatDate"
+import { useAuthContext } from "../../../context/AuthProvider"
+import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
+import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog"
 
-export const ScheduleCardView = ({ schedules }) => {
+export const ScheduleCardView = ({ schedules, reRender }) => {
+  const currentUser = useAuthContext()
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
+  const [openDialog, setOpenDialog] = useState(false)
+  const [scheduleIdToDelete, setScheduleIdToDelete] = useState(null)
+
   const [filter, setFilter] = useState("")
   const [sortOrder, setSortOrder] = useState("asc")
 
@@ -31,10 +40,21 @@ export const ScheduleCardView = ({ schedules }) => {
     })
   }
 
+  const handleDeleteSchedul = async schedul_id => {
+    try {
+      setReqStatus({ loading: true, error: null })
+      await getDataFromEndpoint(currentUser.token, "/schedule/removeSchedule", "POST", schedul_id, setReqStatus)
+      reRender(prevKey => prevKey + 1)
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error })
+    }
+  }
+
   return (
     <>
       <TextField label="Фильтр по описанию" value={filter} onChange={e => setFilter(e.target.value)} variant="outlined" fullWidth margin="normal" />
-      <Stack direction="row" spacing={2} sx={{mb: '1%'}}>
+      <Stack direction="row" spacing={2} sx={{ mb: "1%" }}>
         <Button variant={sortOrder === "asc" ? "contained" : "outlined"} onClick={() => setSortOrder("asc")}>
           Сортировка по возрастанию
         </Button>
@@ -56,11 +76,38 @@ export const ScheduleCardView = ({ schedules }) => {
                 <Typography>Deadline Time: {formatDate(schedule.deadline_time)}</Typography>
                 <Typography>Schedule Description: {schedule.schedule_description}</Typography>
                 {/* Add more fields as needed */}
+                <IconButton
+                  onClick={() => {
+                    setScheduleIdToDelete(schedule.schedule_id)
+                    setOpenDialog(true)
+                  }}>
+                  <DeleteIcon />
+                  <Typography variant="h6" gutterBottom>
+                    Удалить
+                  </Typography>
+                </IconButton>
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
+
+      <ConfirmationDialog
+        open={openDialog}
+        onClose={() => {
+          setOpenDialog(false)
+          setScheduleIdToDelete(null)
+        }}
+        onConfirm={() => {
+          if (scheduleIdToDelete) {
+            handleDeleteSchedul(scheduleIdToDelete); // Вызов функции удаления с scheduleIdToDelete
+            setScheduleIdToDelete(null); // Сброс scheduleIdToDelete после удаления
+          }
+          setOpenDialog(false);
+        }}
+        title="Подтвердите удаление задачи"
+        message="Вы уверены, что хотите удалить эту задачу?"
+      />
     </>
   )
 }
