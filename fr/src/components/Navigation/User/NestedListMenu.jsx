@@ -16,6 +16,7 @@ import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined"
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined"
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
+import Diversity1OutlinedIcon from '@mui/icons-material/Diversity1Outlined';
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -115,6 +116,26 @@ export const NestedListMenu = ({ isOpen }) => {
           name: "Архив(alfa)",
           icon: <FileCopyOutlinedIcon fontSize="large" />,
           path: "/schedule/schedulesArchive",
+          btn: true,
+        },
+      ],
+    },
+    {
+      name: "Взаимопроверка",
+      icon: <Diversity1OutlinedIcon fontSize="large" />,
+      path: "/mutualVerification",
+      tasksCount: 0,
+      subItems: [
+        {
+          name: "Документы",
+          icon: <FolderCopyOutlinedIcon fontSize="large" />,
+          path: "/mutualVerification/docs",
+          btn: true,
+        },
+        {
+          name: "Архив",
+          icon: <FileCopyOutlinedIcon fontSize="large" />,
+          path: "/mutualVerification/archive",
           btn: true,
         },
       ],
