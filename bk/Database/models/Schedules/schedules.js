@@ -37,9 +37,9 @@ const createTableSchedules = async () => {
 
 const addCreatedOnField = async () => {
   try {
-    // 1. Добавляем новый столбец без значения по умолчанию
+    // 1. Добавляем новый столбец с типом данных TIMESTAMP и значением по умолчанию CURRENT_TIMESTAMP
     await executeDatabaseQueryAsync(
-      `ALTER TABLE schedules ADD COLUMN created_on TIMESTAMP`
+      `ALTER TABLE schedules ADD COLUMN created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
     );
 
     // 2. Обновляем существующие записи, присваивая им текущее время
@@ -47,14 +47,13 @@ const addCreatedOnField = async () => {
       `UPDATE schedules SET created_on = CURRENT_TIMESTAMP WHERE created_on IS NULL`
     );
 
-    // 3. Изменяем столбец, чтобы он имел значение по умолчанию
-    await executeDatabaseQueryAsync(
-      `ALTER TABLE schedules ALTER COLUMN created_on SET DEFAULT CURRENT_TIMESTAMP`
-    );
+    // Не нужно менять тип данных столбца и его значение по умолчанию, так как это уже сделано в первом запросе
+
   } catch (error) {
     console.log('DB ERROR - addCreatedOnField: ', error);
   }
 };
+
 
 const addReportColumnToSchedules = async () => {
   try {
