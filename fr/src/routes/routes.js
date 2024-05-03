@@ -27,6 +27,10 @@ import { SchedulMain } from "../components/Navigation/User/Menu/Schedule/Schedul
 import { SchedulsArchive } from "../components/Navigation/User/Menu/Schedule/SchedulsArchive";
 import { TaskScheduler } from "../components/Navigation/User/Menu/Schedule/TaskScheduler";
 import { TestSchedule } from "../components/Navigation/User/Menu/Schedule/TestSchedule";
+import ManageAccountsOutlined from "@mui/icons-material/ManageAccountsOutlined";
+import { MutualVerificationMain } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationMain";
+import { MutualVerificationDocs } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationDocs";
+import { MutualVerificationArchive } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationArchive";
 
 
 export const routes = createBrowserRouter([
@@ -137,6 +141,18 @@ export const routes = createBrowserRouter([
       {
         path: '/schedule/testScheduler',
         element: <PrivateRoutes component={TestSchedule} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/mutualVerification',
+        element: <PrivateRoutes component={MutualVerificationMain} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/mutualVerification/docs',
+        element: <PrivateRoutes component={MutualVerificationDocs} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/mutualVerification/archive',
+        element: <PrivateRoutes component={MutualVerificationArchive} roles={["chife", "user", "general"]}/>,
       },
     ]
   }
