@@ -4,7 +4,8 @@ const { protectRouteTkPl } = require("../utils/protectRouteTkPl");
 
 
 const routeHandlers = {
-  "/schedule/addSchedules": ScheduleController.authDecodeUserData,
+  "/schedule/addSchedules": ScheduleController.addNewSchedules,
+  "/schedule/removeSchedule": ScheduleController.removeSchedule,
   "/schedule/getAllSchedulesByUserId": ScheduleController.getAllSchedulesByUserId,
   "/schedule/getAllSchedulesBySubDepId": ScheduleController.getAllSchedulesBySubDepId,
 }
