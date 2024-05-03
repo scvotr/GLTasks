@@ -5,6 +5,7 @@ import { formatDate } from "../../../utils/formatDate"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
 import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog"
+import { UseAccordionView } from "../Accordion/UseAccordionView"
 
 export const ScheduleCardView = ({ schedules, reRender }) => {
   const currentUser = useAuthContext()
@@ -62,31 +63,36 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
           Сортировка по убыванию
         </Button>
         <Button variant={sortOrder === "complex" ? "contained" : "outlined"} onClick={() => setSortOrder("complex")}>
-          Сложная сортировка
+          Крайний срок сегодня!
         </Button>
       </Stack>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         {sortedSchedules.map((schedule, index) => (
-          <Grid item xs={4} key={index}>
+          <Grid item xs={12} key={index}>
             <Card>
-              <CardContent>
-                <Typography variant="h6">Schedule ID: {schedule.schedule_id}</Typography>
-                <Typography>Assign User ID: {schedule.assign_user_id}</Typography>
-                <Typography>Schedule Status: {schedule.schedule_status}</Typography>
-                <Typography>Deadline Time: {formatDate(schedule.deadline_time)}</Typography>
-                <Typography>Schedule Description: {schedule.schedule_description}</Typography>
-                {/* Add more fields as needed */}
-                <IconButton
-                  onClick={() => {
-                    setScheduleIdToDelete(schedule.schedule_id)
-                    setOpenDialog(true)
-                  }}>
-                  <DeleteIcon />
-                  <Typography variant="h6" gutterBottom>
-                    Удалить
-                  </Typography>
-                </IconButton>
-              </CardContent>
+              <UseAccordionView
+                headerText={`от: ${formatDate(schedule.created_on)} ${schedule.schedule_description.substring(0, 20)}... до: ${formatDate(
+                  schedule.deadline_time
+                )}`}
+                bodyText={schedule.schedule_description}>
+                <CardContent>
+                  {/* <Typography variant="h6">
+                    План № {schedule.id} от {formatDate(schedule.created_on)}
+                  </Typography> */}
+                  {/* <Typography>Выполнить до: {formatDate(schedule.deadline_time)}</Typography> */}
+                  {/* <Typography>Описание: {schedule.schedule_description}</Typography> */}
+                  <IconButton
+                    onClick={() => {
+                      setScheduleIdToDelete(schedule.schedule_id)
+                      setOpenDialog(true)
+                    }}>
+                    <DeleteIcon />
+                    <Typography variant="h6" gutterBottom>
+                      Удалить
+                    </Typography>
+                  </IconButton>
+                </CardContent>
+              </UseAccordionView>
             </Card>
           </Grid>
         ))}
@@ -100,10 +106,10 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
         }}
         onConfirm={() => {
           if (scheduleIdToDelete) {
-            handleDeleteSchedul(scheduleIdToDelete); // Вызов функции удаления с scheduleIdToDelete
-            setScheduleIdToDelete(null); // Сброс scheduleIdToDelete после удаления
+            handleDeleteSchedul(scheduleIdToDelete) // Вызов функции удаления с scheduleIdToDelete
+            setScheduleIdToDelete(null) // Сброс scheduleIdToDelete после удаления
           }
-          setOpenDialog(false);
+          setOpenDialog(false)
         }}
         title="Подтвердите удаление задачи"
         message="Вы уверены, что хотите удалить эту задачу?"
