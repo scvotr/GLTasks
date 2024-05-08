@@ -5,7 +5,6 @@ import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { ScheduleCardView } from "../../../../FormComponents/Schedule/ScheduleCardView"
-import { SchedulesTable } from "../../../../FormComponents/Tables/SchedulesTable/SchedulesTable"
 
 export const SchedulMain = () => {
   const currentUser = useAuthContext()
@@ -39,7 +38,6 @@ export const SchedulMain = () => {
       </FullScreenDialog>
       <AppBarForPage title="Планирование: " openModal={openModal} />
       <ScheduleCardView schedules={allScheduls} reRender={setFormKey} />
-      {/* <SchedulesTable schedules={allScheduls} reRender={setFormKey} /> */}
     </>
   )
 }
