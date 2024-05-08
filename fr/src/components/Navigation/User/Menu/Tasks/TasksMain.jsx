@@ -5,9 +5,10 @@ import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { useEffect, useState } from "react"
 import { TaskForm } from "./TaskForm/TaskForm"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
+import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
 
 export const TasksMain = () => {
-  const { allTasks, notifyEvent, allTasksNoClosed, countAllTasksNoClosed} = useTaskContext()
+  const { allTasks, notifyEvent, allTasksNoClosed, countAllTasksNoClosed } = useTaskContext()
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -25,28 +26,10 @@ export const TasksMain = () => {
 
   return (
     <>
-      <>
-        <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
-          <TaskForm onTaskSubmit={closeModal} />
-        </ModalCustom>
-      </>
-      <AppBar
-        position="static"
-        sx={{
-          mt: 2,
-          boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-          border: "1px solid #e0e0e0",
-          borderRadius: "5px",
-        }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Задачи:
-          </Typography>
-          <Fab color="secondary" aria-label="add" onClick={openModal}>
-            <AddIcon />
-          </Fab>
-        </Toolbar>
-      </AppBar>
+      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
+        <TaskForm onTaskSubmit={closeModal} />
+      </ModalCustom>
+      <AppBarForPage title="Задачи: " openModal={openModal} />
       <TasksTable tasks={allTasks || []} reRender={setFormKey} />
     </>
   )
