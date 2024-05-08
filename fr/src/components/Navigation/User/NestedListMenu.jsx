@@ -13,10 +13,10 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined"
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined"
-import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined"
+import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
-import Diversity1OutlinedIcon from '@mui/icons-material/Diversity1Outlined';
+import Diversity1OutlinedIcon from "@mui/icons-material/Diversity1Outlined"
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -67,7 +67,7 @@ export const NestedListMenu = ({ isOpen }) => {
           btn: true,
         },
         {
-          name: "Статистика(alfa)",
+          name: "Статистика",
           icon: <AssessmentOutlinedIcon fontSize="large" />,
           path: "/tasks/AnalyticsChart",
           btn: true,
@@ -81,44 +81,40 @@ export const NestedListMenu = ({ isOpen }) => {
       tasksCount: 0,
       subItems: [
         {
-          name: "Архив(alfa)",
-          icon: <FileCopyOutlinedIcon fontSize="large" />,
-          path: "/docs/docsArchive",
-          btn: true,
-        },
-        {
           name: "Распоряжения(alfa)",
           icon: <FolderCopyOutlinedIcon fontSize="large" />,
           path: "/docs/ordinance",
           btn: true,
         },
+        {
+          name: "Архив",
+          icon: <Inventory2OutlinedIcon fontSize="large" />,
+          path: "/docs/docsArchive",
+          btn: true,
+        },
       ],
     },
     {
-      name: "Планирование(alfa)",
+      name: "Планирование",
       icon: <CalendarMonthOutlinedIcon fontSize="large" />,
       path: "/schedule",
       tasksCount: 0,
       subItems: [
+        currentUser.role === "chife"
+          ? {
+              name: "По сотрудникам",
+              icon: <Diversity3OutlinedIcon fontSize="large" />,
+              path: "/schedule/taskScheduler",
+              btn: true,
+            }
+          : null,
         {
-          name: "Планировщик(alfa)",
-          icon: <FolderCopyOutlinedIcon fontSize="large" />,
-          path: "/schedule/taskScheduler",
-          btn: true,
-        },
-        {
-          name: "Тест(alfa)",
-          icon: <FolderCopyOutlinedIcon fontSize="large" />,
-          path: "/schedule/testScheduler",
-          btn: true,
-        },
-        {
-          name: "Архив(alfa)",
-          icon: <FileCopyOutlinedIcon fontSize="large" />,
+          name: "Архив",
+          icon: <Inventory2OutlinedIcon fontSize="large" />,
           path: "/schedule/schedulesArchive",
           btn: true,
         },
-      ],
+      ].filter(Boolean)
     },
     {
       name: "Взаимопроверка",
@@ -134,7 +130,7 @@ export const NestedListMenu = ({ isOpen }) => {
         },
         {
           name: "Архив",
-          icon: <FileCopyOutlinedIcon fontSize="large" />,
+          icon: <Inventory2OutlinedIcon fontSize="large" />,
           path: "/mutualVerification/archive",
           btn: true,
         },
@@ -198,9 +194,9 @@ export const NestedListMenu = ({ isOpen }) => {
                           to={subItem.path}
                           key={subIndex}
                           activeclassname="active"
-                          style={{ textDecoration: "none", color: "inherit", pl: 4, display: "flex" }}>
+                          style={{ textDecoration: "none", color: "inherit" }}>
                           <Badge
-                            sx={{ ml: 1 }}
+                            sx={{ ml: "15%" }}
                             badgeContent={subItem.tasksCount}
                             color="primary"
                             overlap="rectangular"
