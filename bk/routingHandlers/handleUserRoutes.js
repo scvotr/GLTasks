@@ -7,6 +7,7 @@ const { protectRouteTkPl } = require("../utils/protectRouteTkPl");
 const routeHandlers = {
   "/user/getUserById": UserController.getUserById,
   "/user/editUserData": UserController.editUserData,
+  "/user/getAllUsersBySubDepId": UserController.getAllUsersBySubDepId,
 };
 
 const handleUserRoutes = async (req, res) => {
