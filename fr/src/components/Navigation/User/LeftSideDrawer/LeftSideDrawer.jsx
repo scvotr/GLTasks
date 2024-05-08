@@ -9,7 +9,7 @@ import { ToolbarButton } from '../../ToolbarButton/ToolbarButton'
 import { NestedListMenu } from '../NestedListMenu'
 
 
-const drawerWidth = 300
+const drawerWidth = 270
 
 const openedMixin = theme => ({
   width: drawerWidth,
@@ -121,7 +121,7 @@ export const LeftSideDrawer = ({ currentUser, children }) => {
         <NestedListMenu />
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1}}>
         <DrawerHeader />
         {children}
       </Box>
