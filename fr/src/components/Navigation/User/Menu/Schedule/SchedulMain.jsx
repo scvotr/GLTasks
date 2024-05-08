@@ -7,12 +7,10 @@ import { useAuthContext } from "../../../../../context/AuthProvider"
 import { ScheduleCardView } from "../../../../FormComponents/Schedule/ScheduleCardView"
 import { SchedulesTable } from "../../../../FormComponents/Tables/SchedulesTable/SchedulesTable"
 
-
 export const SchedulMain = () => {
+  const currentUser = useAuthContext()
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
-  // !
-  const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [allScheduls, setAllScheduls] = useState({})
 
