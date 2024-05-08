@@ -16,7 +16,7 @@ import { ClosedTask } from "../components/Navigation/User/Menu/Tasks/ClosedTask"
 import { ChangePasPin } from "../components/Navigation/User/Menu/Tasks/UserSettings/ChangePasPin";
 import { EditProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EditProfile";
 import { SettingsMain } from "../components/Navigation/User/Menu/Tasks/UserSettings/SettingsMain";
-import { EmptyProfile, emptyProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EmptyProfile";
+import { EmptyProfile } from "../components/Navigation/User/Menu/Tasks/UserSettings/EmptyProfile";
 import { GeneralTasksMain } from "../components/Navigation/User/Menu/Tasks/General/GeneralTasksMain";
 import InstructionComponent from "../components/Layouts/DefaultLayoutMain/FAQ/InstructionComponent";
 import { AnalyticsChart } from "../components/Navigation/User/Menu/Tasks/AnalyticsChart";
@@ -25,9 +25,7 @@ import { DocsAtchive } from "../components/Navigation/User/Menu/Docs/DocsAtchive
 import { DocsOrdinance } from "../components/Navigation/User/Menu/Docs/DocsOrdinance";
 import { SchedulMain } from "../components/Navigation/User/Menu/Schedule/SchedulMain";
 import { SchedulsArchive } from "../components/Navigation/User/Menu/Schedule/SchedulsArchive";
-import { TaskScheduler } from "../components/Navigation/User/Menu/Schedule/TaskScheduler";
-import { TestSchedule } from "../components/Navigation/User/Menu/Schedule/TestSchedule";
-import ManageAccountsOutlined from "@mui/icons-material/ManageAccountsOutlined";
+import { UsersSchedules } from "../components/Navigation/User/Menu/Schedule/UsersSchedules";
 import { MutualVerificationMain } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationMain";
 import { MutualVerificationDocs } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationDocs";
 import { MutualVerificationArchive } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationArchive";
@@ -136,11 +134,7 @@ export const routes = createBrowserRouter([
       },
       {
         path: '/schedule/taskScheduler',
-        element: <PrivateRoutes component={TaskScheduler} roles={["chife", "user", "general"]}/>,
-      },
-      {
-        path: '/schedule/testScheduler',
-        element: <PrivateRoutes component={TestSchedule} roles={["chife", "user", "general"]}/>,
+        element: <PrivateRoutes component={UsersSchedules} roles={["chife", "user", "general"]}/>,
       },
       {
         path: '/mutualVerification',
