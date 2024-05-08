@@ -134,7 +134,7 @@ export const TasksTable = ({ tasks, reRender }) => {
         if (params.value) {
           render = params.value
         } else {
-          render = '------'
+          render = "------"
         }
         return <div>{render}</div>
       },
@@ -279,22 +279,19 @@ export const TasksTable = ({ tasks, reRender }) => {
           sx={{
             flexGrow: 1,
             height: "75vh",
-            // width: "100%",
-            maxWidth: '100%',
+            width: "100%",
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
             border: "1px solid #e0e0e0",
             borderRadius: "5px",
             display: "flex",
-            overflow: "auto", // Добавляем горизонтальную прокрутку, если содержимое таблицы не помещается
+            overflow: "auto",
           }}>
           <DataGrid
             sx={{
-              // maxWidth: { xs: 320, sm: "100%", margin: "0 auto" },
+              flexGrow: 1,
               maxWidth: { xs: "100%", sm: "100%", margin: "0 auto", justifyContent: "center" },
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center", // Если требуется центрировать текст в ячейках
               "& .MuiDataGrid-cell": {
                 display: "flex",
                 alignItems: "center",
@@ -344,4 +341,3 @@ export const TasksTable = ({ tasks, reRender }) => {
     </>
   )
 }
-
