@@ -10,10 +10,10 @@ import { PositionSelect } from "../../../../FormComponents/Select/PositionSelect
 
 export const AddStuctForm = ({reRender}) => {
   const currentUser = useAuthContext()
-  const [updatedForm, setUpdatedForm] = useState(1)
+  const [updatedForm, setUpdatedForm] = useState(0)
 
   const [reqStatus, setReqStatus] = useState({
-    loading: true,
+    loading: false,
     error: null,
   })
 

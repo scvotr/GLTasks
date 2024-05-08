@@ -12,7 +12,7 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, title, message })
       onClose={onClose}
       PaperProps={{ style: { minWidth: "300px" } }}
     >
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Box style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <DialogContentText>{message}</DialogContentText>
@@ -23,7 +23,7 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, title, message })
             Подтвердить
           </Button>
         </DialogActions>
-      </div>
+      </Box>
     </Dialog>
   );
 };

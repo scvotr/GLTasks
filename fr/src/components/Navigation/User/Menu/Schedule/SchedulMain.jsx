@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react"
 import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
-import { PlanTask } from "./PlanTask/PlanTask"
+import { SchedulePlane } from "./PlanTask/SchedulePlane"
 import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
+import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
+import { useAuthContext } from "../../../../../context/AuthProvider"
+import { ScheduleCardView } from "../../../../FormComponents/Schedule/ScheduleCardView"
+import { SchedulesTable } from "../../../../FormComponents/Tables/SchedulesTable/SchedulesTable"
+
 
 export const SchedulMain = () => {
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
+  // !
+  const currentUser = useAuthContext()
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
+  const [allScheduls, setAllScheduls] = useState({})
 
   const openModal = user => {
     setModalOpen(true)
@@ -15,14 +24,24 @@ export const SchedulMain = () => {
     setFormKey(prevKey => prevKey + 1)
   }
 
-  useEffect(() => {}, [formKey])
+  useEffect(() => {
+    try {
+      setReqStatus({ loading: true, error: null })
+      getDataFromEndpoint(currentUser.token, "/schedule/getAllSchedulesByUserId", "POST", currentUser.id, setReqStatus).then(data => setAllScheduls(data))
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error })
+    }
+  }, [formKey])
 
   return (
     <>
       <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
-        <PlanTask reRender={setFormKey} onClose={closeModal}/>
+        <SchedulePlane reRender={setFormKey} onClose={closeModal} />
       </FullScreenDialog>
       <AppBarForPage title="Планирование: " openModal={openModal} />
+      <ScheduleCardView schedules={allScheduls} reRender={setFormKey} />
+      {/* <SchedulesTable schedules={allScheduls} reRender={setFormKey} /> */}
     </>
   )
 }

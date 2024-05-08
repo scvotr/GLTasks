@@ -14,6 +14,8 @@ const { createTableVenchelComments } = require('./models/venchel/venchelCommets'
 const { createTablePendingNotifications } = require('./models/Notification/pendingNotification')
 const { createUserRoles } = require('./models/User/userRoles')
 const { createTableTasksFiles } = require('./models/Task/tasksFiles')
+const { createTableSchedules, addCreatedOnField, addReportColumnToSchedules } = require('./models/Schedules/schedules')
+const { createTableSchedulesComments } = require('./models/Schedules/schedulesComments')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
@@ -37,6 +39,10 @@ db.serialize(async () => {
   createTableVenchelFiles()
   createTableVenchelComments()
   createTablePendingNotifications()
+  createTableSchedules()
+  createTableSchedulesComments()
+  // addCreatedOnField()
+  // addReportColumnToSchedules()
 })
 
 module.exports ={

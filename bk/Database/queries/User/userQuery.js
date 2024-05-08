@@ -38,6 +38,42 @@ const getUserByIdQ = async (userId) => {
   }
 }
 
+const getAllUsersBySubDepIdQ = async (userSubDepId) => {
+  try {
+    const command = `
+    SELECT 
+      users.id, 
+      users.login, 
+      users.email, 
+      users.role,
+      users.pin_code,
+      users.last_name,
+      users.first_name,
+      users.middle_name,
+      users.internal_phone,
+      users.external_phone,
+      users.office_number,
+      users.email_for_notify,
+      users.created_on,
+      departments.id AS department_id,
+      departments.name AS department, 
+      subdepartments.id AS subdepartment_id,
+      subdepartments.name AS subdepartment,
+      positions.id AS position_id,
+      positions.name AS position
+    FROM 
+      users 
+      LEFT JOIN departments ON users.department_id = departments.id
+      LEFT JOIN subdepartments ON users.subdepartment_id = subdepartments.id
+      LEFT JOIN positions ON users.position_id = positions.id
+    WHERE subdepartments.id = ?;`;
+
+    return await executeDatabaseQueryAsync(command, [userSubDepId], 'all');
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных');
+  }
+}
+
 const editUserDataQ = async(data) => {
   try {
     console.log('>>>>>>', data)
@@ -112,6 +148,7 @@ const getGeneralIdQ = async (department_id) => {
 module.exports = {
   editUserDataQ,
   getUserByIdQ,
+  getAllUsersBySubDepIdQ,
   getUserEmailQ,
   getLeadEmailQ,
   getLeadIdQ,

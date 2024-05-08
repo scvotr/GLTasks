@@ -13,7 +13,7 @@ export const UseAccordionView = ({ headerText, bodyText, children }) => {
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel3-content" id="panel3-header">
           <Box sx={{ textAlign: "center", width: "100%" }}>
-            <Typography variant="h6" fontWeight="bold">
+            <Typography variant="h8" fontWeight="bold">
              {headerText}
             </Typography>
           </Box>
