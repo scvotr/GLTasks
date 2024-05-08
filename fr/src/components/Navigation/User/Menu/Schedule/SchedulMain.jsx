@@ -7,6 +7,7 @@ import { useAuthContext } from "../../../../../context/AuthProvider"
 import { ScheduleCardView } from "../../../../FormComponents/Schedule/ScheduleCardView"
 import { SchedulesTable } from "../../../../FormComponents/Tables/SchedulesTable/SchedulesTable"
 
+
 export const SchedulMain = () => {
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
@@ -14,7 +15,6 @@ export const SchedulMain = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [allScheduls, setAllScheduls] = useState({})
-  console.log(allScheduls)
 
   const openModal = user => {
     setModalOpen(true)
@@ -40,9 +40,8 @@ export const SchedulMain = () => {
         <SchedulePlane reRender={setFormKey} onClose={closeModal} />
       </FullScreenDialog>
       <AppBarForPage title="Планирование: " openModal={openModal} />
-      <ScheduleCardView schedules={allScheduls} reRender={setFormKey}/>
+      <ScheduleCardView schedules={allScheduls} reRender={setFormKey} />
       {/* <SchedulesTable schedules={allScheduls} reRender={setFormKey} /> */}
     </>
   )
 }
-
