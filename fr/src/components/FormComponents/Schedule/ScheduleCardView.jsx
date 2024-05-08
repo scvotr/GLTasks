@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, Card, CardContent, Typography, TextField, Button, Stack, IconButton } from "@mui/material"
+import { Grid, Card, CardContent, Typography, TextField, Button, Stack, IconButton, TablePagination } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { formatDate } from "../../../utils/formatDate"
 import { useAuthContext } from "../../../context/AuthProvider"
@@ -8,6 +8,18 @@ import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog"
 import { UseAccordionView } from "../Accordion/UseAccordionView"
 
 export const ScheduleCardView = ({ schedules, reRender }) => {
+  const [currentPage, setCurrentPage] = useState(0) // Состояние для управления текущей страницей
+  const [rowsPerPage, setRowsPerPage] = useState(10) // Состояние для управления количеством записей на странице
+
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setCurrentPage(0) // Сбрасываем текущую страницу при изменении количества записей на странице
+  }
+
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [openDialog, setOpenDialog] = useState(false)
@@ -52,10 +64,14 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
     }
   }
 
+  const indexOfLastSchedule = (currentPage + 1) * rowsPerPage
+  const indexOfFirstSchedule = indexOfLastSchedule - rowsPerPage
+  const currentSchedules = sortedSchedules.slice(indexOfFirstSchedule, indexOfLastSchedule)
+
   return (
     <>
       <TextField label="Фильтр по описанию" value={filter} onChange={e => setFilter(e.target.value)} variant="outlined" fullWidth margin="normal" />
-      <Stack direction="row" spacing={2} sx={{ mb: "1%" }}>
+      <Stack direction="row" spacing={2} sx={{ mb: "1%", justifyContent: "center" }}>
         <Button variant={sortOrder === "asc" ? "contained" : "outlined"} onClick={() => setSortOrder("asc")}>
           Сортировка по возрастанию
         </Button>
@@ -66,21 +82,28 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
           Крайний срок сегодня!
         </Button>
       </Stack>
+      {/* ---------------------------------------------- */}
+      <TablePagination
+        component="div"
+        count={sortedSchedules.length}
+        page={currentPage}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Записей на странице:"
+      />
+      {/* ---------------------------------------------- */}
+
       <Grid container spacing={1}>
-        {sortedSchedules.map((schedule, index) => (
+        {currentSchedules.map((schedule, index) => (
           <Grid item xs={12} key={index}>
             <Card>
               <UseAccordionView
-                headerText={`от: ${formatDate(schedule.created_on)} ${schedule.schedule_description.substring(0, 20)}... до: ${formatDate(
+                headerText={`от: ${formatDate(schedule.created_on)} ${schedule.schedule_description.substring(0, 30)}... до: ${formatDate(
                   schedule.deadline_time
                 )}`}
                 bodyText={schedule.schedule_description}>
                 <CardContent>
-                  {/* <Typography variant="h6">
-                    План № {schedule.id} от {formatDate(schedule.created_on)}
-                  </Typography> */}
-                  {/* <Typography>Выполнить до: {formatDate(schedule.deadline_time)}</Typography> */}
-                  {/* <Typography>Описание: {schedule.schedule_description}</Typography> */}
                   <IconButton
                     onClick={() => {
                       setScheduleIdToDelete(schedule.schedule_id)
