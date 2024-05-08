@@ -1,4 +1,4 @@
-const { editUserDataQ, getUserByIdQ } = require("../../Database/queries/User/userQuery");
+const { editUserDataQ, getUserByIdQ, getAllUsersBySubDepIdQ } = require("../../Database/queries/User/userQuery");
 
 const sendResponseWithData = (res, data) => {
   res.setHeader('Content-Type', 'application/json');
@@ -33,6 +33,16 @@ class UserController {
       sendResponseWithData(res, 'editUserData - ok')
     } catch (error) {
       handleError(res, 'getUserById')
+    }
+  }
+  async getAllUsersBySubDepId(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const data = JSON.parse(authDecodeUserData.payLoad)
+      const result = await getAllUsersBySubDepIdQ(data)
+      sendResponseWithData(res, result)
+    } catch (error) {
+      handleError(res, 'getAllUsersBySubDep')
     }
   }
 }
