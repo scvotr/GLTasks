@@ -282,10 +282,17 @@ export const TasksTable = ({ tasks, reRender }) => {
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
             border: "1px solid #e0e0e0",
             borderRadius: "5px",
-            overflowX: "auto", // Добавляем горизонтальную прокрутку, если содержимое таблицы не помещается
+            display: "flex",
+            overflow: "auto", // Добавляем горизонтальную прокрутку, если содержимое таблицы не помещается
           }}>
           <DataGrid
             sx={{
+              // maxWidth: { xs: 320, sm: "100%", margin: "0 auto" },
+              maxWidth: { xs: "100%", sm: "100%", margin: "0 auto", justifyContent: "center" },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center", // Если требуется центрировать текст в ячейках
               "& .MuiDataGrid-cell": {
                 display: "flex",
                 alignItems: "center",
