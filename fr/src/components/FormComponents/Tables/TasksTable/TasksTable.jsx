@@ -32,7 +32,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "id",
       headerName: "№",
       description: "This column description",
-      width: 70,
+      width: 50,
       // renderCell: params => {
       //   let test
       //   test = params.value.match(/\d{4}/)[0]
@@ -43,7 +43,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "read_status",
       headerName: "",
       description: "This column description",
-      width: 50,
+      width: 20,
       renderCell: params => (
         <div style={{ fontWeight: params.value === "unread" ? "bold" : "normal", color: params.value === "unread" ? "green" : "black" }}>
           {params.value === "unread" ? <EmailOutlinedIcon /> : <DraftsOutlinedIcon />}
@@ -69,7 +69,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "task_status",
       headerName: "Статус",
       description: "Статус задачи",
-      width: 130,
+      width: 120,
       renderCell: params => {
         let iconComponent
         let statusText
@@ -112,7 +112,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "appoint_user_last_name",
       headerName: "От ",
       description: "От кого",
-      width: 150,
+      width: 120,
       // renderCell: params => (
       //   <div>
       //     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
@@ -127,20 +127,20 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "responsible_user_last_name",
       headerName: "Ответственный",
       description: "Ответсвенное лицо",
-      width: 150,
+      width: 120,
       cellClassName: "super-app-theme--cell",
       renderCell: params => {
         let render
         if (params.value) {
           render = params.value
         } else {
-          render = '------'
+          render = "------"
         }
         return <div>{render}</div>
       },
     },
 
-    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 500 },
+    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 300 },
 
     {
       field: "deadline",
@@ -277,15 +277,21 @@ export const TasksTable = ({ tasks, reRender }) => {
       <Loader reqStatus={reqStatus}>
         <Box
           sx={{
+            flexGrow: 1,
             height: "75vh",
             width: "100%",
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
             border: "1px solid #e0e0e0",
             borderRadius: "5px",
-            overflowX: "auto", // Добавляем горизонтальную прокрутку, если содержимое таблицы не помещается
+            display: "flex",
+            overflow: "auto",
           }}>
           <DataGrid
             sx={{
+              flexGrow: 1,
+              maxWidth: { xs: "100%", sm: "100%", margin: "0 auto", justifyContent: "center" },
+              display: "flex",
+              alignItems: "center",
               "& .MuiDataGrid-cell": {
                 display: "flex",
                 alignItems: "center",
@@ -308,6 +314,7 @@ export const TasksTable = ({ tasks, reRender }) => {
               },
             }}
             // autoHeight
+            autoWidght
             rowHeight={25}
             rows={sortedTasks.map(task => ({
               ...task,

@@ -67,7 +67,7 @@ export const UsersSchedules = () => {
             <ScheduleCardView schedules={allSchedules} reRender={setFormKey} />
           </TabContext>
         ) : (
-          <>Ты не пройдеш</>
+          <></>
         )}
       </Box>
     </>
