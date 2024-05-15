@@ -154,7 +154,6 @@ export const FullTaskInfo = ({ task }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [taskData, setTaskData] = useState(task)
-  console.log(taskData)
 
   useEffect(() => {
     if (task.old_files) {
@@ -184,6 +183,7 @@ export const FullTaskInfo = ({ task }) => {
   }
 
   const [selectedImage, setSelectedImage] = useState("")
+  const [selectedPdf, setSelectedPdf] = useState("")
 
   const handleImageClick = async file => {
     try {
@@ -196,18 +196,17 @@ export const FullTaskInfo = ({ task }) => {
   }
 
   const handleDownload = async file => {
-    console.log("file", file)
     try {
       setReqStatus({ loading: true, error: null })
       const fullFile = await getFullFile(file, task_id, currentUser.token)
-      setSelectedImage(fullFile)
+      setSelectedPdf(fullFile)
       setReqStatus({ loading: false, error: null })
       // setModalOpen(true)
-      if (selectedImage) {
+      if (selectedPdf) {
         // Создание временной ссылки для загрузки файла
         const downloadLink = document.createElement("a")
-        downloadLink.href = `data:${selectedImage.type};base64,${selectedImage.content}`
-        downloadLink.download = selectedImage.name
+        downloadLink.href = `data:${selectedPdf.type};base64,${selectedPdf.content}`
+        downloadLink.download = selectedPdf.name
 
         // Добавление временной ссылки на страницу и эмуляция клика по ней
         document.body.appendChild(downloadLink)
