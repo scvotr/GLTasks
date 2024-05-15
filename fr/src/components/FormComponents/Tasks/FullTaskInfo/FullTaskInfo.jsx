@@ -1,4 +1,19 @@
-import { Typography, Grid, Card, CardContent, Divider, Box, Stack, ImageList, ImageListItem, Stepper, Step, StepLabel } from "@mui/material"
+import {
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Divider,
+  Box,
+  Stack,
+  ImageList,
+  ImageListItem,
+  Stepper,
+  Step,
+  StepLabel,
+  IconButton,
+  Tooltip,
+} from "@mui/material"
 import { formatDate } from "../../../../utils/formatDate"
 import { HOST_ADDR } from "../../../../utils/remoteHosts"
 import { useEffect, useState } from "react"
@@ -8,6 +23,7 @@ import { Loader } from "../../Loader/Loader"
 import { TaskCommets } from "../TaskCommets/TaskCommets"
 import { styled } from "@mui/material/styles"
 import Paper from "@mui/material/Paper"
+import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined"
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -138,6 +154,7 @@ export const FullTaskInfo = ({ task }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [taskData, setTaskData] = useState(task)
+  console.log(taskData)
 
   useEffect(() => {
     if (task.old_files) {
@@ -175,6 +192,32 @@ export const FullTaskInfo = ({ task }) => {
       setReqStatus({ loading: false, error: null })
       setSelectedImage(test)
       setModalOpen(true)
+    } catch (error) {}
+  }
+
+  const handleDownload = async file => {
+    console.log("file", file)
+    try {
+      setReqStatus({ loading: true, error: null })
+      const fullFile = await getFullFile(file, task_id, currentUser.token)
+      setSelectedImage(fullFile)
+      setReqStatus({ loading: false, error: null })
+      // setModalOpen(true)
+      if (selectedImage) {
+        // Создание временной ссылки для загрузки файла
+        const downloadLink = document.createElement("a")
+        downloadLink.href = `data:${selectedImage.type};base64,${selectedImage.content}`
+        downloadLink.download = selectedImage.name
+
+        // Добавление временной ссылки на страницу и эмуляция клика по ней
+        document.body.appendChild(downloadLink)
+        downloadLink.click()
+
+        // Удаление временной ссылки
+        document.body.removeChild(downloadLink)
+      } else {
+        console.error("Файл не найден или пустой")
+      }
     } catch (error) {}
   }
 
@@ -237,6 +280,35 @@ export const FullTaskInfo = ({ task }) => {
                           {taskData.old_files &&
                             taskData.old_files.map((file, index) => (
                               <ImageListItem key={index}>
+                                {file.type === ".pdf" ? (
+                                  <Tooltip title="Нажмите, чтобы скачать" onClick={() => handleDownload(file)}>
+                                    <Stack direction="column" justifyContent="flex-start" alignItems="center" spacing={2}>
+                                      <Paper elevation={3} style={{ padding: "10px" }}>
+                                        <PictureAsPdfOutlinedIcon fontSize="large" />
+                                        {file && <Typography variant="body2">{file.name}</Typography>}
+                                      </Paper>
+                                    </Stack>
+                                  </Tooltip>
+                                ) : (
+                                  <Tooltip title="Нажмите, чтобы увеличить" onClick={() => handleImageClick(file)}>
+                                    <img
+                                      key={index}
+                                      src={`data:${file.type};base64,${file.content}`}
+                                      alt="File Preview"
+                                      loading="lazy"
+                                      title="Нажмите, чтобы увеличить"
+                                    />
+                                  </Tooltip>
+                                )}
+                              </ImageListItem>
+                            ))}
+                        </Loader>
+                      </ImageList>
+                      {/* <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
+                        <Loader reqStatus={reqStatus}>
+                          {taskData.old_files &&
+                            taskData.old_files.map((file, index) => (
+                              <ImageListItem key={index}>
                                 <img
                                   key={index}
                                   src={`data:${file.type};base64,${file.content}`}
@@ -248,7 +320,7 @@ export const FullTaskInfo = ({ task }) => {
                               </ImageListItem>
                             ))}
                         </Loader>
-                      </ImageList>
+                      </ImageList> */}
                     </Box>
                   </Item>
                 </Grid>
