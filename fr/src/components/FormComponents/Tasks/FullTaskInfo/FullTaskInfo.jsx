@@ -183,7 +183,6 @@ export const FullTaskInfo = ({ task }) => {
   }
 
   const [selectedImage, setSelectedImage] = useState("")
-  const [selectedPdf, setSelectedPdf] = useState("")
 
   const handleImageClick = async file => {
     try {
@@ -199,25 +198,23 @@ export const FullTaskInfo = ({ task }) => {
     try {
       setReqStatus({ loading: true, error: null })
       const fullFile = await getFullFile(file, task_id, currentUser.token)
-      setSelectedPdf(fullFile)
       setReqStatus({ loading: false, error: null })
-      // setModalOpen(true)
-      if (selectedPdf) {
-        // Создание временной ссылки для загрузки файла
-        const downloadLink = document.createElement("a")
-        downloadLink.href = `data:${selectedPdf.type};base64,${selectedPdf.content}`
-        downloadLink.download = selectedPdf.name
 
-        // Добавление временной ссылки на страницу и эмуляция клика по ней
-        document.body.appendChild(downloadLink)
-        downloadLink.click()
+      // Создаем ссылку для скачивания файла
+      const downloadLink = document.createElement("a")
+      downloadLink.href = `data:${fullFile.type};base64,${fullFile.content}`
+      downloadLink.download = fullFile.name
 
-        // Удаление временной ссылки
-        document.body.removeChild(downloadLink)
-      } else {
-        console.error("Файл не найден или пустой")
-      }
-    } catch (error) {}
+      // Добавляем ссылку на страницу и эмулируем клик по ней для скачивания файла
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+
+      // Удаляем ссылку после скачивания файла
+      document.body.removeChild(downloadLink)
+    } catch (error) {
+      console.error("Ошибка при загрузке файла:", error)
+      setReqStatus({ loading: false, error: error.message })
+    }
   }
 
   return (
