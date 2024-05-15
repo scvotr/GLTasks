@@ -15,7 +15,7 @@ const getTaskCompresFiles = async (file) => {
   let file_content;
 
   if (type === ".pdf") {
-    file_path = `${currentDirectory}/uploads/${task_id}/${name}`;
+    file_path = `${currentDirectory}/uploads/tasks/${task_id}/${name}`;
     file_content = await readFileAsync(file_path, "base64");
   } else {
     file_path = `${currentDirectory}/uploads/tasks/${task_id}/compres_${name}`;
