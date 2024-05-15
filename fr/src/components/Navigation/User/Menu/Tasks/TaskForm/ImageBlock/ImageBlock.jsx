@@ -18,7 +18,6 @@ const VisuallyHiddenInput = styled("input")({
 })
 
 export const ImageBlock = ({ files, getData, isEdit, actionType, takeAddedIndex, toEdit }) => {
-  console.log(files.files)
   const handleFileInput = event => {
     const input = event.target
     if (input.files.length > 5) {
