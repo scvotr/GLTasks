@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Grid, Card, CardContent, Typography, TextField, Button, Stack, IconButton, TablePagination } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
 import { formatDate } from "../../../utils/formatDate"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
@@ -24,6 +25,8 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [openDialog, setOpenDialog] = useState(false)
   const [scheduleIdToDelete, setScheduleIdToDelete] = useState(null)
+  const [editingScheduleId, setEditingScheduleId] = useState(null)
+  const [editingDescription, setEditingDescription] = useState("")
 
   const [filter, setFilter] = useState("")
   const [sortOrder, setSortOrder] = useState("asc")
@@ -68,6 +71,17 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
   const indexOfFirstSchedule = indexOfLastSchedule - rowsPerPage
   const currentSchedules = sortedSchedules.slice(indexOfFirstSchedule, indexOfLastSchedule)
 
+  const handleEditDescription = schedule => {
+    setEditingScheduleId(schedule.schedule_id)
+    setEditingDescription(schedule.schedule_description)
+  }
+
+  const handleSaveDescription = () => {
+    // Обновить описание расписания в бэкэнде или состоянии
+    // ...
+    setEditingScheduleId(null);
+  };
+
   return (
     <>
       <TextField label="Фильтр по описанию" value={filter} onChange={e => setFilter(e.target.value)} variant="outlined" fullWidth margin="normal" />
@@ -102,7 +116,15 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
                 headerText={`от: ${formatDate(schedule.created_on)} ${schedule.schedule_description.substring(0, 30)}... до: ${formatDate(
                   schedule.deadline_time
                 )}`}
-                bodyText={schedule.schedule_description}>
+                // bodyText={schedule.schedule_description}
+                bodyText={
+                  editingScheduleId === schedule.schedule_id ? (
+                    <TextField fullWidth value={editingDescription} onChange={e => setEditingDescription(e.target.value)} onBlur={handleSaveDescription} />
+                  ) : (
+                    schedule.schedule_description
+                  )
+                }
+                >
                 <CardContent>
                   <IconButton
                     onClick={() => {
@@ -112,6 +134,16 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
                     <DeleteIcon />
                     <Typography variant="h6" gutterBottom>
                       Удалить
+                    </Typography>
+                  </IconButton>
+
+                  <IconButton
+                    onClick={() => {
+                      handleEditDescription(schedule)
+                    }}>
+                    <EditOutlinedIcon />
+                    <Typography variant="h6" gutterBottom>
+                      Редактировать
                     </Typography>
                   </IconButton>
                 </CardContent>
