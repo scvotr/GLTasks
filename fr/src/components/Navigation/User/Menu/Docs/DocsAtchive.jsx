@@ -1,4 +1,4 @@
-import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
+import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 
 import { Container, Typography, TextField, Grid, Button } from "@mui/material"
 

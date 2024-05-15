@@ -9,7 +9,7 @@ import { AddNewDocForm } from "../../../../FormComponents/Docs/AddNewDocForm"
 import { DocToPDF } from "../../../../FormComponents/Docs/DocToPDF"
 import { UseAccordionView } from "../../../../FormComponents/Accordion/UseAccordionView"
 import { PDFbyPinFromDoc } from "../../../../FormComponents/Docs/PDFbyPinFromDoc"
-import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
+import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 
 const Item = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
