@@ -20,8 +20,8 @@ export const RenderByAction = ({ actionByStatus, task, onTaskSubmit }) => {
         } else if(currentUser.role === "chife" && currentUser.subDep.toString() === task.responsible_subdepartment_id.toString()){
           return <SetResponsibleUser task={task} onTaskSubmit={onTaskSubmit} />
         } else if(currentUser.role === "user") {
-          return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
-          // return <TaskForm taskToEdit={task} onTaskSubmit={onTaskSubmit} />
+          // return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
+          return <TaskForm taskToEdit={task} onTaskSubmit={onTaskSubmit} />
         } 
       },
     ],
