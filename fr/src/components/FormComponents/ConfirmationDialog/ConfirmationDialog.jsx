@@ -18,7 +18,7 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, title, message })
           <DialogContentText>{message}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose}>Отмена</Button>
+          <Button onClick={onClose} variant="contained" >Отмена</Button>
           <Button onClick={handleConfirmDelete} variant="contained" color="error">
             Подтвердить
           </Button>
