@@ -1,5 +1,5 @@
 import "./TasksTable.css"
-import { Box } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { DataGrid, ruRU } from "@mui/x-data-grid"
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined"
 import DraftsOutlinedIcon from "@mui/icons-material/DraftsOutlined"
@@ -32,7 +32,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "id",
       headerName: "№",
       description: "This column description",
-      width: 50,
+      width: 70,
       // renderCell: params => {
       //   let test
       //   test = params.value.match(/\d{4}/)[0]
@@ -45,9 +45,9 @@ export const TasksTable = ({ tasks, reRender }) => {
       description: "This column description",
       width: 20,
       renderCell: params => (
-        <div style={{ fontWeight: params.value === "unread" ? "bold" : "normal", color: params.value === "unread" ? "green" : "black" }}>
+        <Stack style={{ fontWeight: params.value === "unread" ? "bold" : "normal", color: params.value === "unread" ? "green" : "black" }}>
           {params.value === "unread" ? <EmailOutlinedIcon /> : <DraftsOutlinedIcon />}
-        </div>
+        </Stack>
       ),
     },
     {
@@ -62,7 +62,7 @@ export const TasksTable = ({ tasks, reRender }) => {
         } else {
           render = <ArchiveOutlinedIcon />
         }
-        return <div>{render}</div>
+        return <Stack>{render}</Stack>
       },
     },
     {
@@ -76,7 +76,7 @@ export const TasksTable = ({ tasks, reRender }) => {
 
         if (params.row.task_status === "toApprove") {
           iconComponent = <HourglassEmptyIcon />
-          statusText = "новая"
+          statusText = "Новая"
           setStatusText(statusText)
         } else if (params.row.task_status === "approved") {
           iconComponent = <CheckCircleOutlineIcon />
@@ -97,10 +97,10 @@ export const TasksTable = ({ tasks, reRender }) => {
         }
 
         return (
-          <div>
+          <Stack direction="row" justifyContent="center" alignItems="center" spacing={0.5}>
             {iconComponent} {statusText}
             {/* {params.value} */}
-          </div>
+          </Stack>
         )
       },
     },

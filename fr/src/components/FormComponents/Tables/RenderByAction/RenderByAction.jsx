@@ -1,4 +1,5 @@
 import { useAuthContext } from "../../../../context/AuthProvider"
+import { TaskForm } from "../../../Navigation/User/Menu/Tasks/TaskForm/TaskForm"
 import { FullTaskInfo } from "../../Tasks/FullTaskInfo/FullTaskInfo"
 import { CloseTask } from "./CloseTask/CloseTask"
 import { SendToReview } from "./SendToReview/SendToReview"
@@ -14,50 +15,58 @@ export const RenderByAction = ({ actionByStatus, task, onTaskSubmit }) => {
     [
       "toApprove",
       () => {
-        if(currentUser.role === "chife" && currentUser.subDep.toString() !== task.responsible_subdepartment_id.toString()) {
+        if (currentUser.role === "chife" && currentUser.subDep.toString() !== task.responsible_subdepartment_id.toString()) {
           return <ToApprove task={task} onTaskSubmit={onTaskSubmit} />
-        } else if(currentUser.role === "chife" && currentUser.subDep.toString() === task.responsible_subdepartment_id.toString()){
+        } else if (currentUser.role === "chife" && currentUser.subDep.toString() === task.responsible_subdepartment_id.toString()) {
           return <SetResponsibleUser task={task} onTaskSubmit={onTaskSubmit} />
-        } else if(currentUser.role === "user") {
-          return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
-        } 
+        } else if (currentUser.role === "user") {
+          // return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
+          return <TaskForm taskToEdit={task} onTaskSubmit={onTaskSubmit} />
+        }
       },
     ],
     [
       "approved",
-      () => (taskToSubDep ? <SetResponsibleUser task={task} onTaskSubmit={onTaskSubmit} /> : <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />),
+      () =>
+        // (taskToSubDep ? <SetResponsibleUser task={task} onTaskSubmit={onTaskSubmit} /> : <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />),
+        {
+          if (currentUser.role === "chife" && currentUser.subDep.toString() !== task.responsible_subdepartment_id.toString()) {
+            return <TaskForm taskToEdit={task} onTaskSubmit={onTaskSubmit} />
+          } else if (taskToSubDep) {
+            return <SetResponsibleUser task={task} onTaskSubmit={onTaskSubmit} /> 
+          } else {
+            return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
+          }
+        },
     ],
     [
       "inWork",
       () => {
-        if(!task.responsible_user_id && currentUser.role === "user") {
+        if (!task.responsible_user_id && currentUser.role === "user") {
           return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
-        } else if(currentUser.role === "chife" && currentUser.subDep.toString() === task.responsible_subdepartment_id.toString()) {
+        } else if (currentUser.role === "chife" && currentUser.subDep.toString() === task.responsible_subdepartment_id.toString()) {
           return <SendToReview task={task} onTaskSubmit={onTaskSubmit} />
-        } else if(currentUser.role === "user" && currentUser.id.toString() === task.responsible_user_id.toString()) {
+        } else if (currentUser.role === "user" && currentUser.id.toString() === task.responsible_user_id.toString()) {
           return <SendToReview task={task} onTaskSubmit={onTaskSubmit} />
         } else {
           return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
         }
-      }
+      },
     ],
     [
       "needToConfirm",
       () => {
-        if(currentUser.role === "user" && currentUser.id.toString() === task.appoint_user_id.toString()){
+        if (currentUser.role === "user" && currentUser.id.toString() === task.appoint_user_id.toString()) {
           return <CloseTask task={task} onTaskSubmit={onTaskSubmit} />
         } else if (currentUser.role === "chife" && currentUser.subDep.toString() === task.appoint_subdepartment_id.toString()) {
           return <CloseTask task={task} onTaskSubmit={onTaskSubmit} />
         } else {
           return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
         }
-      }
+      },
       // () => canClose ? <CloseTask task={task} onTaskSubmit={onTaskSubmit} /> : <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
     ],
-    [
-      "closed",
-      () => <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
-    ],
+    ["closed", () => <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />],
   ])
 
   const renderByActionType = () => {

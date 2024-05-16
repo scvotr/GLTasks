@@ -1,12 +1,15 @@
 import { v4 as uuidv4 } from "uuid"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
-import { Box, Button, Divider, CircularProgress } from "@mui/material"
+import { Box, Button, Divider, CircularProgress, Stack } from "@mui/material"
 import { TextDataField } from "./TextDataField/TextDataField"
 import { useEffect, useState } from "react"
 import { SelectDataField } from "../TaskForm/SelectDataField/SelectDataField"
 import { ImageBlock } from "./ImageBlock/ImageBlock"
 import { sendNewTaskData } from "../../../../../../utils/sendNewTaskData"
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
+import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
+import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
+import { getPreviewFileContent } from "../../../../../FormComponents/Tasks/FullTaskInfo/FullTaskInfo"
 
 export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   const currentUser = useAuthContext()
@@ -38,9 +41,18 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
 
   useEffect(() => {
     if (taskToEdit) {
-      setIsEdit(true)
+      getPreviewFileContent(currentUser.token, taskToEdit, setReqStatus)
+        .then(data => {
+          setIsEdit(true);
+          const updatedTaskToEdit = { ...taskToEdit, old_files: data };
+          console.log('!!!', updatedTaskToEdit)
+          setFormData({ ...initValue, ...updatedTaskToEdit });
+        })
+        .catch(error => {
+          // Обработка ошибки, если необходимо
+        });
     }
-  }, [taskToEdit])
+  }, [taskToEdit]);
 
   const getInputData = async e => {
     const { name, value, files, checked } = e.target
@@ -93,9 +105,6 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
 
   const handleSubmit = async event => {
     event.preventDefault()
-    // Устанавливаем состояние loading в true перед отправкой данных
-    setReqStatus({ loading: true, error: null })
-    // Логика для определения статуса задачи
     if (isInternalTask && currentUser.role === "chife") {
       // console.log("Внутрення задача от начальника")
       formData.task_status = "inWork"
@@ -118,16 +127,14 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     }
     try {
       if (isEdit) {
-        console.log("EDIT TASK")
+        console.log(formData)
+        // setReqStatus({ loading: false, error: null })
       } else {
         setReqStatus({ loading: true, error: null })
-        // Отправляем данные на сервер
         await sendNewTaskData(currentUser.token, formData, onTaskSubmit)
-        // Если операция завершилась успешно, устанавливаем loading в false
         setReqStatus({ loading: false, error: null })
       }
     } catch (error) {
-      // Если произошла ошибка, устанавливаем loading в false и сохраняем ошибку
       setReqStatus({ loading: false, error: error.message })
     }
   }
@@ -159,20 +166,22 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
       filesToRemove: updatedFilesToRemove,
     }))
   }
-
-  const handelRemoveTask = async e => {
+  // Открытие диалога
+  const handleOpenDialog = (e) => {
     e.preventDefault()
-    console.log("REMOVE TASK")
-  }
-
-  const handleOpenDialog = () => {
     setOpenDialog(true)
   }
 
-  const handleConfirmDelete = () => {
-    setOpenDialog(false)
-    // Здесь добавьте логику удаления задачи
-    handelRemoveTask()
+  const handleConfirmDelete = async() => {
+    try {
+      const data = {task_id : formData.task_id}
+      setReqStatus({ loading: true, error: null })
+      await getDataFromEndpoint(currentUser.token, "/tasks/removeTask", "POST", data, setReqStatus)
+      setReqStatus({ loading: false, error: null })
+      onTaskSubmit()
+    } catch (error) {
+      setReqStatus({ loading: false, error: error })
+    }
   }
 
   return (
@@ -201,27 +210,24 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
           <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask} />
           <Divider />
           <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} toEdit={isEdit} />
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-            {isEdit ? "Изменить" : "Создать задачу"}
-          </Button>
-          {isEdit && (
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleOpenDialog}>
-              удалить
+          <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} disabled={isEdit}>
+              {isEdit ? "Изменить" : "Создать задачу"}
             </Button>
-          )}
+            {isEdit && (
+              <Button type="submit" variant="contained" color="error" sx={{ mt: 3, mb: 2 }} onClick={handleOpenDialog}>
+                удалить
+              </Button>
+            )}
+          </Stack>
           <>
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-              <DialogTitle>Подтвердите удаление задачи</DialogTitle>
-              <DialogContent>
-                <DialogContentText>Вы уверены, что хотите удалить эту задачу?</DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setOpenDialog(false)}>Отмена</Button>
-                <Button onClick={handleConfirmDelete} variant="contained" color="error">
-                  Подтвердить удаление
-                </Button>
-              </DialogActions>
-            </Dialog>
+            <ConfirmationDialog
+              open={openDialog}
+              onClose={() => setOpenDialog(false)}
+              onConfirm={handleConfirmDelete}
+              title="Подтвердите удаление задачи"
+              message="Вы уверены, что хотите удалить эту задачу?"
+            />
           </>
         </>
       )}
