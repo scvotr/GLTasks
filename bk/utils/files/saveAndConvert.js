@@ -19,13 +19,14 @@ const saveAndConvert = async (file, rootCustomFolder, taskFolderName) => {
     const fileName = `${Date.now()}${ext}`; // задаем имя файла, например, используя метку времени
     const folderFullPath = path.join(defaultPath, rootCustomFolder, taskFolderName); // полный путь
     const newFilePath = path.join(folderFullPath, fileName); // задаем полный путь к файлу
+    const fileIsPdf = path.join(folderFullPath, file.originalFilename)
     // Создаем папку, если она не существует
     await fs.promises.mkdir(folderFullPath, {
       recursive: true
     });
 
     const readStream = fs.createReadStream(file.filepath);
-    const writeStream = fs.createWriteStream(newFilePath);
+    const writeStream = fs.createWriteStream(file.mimetype === 'application/pdf' ? fileIsPdf : newFilePath);
 
     await pipelineAsync(readStream, writeStream);
 
@@ -91,7 +92,7 @@ const saveAndConvert = async (file, rootCustomFolder, taskFolderName) => {
     }
 
     return {
-      fileName,
+      fileName: file.mimetype === 'application/pdf' ? file.originalFilename : fileName,      // fileName: file.mimetype.toString() === 'application/pdf' ? file.originalFilename : fileName,
       thumbnailFileName,
       compersFileName,
     };

@@ -5,7 +5,7 @@ import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { useEffect, useState } from "react"
 import { TaskForm } from "./TaskForm/TaskForm"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
-import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
+import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 
 export const TasksMain = () => {
   const { allTasks, notifyEvent, allTasksNoClosed, countAllTasksNoClosed } = useTaskContext()

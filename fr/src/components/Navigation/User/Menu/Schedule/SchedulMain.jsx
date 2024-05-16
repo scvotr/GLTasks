@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
+import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 import { SchedulePlane } from "./PlanTask/SchedulePlane"
 import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"

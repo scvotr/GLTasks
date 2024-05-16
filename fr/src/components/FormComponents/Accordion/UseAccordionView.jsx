@@ -19,9 +19,7 @@ export const UseAccordionView = ({ headerText, bodyText, children }) => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography variant="body1">
            {bodyText}
-          </Typography>
         </AccordionDetails>
         <AccordionDetails>{children}</AccordionDetails>
         {/* <AccordionActions>

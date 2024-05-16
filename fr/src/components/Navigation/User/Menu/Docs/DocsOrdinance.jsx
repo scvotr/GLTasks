@@ -1,4 +1,4 @@
-import { AppBarForPage } from "../componenst/AppBarForPage/AppBarForPage"
+import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 
 import React, { useState } from "react"
 import { Button, TextField, Typography, IconButton, Grid, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material"

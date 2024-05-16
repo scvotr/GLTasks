@@ -13,7 +13,6 @@ export const SubDepartmenSelect = props => {
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [allSubDeps, setAllSubDeps] = useState([])
   const [selectedSubDep, setSelectedSubDep] = useState("")
-
   const hasSubDep = allSubDeps && allSubDeps.lenght !== 0
 
   const fetchData = useCallback(async () => {
@@ -36,7 +35,7 @@ export const SubDepartmenSelect = props => {
   }, [currentUser, props.selectedDep, props.reRender])
 
   useEffect(() => {
-    setSelectedSubDep("")
+    setSelectedSubDep(props.value.responsible_subdepartment_id)
   }, [props.selectedDep])
 
   useEffect(() => {
