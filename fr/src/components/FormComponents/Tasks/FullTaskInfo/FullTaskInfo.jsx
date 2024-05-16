@@ -292,7 +292,6 @@ export const FullTaskInfo = ({ task }) => {
                                       src={`data:${file.type};base64,${file.content}`}
                                       alt="File Preview"
                                       loading="lazy"
-                                      title="Нажмите, чтобы увеличить"
                                     />
                                   </Tooltip>
                                 )}
