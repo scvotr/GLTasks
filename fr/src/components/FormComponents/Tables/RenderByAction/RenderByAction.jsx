@@ -1,4 +1,5 @@
 import { useAuthContext } from "../../../../context/AuthProvider"
+import { TaskForm } from "../../../Navigation/User/Menu/Tasks/TaskForm/TaskForm"
 import { FullTaskInfo } from "../../Tasks/FullTaskInfo/FullTaskInfo"
 import { CloseTask } from "./CloseTask/CloseTask"
 import { SendToReview } from "./SendToReview/SendToReview"
@@ -20,6 +21,7 @@ export const RenderByAction = ({ actionByStatus, task, onTaskSubmit }) => {
           return <SetResponsibleUser task={task} onTaskSubmit={onTaskSubmit} />
         } else if(currentUser.role === "user") {
           return <FullTaskInfo task={task} onTaskSubmit={onTaskSubmit} />
+          // return <TaskForm taskToEdit={task} onTaskSubmit={onTaskSubmit} />
         } 
       },
     ],

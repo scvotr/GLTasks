@@ -40,7 +40,7 @@ export const ImageBlock = ({ files, getData, isEdit, actionType, takeAddedIndex,
         />
       </Button>
 
-      <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+      <ImageList sx={{ width: 500, height: '100%' }} cols={3} rowHeight={164}>
         {files &&
           files.filePreviews &&
           files.filePreviews.map((preview, index) => {
