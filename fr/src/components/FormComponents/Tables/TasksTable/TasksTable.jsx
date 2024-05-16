@@ -20,6 +20,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Loader } from "../../Loader/Loader"
 
 export const TasksTable = ({ tasks, reRender }) => {
+  console.log(tasks)
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [modalOpen, setModalOpen] = useState(false)
@@ -32,7 +33,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "id",
       headerName: "№",
       description: "This column description",
-      width: 50,
+      width: 70,
       // renderCell: params => {
       //   let test
       //   test = params.value.match(/\d{4}/)[0]
