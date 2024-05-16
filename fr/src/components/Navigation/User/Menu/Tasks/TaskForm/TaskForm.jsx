@@ -9,6 +9,7 @@ import { sendNewTaskData } from "../../../../../../utils/sendNewTaskData"
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
+import { getPreviewFileContent } from "../../../../../FormComponents/Tasks/FullTaskInfo/FullTaskInfo"
 
 export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   const currentUser = useAuthContext()
@@ -40,11 +41,18 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
 
   useEffect(() => {
     if (taskToEdit) {
-      setIsEdit(true)
-      // реинициализация значений из пришедшей задачи для редактирования
-      setFormData({ ...initValue, ...taskToEdit })
+      getPreviewFileContent(currentUser.token, taskToEdit, setReqStatus)
+        .then(data => {
+          setIsEdit(true);
+          const updatedTaskToEdit = { ...taskToEdit, old_files: data };
+          console.log('!!!', updatedTaskToEdit)
+          setFormData({ ...initValue, ...updatedTaskToEdit });
+        })
+        .catch(error => {
+          // Обработка ошибки, если необходимо
+        });
     }
-  }, [taskToEdit])
+  }, [taskToEdit]);
 
   const getInputData = async e => {
     const { name, value, files, checked } = e.target
@@ -97,9 +105,6 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
 
   const handleSubmit = async event => {
     event.preventDefault()
-    // Устанавливаем состояние loading в true перед отправкой данных
-    setReqStatus({ loading: true, error: null })
-    // Логика для определения статуса задачи
     if (isInternalTask && currentUser.role === "chife") {
       // console.log("Внутрення задача от начальника")
       formData.task_status = "inWork"
@@ -122,16 +127,14 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     }
     try {
       if (isEdit) {
-        console.log("EDIT TASK")
+        console.log(formData)
+        // setReqStatus({ loading: false, error: null })
       } else {
         setReqStatus({ loading: true, error: null })
-        // Отправляем данные на сервер
         await sendNewTaskData(currentUser.token, formData, onTaskSubmit)
-        // Если операция завершилась успешно, устанавливаем loading в false
         setReqStatus({ loading: false, error: null })
       }
     } catch (error) {
-      // Если произошла ошибка, устанавливаем loading в false и сохраняем ошибку
       setReqStatus({ loading: false, error: error.message })
     }
   }
@@ -208,7 +211,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
           <Divider />
           <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} toEdit={isEdit} />
           <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
-            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} disabled={isEdit}>
               {isEdit ? "Изменить" : "Создать задачу"}
             </Button>
             {isEdit && (
