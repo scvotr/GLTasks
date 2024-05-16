@@ -53,7 +53,6 @@ const getAllSchedulesByUserIdQ = async (user_id) => {
 }
 
 const removeScheduleByIdQ = async (schedule_id) => {
-  console.log('>>>>>>>', schedule_id)
   const command = `
     DELETE FROM schedules
     WHERE schedule_id = ?
