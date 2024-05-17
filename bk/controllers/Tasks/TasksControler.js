@@ -22,11 +22,14 @@ const {
   getAllUserTasksQ,
   removeTaskQ,
   updateTaskByEventrQ,
-  getAllTasksByDepQ
+  getAllTasksByDepQ,
+  deleteTaskFileQ,
+  updateTaskDataQ
 } = require("../../Database/queries/Task/taskQueries");
 const {
   getLeadIdQ
 } = require("../../Database/queries/User/userQuery");
+const { deleteFile } = require("../../utils/files/deleteFile");
 const {
   removeFolder
 } = require("../../utils/files/removeFolder");
@@ -575,6 +578,45 @@ class TasksControler {
       handleError(res, 'getAllUserTasks')
     }
   }
+
+  async updateTask(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = authDecodeUserData.payLoad
+      const fields = postPayload.fields;
+      const files = postPayload.files;
+      const fileNames = [];
+      const taskFolderName = postPayload.fields.task_id
+      const filesToRemoveName = postPayload.fields.filesToRemove
+
+      if(filesToRemoveName) {
+        try {
+          const arrFilesToRemove = filesToRemoveName.split(",")
+          for (const [key] of Object.entries(arrFilesToRemove)) {
+            await deleteTaskFileQ(taskFolderName, arrFilesToRemove[key])
+            await deleteFile(arrFilesToRemove[key], 'uploads/tasks', taskFolderName)
+          }
+        } catch (error) {
+          throw new Errorr('Произошла ошибка при удалении файла:', error);
+        }
+      }
+      if (files) {
+        try {
+          for (const [key, file] of Object.entries(files)) {
+            const fileName = await saveAndConvert(file, 'tasks', taskFolderName)
+            fileNames.push(fileName.fileName);
+          }
+        } catch (error) {
+          throw new Error('Произошла ошибка при сохранении файла:', error);
+        }
+      }
+      await updateTaskDataQ(postPayload, fileNames)
+      sendResponseWithData(res, 'updateTask')
+    } catch (error) {
+      handleError(res, 'updateTask')
+    }
+  }
+
   async removeTask(req, res) {
     try {
       const authDecodeUserData = req.user

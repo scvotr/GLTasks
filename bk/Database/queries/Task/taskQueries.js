@@ -405,6 +405,65 @@ const updateTaskByEventrQ = async (data) => {
   }
 }
 
+const deleteTaskFileQ = async(task_id, file_name) => {
+  try {
+    const command = `
+      DELETE FROM task_files
+      WHERE file_name = ? AND task_id = ?
+    `;
+    await executeDatabaseQueryAsync(command, [file_name, task_id])
+  } catch (error) {
+    throw new Error('Ошибка запроса к базе данных deleteTaskFileQ')
+  }
+}
+
+const updateTaskDataQ = async(postPayload, fileNames = null) => {
+  try {
+    const {
+      task_id,
+      task_status,
+      task_descript,
+      deadline,
+      responsible_department_id,
+      responsible_subdepartment_id,
+    } = postPayload.fields
+
+    const command = `
+    UPDATE tasks
+      SET
+        task_status = ?,
+        task_descript = ?,
+        deadline = ?,
+        responsible_department_id  = ?,
+        responsible_subdepartment_id  = ?
+      WHERE task_id = ?
+  `;
+
+    await executeDatabaseQueryAsync(command, [
+      task_status,
+      task_descript,
+      deadline,
+      responsible_department_id,
+      responsible_subdepartment_id,
+      task_id,
+    ]);
+
+    const command3 = `INSERT INTO task_files (task_id, file_name, file_path) VALUES (?, ?, ?);`;
+    if (fileNames.length > 0) {
+      try {
+        for (const fileName of fileNames) {
+          await executeDatabaseQueryAsync(command3, [task_id, fileName], "run");
+        }
+      } catch (error) {
+        throw new Error('updateTaskDataQ: Произошла ошибка при сохранении файла:', error);
+      }
+    }
+
+  } catch (error) {
+    throw new Error('updateTaskDataQ: Произошла ошибка при обновлении задачи:', error);
+  }
+}
+ 
 module.exports = {
   createTask,
   getTaskById,
@@ -416,4 +475,6 @@ module.exports = {
   getAllTasksBySubDepQ,
   getAllUserTasksQ,
   updateTaskByEventrQ,
+  deleteTaskFileQ,
+  updateTaskDataQ,
 };

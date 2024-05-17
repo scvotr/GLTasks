@@ -35,7 +35,7 @@ export const SubDepartmenSelect = props => {
   }, [currentUser, props.selectedDep, props.reRender])
 
   useEffect(() => {
-    setSelectedSubDep(props.value.responsible_subdepartment_id)
+    setSelectedSubDep(props.value ? props.value.responsible_subdepartment_id : '')
   }, [props.selectedDep])
 
   useEffect(() => {

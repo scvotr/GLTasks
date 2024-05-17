@@ -17,7 +17,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 })
 
-export const ImageBlock = ({ files, getData, isEdit, actionType, takeAddedIndex, toEdit }) => {
+export const ImageBlock = ({ files, getData, isEdit, actionType, takeAddedIndex, removeTaskExistingFiles, toEdit }) => {
   const handleFileInput = event => {
     const input = event.target
     if (input.files.length > 5) {
@@ -32,7 +32,7 @@ export const ImageBlock = ({ files, getData, isEdit, actionType, takeAddedIndex,
         Загрузить файлы
         <VisuallyHiddenInput
           type="file"
-          accept="image/jpeg, image/png, application/pdf"
+          accept="image/jpeg, application/pdf" //image/png,
           multiple
           onInput={handleFileInput}
           onChange={getData}
@@ -51,9 +51,7 @@ export const ImageBlock = ({ files, getData, isEdit, actionType, takeAddedIndex,
                   <Tooltip title="Нажмите, чтобы удалить" onClick={() => takeAddedIndex(index)}>
                     <Stack direction="column" justifyContent="flex-start" alignItems="center" spacing={2}>
                       <Paper elevation={3} style={{ padding: "10px" }}>
-                        {/* <IconButton> */}
-                          <PictureAsPdfOutlinedIcon fontSize="large" />
-                        {/* </IconButton> */}
+                        <PictureAsPdfOutlinedIcon fontSize="large" />
                         {files && files.files && files.files[index] && files.files[index].name && (
                           <Typography variant="body2">{files.files[index].name}</Typography>
                         )}
@@ -68,17 +66,32 @@ export const ImageBlock = ({ files, getData, isEdit, actionType, takeAddedIndex,
               </ImageListItem>
             )
           })}
-      </ImageList>
 
-      {/* <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-        {files &&
-          files.filePreviews &&
-          files.filePreviews.map((preview, index) => (
+        {isEdit && files.old_files &&
+          files.old_files.map((file, index) => (
             <ImageListItem key={index}>
-              <img key={index} src={preview} alt="File Preview" loading="lazy" onClick={() => takeAddedIndex(index)} title="Нажмите, чтобы удалить" />
+              {file.type === ".pdf" ? (
+                <Tooltip title="Нажмите, чтобы удалить" onClick={() => removeTaskExistingFiles(index)}>
+                  <Stack direction="column" justifyContent="flex-start" alignItems="center" spacing={2}>
+                    <Paper elevation={3} style={{ padding: "10px" }}>
+                      <PictureAsPdfOutlinedIcon fontSize="large" />
+                      {file && <Typography variant="body2">{file.name}</Typography>}
+                    </Paper>
+                  </Stack>
+                </Tooltip>
+              ) : (
+                <Tooltip title="Нажмите, чтобы удалить" onClick={() => removeTaskExistingFiles(index)}>
+                  <img
+                    key={index}
+                    src={`data:${file.type};base64,${file.content}`}
+                    alt="File Preview"
+                    loading="lazy"
+                  />
+                </Tooltip>
+              )}
             </ImageListItem>
           ))}
-      </ImageList> */}
+      </ImageList>
     </>
   )
 }
