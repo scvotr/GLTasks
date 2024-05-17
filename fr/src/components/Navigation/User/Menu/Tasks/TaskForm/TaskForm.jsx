@@ -6,7 +6,6 @@ import { useEffect, useState } from "react"
 import { SelectDataField } from "../TaskForm/SelectDataField/SelectDataField"
 import { ImageBlock } from "./ImageBlock/ImageBlock"
 import { sendNewTaskData } from "../../../../../../utils/sendNewTaskData"
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { getPreviewFileContent } from "../../../../../FormComponents/Tasks/FullTaskInfo/FullTaskInfo"
@@ -45,7 +44,6 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
         .then(data => {
           setIsEdit(true);
           const updatedTaskToEdit = { ...taskToEdit, old_files: data };
-          console.log('!!!', updatedTaskToEdit)
           setFormData({ ...initValue, ...updatedTaskToEdit });
         })
         .catch(error => {
@@ -128,10 +126,12 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     try {
       if (isEdit) {
         console.log(formData)
-        // setReqStatus({ loading: false, error: null })
+        setReqStatus({ loading: true, error: null })
+        await sendNewTaskData(currentUser.token, formData, "/tasks/updateTask", onTaskSubmit)
+        setReqStatus({ loading: false, error: null })
       } else {
         setReqStatus({ loading: true, error: null })
-        await sendNewTaskData(currentUser.token, formData, onTaskSubmit)
+        await sendNewTaskData(currentUser.token, formData, "/tasks/addNewTask", onTaskSubmit)
         setReqStatus({ loading: false, error: null })
       }
     } catch (error) {
@@ -209,9 +209,9 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
           <Divider />
           <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask} />
           <Divider />
-          <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} toEdit={isEdit} />
+          <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} removeTaskExistingFiles={removeTaskExistingFiles}toEdit={isEdit} />
           <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
-            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} disabled={isEdit}>
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} >
               {isEdit ? "Изменить" : "Создать задачу"}
             </Button>
             {isEdit && (
