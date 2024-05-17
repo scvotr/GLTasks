@@ -1,4 +1,4 @@
-import { Typography, Button, } from '@mui/material'
+import { Typography, Button, Stack, } from '@mui/material'
 import { NavLink } from 'react-router-dom';
 
 export const ToolbarButton = ({ currentUser }) => {
@@ -9,10 +9,19 @@ export const ToolbarButton = ({ currentUser }) => {
         Gelio Tasks
       </Typography>
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        {currentUser.name} {currentUser.role}  ID:{currentUser.id}  DEP:{currentUser.dep} subDep:{currentUser.subDep} position:{currentUser.position}
+        {currentUser.name} 
+        {/* {currentUser.role}  ID:{currentUser.id}  DEP:{currentUser.dep} subDep:{currentUser.subDep} position:{currentUser.position} */}
       </Typography>
       {currentUser.login ? (
-        <Button variant="outlined" color="inherit" onClick={currentUser.logout} component={NavLink} to="/login">Выйти</Button>
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={12}
+        >
+        <Button variant="outlined" color="inherit" component={NavLink} to="/main2">Новости</Button>
+        <Button variant="contained" color="warning" onClick={currentUser.logout} component={NavLink} to="/login">Выйти</Button>
+        </Stack>
       ) : (
         <Button variant="outlined" color="inherit" component={NavLink} to="/login">Войти</Button>
       )
