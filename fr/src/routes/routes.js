@@ -77,6 +77,10 @@ export const routes = createBrowserRouter([
         element: <PrivateRoutes component={AllTasks} roles={["admin"]}/>,
       },
       {
+        path: '/main2',
+        element: <PrivateRoutes component={InstructionComponent} roles={["chife", "user", "general"]}/>,
+      },
+      {
         path: '/tasks',
         element: <PrivateRoutes component={TasksMain} roles={["chife", "user"]}/>,
       },
