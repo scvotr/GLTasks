@@ -5,7 +5,7 @@ bk/error.log
 bk/errorAuth.log
 bk/warnAuth.log
 bk/uploads/
-bk/.env
+bk/*.env
 fr/package-lock.json
 
 /.pnp
