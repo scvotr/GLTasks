@@ -42,10 +42,10 @@ export const TaskCommets = ({ comments, onSubmit, task }) => {
   return (
     <Box
       sx={{
-        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-        borderRadius: "5px",
-        height: "70vh",
-        overflow: "hidden",
+        // boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+        // borderRadius: "5px",
+        // height: "70vh",
+        // overflow: "hidden",
       }}
     >
       <TextField
