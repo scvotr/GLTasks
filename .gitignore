@@ -5,6 +5,7 @@ bk/error.log
 bk/errorAuth.log
 bk/warnAuth.log
 bk/uploads/
+bk/.env
 fr/package-lock.json
 
 /.pnp
@@ -16,7 +17,6 @@ fr/package-lock.json
 *.doc
 *.docx
 *.pdf
-.env
 
 # testing
 /coverage
