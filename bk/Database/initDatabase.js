@@ -47,7 +47,7 @@ db.serialize(async () => {
   // addReportColumnToSchedules()
   // await testPGQuery()
   // await testPGQuery2()
-  createTableUsersPG()
+  // createTableUsersPG()
 })
 
 module.exports ={
