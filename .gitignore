@@ -16,6 +16,7 @@ fr/package-lock.json
 *.doc
 *.docx
 *.pdf
+.env
 
 # testing
 /coverage
