@@ -4,7 +4,7 @@ import { formatDate } from "../../../../utils/formatDate"
 export const TaskProgressCard = ({ task }) => {
 
   const taskExecutionDetails = [
-    { key: "approved_on", value: task.approved_on ? "Согласованна: " + formatDate(task.approved_on) : null, default: "На согласовании" },
+    // { key: "approved_on", value: task.approved_on ? "Согласованна: " + formatDate(task.approved_on) : null, default: "На согласовании" },
     {
       key: "setResponseUser_on",
       value: task.setResponseUser_on ? "Ответственный назначен: " + formatDate(task.setResponseUser_on) : null,
