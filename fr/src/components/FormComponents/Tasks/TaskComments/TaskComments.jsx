@@ -40,14 +40,7 @@ export const TaskComments = ({ comments, onSubmit, task }) => {
   }
 
   return (
-    <Box
-      sx={{
-        // boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-        // borderRadius: "5px",
-        // height: "70vh",
-        // overflow: "hidden",
-      }}
-    >
+    <>
       <TextField
         multiline
         rows={4}
@@ -57,19 +50,16 @@ export const TaskComments = ({ comments, onSubmit, task }) => {
         onChange={handleChange}
         fullWidth
         inputProps={{ maxLength: 700 }}
-        sx={{
-          mt: 2,
-        }}
+        sx={{ mt: 2 }}
       />
-      <Button variant="contained" onClick={handleSubmit}>
+      <Button variant="contained" onClick={handleSubmit} sx={{ m: "2%" }}>
         Добавить комментарий
       </Button>
       <ScrollableList
         sx={{
-          maxHeight: 'calc(70vh - 130px)', // 130px - примерная высота TextField и Button
+          maxHeight: "calc(70vh - 270px)", // 130px - примерная высота TextField и Button
           overflowY: "auto",
-        }}
-      >
+        }}>
         {commentList.map((comment, index) => (
           <ListItem key={index}>
             <ListItemText
@@ -86,6 +76,6 @@ export const TaskComments = ({ comments, onSubmit, task }) => {
           </ListItem>
         ))}
       </ScrollableList>
-    </Box>
+    </>
   )
 }
