@@ -72,7 +72,7 @@ export const UserSelect = props => {
                 ))}
             </Select>
             <FormHelperText>
-              {hasUsers ? "." : "Выберите Должность"}
+              {hasUsers ? " " : "Выберите Должность"}
             </FormHelperText>
           </FormControl>
         </Box>
