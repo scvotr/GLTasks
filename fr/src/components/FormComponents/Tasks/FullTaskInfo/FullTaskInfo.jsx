@@ -20,11 +20,13 @@ import { useEffect, useState } from "react"
 import { useAuthContext } from "../../../../context/AuthProvider"
 import { ModalCustom } from "../../../ModalCustom/ModalCustom"
 import { Loader } from "../../Loader/Loader"
-import { TaskCommets } from "../TaskCommets/TaskCommets"
+import { TaskComments } from "../TaskComments/TaskComments"
 import { styled } from "@mui/material/styles"
 import Paper from "@mui/material/Paper"
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined"
 import { UseAccordionView } from "../../Accordion/UseAccordionView"
+import { TaskDetailsCard } from "./TaskDetailsCard"
+import { TaskProgressCard } from "./TaskProgressCard"
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -85,70 +87,41 @@ const getFullFile = async (file, task_id, token) => {
 
 export const FullTaskInfo = ({ task }) => {
   console.log(task)
-
-  const timeSteps = [
-    { key: "approved_on", value: task.approved_on ? "Согласованна: " + formatDate(task.approved_on) : null, default: "На согласовании" },
-    {
-      key: "setResponseUser_on",
-      value: task.setResponseUser_on ? "Ответственный назначен: " + formatDate(task.setResponseUser_on) : null,
-      default: "Назначение ответственного",
-    },
-    {
-      key: "responsible_user_last_name",
-      value: task.responsible_user_last_name ? "Ответственный: " + task.responsible_user_last_name + " " + task.responsible_position_name : null,
-      default: "ФИО ответсвенного",
-    },
-    { key: "confirmation_on", value: task.confirmation_on ? "Отправлена на проверку: " + formatDate(task.confirmation_on) : null, default: "В работе" },
-    { key: "closed_on", value: task.closed_on ? "Закрыта: " + formatDate(task.closed_on) : null, default: "Требует подтверждения" },
-  ]
-
-  if (task.reject_on !== null) {
-    timeSteps.push({ key: "reject_on", value: task.reject_on ? "Отклонена: " + formatDate(task.reject_on) : null })
-  }
-
-  const nonNullCountTimeSteps = timeSteps.filter(item => item.value !== null).length
-
   return (
     <>
       <Grid container spacing={2} sx={{ p: "1%" }}>
+        {/* -------------------------------------- */}
         <Grid item xs={2}>
           <Item>
-            <Stack direction="column" justifyContent="space-around" alignItems="center" spacing={1}>
-              <Typography variant="subtitle1">
-                <strong>задача №: {task.id}</strong>
-              </Typography>
-            </Stack>
-            {/* ------------------------------------------- */}
-            <Stepper activeStep={nonNullCountTimeSteps} orientation="vertical">
-              {timeSteps &&
-                timeSteps.map((label, index) => (
-                  <Step key={index}>
-                    <StepLabel>{label.value === null ? label.default : label.value}</StepLabel>
-                  </Step>
-                ))}
-            </Stepper>
+            <Typography variant="subtitle1">
+              <strong>Задача №: {task.id}</strong>
+            </Typography>
+            <UseAccordionView headerText={`Прогресс:`} bodyText={<TaskProgressCard task={task} />} />
+            <UseAccordionView headerText={`От:`} bodyText={<TaskDetailsCard task={task} />} />
           </Item>
         </Grid>
+        {/* ------------------------- */}
         <Grid item xs={6}>
           <Item>
             <UseAccordionView
-              headerText={`от: ${formatDate(task.created_on)} ${task.task_descript.substring(0, 50)}... до: ${formatDate(task.deadline)}`}
+              // headerText={`От: ${formatDate(task.created_on)} ${task.task_descript.substring(0, 50)}... до: ${formatDate(task.deadline)}`}
+              headerText={
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>От: {formatDate(task.created_on)}</span>
+                  <span style={{ textAlign: 'center', flex: 1 }}>{task.task_descript.substring(0, 50)} ...</span>
+                  <span>До: {formatDate(task.deadline)}</span>
+                </div>
+              }
               bodyText={task.task_descript}
             />
           </Item>
         </Grid>
         <Grid item xs={4}>
           <Item>
-            <TaskCommets task={task} />
+            <TaskComments task={task} />
           </Item>
         </Grid>
         {/* -------------------------------------- */}
-        {/* <Grid item xs={4}>
-          <Item>xs=4</Item>
-        </Grid>
-        <Grid item xs={8}>
-          <Item>xs=8</Item>
-        </Grid> */}
       </Grid>
     </>
   )
