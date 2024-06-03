@@ -81,7 +81,7 @@ export const PositionSelect = props => {
                 ))}
             </Select>
             <FormHelperText>
-              {hasPosition ? ".." : "Выберите Отдел"}
+              {hasPosition ? " " : "Выберите Отдел"}
             </FormHelperText>
           </FormControl>
         </Box>

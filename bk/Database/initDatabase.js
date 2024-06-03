@@ -16,6 +16,8 @@ const { createUserRoles } = require('./models/User/userRoles')
 const { createTableTasksFiles } = require('./models/Task/tasksFiles')
 const { createTableSchedules, addCreatedOnField, addReportColumnToSchedules } = require('./models/Schedules/schedules')
 const { createTableSchedulesComments } = require('./models/Schedules/schedulesComments')
+const { testPGQuery, testPGQuery2 } = require('./queries/pg_test/test_pg_query')
+const { createTableUsersPG } = require('./models/User/createTableUsersPG')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
@@ -43,6 +45,9 @@ db.serialize(async () => {
   createTableSchedulesComments()
   // addCreatedOnField()
   // addReportColumnToSchedules()
+  // await testPGQuery()
+  // await testPGQuery2()
+  // createTableUsersPG()
 })
 
 module.exports ={

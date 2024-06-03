@@ -20,10 +20,13 @@ import { useEffect, useState } from "react"
 import { useAuthContext } from "../../../../context/AuthProvider"
 import { ModalCustom } from "../../../ModalCustom/ModalCustom"
 import { Loader } from "../../Loader/Loader"
-import { TaskCommets } from "../TaskCommets/TaskCommets"
+import { TaskComments } from "../TaskComments/TaskComments"
 import { styled } from "@mui/material/styles"
 import Paper from "@mui/material/Paper"
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined"
+import { UseAccordionView } from "../../Accordion/UseAccordionView"
+import { TaskDetailsCard } from "./TaskDetailsCard"
+import { TaskProgressCard } from "./TaskProgressCard"
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -83,121 +86,42 @@ const getFullFile = async (file, task_id, token) => {
 }
 
 export const FullTaskInfo = ({ task }) => {
-  const {
-    id,
-    task_id,
-    task_status,
-    created_on,
-    deadline,
-    approved_on,
-    setResponseUser_on,
-    confirmation_on,
-    reject_on,
-    closed_on,
-    appoint_department_name,
-    appoint_subdepartment_name,
-    appoint_user_last_name,
-    appoint_user_name,
-    appoint_user_middle_name,
-    responsible_user_last_name,
-    responsible_user_name,
-    responsible_user_middle_name,
-    responsible_department_name,
-    responsible_subdepartment_name,
-    appoint_position_name,
-    responsible_position_name,
-    task_descript,
-    old_files,
-  } = task
-
-  const timeSteps = [
-    { key: "approved_on", value: approved_on ? "Согласованна: " + formatDate(approved_on) : null, default: "На согласовании" },
-    {
-      key: "setResponseUser_on",
-      value: setResponseUser_on ? "Ответственный назначен: " + formatDate(setResponseUser_on) : null,
-      default: "Назначение ответственного",
-    },
-    {
-      key: "responsible_user_last_name",
-      value: responsible_user_last_name ? "Ответственный: " + responsible_user_last_name + " " + responsible_position_name : null,
-      default: "ФИО ответсвенного",
-    },
-    { key: "confirmation_on", value: confirmation_on ? "Отправлена на проверку: " + formatDate(confirmation_on) : null, default: "В работе" },
-    { key: "closed_on", value: closed_on ? "Закрыта: " + formatDate(closed_on) : null, default: "Требует подтверждения" },
-  ]
-
-  if (reject_on !== null) {
-    timeSteps.push({ key: "reject_on", value: reject_on ? "Отклонена: " + formatDate(reject_on) : null })
-  }
-
-  const nonNullCountTimeSteps = timeSteps.filter(item => item.value !== null).length
-
-  const unitSteps = [
-    { key: "appoint_department_name", value: `От: ${appoint_department_name} Отдел: ${appoint_subdepartment_name}` },
-    // { key: "appoint_department_name", value: "От: " + appoint_department_name + " " + "Отдел: " + appoint_subdepartment_name },
-    {
-      key: "appoint_user_last_name",
-      value: appoint_user_last_name ? "От: " + appoint_position_name + " " + appoint_user_last_name : null,
-      default: "Назначивший",
-    },
-    {
-      key: "responsible_department_name",
-      value: responsible_department_name ? "Для: " + responsible_department_name + " Службы: " + responsible_subdepartment_name : null,
-      default: "Для Департамента:",
-    },
-    { key: "created_on", value: "Создана: " + formatDate(created_on) },
-    { key: "deadline", value: "Выполнить до: " + formatDate(deadline) },
-  ]
-
-  const nonNullCountUnitSteps = unitSteps.filter(item => item.value !== null).length
-
+  console.log(task)
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
-  const [taskData, setTaskData] = useState(task)
+  const [taskFiles, setTaskFiles] = useState(task)
+  const [taskFilesPDF, setTaskFilesPDF] = useState([])
+  const [taskFilesIMAGE, setTaskFilesIMAGE] = useState([])
+  const [selectedImage, setSelectedImage] = useState({})
+  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
-    if (task.old_files) {
+    if (task.old_files && task.old_files.length > 0) {
       getPreviewFileContent(currentUser.token, task, setReqStatus)
         .then(data => {
-          const updatedTaskToEdit = { ...task, old_files: data }
-          setTaskData({ ...task, ...updatedTaskToEdit })
+          setTaskFilesPDF([])
+          setTaskFilesIMAGE([])
+          data.forEach(file => {
+            // file.type === ".pdf" ? setTaskFilesPDF(prevPDF => [...prevPDF, file]) : setTaskFilesIMAGE(prev => [...prev, file])
+            if (file.type === ".pdf") {
+              setTaskFilesPDF(prevPDF => [...prevPDF, file])
+            } else if (file.type === ".jpg") {
+              setTaskFilesIMAGE(prev => [...prev, file])
+            }
+          })
         })
         .catch(error => {
           // Обработка ошибки, если необходимо
         })
     } else {
-      setTaskData(task)
+      setTaskFiles(task)
     }
-  }, [task])
-
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const openModal = task => {
-    // setSelectedTask(task)
-    setModalOpen(true)
-  }
-  const closeModal = () => {
-    // setSelectedTask(null)
-    setModalOpen(false)
-    // reRender(prevKey => prevKey + 1)
-  }
-
-  const [selectedImage, setSelectedImage] = useState("")
-
-  const handleImageClick = async file => {
-    try {
-      setReqStatus({ loading: true, error: null })
-      const test = await getFullFile(file, task_id, currentUser.token)
-      setReqStatus({ loading: false, error: null })
-      setSelectedImage(test)
-      setModalOpen(true)
-    } catch (error) {}
-  }
+  }, [task.old_files, currentUser])
 
   const handleDownload = async file => {
     try {
       setReqStatus({ loading: true, error: null })
-      const fullFile = await getFullFile(file, task_id, currentUser.token)
+      const fullFile = await getFullFile(file, task.task_id, currentUser.token)
       setReqStatus({ loading: false, error: null })
 
       // Создаем ссылку для скачивания файла
@@ -217,124 +141,115 @@ export const FullTaskInfo = ({ task }) => {
     }
   }
 
+  const handleImageClick = async file => {
+    try {
+      setReqStatus({ loading: true, error: null })
+      const test = await getFullFile(file, task.task_id, currentUser.token)
+      setReqStatus({ loading: false, error: null })
+      setSelectedImage(test)
+      setModalOpen(true)
+    } catch (error) {}
+  }
+
+  const closeModal = () => {
+    setModalOpen(false)
+  }
+
   return (
     <>
-      <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            {/* --------MAIN PLACE------------ */}
-            <Grid item xs={8}>
-              {/* <Item> */}
-              {/* --------LEFT SIDE------------ */}
-              <Grid container spacing={2} justifyContent="center" alignItems="center">
-                <Grid item xs={8}>
-                  <Item>
-                    <Typography variant="h4">Номер задачи: {id}</Typography>
-                  </Item>
-                </Grid>
-                <Grid item xs={8}>
-                  <Item>
-                    <Stepper activeStep={nonNullCountUnitSteps} alternativeLabel>
-                      {unitSteps &&
-                        unitSteps.map((label, index) => (
-                          <Step key={index}>
-                            <StepLabel>{label.value === null ? label.default : label.value}</StepLabel>
-                          </Step>
-                        ))}
-                    </Stepper>
-                  </Item>
-                </Grid>
-                <Grid item xs={6}>
-                  <Item>
-                    <Stack direction="column">
-                      <Typography variant="subtitle1">
-                        <strong>Задача:</strong>
-                      </Typography>
-                      <Typography variant="body1">{task_descript}</Typography>
-                    </Stack>
-                  </Item>
-                </Grid>
-                <Grid item xs={12}>
-                  <Item>
-                    <Stepper activeStep={nonNullCountTimeSteps} alternativeLabel>
-                      {timeSteps &&
-                        timeSteps.map((label, index) => (
-                          <Step key={index}>
-                            <StepLabel>{label.value === null ? label.default : label.value}</StepLabel>
-                          </Step>
-                        ))}
-                    </Stepper>
-                  </Item>
-                </Grid>
-                <Grid item xs={8}>
-                  <Item>
-                    <Box display="flex" justifyContent="center">
-                      {" "}
-                      {/* Центрируем содержимое */}
-                      <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
-                        <Loader reqStatus={reqStatus}>
-                          {taskData.old_files &&
-                            taskData.old_files.map((file, index) => (
-                              <ImageListItem key={index}>
-                                {file.type === ".pdf" ? (
-                                  <Tooltip title="Нажмите, чтобы скачать" onClick={() => handleDownload(file)}>
-                                    <Stack direction="column" justifyContent="flex-start" alignItems="center" spacing={2}>
-                                      <Paper elevation={3} style={{ padding: "10px" }}>
-                                        <PictureAsPdfOutlinedIcon fontSize="large" />
-                                        {file && <Typography variant="body2">{file.name}</Typography>}
-                                      </Paper>
-                                    </Stack>
-                                  </Tooltip>
-                                ) : (
-                                  <Tooltip title="Нажмите, чтобы увеличить" onClick={() => handleImageClick(file)}>
-                                    <img
-                                      key={index}
-                                      src={`data:${file.type};base64,${file.content}`}
-                                      alt="File Preview"
-                                      loading="lazy"
-                                    />
-                                  </Tooltip>
-                                )}
-                              </ImageListItem>
-                            ))}
-                        </Loader>
-                      </ImageList>
-                      {/* <ImageList sx={{ width: 500, height: 250 }} cols={3} rowHeight={164}>
-                        <Loader reqStatus={reqStatus}>
-                          {taskData.old_files &&
-                            taskData.old_files.map((file, index) => (
-                              <ImageListItem key={index}>
-                                <img
-                                  key={index}
-                                  src={`data:${file.type};base64,${file.content}`}
-                                  alt="File Preview"
-                                  loading="lazy"
-                                  onClick={() => handleImageClick(file)}
-                                  title="Нажмите, чтобы удалить"
-                                />
-                              </ImageListItem>
-                            ))}
-                        </Loader>
-                      </ImageList> */}
-                    </Box>
-                  </Item>
-                </Grid>
-              </Grid>
-              {/* </Item> */}
-            </Grid>
-            {/* --------RIGHT SIDE------------ */}
-            <Grid item xs={4}>
+      <Grid container spacing={2} sx={{ p: "1%" }}>
+        <Loader reqStatus={reqStatus}>
+          {/* -------------------------------------- */}
+          <Grid item xs={2}>
+            <Item>
               <Item>
-                <TaskCommets task={task} />
+                <Typography variant="subtitle1">
+                  <strong>Задача №: {task.id}</strong>
+                </Typography>
               </Item>
-            </Grid>
-            {/* --------RIGHT SIDE------------END */}
+              <UseAccordionView headerText={`Прогресс:`} bodyText={<TaskProgressCard task={task} />} />
+              <UseAccordionView headerText={`От:`} bodyText={<TaskDetailsCard task={task} />} />
+            </Item>
           </Grid>
-        </CardContent>
-      </Card>
+          {/* ------------------------- */}
+          <Grid item xs={6}>
+            <Item>
+              <UseAccordionView
+                // headerText={`От: ${formatDate(task.created_on)} ${task.task_descript.substring(0, 50)}... до: ${formatDate(task.deadline)}`}
+                headerText={
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>От: {formatDate(task.created_on)}</span>
+                    <span style={{ textAlign: "center", flex: 1 }}>{task.task_descript.substring(0, 50)} ...</span>
+                    <span>До: {formatDate(task.deadline)}</span>
+                  </div>
+                }
+                bodyText={task.task_descript}
+              />
+            </Item>
+            {/* ################################# */}
+            {taskFilesIMAGE && taskFilesIMAGE.length > 0 && (
+              <>
+                <UseAccordionView
+                  headerText={"Изображения:"}
+                  bodyText={
+                    <ImageList sx={{ width: "100%", height: "100%" }} cols={3} rowHeight={82}>
+                      {taskFilesIMAGE &&
+                        taskFilesIMAGE.map((file, index) => (
+                          <ImageListItem key={index} sx={{ display: "flex", flexDirection: "row" }}>
+                            <Tooltip title="Нажмите, чтобы увеличить" onClick={() => handleImageClick(file)}>
+                              <img key={index} src={`data:${file.type};base64,${file.content}`} alt="File Preview" loading="lazy" />
+                            </Tooltip>
+                          </ImageListItem>
+                        ))}
+                    </ImageList>
+                  }
+                />
+              </>
+            )}
+            {taskFilesPDF && taskFilesPDF.length > 0 && (
+              <>
+                <UseAccordionView
+                  headerText={"Файлы:"}
+                  bodyText={
+                    <ImageList sx={{ width: "100%", height: "100%" }} cols={3} rowHeight={80}>
+                      <Loader reqStatus={reqStatus}>
+                        {taskFilesPDF &&
+                          taskFilesPDF.map((file, index) => (
+                            <ImageListItem key={index} sx={{ display: "flex", flexDirection: "row" }}>
+                              <Tooltip title="Нажмите, чтобы скачать" onClick={() => handleDownload(file)}>
+                                <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2}>
+                                  <Paper elevation={3} sx={{ p: "2%", display: "flex", flexDirection: "row" }}>
+                                    <PictureAsPdfOutlinedIcon fontSize="large" />
+                                    {file && <Typography variant="body2">{file.name}</Typography>}
+                                  </Paper>
+                                </Stack>
+                              </Tooltip>
+                            </ImageListItem>
+                          ))}
+                      </Loader>
+                    </ImageList>
+                  }
+                />
+              </>
+            )}
+            {/* ################################# */}
+          </Grid>
+          <Grid item xs={4}>
+            <Item>
+              <Item>
+                <Typography variant="subtitle1">
+                  <strong>Комментарии:</strong>
+                </Typography>
+              </Item>
+              <TaskComments task={task} />
+            </Item>
+          </Grid>
+          {/* -------------------------------------- */}
+        </Loader>
+      </Grid>
       <>
-        <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="dsdsdsd">
-          <ImageList sx={{ width: 800, height: 600 }} cols={1} rowHeight={164}>
+        <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={selectedImage.name}>
+          <ImageList sx={{ width: "100%", height: "100%" }} cols={1}>
             <ImageListItem>
               <img src={`data:${selectedImage.type};base64,${selectedImage.content}`} alt="File Preview" loading="lazy" title="Нажмите, чтобы удалить" />
             </ImageListItem>

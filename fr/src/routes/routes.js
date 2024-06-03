@@ -39,7 +39,7 @@ export const routes = createBrowserRouter([
     children: [
       {
         path: '/main',
-        element: <AuthRotes component={InstructionComponent} />,
+        element: <AuthRotes component={InfoNews} />,
       },
       {
         path: '/login',
