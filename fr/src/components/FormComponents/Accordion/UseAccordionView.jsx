@@ -7,10 +7,10 @@ import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 
-export const UseAccordionView = ({ headerText, bodyText, expanded, children }) => {
+export const UseAccordionView = ({ headerText, bodyText, children }) => {
   return (
     <>
-      <Accordion expanded={expanded}>
+      <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel3-content" id="panel3-header">
           <Box sx={{ textAlign: "center", width: "100%" }}>
             <Typography variant="h8" fontWeight="bold">
