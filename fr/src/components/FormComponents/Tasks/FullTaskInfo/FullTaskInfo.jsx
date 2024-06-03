@@ -175,12 +175,13 @@ export const FullTaskInfo = ({ task }) => {
           <Grid item xs={6}>
             <Item>
               <UseAccordionView
+                expanded={true}
                 // headerText={`От: ${formatDate(task.created_on)} ${task.task_descript.substring(0, 50)}... до: ${formatDate(task.deadline)}`}
                 headerText={
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>От: {formatDate(task.created_on)}</span>
+                    {/* <span>От: {formatDate(task.created_on)}</span> */}
                     <span style={{ textAlign: "center", flex: 1 }}>{task.task_descript.substring(0, 50)} ...</span>
-                    <span>До: {formatDate(task.deadline)}</span>
+                    {/* <span>До: {formatDate(task.deadline)}</span> */}
                   </div>
                 }
                 bodyText={task.task_descript}
