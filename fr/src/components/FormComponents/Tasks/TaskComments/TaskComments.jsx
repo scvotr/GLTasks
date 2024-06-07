@@ -30,9 +30,20 @@ export const TaskComments = ({ comments, onSubmit, task }) => {
   const handleSubmit = () => {
     if (comment.trim() !== "") {
       const newComment = {
+        task_id: task.task_id,
         comment: comment,
         user_id: currentUser.id,
-        task_id: task.task_id,
+        user_dep: currentUser.dep,
+        user_subDep: currentUser.subDep,
+        user_role: currentUser.role,
+        task_status: task.task_status,
+        // fields for send notify
+        appoint_user_id: task.appoint_user_id,
+        appoint_department_id: task.appoint_department_id,
+        appoint_subdepartment_id: task.appoint_subdepartment_id,
+        responsible_user_id: task.responsible_user_id,
+        responsible_department_id: task.responsible_department_id,
+        responsible_subdepartment_id: task.responsible_subdepartment_id,
       }
       fetchNewComment(currentUser.token, newComment).then(() => setFormKey(prevKey => prevKey + 1))
       setComment("")
