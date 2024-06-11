@@ -864,30 +864,27 @@ const handleTaskComment = async postPayload => {
       switch (user_role) {
         case 'general':
           if (responsible_user_id === null) {
-            console.log('responsible_user_id: null')
             try {
-              await noticeToAppointUserT('Новый коментарий inOneSubDep', postPayload)
-              await noticeToAppointLeadT('Новая задача inOneSubDep', postPayload)
+              await noticeToAppointUserT('Новый коментарий', postPayload)
+              await noticeToAppointLeadT('Новая коментарий', postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
           } else {
             try {
-              await noticeToAppointUserT('Новый коментарий inOneSubDep', postPayload)
-              await noticeToResponceUserT('Новый коментарий inOneSubDep', postPayload)
-              await noticeToAppointLeadT('Новая задача inOneSubDep', postPayload)
+              await noticeToAppointUserT('Новый коментарий', postPayload)
+              await noticeToResponceUserT('Новый коментарий', postPayload)
+              await noticeToAppointLeadT('Новая коментарий', postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
           }
           break
-        // !############################################st
         case 'chife':
-          console.log('chife')
           if (responsible_user_id === null) {
-            console.log('responsible_user_id: null')
             try {
-              await noticeToAppointUserT('Новый коментарий responsible_user_id === null', postPayload)
+              await noticeAppoinToGeneralT('Новый коментарий', postPayload)
+              await noticeToAppointUserT('Новый коментарий', postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
@@ -895,43 +892,51 @@ const handleTaskComment = async postPayload => {
             try {
               if (user_id === appoint_user_id) {
                 console.log(user_id === appoint_user_id)
-                await noticeAppoinToGeneralT('Новая задача inOneSubDep', postPayload)
-                await noticeToResponceUserT('Новый 1 коментарий inOneSubDep', postPayload)
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                await noticeToResponceUserT('Новый коментарий', postPayload)
                 await updateReadStatusQ({
                   task_id: task_id,
                   user_id: appoint_subdepartment_id,
                   read_status: 'readed',
                 })
               } else {
-                user_id === responsible_user_id ? '' : await noticeToResponceUserT('Новый 1 коментарий inOneSubDep', postPayload)
-                user_id === responsible_user_id ? '' : await noticeToAppointUserT('Новый 2 коментарий inOneSubDep', postPayload)
-                user_id !== responsible_user_id ? '' : await noticeToAppointUserT('Новый 3 коментарий inOneSubDep', postPayload)
-                await noticeAppoinToGeneralT('Новая задача inOneSubDep', postPayload)
+                user_id === responsible_user_id ? '' : await noticeToResponceUserT('Новый коментарий', postPayload)
+                user_id === responsible_user_id ? '' : await noticeToAppointUserT('Новый коментарий', postPayload)
+                user_id !== responsible_user_id ? '' : await noticeToAppointUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
               }
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
           }
           break
-        // !############################################end
         case 'user':
-          console.log('user')
           if (responsible_user_id === null) {
-            console.log('responsible_user_id: null')
             try {
-              await noticeToAppointLeadT('Новая задача inOneSubDep', postPayload)
-              // не понятно. пока задача не назначена то ее не видно генералу ?! Нужно ли?
-              // await noticeAppoinToGeneralT('Новая задача inOneSubDep', postPayload)
+              await noticeResponceToGeneralT('Новая коментарий', postPayload)
+              await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+              await noticeToResponceLeadT('Новая коментарий', postPayload)
+              await noticeToAppointLeadT('Новая коментарий', postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
-          } else {
+          }
+          if (responsible_user_id !== null) {
             try {
-              user_id === responsible_user_id
-                ? await noticeToAppointUserT('Новый коментарий inOneSubDep', postPayload)
-                : await noticeToResponceUserT('Новый коментарий inOneSubDep', postPayload)
-              await noticeToAppointLeadT('Новая задача inOneSubDep', postPayload)
-              await noticeAppoinToGeneralT('Новая задача inOneSubDep', postPayload)
+              if (user_id === appoint_user_id) {
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                await noticeToAppointLeadT('Новая коментарий', postPayload)
+                await noticeToResponceUserT('Новая коментарий', postPayload)
+              } else if (user_id === responsible_user_id) {
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                }
+              }
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
@@ -941,25 +946,152 @@ const handleTaskComment = async postPayload => {
       break
     // !##################################################
     case inDifSubDep:
-      console.log('inDifSubDep', inDifSubDep)
-      if (responsible_user_id === null) {
-        console.log('responsible_user_id: null')
-        try {
-          await noticeToAppointUserT('Новый коментарий 1212', postPayload)
-        } catch (error) {
-          // throw new Error('Ошибка запроса к базе данных', error)
-          handleError(res, 'addTaskCommet')
-        }
+      switch (user_role) {
+        case 'general':
+          if (responsible_user_id === null) {
+            if (user_dep === appoint_department_id) {
+              try {
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                }
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+            if (user_dep === responsible_department_id) {
+              try {
+                await noticeToResponceLeadT('Новая коментарий', postPayload)
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+          }
+          if (responsible_user_id !== null) {
+            if (user_dep === appoint_department_id) {
+              try {
+                await noticeToResponceLeadT('Новая коментарий', postPayload)
+                await noticeToResponceUserT('Новый коментарий', postPayload)
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                }
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+            if (user_dep === responsible_department_id) {
+              try {
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+          }
+          break
+        case 'chife':
+          if (responsible_user_id === null) {
+            if (user_subDep === responsible_subdepartment_id) {
+              try {
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                }
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+            if (user_subDep === appoint_subdepartment_id) {
+              try {
+                await noticeToResponceLeadT('Новая коментарий', postPayload)
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                }
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+          }
+          if (responsible_user_id !== null) {
+            if (user_subDep.toString() === responsible_subdepartment_id.toString()) {
+              try {
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                await noticeToResponceUserT('Новый коментарий', postPayload)
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                }
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+            if (user_subDep.toString() === appoint_subdepartment_id.toString()) {
+              try {
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                await noticeToResponceUserT('Новый коментарий', postPayload)
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToResponceLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToResponceLeadT('Новая коментарий', postPayload)
+                }
+              } catch (error) {
+                handleError(res, 'handleTaskComment')
+              }
+            }
+          }
+          break
+        case 'user':
+          if (responsible_user_id === null) {
+            try {
+              await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+              await noticeToResponceLeadT('Новая коментарий', postPayload)
+              await noticeToAppointLeadT('Новая коментарий', postPayload)
+            } catch (error) {
+              handleError(res, 'handleTaskComment')
+            }
+          }
+          if (responsible_user_id !== null) {
+            try {
+              if (user_id === appoint_user_id) {
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                await noticeToResponceLeadT('Новая коментарий', postPayload)
+                await noticeToAppointLeadT('Новая коментарий', postPayload)
+                await noticeToResponceUserT('Новая коментарий', postPayload)
+              } else if (user_id === responsible_user_id) {
+                await noticeAppoinToGeneralT('Новая коментарий', postPayload)
+                await noticeToResponceLeadT('Новая коментарий', postPayload)
+                const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
+                if (appoint_user_id === ts[0].id) {
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                } else {
+                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT('Новая коментарий', postPayload)
+                }
+              }
+            } catch (error) {
+              handleError(res, 'handleTaskComment')
+            }
+          }
+          break
       }
-      if (responsible_user_id) {
-        try {
-          await noticeToAppointUserT('Новый коментарий 1212', postPayload)
-          await noticeToResponceUserT('Новый коментарий 1212', postPayload)
-        } catch (error) {
-          handleError(res, 'addTaskCommet')
-        }
-      }
-      break
     default:
       // Действия по умолчанию, если ни одно из условий не соответствует
       break
