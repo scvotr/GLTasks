@@ -2,10 +2,12 @@ import { Box, TextField, Button, List, ListItem, ListItemText, Typography, style
 import { useAuthContext } from "../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
 import { useEffect, useState } from "react"
+import { useSocketContext } from "../../../../context/SocketProvider"
 
 const ScrollableList = styled(List)({})
 
 export const TaskComments = ({ comments, onSubmit, task }) => {
+  const socket = useSocketContext()
   const currentUser = useAuthContext()
   const [comment, setComment] = useState("")
   const [commentList, setCommentList] = useState([])
@@ -26,6 +28,25 @@ export const TaskComments = ({ comments, onSubmit, task }) => {
       setCommentList(data)
     })
   }, [formKey])
+
+  // !------------------------------
+  useEffect(()=> {
+    socket.on("taskApproved", () => {
+      setFormKey(prevKey => prevKey + 1)
+    })
+  }, [socket])
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      socket.disconnect()
+    })
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        socket.disconnect()
+      })
+    }
+  }, [socket])
+  // !------------------------------
 
   const handleSubmit = () => {
     if (comment.trim() !== "") {
