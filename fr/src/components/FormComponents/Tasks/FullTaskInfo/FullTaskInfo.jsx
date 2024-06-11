@@ -86,7 +86,6 @@ const getFullFile = async (file, task_id, token) => {
 }
 
 export const FullTaskInfo = ({ task }) => {
-  console.log(task)
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [taskFiles, setTaskFiles] = useState(task)
