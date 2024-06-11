@@ -23,6 +23,8 @@ const noticeToAppointLeadT = async (text, data) => {
     .emit('taskApproved', { message: text, taskData: data.task_id });
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'unread' });
+      // !----------------
+      await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'readed' });
       await sendEmailToLead(data.appoint_subdepartment_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
@@ -80,6 +82,8 @@ const noticeToResponceLeadT = async (text, data) => {
     .emit('taskApproved', { message: text, taskData: data.task_id });
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'unread' });
+      // !----------------
+      await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'readed' });
       await sendEmailToLead(data.responsible_subdepartment_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
