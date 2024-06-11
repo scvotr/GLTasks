@@ -27,6 +27,7 @@ import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined"
 import { UseAccordionView } from "../../Accordion/UseAccordionView"
 import { TaskDetailsCard } from "./TaskDetailsCard"
 import { TaskProgressCard } from "./TaskProgressCard"
+import { ImageBlock } from "../../../Navigation/User/Menu/Tasks/TaskForm/ImageBlock/ImageBlock"
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -241,6 +242,9 @@ export const FullTaskInfo = ({ task }) => {
                 </Typography>
               </Item>
               <TaskComments task={task} />
+            </Item>
+            <Item>
+              <ImageBlock />
             </Item>
           </Grid>
           {/* -------------------------------------- */}
