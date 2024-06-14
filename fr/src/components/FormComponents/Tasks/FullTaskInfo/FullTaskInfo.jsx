@@ -27,7 +27,8 @@ import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined"
 import { UseAccordionView } from "../../Accordion/UseAccordionView"
 import { TaskDetailsCard } from "./TaskDetailsCard"
 import { TaskProgressCard } from "./TaskProgressCard"
-import { ImageBlock } from "../../../Navigation/User/Menu/Tasks/TaskForm/ImageBlock/ImageBlock"
+import { ImageBlockV2 } from "../../../Navigation/User/Menu/Tasks/TaskForm/ImageBlock/ImageBlockV2/ImageBlockV2"
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -92,13 +93,29 @@ export const FullTaskInfo = ({ task }) => {
   const [taskFiles, setTaskFiles] = useState(task)
   const [taskFilesPDF, setTaskFilesPDF] = useState([])
   const [taskFilesIMAGE, setTaskFilesIMAGE] = useState([])
+  // console.log('taskFilesIMAGE', taskFilesIMAGE)
   const [selectedImage, setSelectedImage] = useState({})
   const [modalOpen, setModalOpen] = useState(false)
+  const [formKey, setFormKey] = useState(0)
+  const [newFiles, setNewFiles] = useState()
+  const [ts, setTs] = useState(task)
+
+ 
+
+  // Потому что после того как я добавил файлы я не запрашиваю что ??? мне нужно задача с обновленымы полями
 
   useEffect(() => {
+    console.log('formKey', formKey)
+    console.log('newFiles', newFiles)
+    // console.log('ts', ts)
+    // if (newFiles) {
+    //   console.log('2222', { ...task, old_files: [...task.old_files, ...newFiles.map(file => ({ type: '.jpg', name: file }))] })
+    //   setTs({ ...task, old_files: [...task.old_files, ...newFiles.map(file => ({ type: '.jpg', name: file }))] })
+    // }
     if (task.old_files && task.old_files.length > 0) {
       getPreviewFileContent(currentUser.token, task, setReqStatus)
         .then(data => {
+          // console.log('ddd', data)
           setTaskFilesPDF([])
           setTaskFilesIMAGE([])
           data.forEach(file => {
@@ -116,7 +133,7 @@ export const FullTaskInfo = ({ task }) => {
     } else {
       setTaskFiles(task)
     }
-  }, [task.old_files, currentUser])
+  }, [task.old_files, currentUser, formKey, newFiles])
 
   const handleDownload = async file => {
     try {
@@ -243,8 +260,8 @@ export const FullTaskInfo = ({ task }) => {
               </Item>
               <TaskComments task={task} />
             </Item>
-            <Item>
-              <ImageBlock />
+            <Item sx={{mt: 2}}>
+              <ImageBlockV2 task={task} onSubmit={setFormKey} setNewFiles={setNewFiles} />
             </Item>
           </Grid>
           {/* -------------------------------------- */}
