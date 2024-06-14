@@ -596,7 +596,7 @@ class TasksControler {
         }
       }
       await updateTaskDataQ(postPayload, fileNames)
-      sendResponseWithData(res, 'updateTask')
+      sendResponseWithData(res, fileNames)
     } catch (error) {
       handleError(res, 'updateTask')
     }
