@@ -31,7 +31,7 @@ const {
   noticeResponceToGeneralT,
 } = require('./noticeFor')
 
-const sendResponseWithData = (res, data) => {
+const sendResponseWithData = async (res, data) => {
   res.setHeader('Content-Type', 'application/json')
   res.write(JSON.stringify(data))
   res.end()
@@ -203,13 +203,6 @@ class TasksControler {
       const inDifDep = data.appoint_department_id !== data.responsible_department_id
       const inOneSubDep = data.appoint_subdepartment_id === data.responsible_subdepartment_id
       const inDifSubDep = data.appoint_subdepartment_id !== data.responsible_subdepartment_id
-
-      // console.log(data.approved_on === 'true')
-      // console.log(data.setResponseUser_on === 'true')
-      // console.log('inOneDep', inOneDep)
-      // console.log('inDifDep', inDifDep)
-      // console.log('inOneSubDep', inOneSubDep)
-      // console.log('inDifSubDep', inDifSubDep)
 
       if (data.approved_on) {
         if (inOneDep && inOneSubDep) {
@@ -438,7 +431,17 @@ class TasksControler {
           }
         }
       }
-
+      // ! -------------------------------------------------------
+      if (data.reject_on) {
+        try {
+          await updateTaskByEventrQ(data)
+          await handleTaskComment(data, 'Задача отклонена')
+          // await sendResponseWithData(res, 'ssss')
+        } catch (error) {
+          handleError(res, 'rejectedTask')
+        }
+      }
+      // ! -------------------------------------------------------
       if (data.closed_on) {
         if (inOneDep && inOneSubDep) {
           console.log('Задача внутри одного отдела в одном департаменте closed_on')
@@ -642,7 +645,7 @@ class TasksControler {
       const postPayload = JSON.parse(authDecodeUserData.payLoad)
       await addNewCommentQ(postPayload)
       // Условия уведомления:
-      await handleTaskComment(postPayload)
+      await handleTaskComment(postPayload, 'Новый коментарий')
       sendResponseWithData(res, 'addTaskCommet')
     } catch (error) {
       handleError(res, 'addTaskCommet')
@@ -660,14 +663,15 @@ class TasksControler {
   }
 }
 
-const handleTaskComment = async postPayload => {
+const handleTaskComment = async (postPayload, message) => {
+  console.log(message)
   const {
     user_role,
     task_status,
     user_id,
     appoint_user_id,
-    user_dep,
-    user_subDep,
+    user_dep, // 
+    user_subDep, //
     appoint_subdepartment_id,
     responsible_user_id,
     responsible_subdepartment_id,
@@ -675,7 +679,21 @@ const handleTaskComment = async postPayload => {
     appoint_department_id,
     task_id,
   } = postPayload
-  console.log('>>>>>>>>>>..', postPayload)
+
+  // console.log(
+  //   user_role,
+  //   task_status,
+  //   user_id,
+  //   appoint_user_id,
+  //   user_dep,
+  //   user_subDep,
+  //   appoint_subdepartment_id,
+  //   responsible_user_id,
+  //   responsible_subdepartment_id,
+  //   responsible_department_id,
+  //   appoint_department_id,
+  //   task_id
+  // )
 
   const inDifDep = appoint_department_id !== responsible_department_id
   const inOneSubDep = appoint_subdepartment_id === responsible_subdepartment_id
@@ -689,14 +707,14 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id === null) {
             if (user_dep === appoint_department_id) {
               try {
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -704,14 +722,14 @@ const handleTaskComment = async postPayload => {
             }
             if (user_dep === responsible_department_id) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceLeadT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -721,15 +739,15 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id !== null) {
             if (user_dep === appoint_department_id) {
               try {
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -737,15 +755,15 @@ const handleTaskComment = async postPayload => {
             }
             if (user_dep === responsible_department_id) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -757,14 +775,14 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id === null) {
             if (user_subDep === responsible_subdepartment_id) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -772,14 +790,14 @@ const handleTaskComment = async postPayload => {
             }
             if (user_subDep === appoint_subdepartment_id) {
               try {
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -789,15 +807,15 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id !== null) {
             if (user_subDep.toString() === responsible_subdepartment_id.toString()) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -805,15 +823,15 @@ const handleTaskComment = async postPayload => {
             }
             if (user_subDep.toString() === appoint_subdepartment_id.toString()) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToResponceLeadT('Новый коментарий', postPayload)
+                  await noticeToResponceLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToResponceLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToResponceLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -824,10 +842,10 @@ const handleTaskComment = async postPayload => {
         case 'user':
           if (responsible_user_id === null) {
             try {
-              await noticeResponceToGeneralT('Новый коментарий', postPayload)
-              await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-              await noticeToResponceLeadT('Новый коментарий', postPayload)
-              await noticeToAppointLeadT('Новый коментарий', postPayload)
+              await noticeResponceToGeneralT(message, postPayload)
+              await noticeAppoinToGeneralT(message, postPayload)
+              await noticeToResponceLeadT(message, postPayload)
+              await noticeToAppointLeadT(message, postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
@@ -835,21 +853,21 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id !== null) {
             try {
               if (user_id === appoint_user_id) {
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeToAppointLeadT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeToAppointLeadT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
               } else if (user_id === responsible_user_id) {
-                await noticeResponceToGeneralT('Новый коментарий', postPayload)
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
+                await noticeResponceToGeneralT(message, postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceLeadT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               }
             } catch (error) {
@@ -865,16 +883,16 @@ const handleTaskComment = async postPayload => {
         case 'general':
           if (responsible_user_id === null) {
             try {
-              await noticeToAppointUserT('Новый коментарий', postPayload)
+              await noticeToAppointUserT(message, postPayload)
               await noticeToAppointLeadT('Новая коментарий', postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
           } else {
             try {
-              await noticeToAppointUserT('Новый коментарий', postPayload)
-              await noticeToResponceUserT('Новый коментарий', postPayload)
-              await noticeToAppointLeadT('Новый коментарий', postPayload)
+              await noticeToAppointUserT(message, postPayload)
+              await noticeToResponceUserT(message, postPayload)
+              await noticeToAppointLeadT(message, postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
@@ -883,8 +901,8 @@ const handleTaskComment = async postPayload => {
         case 'chife':
           if (responsible_user_id === null) {
             try {
-              await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-              await noticeToAppointUserT('Новый коментарий', postPayload)
+              await noticeAppoinToGeneralT(message, postPayload)
+              await noticeToAppointUserT(message, postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
@@ -892,18 +910,18 @@ const handleTaskComment = async postPayload => {
             try {
               if (user_id === appoint_user_id) {
                 console.log(user_id === appoint_user_id)
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 await updateReadStatusQ({
                   task_id: task_id,
                   user_id: appoint_subdepartment_id,
                   read_status: 'readed',
                 })
               } else {
-                user_id === responsible_user_id ? '' : await noticeToResponceUserT('Новый коментарий', postPayload)
-                user_id === responsible_user_id ? '' : await noticeToAppointUserT('Новый коментарий', postPayload)
-                user_id !== responsible_user_id ? '' : await noticeToAppointUserT('Новый коментарий', postPayload)
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
+                user_id === responsible_user_id ? '' : await noticeToResponceUserT(message, postPayload)
+                user_id === responsible_user_id ? '' : await noticeToAppointUserT(message, postPayload)
+                user_id !== responsible_user_id ? '' : await noticeToAppointUserT(message, postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
               }
             } catch (error) {
               handleError(res, 'handleTaskComment')
@@ -913,10 +931,10 @@ const handleTaskComment = async postPayload => {
         case 'user':
           if (responsible_user_id === null) {
             try {
-              await noticeResponceToGeneralT('Новый коментарий', postPayload)
-              await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-              await noticeToResponceLeadT('Новый коментарий', postPayload)
-              await noticeToAppointLeadT('Новый коментарий', postPayload)
+              await noticeResponceToGeneralT(message, postPayload)
+              await noticeAppoinToGeneralT(message, postPayload)
+              await noticeToResponceLeadT(message, postPayload)
+              await noticeToAppointLeadT(message, postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
@@ -924,17 +942,17 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id !== null) {
             try {
               if (user_id === appoint_user_id) {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToAppointLeadT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToAppointLeadT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
               } else if (user_id === responsible_user_id) {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               }
             } catch (error) {
@@ -953,10 +971,10 @@ const handleTaskComment = async postPayload => {
               try {
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -964,7 +982,7 @@ const handleTaskComment = async postPayload => {
             }
             if (user_dep === responsible_department_id) {
               try {
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
+                await noticeToResponceLeadT(message, postPayload)
               } catch (error) {
                 handleError(res, 'handleTaskComment')
               }
@@ -973,14 +991,14 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id !== null) {
             if (user_dep === appoint_department_id) {
               try {
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -998,13 +1016,13 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id === null) {
             if (user_subDep === responsible_subdepartment_id) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
                   await noticeToAppointLeadT('Новая коментарий', postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -1012,13 +1030,13 @@ const handleTaskComment = async postPayload => {
             }
             if (user_subDep === appoint_subdepartment_id) {
               try {
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -1028,14 +1046,14 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id !== null) {
             if (user_subDep.toString() === responsible_subdepartment_id.toString()) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -1043,14 +1061,14 @@ const handleTaskComment = async postPayload => {
             }
             if (user_subDep.toString() === appoint_subdepartment_id.toString()) {
               try {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToResponceLeadT('Новый коментарий', postPayload)
+                  await noticeToResponceLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToResponceLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToResponceLeadT(message, postPayload)
                 }
               } catch (error) {
                 handleError(res, 'handleTaskComment')
@@ -1061,9 +1079,9 @@ const handleTaskComment = async postPayload => {
         case 'user':
           if (responsible_user_id === null) {
             try {
-              await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-              await noticeToResponceLeadT('Новый коментарий', postPayload)
-              await noticeToAppointLeadT('Новый коментарий', postPayload)
+              await noticeAppoinToGeneralT(message, postPayload)
+              await noticeToResponceLeadT(message, postPayload)
+              await noticeToAppointLeadT(message, postPayload)
             } catch (error) {
               handleError(res, 'handleTaskComment')
             }
@@ -1071,19 +1089,19 @@ const handleTaskComment = async postPayload => {
           if (responsible_user_id !== null) {
             try {
               if (user_id === appoint_user_id) {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
-                await noticeToAppointLeadT('Новый коментарий', postPayload)
-                await noticeToResponceUserT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceLeadT(message, postPayload)
+                await noticeToAppointLeadT(message, postPayload)
+                await noticeToResponceUserT(message, postPayload)
               } else if (user_id === responsible_user_id) {
-                await noticeAppoinToGeneralT('Новый коментарий', postPayload)
-                await noticeToResponceLeadT('Новый коментарий', postPayload)
+                await noticeAppoinToGeneralT(message, postPayload)
+                await noticeToResponceLeadT(message, postPayload)
                 const ts = await getLeadIdQ(postPayload.appoint_subdepartment_id)
                 if (appoint_user_id === ts[0].id) {
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 } else {
-                  await noticeToAppointUserT('Новый коментарий', postPayload)
-                  await noticeToAppointLeadT('Новый коментарий', postPayload)
+                  await noticeToAppointUserT(message, postPayload)
+                  await noticeToAppointLeadT(message, postPayload)
                 }
               }
             } catch (error) {
@@ -1157,18 +1175,18 @@ module.exports = new TasksControler()
 //     await noticeToAppointUserT('Новый коментарий 1212', postPayload)
 //   }
 //   if (postPayload.responsible_user_id === null && postPayload.task_status.toString() === 'approved') {
-//     postPayload.user_subDep === postPayload.appoint_subdepartment_id ? await noticeToResponceLeadT('Новый коментарий', postPayload) : ''
-//     postPayload.user_subDep !== postPayload.appoint_subdepartment_id ? await noticeToAppointLeadT('Новый коментарий', postPayload) : ''
+//     postPayload.user_subDep === postPayload.appoint_subdepartment_id ? await noticeToResponceLeadT(message, postPayload) : ''
+//     postPayload.user_subDep !== postPayload.appoint_subdepartment_id ? await noticeToAppointLeadT(message, postPayload) : ''
 //   }
 //   if (postPayload.responsible_user_id !== null && postPayload.task_status.toString() === 'inWork') {
 //     if (postPayload.user_subDep === postPayload.responsible_subdepartment_id) {
 //       await noticeToResponceUserT('Новый коментарий вввв', postPayload)
-//       postPayload.user_subDep === postPayload.responsible_department_id ? await noticeToAppointLeadT('Новый коментарий', postPayload) : ''
+//       postPayload.user_subDep === postPayload.responsible_department_id ? await noticeToAppointLeadT(message, postPayload) : ''
 
 //     } else {
-//       await noticeToResponceUserT('Новый коментарий', postPayload)
-//       postPayload.user_subDep === postPayload.appoint_subdepartment_id ? await noticeToResponceLeadT('Новый коментарий', postPayload) : ''
-//       postPayload.user_subDep !== postPayload.appoint_subdepartment_id ? await noticeToAppointLeadT('Новый коментарий', postPayload) : ''
+//       await noticeToResponceUserT(message, postPayload)
+//       postPayload.user_subDep === postPayload.appoint_subdepartment_id ? await noticeToResponceLeadT(message, postPayload) : ''
+//       postPayload.user_subDep !== postPayload.appoint_subdepartment_id ? await noticeToAppointLeadT(message, postPayload) : ''
 //     }
 //   }
 //   if (
@@ -1176,12 +1194,12 @@ module.exports = new TasksControler()
 //     postPayload.task_status.toString() === 'closed'
 //   ) {
 //     if (postPayload.user_subDep === postPayload.appoint_subdepartment_id) {
-//       await noticeToResponceUserT('Новый коментарий', postPayload)
-//       postPayload.user_subDep === postPayload.responsible_department_id ? '' : await noticeToResponceLeadT('Новый коментарий', postPayload)
+//       await noticeToResponceUserT(message, postPayload)
+//       postPayload.user_subDep === postPayload.responsible_department_id ? '' : await noticeToResponceLeadT(message, postPayload)
 //     } else {
-//       await noticeToResponceUserT('Новый коментарий', postPayload)
-//       postPayload.user_subDep === postPayload.appoint_subdepartment_id ? await noticeToResponceLeadT('Новый коментарий', postPayload) : ''
-//       postPayload.user_subDep !== postPayload.appoint_subdepartment_id ? await noticeToAppointLeadT('Новый коментарий', postPayload) : ''
+//       await noticeToResponceUserT(message, postPayload)
+//       postPayload.user_subDep === postPayload.appoint_subdepartment_id ? await noticeToResponceLeadT(message, postPayload) : ''
+//       postPayload.user_subDep !== postPayload.appoint_subdepartment_id ? await noticeToAppointLeadT(message, postPayload) : ''
 //     }
 //   }
 // } else if (postPayload.user_role.toString() === 'general') {
@@ -1190,25 +1208,25 @@ module.exports = new TasksControler()
 //   console.log('User')
 //   if (postPayload.task_status.toString() === 'toApprove') {
 //     console.log('User ............')
-//     await noticeToAppointLeadT('Новый коментарий', postPayload)
+//     await noticeToAppointLeadT(message, postPayload)
 //   }
 //   if (postPayload.responsible_user_id === null && postPayload.task_status.toString() === 'approved') {
-//     await noticeToResponceLeadT('Новый коментарий', postPayload)
-//     await noticeToAppointLeadT('Новый коментарий', postPayload)
+//     await noticeToResponceLeadT(message, postPayload)
+//     await noticeToAppointLeadT(message, postPayload)
 //   }
 //   if (postPayload.responsible_user_id !== null && postPayload.task_status.toString() === 'inWork') {
 //     if (postPayload.user_subDep === postPayload.responsible_subdepartment_id) {
 //       await noticeToAppointLeadT('Новый коментарий ммм', postPayload)
 //       // !111
-//       postPayload.user_subDep === postPayload.responsible_department_id ? await noticeToResponceLeadT('Новый коментарий', postPayload) : ''
+//       postPayload.user_subDep === postPayload.responsible_department_id ? await noticeToResponceLeadT(message, postPayload) : ''
 
-//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT('Новый коментарий', postPayload) : ''
-//       postPayload.user_id !== postPayload.appoint_user_id ? await noticeToAppointUserT('Новый коментарий', postPayload) : ''
+//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT(message, postPayload) : ''
+//       postPayload.user_id !== postPayload.appoint_user_id ? await noticeToAppointUserT(message, postPayload) : ''
 //     } else {
-//       await noticeToResponceLeadT('Новый коментарий', postPayload)
-//       await noticeToAppointLeadT('Новый коментарий', postPayload)
-//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT('Новый коментарий', postPayload) : ''
-//       postPayload.user_id !== postPayload.appoint_user_id ? await noticeToAppointUserT('Новый коментарий', postPayload) : ''
+//       await noticeToResponceLeadT(message, postPayload)
+//       await noticeToAppointLeadT(message, postPayload)
+//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT(message, postPayload) : ''
+//       postPayload.user_id !== postPayload.appoint_user_id ? await noticeToAppointUserT(message, postPayload) : ''
 //     }
 //   }
 //   if (
@@ -1216,14 +1234,14 @@ module.exports = new TasksControler()
 //     postPayload.task_status.toString() === 'closed'
 //   ) {
 //     if (postPayload.user_subDep === postPayload.appoint_subdepartment_id) {
-//       await noticeToAppointLeadT('Новый коментарий', postPayload)
-//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT('Новый коментарий', postPayload) : ''
-//       postPayload.user_subDep === postPayload.responsible_department_id ? '' : await noticeToResponceLeadT('Новый коментарий', postPayload)
+//       await noticeToAppointLeadT(message, postPayload)
+//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT(message, postPayload) : ''
+//       postPayload.user_subDep === postPayload.responsible_department_id ? '' : await noticeToResponceLeadT(message, postPayload)
 //     } else {
-//       await noticeToResponceLeadT('Новый коментарий', postPayload)
-//       await noticeToAppointLeadT('Новый коментарий', postPayload)
-//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT('Новый коментарий', postPayload) : ''
-//       postPayload.user_id !== postPayload.appoint_user_id ? await noticeToAppointUserT('Новый коментарий', postPayload) : ''
+//       await noticeToResponceLeadT(message, postPayload)
+//       await noticeToAppointLeadT(message, postPayload)
+//       postPayload.user_id === postPayload.appoint_user_id ? await noticeToResponceUserT(message, postPayload) : ''
+//       postPayload.user_id !== postPayload.appoint_user_id ? await noticeToAppointUserT(message, postPayload) : ''
 //     }
 //   }
 // }

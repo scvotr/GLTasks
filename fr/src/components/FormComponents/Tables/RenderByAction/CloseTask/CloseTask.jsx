@@ -63,7 +63,13 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
         // -----
         user_role: currentUser.role,
         // ----to mail
-        current_user: currentUser.id,
+        // так как при уведомлении нужено именно поле user_id в место current_user
+        user_id: currentUser.id,
+        // current_user: currentUser.id,
+        // так как при уведомлении нужено именно поле user_dep и user_subDep
+        user_dep: currentUser.dep,
+        user_subDep: currentUser.subDep,
+        // ------------------
         user_name: task.appoint_user_last_name,
         appoint_department_name: task.appoint_department_name,
         task_descript: task.task_descript,
