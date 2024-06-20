@@ -379,6 +379,7 @@ const updateTaskByEventrQ = async (data) => {
       reject_on,
       closed_on
     } = data
+    
     let fieldsToUpdate = []
 
     if (setResponseUser_on) {
