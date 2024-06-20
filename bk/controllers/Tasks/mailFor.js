@@ -43,8 +43,8 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
     console.log('sendEmailToLead', email, text, fields.task_descript ? fields.task_descript : fields.comment);
     await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment );
   } else {
-    console.log('Адрес электронной почты руководителя не найден');
-    throw new Error('Адрес электронной почты руководителя не найден');
+    console.log('Àäðåñ ýëåêòðîííîé ïî÷òû ðóêîâîäèòåëÿ íå íàéäåí');
+    throw new Error('Àäðåñ ýëåêòðîííîé ïî÷òû ðóêîâîäèòåëÿ íå íàéäåí');
   }
 }
 
@@ -54,8 +54,8 @@ const sendEmailToGeneral = async (department_id, text, fields = {}) => {
     console.log('sendEmailToGeneral', email, text, fields.task_descript ? fields.task_descript : fields.comment);
     await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
   } else {
-    console.log('Адрес электронной почты директора не найден');
-    // throw new Error('Адрес электронной почты директора не найден');
+    console.log('Àäðåñ ýëåêòðîííîé ïî÷òû äèðåêòîðà íå íàéäåí');
+    // throw new Error('Àäðåñ ýëåêòðîííîé ïî÷òû äèðåêòîðà íå íàéäåí');
   }
 }
 
@@ -65,8 +65,8 @@ const sendEmailToUser = async (user_id, text, fields = {}) => {
     console.log('sendEmailToUser', email, text, fields.task_descript ? fields.task_descript : fields.comment);
     await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
   } else {
-    console.log('Адрес электронной почты пользователя не найден');
-    throw new Error('Адрес электронной почты пользователя не найден');
+    console.log('Àäðåñ ýëåêòðîííîé ïî÷òû ïîëüçîâàòåëÿ íå íàéäåí');
+    throw new Error('Àäðåñ ýëåêòðîííîé ïî÷òû ïîëüçîâàòåëÿ íå íàéäåí');
   }
 }
 
