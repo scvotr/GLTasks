@@ -30,8 +30,8 @@ const sendEmail = async (recipientEmail, text, descript) => {
       text: descript ? descript : text,
     };
 
-    // const info = await transporter.sendMail(mailOptions);
-    // console.log('Email sent:', info.response);
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.response);
   } catch (error) {
     console.error('Error occurred while sending email:', error);
   }
@@ -40,8 +40,8 @@ const sendEmail = async (recipientEmail, text, descript) => {
 const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   const email = await getLeadEmailQ(subdepartment_id);
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToLead', email, text, fields.task_descript);
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript );
+    console.log('sendEmailToLead', email, text, fields.task_descript ? fields.task_descript : fields.comment);
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment );
   } else {
     console.log('Адрес электронной почты руководителя не найден');
     throw new Error('Адрес электронной почты руководителя не найден');
@@ -51,8 +51,8 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
 const sendEmailToGeneral = async (department_id, text, fields = {}) => {
   const email = await getGeneralEmailQ(department_id);
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToGeneral', email, text, fields.task_descript);
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript );
+    console.log('sendEmailToGeneral', email, text, fields.task_descript ? fields.task_descript : fields.comment);
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
   } else {
     console.log('Адрес электронной почты директора не найден');
     // throw new Error('Адрес электронной почты директора не найден');
@@ -62,8 +62,8 @@ const sendEmailToGeneral = async (department_id, text, fields = {}) => {
 const sendEmailToUser = async (user_id, text, fields = {}) => {
   const email = await getUserEmailQ(user_id);
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToUser', email, text, fields.task_descript);
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript);
+    console.log('sendEmailToUser', email, text, fields.task_descript ? fields.task_descript : fields.comment);
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
   } else {
     console.log('Адрес электронной почты пользователя не найден');
     throw new Error('Адрес электронной почты пользователя не найден');

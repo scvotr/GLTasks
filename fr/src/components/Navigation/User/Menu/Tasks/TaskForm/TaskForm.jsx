@@ -209,7 +209,7 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
           <Divider />
           <SelectDataField getData={getInputData} value={formData} internalTask={isInternalTask} />
           <Divider />
-          <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} removeTaskExistingFiles={removeTaskExistingFiles}toEdit={isEdit} />
+          <ImageBlock files={formData} getData={getInputData} isEdit={isEdit} takeAddedIndex={removeTaskAddedFiles} removeTaskExistingFiles={removeTaskExistingFiles} toEdit={isEdit} />
           <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} >
               {isEdit ? "Изменить" : "Создать задачу"}
