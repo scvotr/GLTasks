@@ -1,20 +1,4 @@
-import {
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  Divider,
-  Box,
-  Stack,
-  ImageList,
-  ImageListItem,
-  Stepper,
-  Step,
-  StepLabel,
-  IconButton,
-  Tooltip,
-} from "@mui/material"
-import { formatDate } from "../../../../utils/formatDate"
+import { Typography, Grid, Stack, ImageList, ImageListItem, Tooltip } from "@mui/material"
 import { HOST_ADDR } from "../../../../utils/remoteHosts"
 import { useEffect, useState } from "react"
 import { useAuthContext } from "../../../../context/AuthProvider"
@@ -28,7 +12,6 @@ import { UseAccordionView } from "../../Accordion/UseAccordionView"
 import { TaskDetailsCard } from "./TaskDetailsCard"
 import { TaskProgressCard } from "./TaskProgressCard"
 import { ImageBlockV2 } from "../../../Navigation/User/Menu/Tasks/TaskForm/ImageBlock/ImageBlockV2/ImageBlockV2"
-
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -87,39 +70,61 @@ const getFullFile = async (file, task_id, token) => {
   }
 }
 
+const parsedFiles = files => {
+  return files.map(file => {
+    const parts = file.split(".")
+    const extension = parts.pop()
+    const name = parts.join(".")
+
+    return {
+      type: `.${extension}`,
+      name: `${name}.${extension}`,
+    }
+  })
+}
+
 export const FullTaskInfo = ({ task }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [taskFiles, setTaskFiles] = useState(task)
   const [taskFilesPDF, setTaskFilesPDF] = useState([])
   const [taskFilesIMAGE, setTaskFilesIMAGE] = useState([])
-  // console.log('taskFilesIMAGE', taskFilesIMAGE)
   const [selectedImage, setSelectedImage] = useState({})
   const [modalOpen, setModalOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const [newFiles, setNewFiles] = useState()
-  const [ts, setTs] = useState(task)
 
- 
+  const [updateOldFiles, setUpdateOldFiles] = useState(task.old_files || [])
+  const [updateFilesNames, setUpdateFilesNames] = useState(task.file_names || [])
 
-  // Потому что после того как я добавил файлы я не запрашиваю что ??? мне нужно задача с обновленымы полями
+  const addFileToOldFiles = file => {
+    setUpdateOldFiles(prevOldFiles => [...prevOldFiles, ...file])
+  }
+  const addFileName = fileName => {
+    setUpdateFilesNames(prevOldFilesName => [...prevOldFilesName, ...fileName])
+  }
 
   useEffect(() => {
-    console.log('formKey', formKey)
-    console.log('newFiles', newFiles)
-    // console.log('ts', ts)
-    // if (newFiles) {
-    //   console.log('2222', { ...task, old_files: [...task.old_files, ...newFiles.map(file => ({ type: '.jpg', name: file }))] })
-    //   setTs({ ...task, old_files: [...task.old_files, ...newFiles.map(file => ({ type: '.jpg', name: file }))] })
-    // }
-    if (task.old_files && task.old_files.length > 0) {
-      getPreviewFileContent(currentUser.token, task, setReqStatus)
+    if (newFiles && newFiles.length > 0) {
+      const parsed = parsedFiles(newFiles)
+      addFileToOldFiles(parsed)
+      addFileName(newFiles)
+
+      setTaskFiles(prevTask => ({
+        ...prevTask,
+        file_names: [...prevTask.file_names, ...newFiles],
+        old_files: [...prevTask.old_files || [], ...parsed],
+      }))
+    }
+  }, [newFiles])
+
+  useEffect(() => {
+    if (taskFiles.old_files && taskFiles.old_files.length > 0) {
+      getPreviewFileContent(currentUser.token, taskFiles, setReqStatus)
         .then(data => {
-          // console.log('ddd', data)
           setTaskFilesPDF([])
           setTaskFilesIMAGE([])
           data.forEach(file => {
-            // file.type === ".pdf" ? setTaskFilesPDF(prevPDF => [...prevPDF, file]) : setTaskFilesIMAGE(prev => [...prev, file])
             if (file.type === ".pdf") {
               setTaskFilesPDF(prevPDF => [...prevPDF, file])
             } else if (file.type === ".jpg") {
@@ -130,10 +135,8 @@ export const FullTaskInfo = ({ task }) => {
         .catch(error => {
           // Обработка ошибки, если необходимо
         })
-    } else {
-      setTaskFiles(task)
     }
-  }, [task.old_files, currentUser, formKey, newFiles])
+  }, [taskFiles.old_files, currentUser, formKey])
 
   const handleDownload = async file => {
     try {
@@ -260,7 +263,7 @@ export const FullTaskInfo = ({ task }) => {
               </Item>
               <TaskComments task={task} />
             </Item>
-            <Item sx={{mt: 2}}>
+            <Item sx={{ mt: 2 }}>
               <ImageBlockV2 task={task} onSubmit={setFormKey} setNewFiles={setNewFiles} />
             </Item>
           </Grid>
