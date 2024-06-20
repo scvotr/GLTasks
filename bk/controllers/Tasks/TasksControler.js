@@ -31,7 +31,7 @@ const {
   noticeResponceToGeneralT,
 } = require('./noticeFor')
 
-const sendResponseWithData = async (res, data) => {
+const sendResponseWithData = (res, data) => {
   res.setHeader('Content-Type', 'application/json')
   res.write(JSON.stringify(data))
   res.end()
