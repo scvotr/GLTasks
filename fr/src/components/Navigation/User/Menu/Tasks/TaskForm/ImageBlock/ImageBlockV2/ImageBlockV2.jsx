@@ -45,10 +45,6 @@ export const ImageBlockV2 = ({ task, onSubmit, setNewFiles, isEdit, takeAddedInd
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [addFiles, setAddFiles] = useState(false)
 
-
-  console.log('formData', formData)
-
-
   const getInputData = async e => {
     const { name, value, files, checked } = e.target
     if (name === "add_new_files" || name === "append_new_files") {
