@@ -1,4 +1,4 @@
-import { Button, Box } from "@mui/material"
+import { Button, Box, TextField } from "@mui/material"
 import ThumbUpIcon from "@mui/icons-material/ThumbUp"
 import Stack from "@mui/material/Stack"
 import ThumbDownIcon from "@mui/icons-material/ThumbDown"
@@ -70,6 +70,9 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
         user_dep: currentUser.dep,
         user_subDep: currentUser.subDep,
         // ------------------
+        // изменение дедлайна
+        deadline_changed: appDate !== null ? appDate.deadline : task.deadline,
+        // ---------------
         user_name: task.appoint_user_last_name,
         appoint_department_name: task.appoint_department_name,
         task_descript: task.task_descript,
@@ -85,6 +88,21 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
       }
     }
   }
+  // -----------------------------------------
+  const today = new Date().toISOString().split("T")[0]
+
+  console.log(task.deadline === today)
+
+  const [appDate, setAppDate] = useState(null)
+  console.log(appDate)
+
+  const getData = async e => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    const updatedAppDate = { ...appDate, [name]: value };
+    setAppDate(updatedAppDate);
+  }
+  // -----------------------------------------
 
   return (
     <>
@@ -92,6 +110,24 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
         <Box sx={{ mt: 2 }}>
           <Loader reqStatus={reqStatus}>
             <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
+              {/* -------------------- */}
+              <TextField
+                id="date"
+                label="Выпонить до:"
+                type="date"
+                name="deadline"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{ min: today }}
+                // value={task.deadline}
+                value={(appDate && appDate.deadline) || task.deadline}
+                onChange={e => {
+                  getData(e) // Вызов функции обратного вызова для обновления состояния formData
+                }}
+                required
+              />
+              {/* -------------------- */}
               <Button variant="outlined" color="error" startIcon={<ThumbDownIcon />} onClick={() => handleClosedTask(false)}>
                 Отклонить
               </Button>
