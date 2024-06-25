@@ -30,6 +30,7 @@ import { MutualVerificationMain } from "../components/Navigation/User/Menu/Mutua
 import { MutualVerificationDocs } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationDocs";
 import { MutualVerificationArchive } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationArchive";
 import { InfoNews } from "../components/Layouts/DefaultLayoutMain/FAQ/InfoNews";
+import { TasksManualCmp } from "../components/Layouts/DefaultLayoutMain/Manual/TasksManualCmp";
 
 
 export const routes = createBrowserRouter([
@@ -80,6 +81,10 @@ export const routes = createBrowserRouter([
       {
         path: '/main2',
         element: <PrivateRoutes component={InfoNews} roles={["chife", "user", "general"]}/>,
+      },
+      {
+        path: '/manualTasks',
+        element: <PrivateRoutes component={TasksManualCmp} roles={["chife", "user", "general"]}/>,
       },
       {
         path: '/tasks',
