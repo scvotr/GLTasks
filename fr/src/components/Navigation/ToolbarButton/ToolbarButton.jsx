@@ -17,9 +17,10 @@ export const ToolbarButton = ({ currentUser }) => {
           direction="row"
           justifyContent="center"
           alignItems="center"
-          spacing={12}
+          spacing={6}
         >
         <Button variant="outlined" color="inherit" component={NavLink} to="/main2">Новости</Button>
+        <Button variant="outlined" color="inherit" component={NavLink} to="/manualTasks">Инструкции</Button>
         <Button variant="contained" color="warning" onClick={currentUser.logout} component={NavLink} to="/login">Выйти</Button>
         </Stack>
       ) : (
