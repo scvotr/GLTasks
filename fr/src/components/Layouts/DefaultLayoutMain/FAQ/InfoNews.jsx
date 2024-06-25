@@ -16,7 +16,8 @@ export const InfoNews = ({ data }) => {
     <>
       <Grid container spacing={2}>
         {/* --------MAIN PLACE------------ST */}
-        <Grid item xs={12}>
+        <Grid item xs={4}></Grid>
+        <Grid item xs={4}>
           <Item>
             <Typography variant="h6" gutterBottom>
               Добавленно:
