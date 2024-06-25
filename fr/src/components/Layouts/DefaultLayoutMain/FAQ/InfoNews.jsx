@@ -23,6 +23,12 @@ export const InfoNews = ({ data }) => {
               Добавленно:
             </Typography>
             <Typography gutterBottom>
+              <strong>25.06.20204</strong>
+              <ul>
+                <li>
+                  Добавлена инструкция по работе с задачами.
+                </li>
+              </ul>
               <strong>24.06.20204</strong>
               <ul>
                 <li>
