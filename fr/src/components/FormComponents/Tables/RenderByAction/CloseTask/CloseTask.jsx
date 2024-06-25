@@ -13,7 +13,6 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
   const currentUser = useAuthContext()
   const { notifyEvent } = useTaskContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
-  const [formData, setFormData] = useState({})
 
   const handleClosedTask = async isClose => {
     let transferData = {}
@@ -53,6 +52,7 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
         task_id: task.task_id,
         reject_on: true,
         task_status: "inWork",
+        responsible_position_id: task.responsible_position_id,
 
         responsible_user_id: task.responsible_user_id,
         appoint_user_id: task.appoint_user_id,
@@ -91,7 +91,7 @@ export const CloseTask = ({ task, onTaskSubmit }) => {
   // -----------------------------------------
   const today = new Date().toISOString().split("T")[0]
 
-  console.log(task.deadline === today)
+  console.log('deadline today?', task.deadline === today)
 
   const [appDate, setAppDate] = useState(null)
   console.log(appDate)
