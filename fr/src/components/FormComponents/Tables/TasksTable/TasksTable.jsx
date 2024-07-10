@@ -269,7 +269,7 @@ export const TasksTable = ({ tasks, reRender }) => {
     setFilterModel(newFilterModel)
   }
 
-  console.log("filterModel:", filterModel)
+  // console.log("filterModel:", filterModel)
 
   return (
     <>
