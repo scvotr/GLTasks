@@ -125,9 +125,9 @@ export const FullTaskInfo = ({ task }) => {
           setTaskFilesPDF([])
           setTaskFilesIMAGE([])
           data.forEach(file => {
-            if (file.type === ".pdf") {
+            if (file.type !== ".jpg" && file.type !== '.png') {
               setTaskFilesPDF(prevPDF => [...prevPDF, file])
-            } else if (file.type === ".jpg") {
+            } else if (file.type === ".jpg" || file.type === ".png") {
               setTaskFilesIMAGE(prev => [...prev, file])
             }
           })
