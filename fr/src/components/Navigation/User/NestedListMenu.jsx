@@ -89,7 +89,7 @@ export const NestedListMenu = ({ isOpen }) => {
           path: "/tasks/AnalyticsChart",
           btn: true,
         },
-      ],
+      ].filter(item => item !== null), // Фильтруем null значения
     },
     {
       name: "Документы(alfa)",
