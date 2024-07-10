@@ -13,10 +13,11 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined"
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined"
-import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
+import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined"
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 import Diversity1OutlinedIcon from "@mui/icons-material/Diversity1Outlined"
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -60,6 +61,22 @@ export const NestedListMenu = ({ isOpen }) => {
       path: "/tasks",
       tasksCount: 0,
       subItems: [
+        currentUser.role === "chife"
+          ? {
+              name: "Мои задачи",
+              icon: <PeopleAltOutlinedIcon fontSize="large" />,
+              path: "/tasks/leadTasks",
+              btn: true,
+            }
+          : null,
+        currentUser.role === "chife"
+          ? {
+              name: "По отделу",
+              icon: <Diversity3OutlinedIcon fontSize="large" />,
+              path: "/tasks/allSubDepTasks",
+              btn: true,
+            }
+          : null,
         {
           name: "Архив",
           icon: <Inventory2OutlinedIcon fontSize="large" />,
@@ -114,7 +131,7 @@ export const NestedListMenu = ({ isOpen }) => {
           path: "/schedule/schedulesArchive",
           btn: true,
         },
-      ].filter(Boolean)
+      ].filter(Boolean),
     },
     {
       name: "Взаимопроверка",

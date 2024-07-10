@@ -31,6 +31,8 @@ import { MutualVerificationDocs } from "../components/Navigation/User/Menu/Mutua
 import { MutualVerificationArchive } from "../components/Navigation/User/Menu/MutualVerification/MutualVerificationArchive";
 import { InfoNews } from "../components/Layouts/DefaultLayoutMain/FAQ/InfoNews";
 import { TasksManualCmp } from "../components/Layouts/DefaultLayoutMain/Manual/TasksManualCmp";
+import { LeadTasks } from "../components/Navigation/User/Menu/Tasks/LeadTasks";
+import { AllSubDepTasks } from "../components/Navigation/User/Menu/Tasks/AllSubDepTasks";
 
 
 export const routes = createBrowserRouter([
@@ -93,6 +95,14 @@ export const routes = createBrowserRouter([
       {
         path: '/general/tasks',
         element: <PrivateRoutes component={GeneralTasksMain} roles={["general"]}/>,
+      },
+      {
+        path: '/tasks/leadTasks',
+        element: <PrivateRoutes component={LeadTasks} roles={["chife"]}/>,
+      },
+      {
+        path: '/tasks/allSubDepTasks',
+        element: <PrivateRoutes component={AllSubDepTasks} roles={["chife"]}/>,
       },
       {
         path: '/tasks/closedTask',
