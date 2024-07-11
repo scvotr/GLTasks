@@ -19,6 +19,8 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import Diversity1OutlinedIcon from "@mui/icons-material/Diversity1Outlined"
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -72,9 +74,17 @@ export const NestedListMenu = ({ isOpen }) => {
           : null,
         currentUser.role === "chife"
           ? {
-              name: "По отделу",
-              icon: <Diversity3OutlinedIcon fontSize="large" />,
-              path: "/tasks/allSubDepTasks",
+              name: "От отдела",
+              icon: <CloudUploadOutlinedIcon fontSize="large" />,
+              path: "/tasks/allTasksFromSubDep",
+              btn: true,
+            }
+          : null,
+        currentUser.role === "chife"
+          ? {
+              name: "Для отдела",
+              icon: <CloudDownloadOutlinedIcon fontSize="large" />,
+              path: "/tasks/allTasksToSubDep",
               btn: true,
             }
           : null,
