@@ -6,8 +6,8 @@ import { TaskForm } from "./TaskForm/TaskForm"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
 import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 
-export const LeadTasks = () => {
-  const { allLeadTasks, notifyEvent } = useTaskContext()
+export const HelpDeskTasks = () => {
+  const { allLeadTasks, allLeadTasksForSupp, notifyEvent } = useTaskContext()
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -25,16 +25,13 @@ export const LeadTasks = () => {
     setFormKey(prevKey => prevKey + 1)
   }
 
-  // Фильтрация задач по responsible_subdepartment_id !== 9
-  const filteredTasks = allLeadTasks.filter(task => task.responsible_subdepartment_id !== 9);
-
   return (
     <>
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Новая задача">
         <TaskForm onTaskSubmit={closeModal} />
       </ModalCustom>
-      <AppBarForPage title="Мои Задачи: " openModal={openModal} />
-      <TasksTable tasks={filteredTasks || []} reRender={setFormKey} />
+      <AppBarForPage title="Техническая поддрежка: " openModal={openModal} />
+      <TasksTable tasks={allLeadTasksForSupp || []} reRender={setFormKey} />
     </>
   )
 }

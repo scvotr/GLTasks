@@ -33,6 +33,7 @@ import { InfoNews } from "../components/Layouts/DefaultLayoutMain/FAQ/InfoNews";
 import { TasksManualCmp } from "../components/Layouts/DefaultLayoutMain/Manual/TasksManualCmp";
 import { LeadTasks } from "../components/Navigation/User/Menu/Tasks/LeadTasks";
 import { AllSubDepTasks } from "../components/Navigation/User/Menu/Tasks/AllSubDepTasks";
+import { HelpDeskTasks } from "../components/Navigation/User/Menu/Tasks/HelpDeskTasks";
 
 
 export const routes = createBrowserRouter([
@@ -103,6 +104,10 @@ export const routes = createBrowserRouter([
       {
         path: '/tasks/allSubDepTasks',
         element: <PrivateRoutes component={AllSubDepTasks} roles={["chife"]}/>,
+      },
+      {
+        path: '/tasks/helpDesk',
+        element: <PrivateRoutes component={HelpDeskTasks} roles={["chife", "user", "general"]}/>,
       },
       {
         path: '/tasks/closedTask',
