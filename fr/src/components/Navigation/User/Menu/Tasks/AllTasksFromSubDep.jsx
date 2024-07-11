@@ -3,8 +3,8 @@ import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 import { useEffect, useState } from "react"
 import { TasksTable } from "../../../../FormComponents/Tables/TasksTable/TasksTable"
 
-export const AllSubDepTasks = () => {
-  const { allLeadTasks, allSubDepTasks } = useTaskContext()
+export const AllTasksFromSubDep = () => {
+  const { allLeadTasks, allTasksFromSubDep } = useTaskContext()
   const [formKey, setFormKey] = useState(0)
 
   console.log(allLeadTasks)
@@ -28,7 +28,7 @@ export const AllSubDepTasks = () => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <TasksTable tasks={allSubDepTasks || []} reRender={setFormKey} />
+        <TasksTable tasks={allTasksFromSubDep || []} reRender={setFormKey} />
       </Box>
     </>
   )
