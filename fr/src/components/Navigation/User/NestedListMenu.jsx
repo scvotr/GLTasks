@@ -18,6 +18,7 @@ import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 import Diversity1OutlinedIcon from "@mui/icons-material/Diversity1Outlined"
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -77,6 +78,12 @@ export const NestedListMenu = ({ isOpen }) => {
               btn: true,
             }
           : null,
+        {
+          name: "Тех. поддрежка",
+          icon: <SupportAgentOutlinedIcon fontSize="large" />,
+          path: "/tasks/helpDesk",
+          btn: true,
+        },
         {
           name: "Архив",
           icon: <Inventory2OutlinedIcon fontSize="large" />,
