@@ -158,12 +158,17 @@ export const TasksProvider = ({currentUser, children}) => {
     task.responsible_subdepartment_id && task.responsible_subdepartment_id === 9
   );  
 
-  const [allSubDepTasks, countAllSubDepTasks] = useFilteredTasks(allTasks, currentUser, task => 
+  const [allTasksFromSubDep, countAllTasksFromSubDep] = useFilteredTasks(allTasks, currentUser, task => 
     task.appoint_subdepartment_id && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString() && 
     ((task.appoint_user_id && task.appoint_user_id.toString() !== currentUser.id.toString()) 
     // || 
     // (task.responsible_subdepartment_id && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString() && 
     // (task.responsible_user_id && task.responsible_user_id.toString() !== currentUser.id.toString()))
+  ));
+
+  const [allTasksToSubDep, countAllTasksToSubDep] = useFilteredTasks(allTasks, currentUser, task => 
+    task.responsible_subdepartment_id && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString() && 
+    ((task.appoint_user_id && task.appoint_user_id.toString() !== currentUser.id.toString()) 
   ));
 
   const [allTasksClosed, countAllTasksClosed] = useFilteredTasks(allTasks, currentUser, task => 
@@ -195,8 +200,10 @@ export const TasksProvider = ({currentUser, children}) => {
         countAllLeadTasks,
         allLeadTasksForSupp,
         countAllLeadTasksForSupp,
-        allSubDepTasks,
-        countAllSubDepTasks,
+        allTasksFromSubDep,
+        countAllTasksFromSubDep,
+        allTasksToSubDep,
+        countAllTasksToSubDep,
         allTasksNoClosed,
         countAllTasksNoClosed,
         allTasksClosed,
