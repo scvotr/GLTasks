@@ -32,8 +32,9 @@ import { MutualVerificationArchive } from "../components/Navigation/User/Menu/Mu
 import { InfoNews } from "../components/Layouts/DefaultLayoutMain/FAQ/InfoNews";
 import { TasksManualCmp } from "../components/Layouts/DefaultLayoutMain/Manual/TasksManualCmp";
 import { LeadTasks } from "../components/Navigation/User/Menu/Tasks/LeadTasks";
-import { AllSubDepTasks } from "../components/Navigation/User/Menu/Tasks/AllSubDepTasks";
+import { AllTasksFromSubDep } from "../components/Navigation/User/Menu/Tasks/AllTasksFromSubDep";
 import { HelpDeskTasks } from "../components/Navigation/User/Menu/Tasks/HelpDeskTasks";
+import { AllTasksToSubDep } from "../components/Navigation/User/Menu/Tasks/AllTasksToSubDep";
 
 
 export const routes = createBrowserRouter([
@@ -102,8 +103,12 @@ export const routes = createBrowserRouter([
         element: <PrivateRoutes component={LeadTasks} roles={["chife"]}/>,
       },
       {
-        path: '/tasks/allSubDepTasks',
-        element: <PrivateRoutes component={AllSubDepTasks} roles={["chife"]}/>,
+        path: '/tasks/allTasksFromSubDep',
+        element: <PrivateRoutes component={AllTasksFromSubDep} roles={["chife"]}/>,
+      },
+      {
+        path: '/tasks/allTasksToSubDep',
+        element: <PrivateRoutes component={AllTasksToSubDep} roles={["chife"]}/>,
       },
       {
         path: '/tasks/helpDesk',
