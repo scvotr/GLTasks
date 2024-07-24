@@ -4,8 +4,8 @@ const createSchedulesQ = async data => {
   const command = `
   INSERT INTO schedules (
     schedule_id, assign_user_id, schedule_status, schedule_type, schedule_title, schedule_description, schedule_comment,
-    deadline_time, estimated_time, schedule_priority, appoint_user_id, appoint_department_id, appoint_subdepartment_id, appoint_position_id
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    deadline_time, estimated_time, schedule_priority, schedule_priority_rate, appoint_user_id, appoint_department_id, appoint_subdepartment_id, appoint_position_id
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `
 
   try {
@@ -22,6 +22,7 @@ const createSchedulesQ = async data => {
         schedul.deadline_time,
         schedul.estimated_time,
         schedul.schedule_priority,
+        schedul.schedule_priority_rate,
         schedul.appoint_user_id,
         schedul.appoint_department_id,
         schedul.appoint_subdepartment_id,
