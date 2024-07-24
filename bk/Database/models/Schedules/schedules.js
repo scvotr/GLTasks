@@ -17,6 +17,7 @@ const createTableSchedules = async () => {
         deadline_time DATETIME,
         estimated_time INTEGER,
         schedule_priority BOOLEAN,
+        schedule_priority_rate TEXT,
         appoint_user_id INTEGER NOT NULL,
         appoint_department_id INTEGER NOT NULL,
         appoint_subdepartment_id INTEGER NOT NULL,
@@ -77,8 +78,32 @@ const addReportColumnToSchedules = async () => {
   }
 };
 
+const addSchedulePriorityRateColumnToSchedules = async () => {
+  try {
+    // Получаем информацию о столбцах таблицы schedules
+    const checkColumnQuery = "PRAGMA table_info('schedules')";
+    const columns = await executeDatabaseQueryAsync(checkColumnQuery);
+
+    // Проверяем, существует ли столбец schedule_priority_rate
+    const columnExists = columns.some(column => column.name === 'schedule_priority_rate');
+
+    if (!columnExists) {
+      // Добавляем столбец schedule_priority_rate, если его еще нет
+      await executeDatabaseQueryAsync(
+        `ALTER TABLE schedules ADD COLUMN schedule_priority_rate TEXT`
+      );
+      console.log("Столбец 'schedule_priority_rate' успешно добавлен.");
+    } else {
+      console.log("Столбец 'schedule_priority_rate' уже существует.");
+    }
+  } catch (error) {
+    console.log('DB ERROR - addSchedulePriorityRateColumnToSchedules: ', error);
+  }
+};
+
 module.exports = {
   createTableSchedules,
   addCreatedOnField,
   addReportColumnToSchedules,
+  addSchedulePriorityRateColumnToSchedules,
 };
