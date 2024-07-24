@@ -66,6 +66,7 @@ export const RadioGroupRating = ({ onRatingChange, rate, viewOnly }) => {
       getLabelText={getLabelText}
       highlightSelectedOnly
       readOnly={!!rate} // Делаем рейтинг только для чтения, если rate передан
+      
     />
   ) : (
     <StyledRating
