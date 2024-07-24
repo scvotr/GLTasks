@@ -7,6 +7,7 @@ import { useAuthContext } from "../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
 import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog"
 import { UseAccordionView } from "../Accordion/UseAccordionView"
+import { RadioGroupRating } from "../../Navigation/User/Menu/Schedule/RadioGroupRating/RadioGroupRating"
 
 export const ScheduleCardView = ({ schedules, reRender }) => {
   const [currentPage, setCurrentPage] = useState(0) // Состояние для управления текущей страницей
@@ -125,6 +126,9 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
                   )
                 }
                 >
+                <CardContent>
+                  <RadioGroupRating rate={schedule.schedule_priority_rate} viewOnly={true}/>
+                </CardContent>  
                 <CardContent>
                   <IconButton
                     onClick={() => {
