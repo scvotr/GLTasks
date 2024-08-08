@@ -23,6 +23,15 @@ export const InfoNews = ({ data }) => {
               Добавленно:
             </Typography>
             <Typography gutterBottom>
+              <strong>08.08.2024</strong>
+              <ul>
+                <li>
+                  В раздел "Взаимопроверка" добавленны документы для общего доступа.
+                </li>
+                <li>
+                  Графические файлы и файлы в формате pdf открываются в браузере. Файлы doc\docx доступны после скачивания.
+                </li>
+              </ul>
               <strong>11.07.2024</strong>
               <ul>
                 <li>
