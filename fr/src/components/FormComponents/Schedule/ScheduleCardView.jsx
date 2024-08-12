@@ -32,8 +32,8 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
   const [filter, setFilter] = useState("")
   const [sortOrder, setSortOrder] = useState("asc")
 
-  if (!Array.isArray(schedules)) {
-    return <div>No schedules available</div>
+  if (!Array.isArray(schedules) || schedules.length === 0) {
+    return <div>No schedules available</div>;
   }
 
   // Фильтрация расписаний на основе введенного запроса
@@ -57,10 +57,10 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
     })
   }
 
-  const handleDeleteSchedul = async schedul_id => {
+  const handleDeleteSchedule = async schedule_id => {
     try {
       setReqStatus({ loading: true, error: null })
-      await getDataFromEndpoint(currentUser.token, "/schedule/removeSchedule", "POST", schedul_id, setReqStatus)
+      await getDataFromEndpoint(currentUser.token, "/schedule/removeSchedule", "POST", schedule_id, setReqStatus)
       reRender(prevKey => prevKey + 1)
       setReqStatus({ loading: false, error: null })
     } catch (error) {
@@ -165,7 +165,7 @@ export const ScheduleCardView = ({ schedules, reRender }) => {
         }}
         onConfirm={() => {
           if (scheduleIdToDelete) {
-            handleDeleteSchedul(scheduleIdToDelete) // Вызов функции удаления с scheduleIdToDelete
+            handleDeleteSchedule(scheduleIdToDelete) // Вызов функции удаления с scheduleIdToDelete
             setScheduleIdToDelete(null) // Сброс scheduleIdToDelete после удаления
           }
           setOpenDialog(false)
