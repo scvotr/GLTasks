@@ -1,4 +1,4 @@
-const { createSchedulesQ, getAllSchedulesByUserIdQ, removeScheduleByIdQ } = require("../../Database/queries/Schedules/scheduleQueries")
+const { createSchedulesQ, getAllSchedulesByUserIdQ, removeScheduleByIdQ, updateScheduleQ } = require("../../Database/queries/Schedules/scheduleQueries")
 
 const sendResponseWithData = (res, data) => {
   res.setHeader('Content-Type', 'application/json')
@@ -21,11 +21,22 @@ class ScheduleController {
     try {
       const authDecodeUserData = req.user
       await createSchedulesQ(authDecodeUserData)
-        sendResponseWithData(res, 'addNewSchedules -ok')
+        sendResponseWithData(res, 'addNewSchedules-ok')
     } catch (error) {
       handleError(res, 'addNewSchedules')
     }
   }
+
+  async updateSchedule(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      await updateScheduleQ(authDecodeUserData)
+        sendResponseWithData(res, 'updateSchedule-ok')
+    } catch (error) {
+      handleError(res, 'updateSchedule')
+    }
+  }
+
   async getAllSchedulesByUserId(req, res) {
     try {
       const authDecodeUserData = req.user

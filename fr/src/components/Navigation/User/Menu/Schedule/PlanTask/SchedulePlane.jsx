@@ -95,7 +95,7 @@ export const SchedulePlane = ({ onClose, reRender }) => {
           </Grid>
           <Grid item>
             <Button variant="contained" color="primary" type="submit">
-              Создать
+              Создать план
             </Button>
           </Grid>
         </Grid>
@@ -106,7 +106,7 @@ export const SchedulePlane = ({ onClose, reRender }) => {
                 id="schedule_description"
                 placeholder="Описание паланируемой задачи"
                 multiline
-                minRows={4}
+                minRows={1}
                 maxRows={10}
                 variant="outlined"
                 label={`Задача ${planeTasks.length - index}`}

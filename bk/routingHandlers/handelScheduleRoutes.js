@@ -5,6 +5,7 @@ const { protectRouteTkPl } = require("../utils/protectRouteTkPl");
 
 const routeHandlers = {
   "/schedule/addSchedules": ScheduleController.addNewSchedules,
+  "/schedule/updateSchedule": ScheduleController.updateSchedule,
   "/schedule/removeSchedule": ScheduleController.removeSchedule,
   "/schedule/getAllSchedulesByUserId": ScheduleController.getAllSchedulesByUserId,
   "/schedule/getAllSchedulesBySubDepId": ScheduleController.getAllSchedulesBySubDepId,
