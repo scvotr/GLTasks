@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { ScheduleCardView } from "../../../../FormComponents/Schedule/ScheduleCardView"
+import { ScheduleCardViewV2 } from "../../../../FormComponents/Schedule/ScheduleCardViewV2"
 
 export const UsersSchedules = () => {
   const currentUser = useAuthContext()
@@ -64,7 +65,8 @@ export const UsersSchedules = () => {
                   <Tab key={user.id} label={user.last_name} value={user.id} />
                 ))}
               </TabList>
-            <ScheduleCardView schedules={allSchedules} reRender={setFormKey} />
+            {/* <ScheduleCardView schedules={allSchedules} reRender={setFormKey} /> */}
+            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey}/>
           </TabContext>
         ) : (
           <></>
