@@ -110,7 +110,6 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
   return (
     <>
       <Box>
-        
         {schedules.map((schedule, index) => (
           <Paper
             key={schedule.schedule_id}
@@ -144,9 +143,11 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
                 fullWidth
               />
             ) : (
-              <Typography variant="h6" gutterBottom>
-                {schedule.schedule_description}
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "left", flexGrow: 1 }}>
+                <Typography variant="h6" gutterBottom>
+                  {schedule.schedule_description}
+                </Typography>
+              </Box>
             )}
             <Box sx={{ display: "flex", alignItems: "left" }}>
               <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
