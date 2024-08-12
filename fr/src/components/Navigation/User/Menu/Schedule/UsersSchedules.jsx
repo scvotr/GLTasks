@@ -11,6 +11,7 @@ import { ScheduleCardViewV2 } from "../../../../FormComponents/Schedule/Schedule
 
 export const UsersSchedules = () => {
   const currentUser = useAuthContext()
+  console.log(currentUser.id)
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [formKey, setFormKey] = useState(0)
   const [value, setValue] = useState("1")
@@ -32,7 +33,13 @@ export const UsersSchedules = () => {
     try {
       setReqStatus({ loading: true, error: null })
       if (currentUser.role === "chife") {
-        getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus).then(data => setAllUsers(data))
+        // getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus).then(data => setAllUsers(data))
+        getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus).then(data => {
+          const filteredData = data.filter(user => user.id.toString() !== currentUser.id)
+          setAllUsers(filteredData)
+          // data.map(data => data.id.toString() !== currentUser.id)
+          // console.log("bb", data)
+        })
       } else {
         getDataFromEndpoint(currentUser.token, "/schedule/getAllSchedulesByUserId", "POST", currentUser.id, setReqStatus).then(data => setAllScheduls(data))
       }
@@ -56,17 +63,21 @@ export const UsersSchedules = () => {
           ".MuiTabs-scrollButtons.Mui-disabled": {
             opacity: 0.3,
           },
-        }}
-      >
+        }}>
         {currentUser.role === "chife" && Array.isArray(allUsers) && allUsers.length > 0 ? (
           <TabContext value={value} centered variant="scrollable" scrollButtons="auto">
-              <TabList onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="lab API tabs example" sx={{maxWidth: { xs: 320, sm: 1200, margin: "0 auto" }}}>
-                {allUsers.map(user => (
-                  <Tab key={user.id} label={user.last_name} value={user.id} />
-                ))}
-              </TabList>
+            <TabList
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="lab API tabs example"
+              sx={{ maxWidth: { xs: 320, sm: 1200, margin: "0 auto" } }}>
+              {allUsers.map(user => (
+                <Tab key={user.id} label={user.last_name} value={user.id} />
+              ))}
+            </TabList>
             {/* <ScheduleCardView schedules={allSchedules} reRender={setFormKey} /> */}
-            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey}/>
+            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey} />
           </TabContext>
         ) : (
           <></>
