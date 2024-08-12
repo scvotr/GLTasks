@@ -110,6 +110,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
   return (
     <>
       <Box>
+        
         {schedules.map((schedule, index) => (
           <Paper
             key={schedule.schedule_id}
