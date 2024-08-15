@@ -21,6 +21,7 @@ export const SchedulePlane = ({ onClose, reRender }) => {
     schedule_comment: [],
     deadline_time: "",
     estimated_time: 0,
+    ahead_completed_time: 0,
     schedule_priority: false,
     schedule_priority_rate: 0,
     appoint_user_id: currentUser.id,
