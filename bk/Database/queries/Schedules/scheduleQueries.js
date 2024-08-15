@@ -59,7 +59,8 @@ const updateScheduleQ = async data => {
   const command2 = `
   UPDATE schedules
   SET
-    schedule_status = ?
+    schedule_status = ?,
+    ahead_completed_time = ?
   WHERE
     schedule_id = ?
 `
@@ -74,7 +75,7 @@ const updateScheduleQ = async data => {
 
   try {
     const payload = JSON.parse(data.payLoad)
-    console.log('dddddddd', payload)
+    console.log('updateScheduleQ', payload)
     
     if(payload.schedule_description) {
       await executeDatabaseQueryAsync(command3, [
@@ -85,6 +86,7 @@ const updateScheduleQ = async data => {
     } else {
       await executeDatabaseQueryAsync(command2, [
         payload.schedule_status,
+        payload.ahead_completed_time,
         payload.schedule_id, // schedule_id используется в условии WHERE
       ])
     }  
