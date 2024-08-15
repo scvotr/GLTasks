@@ -50,6 +50,8 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success")
   const [dialogText, setDialogText] = useState({ title: "", message: "" })
   const [openDialog, setOpenDialog] = useState(false)
+  const [keyWordsFilter, setKeyWordsFilter] = useState("")
+  console.log(keyWordsFilter)
 
   const [scheduleIdToDone, setScheduleIdToDone] = useState(null)
   const [scheduleIdToEdit, setScheduleIdToEdit] = useState(null)
@@ -113,6 +115,11 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     // estimated_time: calculateEstimatedTime(scheduleItem.created_on, scheduleItem.deadline_time),
     estimated_time: calculateRemainingTime(scheduleItem.deadline_time),
   }))
+
+  // Фильтрация расписаний на основе введенного запроса
+  const filteredSchedules = schedulesWithTime.filter(schedule => schedule.schedule_description.toLowerCase().includes(keyWordsFilter.toLowerCase()))
+
+  console.log(filteredSchedules)
 
   const handleEditDescription = async schedule => {
     setEditableDescription(schedule.schedule_description)
@@ -181,9 +188,19 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   }
   return (
     <>
+      <Box sx={{ m: "10px", width: "100%" }}>
+        <TextField
+          label="Фильтр по тексту задачь"
+          value={keyWordsFilter}
+          onChange={e => setKeyWordsFilter(e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+        />
+      </Box>
       <Box>
-        {schedulesWithTime &&
-          schedulesWithTime.map((schedule, index) => (
+        {filteredSchedules &&
+          filteredSchedules.map((schedule, index) => (
             <Box key={schedule.schedule_id} sx={{ m: "10px", width: "100%" }}>
               {(() => {
                 if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
