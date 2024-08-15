@@ -13,7 +13,7 @@ import { useAuthContext } from "../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
 import { formatDate } from "../../../utils/formatDate"
 
-const OFF_TIME = '17:00:00'
+const OFF_TIME = "17:00:00"
 
 function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
   const [progress, setProgress] = useState(0)
@@ -39,7 +39,7 @@ function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
   )
 }
 
-export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
+export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   const currentUser = useAuthContext()
   const [editingScheduleId, setEditingScheduleId] = useState(null)
   const [editableDescription, setEditableDescription] = useState("")
@@ -85,7 +85,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
     const deadlineDate = new Date(`${deadlineTime} ${OFF_TIME}`)
     const timeDifference = deadlineDate - now // разница в миллисекундах
     if (timeDifference <= 0) {
-      return "Время истекло" // если дедлайн уже прошел
+      return true // если дедлайн уже прошел
     }
 
     // const hoursRemaining = (timeDifference / (1000 * 60)).toFixed(2) // конвертируем в часы
@@ -111,8 +111,6 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
     // estimated_time: calculateEstimatedTime(scheduleItem.created_on, scheduleItem.deadline_time),
     estimated_time: calculateRemainingTime(scheduleItem.deadline_time),
   }))
-
-  console.log(schedulesWithTime)
 
   const handleEditDescription = async schedule => {
     setEditableDescription(schedule.schedule_description)
@@ -195,7 +193,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
                 <Box sx={{ display: "flex", alignItems: "left" }}>
                   <Tooltip title="Завершить">
                     <IconButton
-                      disabled={!!editingScheduleId || schedule.schedule_status === "done"}
+                      disabled={!!editingScheduleId || schedule.schedule_status === "done" || isLead}
                       onClick={() => {
                         setScheduleIdToDone(schedule.schedule_id)
                         setDialogText({ title: "Подтвердите выполнение", message: "Вы уверены, что хотите завершить это задание?" })
@@ -236,30 +234,45 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
                   <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
                   <Typography variant="body2" color="textSecondary">
-                    {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
-                    {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
-                    {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
-                    {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
-                  </Typography>
-                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-
-                  <Tooltip title="Редактировать">
-                    {schedule.schedule_status === "done" ? (
-                      <IconButton disabled>
-                        <EditOutlinedIcon />
-                      </IconButton>
+                    {schedule.estimated_time === true ? (
+                      schedule.schedule_status !== "done" ? (
+                        <>Просроченно!</>
+                      ) : (
+                        <>Завершено!</>
+                      )
                     ) : (
-                      <IconButton
-                        sx={{ color: editingScheduleId === schedule.schedule_id ? "green" : "inherit" }}
-                        onClick={() => {
-                          setScheduleIdToEdit(schedule)
-                          setDialogText({ title: "Изменить задачу", message: "Вы уверены, что хотите изменить эту задачу?" })
-                          setOpenDialog(true)
-                        }}>
-                        <EditOutlinedIcon />
-                      </IconButton>
+                      <>
+                        {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
+                        {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
+                        {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
+                        {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
+                      </>
                     )}
-                  </Tooltip>
+                  </Typography>
+                  {isLead ? (
+                    <></>
+                  ) : (
+                    <>
+                      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                      <Tooltip title="Редактировать">
+                        {schedule.schedule_status === "done" ? (
+                          <IconButton disabled>
+                            <EditOutlinedIcon />
+                          </IconButton>
+                        ) : (
+                          <IconButton
+                            sx={{ color: editingScheduleId === schedule.schedule_id ? "green" : "inherit" }}
+                            onClick={() => {
+                              setScheduleIdToEdit(schedule)
+                              setDialogText({ title: "Изменить задачу", message: "Вы уверены, что хотите изменить эту задачу?" })
+                              setOpenDialog(true)
+                            }}>
+                            <EditOutlinedIcon />
+                          </IconButton>
+                        )}
+                      </Tooltip>
+                    </>
+                  )}
                   {editingScheduleId === schedule.schedule_id && (
                     <>
                       <Tooltip title="Отменить">
@@ -275,24 +288,29 @@ export const ScheduleCardViewV2 = ({ schedules, reRender }) => {
                       </Tooltip>
                     </>
                   )}
-                  <Divider sx={{ height: 15, m: 0.5 }} orientation="vertical" />
-                  <Tooltip title="Удалить">
-                    <IconButton
-                      // disabled={!!editingScheduleId || schedule.schedule_status === "done"}
-                      onClick={() => {
-                        setScheduleIdToDelete(schedule.schedule_id)
-                        setDialogText({ title: "Подтвердите удаление", message: "Вы уверены, что хотите удалить это задание?" })
-                        setOpenDialog(true)
-                      }}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
                   <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                  {isLead ? (
+                    <></>
+                  ) : (
+                    <>
+                      <Tooltip title="Удалить">
+                        <IconButton
+                          // disabled={!!editingScheduleId || schedule.schedule_status === "done"}
+                          onClick={() => {
+                            setScheduleIdToDelete(schedule.schedule_id)
+                            setDialogText({ title: "Подтвердите удаление", message: "Вы уверены, что хотите удалить это задание?" })
+                            setOpenDialog(true)
+                          }}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                    </>
+                  )}
                 </Box>
               </Paper>
             </Box>
           ))}
-        {/* Компонент Snackbar для уведомлений */}
         <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
           <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
             {snackbarMessage}
