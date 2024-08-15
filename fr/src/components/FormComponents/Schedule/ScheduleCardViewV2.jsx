@@ -278,18 +278,29 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                   <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                 </Box>
                 {editingScheduleId === schedule.schedule_id ? (
-                  <TextField
-                    id="task_description"
-                    label="Введите описание задачи"
-                    placeholder="текст задачи"
-                    multiline
-                    minRows={2}
-                    maxRows={10}
-                    value={editableDescription} // Используем editableDescription как значение
-                    onChange={e => setEditableDescription(e.target.value)} // Обновляем состояние при изменении текста
-                    required
-                    sx={{ width: "55%", m: "10px" }}
-                  />
+                  <>
+                    <TextField
+                      id="task_description"
+                      label="Введите описание задачи"
+                      placeholder="текст задачи"
+                      // multiline
+                      // minRows={2}
+                      // maxRows={10}
+                      value={editableDescription} // Используем editableDescription как значение
+                      onChange={e => setEditableDescription(e.target.value)} // Обновляем состояние при изменении текста
+                      required
+                      sx={{ width: "55%", m: "10px" }}
+                    />
+                    {/* <textarea
+                      id="task_description"
+                      placeholder="текст задачи"
+                      value={editableDescription}
+                      onChange={e => setEditableDescription(e.target.value)}
+                      required
+                      // rows="2"
+                      className="textarea-custom"
+                    /> */}
+                  </>
                 ) : (
                   <Box sx={{ display: "flex", alignItems: "left", flexGrow: 1 }}>
                     <Typography variant="h6" gutterBottom>
