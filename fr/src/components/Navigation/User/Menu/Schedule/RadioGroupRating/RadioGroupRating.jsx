@@ -61,7 +61,8 @@ export const RadioGroupRating = ({ onRatingChange, rate, viewOnly }) => {
   return viewOnly ? (
     <StyledRating
       name="highlight-selected-only"
-      value={rate}
+      // value={rate}
+      value={Number(rate)}
       IconContainerComponent={IconContainer}
       getLabelText={getLabelText}
       highlightSelectedOnly
@@ -71,7 +72,8 @@ export const RadioGroupRating = ({ onRatingChange, rate, viewOnly }) => {
   ) : (
     <StyledRating
       name="highlight-selected-only"
-      value={rate || 0}
+      // value={rate || 0}
+      value={Number(rate) || 0}
       IconContainerComponent={IconContainer}
       getLabelText={value => customIcons[value].label}
       highlightSelectedOnly

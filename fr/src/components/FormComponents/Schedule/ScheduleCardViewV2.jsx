@@ -7,7 +7,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
 import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import { RadioGroupRating } from "../../Navigation/User/Menu/Schedule/RadioGroupRating/RadioGroupRating"
-import { useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
@@ -15,29 +15,57 @@ import { formatDate } from "../../../utils/formatDate"
 
 const OFF_TIME = "17:00:00"
 
-function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
+// function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
+//   const [progress, setProgress] = useState(0)
+
+//   useEffect(() => {
+//     console.log('re render LinearDeterminate')
+//     const calculateProgress = () => {
+//       const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
+//       const createdDate = new Date(created_on)
+//       const totalTime = deadlineDate.getTime() - createdDate.getTime() // общее время выполнения в миллисекундах
+//       const elapsedTime = Date.now() - createdDate.getTime() // время, прошедшее с момента создания
+
+//       const newProgress = Math.min((elapsedTime / totalTime) * 100, 100)
+//       setProgress(newProgress)
+//     }
+
+//     calculateProgress()
+//   }, [created_on, deadline_time, estimated_time])
+
+//   return (
+//     <Box sx={{ width: "100%", marginTop: 2 }}>
+//       <LinearProgress variant="determinate" value={progress} />
+//     </Box>
+//   )
+// }
+
+// Memoize the component to prevent unnecessary re-renders
+const LinearDeterminate = memo(({ created_on, deadline_time, estimated_time, isEditing }) => {
   const [progress, setProgress] = useState(0)
 
+  console.log("re render LinearDeterminate")
+  // Memoize the calculation function to prevent unnecessary re-executions
+  const calculateProgress = useCallback(() => {
+    const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
+    const createdDate = new Date(created_on)
+    const totalTime = deadlineDate.getTime() - createdDate.getTime() // total time in milliseconds
+    const elapsedTime = Date.now() - createdDate.getTime() // time elapsed since creation
+
+    const newProgress = Math.min((elapsedTime / totalTime) * 100, 100)
+    setProgress(newProgress)
+  }, [])
+
   useEffect(() => {
-    const calculateProgress = () => {
-      const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
-      const createdDate = new Date(created_on)
-      const totalTime = deadlineDate.getTime() - createdDate.getTime() // общее время выполнения в миллисекундах
-      const elapsedTime = Date.now() - createdDate.getTime() // время, прошедшее с момента создания
-
-      const newProgress = Math.min((elapsedTime / totalTime) * 100, 100)
-      setProgress(newProgress)
-    }
-
     calculateProgress()
-  }, [created_on, deadline_time, estimated_time])
+  }, [calculateProgress])
 
   return (
     <Box sx={{ width: "100%", marginTop: 2 }}>
       <LinearProgress variant="determinate" value={progress} />
     </Box>
   )
-}
+})
 
 export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   // const today = new Date().toISOString().split("T")[0]
@@ -52,8 +80,6 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   const [dialogText, setDialogText] = useState({ title: "", message: "" })
   const [openDialog, setOpenDialog] = useState(false)
   const [keyWordsFilter, setKeyWordsFilter] = useState("")
-  console.log(keyWordsFilter)
-
   const [scheduleIdToDone, setScheduleIdToDone] = useState(null)
   const [scheduleIdToEdit, setScheduleIdToEdit] = useState(null)
   const [scheduleIdToDelete, setScheduleIdToDelete] = useState(null)
@@ -119,8 +145,6 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
 
   // Фильтрация расписаний на основе введенного запроса
   const filteredSchedules = schedulesWithTime.filter(schedule => schedule.schedule_description.toLowerCase().includes(keyWordsFilter.toLowerCase()))
-
-  console.log(filteredSchedules)
 
   const handleEditDescription = async schedule => {
     setEditableDescription(schedule.schedule_description)
@@ -200,7 +224,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
           margin="normal"
         />
       </Box>
-      <Box>
+      <Box sx={{ mb: "50px" }}>
         {filteredSchedules &&
           filteredSchedules.map((schedule, index) => (
             <Box key={schedule.schedule_id} sx={{ m: "10px", width: "100%" }}>
@@ -208,24 +232,27 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                 if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
                   return (
                     <>
-                      <LinearProgress variant="determinate" color="secondary" />
+                      <LinearProgress variant="determinate" value={100} color="secondary" />
                     </>
                   )
                 } else if (schedule.schedule_status === "done") {
                   return (
                     <>
-                      <LinearProgress variant="determinate" color="success" />
+                      <LinearProgress variant="determinate" value={100} color="success" />
                     </>
                   )
                 } else {
                   return (
                     <>
-                      <LinearDeterminate
-                        sx={{ width: "100%" }}
-                        created_on={schedule.created_on}
-                        deadline_time={schedule.deadline_time}
-                        estimated_time={schedule.estimated_time}
-                      />
+                      {!editingScheduleId && (
+                        <LinearDeterminate
+                          sx={{ width: "100%" }}
+                          created_on={schedule.created_on}
+                          deadline_time={schedule.deadline_time}
+                          estimated_time={schedule.estimated_time}
+                          isEditing={!!editingScheduleId} // передаем состояние редактирования
+                        />
+                      )}
                     </>
                   )
                 }
@@ -236,15 +263,17 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                 sx={{ mt: "5px", p: "2px 4px", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                 <Box sx={{ display: "flex", alignItems: "left" }}>
                   <Tooltip title="Завершить">
-                    <IconButton
-                      disabled={!!editingScheduleId || schedule.schedule_status === "done" || isLead}
-                      onClick={() => {
-                        setScheduleIdToDone(schedule.schedule_id)
-                        setDialogText({ title: "Подтвердите выполнение", message: "Вы уверены, что хотите завершить это задание?" })
-                        setOpenDialog(true)
-                      }}>
-                      {schedule.schedule_status === "done" ? <DoneAllOutlinedIcon sx={{ color: "green" }} /> : <DoneOutlinedIcon />}
-                    </IconButton>
+                    <span>
+                      <IconButton
+                        disabled={!!editingScheduleId || schedule.schedule_status === "done" || isLead}
+                        onClick={() => {
+                          setScheduleIdToDone(schedule.schedule_id)
+                          setDialogText({ title: "Подтвердите выполнение", message: "Вы уверены, что хотите завершить это задание?" })
+                          setOpenDialog(true)
+                        }}>
+                        {schedule.schedule_status === "done" ? <DoneAllOutlinedIcon sx={{ color: "green" }} /> : <DoneOutlinedIcon />}
+                      </IconButton>
+                    </span>
                   </Tooltip>
                   <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                 </Box>
@@ -344,7 +373,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                             {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
                             {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
                             {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
-                            {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
+                            {/* {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>} */}
                           </>
                         )
                       }
@@ -357,9 +386,11 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                       <Tooltip title="Редактировать">
                         {schedule.schedule_status === "done" ? (
-                          <IconButton disabled>
-                            <EditOutlinedIcon />
-                          </IconButton>
+                          <span>
+                            <IconButton disabled>
+                              <EditOutlinedIcon />
+                            </IconButton>
+                          </span>
                         ) : (
                           <IconButton
                             sx={{ color: editingScheduleId === schedule.schedule_id ? "green" : "inherit" }}
@@ -395,15 +426,17 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                   ) : (
                     <>
                       <Tooltip title="Удалить">
-                        <IconButton
-                          // disabled={!!editingScheduleId || schedule.schedule_status === "done"}
-                          onClick={() => {
-                            setScheduleIdToDelete(schedule.schedule_id)
-                            setDialogText({ title: "Подтвердите удаление", message: "Вы уверены, что хотите удалить это задание?" })
-                            setOpenDialog(true)
-                          }}>
-                          <DeleteIcon />
-                        </IconButton>
+                        <span>
+                          <IconButton
+                            // disabled={!!editingScheduleId || schedule.schedule_status === "done"}
+                            onClick={() => {
+                              setScheduleIdToDelete(schedule.schedule_id)
+                              setDialogText({ title: "Подтвердите удаление", message: "Вы уверены, что хотите удалить это задание?" })
+                              setOpenDialog(true)
+                            }}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </span>
                       </Tooltip>
                       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                     </>
