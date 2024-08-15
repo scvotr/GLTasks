@@ -66,7 +66,8 @@ const updateScheduleQ = async data => {
   const command3 = `
   UPDATE schedules
   SET
-    schedule_description = ?
+    schedule_description = ?,
+    deadline_time = ?
   WHERE
     schedule_id = ?
 `
@@ -78,6 +79,7 @@ const updateScheduleQ = async data => {
     if(payload.schedule_description) {
       await executeDatabaseQueryAsync(command3, [
         payload.schedule_description,
+        payload.deadline_time,
         payload.schedule_id, // schedule_id используется в условии WHERE
       ])
     } else {
