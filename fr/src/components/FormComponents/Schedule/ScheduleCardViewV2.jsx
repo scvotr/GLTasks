@@ -1,4 +1,4 @@
-import { Box, Divider, Paper, TextField, Typography, Snackbar, Alert, LinearProgress } from "@mui/material"
+import { Box, Divider, Paper, TextField, Typography, Snackbar, Alert, LinearProgress, Stack } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined"
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined"
@@ -40,7 +40,8 @@ function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
 }
 
 export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
-  const today = new Date().toISOString().split("T")[0]
+  // const today = new Date().toISOString().split("T")[0]
+  const today = new Date()
   const currentUser = useAuthContext()
   const [editingScheduleId, setEditingScheduleId] = useState(null)
   const [editableDescription, setEditableDescription] = useState("")
@@ -151,6 +152,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     transferData = {
       schedule_id: schedule_id,
       schedule_status: "done",
+      ahead_completed_time: today,
     }
     try {
       setReqStatus({ loading: true, error: null })
@@ -184,7 +186,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   }
 
   if (!Array.isArray(schedules) || schedules.length === 0) {
-    return <div>Активных задач нет</div>
+    return <></>
   }
   return (
     <>
@@ -266,6 +268,11 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                     </Typography>
                   </Box>
                 )}
+                {/* --------------------------------------------------------------- */}
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                <RadioGroupRating rate={schedule.schedule_priority_rate} viewOnly={true} />
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                {/* --------------------------------------------------------------- */}
                 <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
                   {editingScheduleId === schedule.schedule_id ? (
                     <>
@@ -288,23 +295,49 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                     </>
                   ) : (
                     <>
-                      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                      <Typography variant="overline" display="block" gutterBottom>
-                        {formatDate(schedule.deadline_time)}
-                      </Typography>
-                      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                      {schedule.schedule_status === "done" ? (
+                        <></>
+                      ) : (
+                        <>
+                          {/* <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" /> */}
+                          <Typography variant="body2">
+                            <Stack>
+                              <Box>До:</Box>
+                              <Box>{formatDate(schedule.deadline_time)}</Box>
+                              {/* <Box>
+                                {" "}
+                                {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
+                                {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
+                                {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
+                                {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
+                              </Box> */}
+                            </Stack>
+                          </Typography>
+                          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                        </>
+                      )}
                     </>
                   )}
-                  {/* --------------------------------------------------------------- */}
-                  <RadioGroupRating rate={schedule.schedule_priority_rate} viewOnly={true} />
-                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-
                   <Typography variant="body2" color="textSecondary">
                     {(() => {
                       if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
-                        return <>Просроченно!</>
+                        return (
+                          <>
+                            <Stack>
+                              <Box>Просроченно!</Box>
+                              <Box>{formatDate(schedule.deadline_time)}</Box>
+                            </Stack>
+                          </>
+                        )
                       } else if (schedule.schedule_status === "done") {
-                        return <>Завершено</>
+                        return (
+                          <>
+                            <Stack sx={{ bgcolor: "yellow" }}>
+                              <Box>Завершено</Box>
+                              <Box>{formatDate(schedule.ahead_completed_time)}</Box>
+                            </Stack>
+                          </>
+                        )
                       } else {
                         return (
                           <>
