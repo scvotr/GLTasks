@@ -76,7 +76,7 @@ export const UsersSchedules = () => {
               ))}
             </TabList>
             {/* <ScheduleCardView schedules={allSchedules} reRender={setFormKey} /> */}
-            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey} />
+            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey} isLead={true}/>
           </TabContext>
         ) : (
           <></>
