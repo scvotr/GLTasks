@@ -40,9 +40,11 @@ function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
 }
 
 export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
+  const today = new Date().toISOString().split("T")[0]
   const currentUser = useAuthContext()
   const [editingScheduleId, setEditingScheduleId] = useState(null)
   const [editableDescription, setEditableDescription] = useState("")
+  const [editableDeadline, setEditableDeadline] = useState("")
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
   const [snackbarSeverity, setSnackbarSeverity] = useState("success")
@@ -115,10 +117,12 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   const handleEditDescription = async schedule => {
     setEditableDescription(schedule.schedule_description)
     setEditingScheduleId(schedule.schedule_id)
+    setEditableDeadline(schedule.deadline_time)
 
     transferData = {
       schedule_id: schedule.schedule_id,
       schedule_description: editableDescription,
+      deadline_time: editableDeadline || schedule.deadline_time, // Используем новую дату, если она была изменена, иначе оставляем старую
     }
     if (editableDescription) {
       try {
@@ -169,6 +173,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   const handleCancelEdit = () => {
     setEditingScheduleId(null)
     setEditableDescription("") // Сбросьте редактируемое описание
+    setEditableDeadline("") // Сбросить редактируемую дату
   }
 
   if (!Array.isArray(schedules) || schedules.length === 0) {
@@ -176,15 +181,23 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   }
   return (
     <>
-      <Box sx={{mt: '10px'}}>
+      <Box>
         {schedulesWithTime &&
           schedulesWithTime.map((schedule, index) => (
-            <Box key={schedule.schedule_id} sx={{ m:'10px', width: "100%" }}>
+            <Box key={schedule.schedule_id} sx={{ m: "10px", width: "100%" }}>
               {(() => {
                 if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
-                  return <><LinearProgress variant="determinate" color="secondary" /></>
+                  return (
+                    <>
+                      <LinearProgress variant="determinate" color="secondary" />
+                    </>
+                  )
                 } else if (schedule.schedule_status === "done") {
-                  return <><LinearProgress variant="determinate" color="success" /></>
+                  return (
+                    <>
+                      <LinearProgress variant="determinate" color="success" />
+                    </>
+                  )
                 } else {
                   return (
                     <>
@@ -227,7 +240,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                     value={editableDescription} // Используем editableDescription как значение
                     onChange={e => setEditableDescription(e.target.value)} // Обновляем состояние при изменении текста
                     required
-                    fullWidth
+                    sx={{ width: "55%", m: "10px" }}
                   />
                 ) : (
                   <Box sx={{ display: "flex", alignItems: "left", flexGrow: 1 }}>
@@ -237,11 +250,35 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                   </Box>
                 )}
                 <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                  <Typography variant="overline" display="block" gutterBottom>
-                    {formatDate(schedule.deadline_time)}
-                  </Typography>
-                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                  {editingScheduleId === schedule.schedule_id ? (
+                    <>
+                      <Divider sx={{ height: 60, m: 0.5 }} orientation="vertical" />
+                      <TextField
+                        id="deadline_time"
+                        label="Выполнить до:"
+                        type="date"
+                        name="deadline_time"
+                        InputLabelProps={{ shrink: true }}
+                        value={editableDeadline} // Используем состояние для даты
+                        onChange={e => setEditableDeadline(e.target.value)} // Обновляем состояние даты
+                        variant="outlined"
+                        sx={{ m: "10px" }}
+                        // inputProps={{ min: schedule.deadline_time }} // Ограничиваем минимальную дату
+                        inputProps={{ min: today }} // Ограничиваем минимальную дату
+                        required
+                      />
+                      <Divider sx={{ height: 60, m: 0.5 }} orientation="vertical" />
+                    </>
+                  ) : (
+                    <>
+                      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                      <Typography variant="overline" display="block" gutterBottom>
+                        {formatDate(schedule.deadline_time)}
+                      </Typography>
+                      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                    </>
+                  )}
+                  {/* --------------------------------------------------------------- */}
                   <RadioGroupRating rate={schedule.schedule_priority_rate} viewOnly={true} />
                   <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
