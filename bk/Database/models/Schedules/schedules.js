@@ -15,7 +15,9 @@ const createTableSchedules = async () => {
         report TEXT,
         schedule_comment TEXT,
         deadline_time DATETIME,
+        ahead_completed_time DATETIME,
         estimated_time INTEGER,
+        ahead_estimated_time INTEGER,
         schedule_priority BOOLEAN,
         schedule_priority_rate TEXT,
         appoint_user_id INTEGER NOT NULL,
@@ -48,8 +50,14 @@ const addCreatedOnField = async () => {
       `UPDATE schedules SET created_on = CURRENT_TIMESTAMP WHERE created_on IS NULL`
     );
 
-    // Не нужно менять тип данных столбца и его значение по умолчанию, так как это уже сделано в первом запросе
-
+    // !
+    await executeDatabaseQueryAsync(
+      `ALTER TABLE schedules ADD COLUMN ahead_completed_time DATETIME`
+    )
+    // !
+    await executeDatabaseQueryAsync(
+      `ALTER TABLE schedules ADD COLUMN ahead_estimated_time INTEGER`
+    )
   } catch (error) {
     console.log('DB ERROR - addCreatedOnField: ', error);
   }
