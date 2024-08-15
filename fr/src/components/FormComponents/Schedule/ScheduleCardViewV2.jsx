@@ -176,16 +176,28 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   }
   return (
     <>
-      <Box>
+      <Box sx={{mt: '10px'}}>
         {schedulesWithTime &&
           schedulesWithTime.map((schedule, index) => (
-            <Box key={schedule.schedule_id} sx={{ width: "100%" }}>
-              <LinearDeterminate
-                sx={{ width: "100%" }}
-                created_on={schedule.created_on}
-                deadline_time={schedule.deadline_time}
-                estimated_time={schedule.estimated_time}
-              />
+            <Box key={schedule.schedule_id} sx={{ m:'10px', width: "100%" }}>
+              {(() => {
+                if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
+                  return <><LinearProgress variant="determinate" color="secondary" /></>
+                } else if (schedule.schedule_status === "done") {
+                  return <><LinearProgress variant="determinate" color="success" /></>
+                } else {
+                  return (
+                    <>
+                      <LinearDeterminate
+                        sx={{ width: "100%" }}
+                        created_on={schedule.created_on}
+                        deadline_time={schedule.deadline_time}
+                        estimated_time={schedule.estimated_time}
+                      />
+                    </>
+                  )
+                }
+              })()}
               <Paper
                 key={schedule.schedule_id}
                 component="form"
@@ -234,20 +246,22 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                   <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
                   <Typography variant="body2" color="textSecondary">
-                    {schedule.estimated_time === true ? (
-                      schedule.schedule_status !== "done" ? (
-                        <>Просроченно!</>
-                      ) : (
-                        <>Завершено!</>
-                      )
-                    ) : (
-                      <>
-                        {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
-                        {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
-                        {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
-                        {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
-                      </>
-                    )}
+                    {(() => {
+                      if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
+                        return <>Просроченно!</>
+                      } else if (schedule.schedule_status === "done") {
+                        return <>Завершено</>
+                      } else {
+                        return (
+                          <>
+                            {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
+                            {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
+                            {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
+                            {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
+                          </>
+                        )
+                      }
+                    })()}
                   </Typography>
                   {isLead ? (
                     <></>
