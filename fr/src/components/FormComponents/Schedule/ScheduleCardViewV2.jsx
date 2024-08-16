@@ -1,9 +1,23 @@
-import { Box, Divider, Paper, TextField, Typography, Snackbar, Alert, LinearProgress, Stack } from "@mui/material"
+import {
+  Box,
+  Divider,
+  Paper,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+  LinearProgress,
+  Stack,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined"
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined"
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined"
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
+import LocalPrintshopOutlinedIcon from "@mui/icons-material/LocalPrintshopOutlined"
 import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import { RadioGroupRating } from "../../Navigation/User/Menu/Schedule/RadioGroupRating/RadioGroupRating"
@@ -12,6 +26,8 @@ import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
 import { formatDate } from "../../../utils/formatDate"
+import { PrintTaskList } from "./PrintTaskList"
+import ExpandMore from "@mui/icons-material/ExpandMore"
 
 const OFF_TIME = "17:00:00"
 
@@ -116,15 +132,15 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
       ...scheduleItem,
       // estimated_time: calculateEstimatedTime(scheduleItem.created_on, scheduleItem.deadline_time),
       estimated_time: calculateRemainingTime(scheduleItem.deadline_time),
-  }))
+    }))
     .sort((a, b) => {
       // Сначала сортируем по статусу: new выше done
-      if (a.schedule_status === "new" && b.schedule_status !== "new") return -1;
-      if (a.schedule_status !== "new" && b.schedule_status === "new") return 1;
-      
+      if (a.schedule_status === "new" && b.schedule_status !== "new") return -1
+      if (a.schedule_status !== "new" && b.schedule_status === "new") return 1
+
       // Если статусы одинаковы, сортируем по дате создания
-      return new Date(a.deadline_time) - new Date(b.deadline_time);
-    });
+      return new Date(a.deadline_time) - new Date(b.deadline_time)
+    })
 
   // Фильтрация расписаний на основе введенного запроса
   const filteredSchedules = schedulesWithTime.filter(schedule => schedule.schedule_description.toLowerCase().includes(keyWordsFilter.toLowerCase()))
@@ -207,6 +223,23 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
           margin="normal"
         />
       </Box>
+      {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
+      <Box>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1-content" id="panel1-header">
+            <Box display="flex" alignItems="center" justifyContent="center" width="100%">
+              <LocalPrintshopOutlinedIcon sx={{ marginRight: 1 }} />
+              <Typography variant="h6" gutterBottom align="center">
+                Распечатать задачи
+              </Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <PrintTaskList tasks={filteredSchedules} />
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+      {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
       <Box sx={{ mb: "50px" }}>
         {filteredSchedules &&
           filteredSchedules.map((schedule, index) => (
