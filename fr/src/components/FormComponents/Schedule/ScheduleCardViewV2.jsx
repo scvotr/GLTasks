@@ -15,36 +15,10 @@ import { formatDate } from "../../../utils/formatDate"
 
 const OFF_TIME = "17:00:00"
 
-// function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
-//   const [progress, setProgress] = useState(0)
-
-//   useEffect(() => {
-//     console.log('re render LinearDeterminate')
-//     const calculateProgress = () => {
-//       const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
-//       const createdDate = new Date(created_on)
-//       const totalTime = deadlineDate.getTime() - createdDate.getTime() // общее время выполнения в миллисекундах
-//       const elapsedTime = Date.now() - createdDate.getTime() // время, прошедшее с момента создания
-
-//       const newProgress = Math.min((elapsedTime / totalTime) * 100, 100)
-//       setProgress(newProgress)
-//     }
-
-//     calculateProgress()
-//   }, [created_on, deadline_time, estimated_time])
-
-//   return (
-//     <Box sx={{ width: "100%", marginTop: 2 }}>
-//       <LinearProgress variant="determinate" value={progress} />
-//     </Box>
-//   )
-// }
-
 // Memoize the component to prevent unnecessary re-renders
-const LinearDeterminate = memo(({ created_on, deadline_time, estimated_time, isEditing }) => {
+const LinearDeterminate = memo(({ created_on, deadline_time, estimated_time }) => {
   const [progress, setProgress] = useState(0)
 
-  console.log("re render LinearDeterminate")
   // Memoize the calculation function to prevent unnecessary re-executions
   const calculateProgress = useCallback(() => {
     const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
@@ -137,11 +111,20 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     }
   }
 
-  const schedulesWithTime = Object.values(schedules).map(scheduleItem => ({
-    ...scheduleItem,
-    // estimated_time: calculateEstimatedTime(scheduleItem.created_on, scheduleItem.deadline_time),
-    estimated_time: calculateRemainingTime(scheduleItem.deadline_time),
+  const schedulesWithTime = Object.values(schedules)
+    .map(scheduleItem => ({
+      ...scheduleItem,
+      // estimated_time: calculateEstimatedTime(scheduleItem.created_on, scheduleItem.deadline_time),
+      estimated_time: calculateRemainingTime(scheduleItem.deadline_time),
   }))
+    .sort((a, b) => {
+      // Сначала сортируем по статусу: new выше done
+      if (a.schedule_status === "new" && b.schedule_status !== "new") return -1;
+      if (a.schedule_status !== "new" && b.schedule_status === "new") return 1;
+      
+      // Если статусы одинаковы, сортируем по дате создания
+      return new Date(a.deadline_time) - new Date(b.deadline_time);
+    });
 
   // Фильтрация расписаний на основе введенного запроса
   const filteredSchedules = schedulesWithTime.filter(schedule => schedule.schedule_description.toLowerCase().includes(keyWordsFilter.toLowerCase()))
@@ -216,7 +199,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     <>
       <Box sx={{ m: "10px", width: "100%" }}>
         <TextField
-          label="Фильтр по тексту задачь"
+          label="Поиск по тексту"
           value={keyWordsFilter}
           onChange={e => setKeyWordsFilter(e.target.value)}
           variant="outlined"
@@ -250,7 +233,6 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                           created_on={schedule.created_on}
                           deadline_time={schedule.deadline_time}
                           estimated_time={schedule.estimated_time}
-                          isEditing={!!editingScheduleId} // передаем состояние редактирования
                         />
                       )}
                     </>
@@ -490,3 +472,28 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     </>
   )
 }
+
+// function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
+//   const [progress, setProgress] = useState(0)
+
+//   useEffect(() => {
+//     console.log('re render LinearDeterminate')
+//     const calculateProgress = () => {
+//       const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
+//       const createdDate = new Date(created_on)
+//       const totalTime = deadlineDate.getTime() - createdDate.getTime() // общее время выполнения в миллисекундах
+//       const elapsedTime = Date.now() - createdDate.getTime() // время, прошедшее с момента создания
+
+//       const newProgress = Math.min((elapsedTime / totalTime) * 100, 100)
+//       setProgress(newProgress)
+//     }
+
+//     calculateProgress()
+//   }, [created_on, deadline_time, estimated_time])
+
+//   return (
+//     <Box sx={{ width: "100%", marginTop: 2 }}>
+//       <LinearProgress variant="determinate" value={progress} />
+//     </Box>
+//   )
+// }
