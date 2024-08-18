@@ -43,7 +43,7 @@ db.serialize(async () => {
   createTablePendingNotifications()
   createTableSchedules()
   createTableSchedulesComments()
-  addCreatedOnField()
+  // addCreatedOnField()
   // addReportColumnToSchedules()
   // addSchedulePriorityRateColumnToSchedules()
   // await testPGQuery()
