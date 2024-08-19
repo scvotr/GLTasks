@@ -11,8 +11,18 @@ let defaultTheme = createTheme({
       // main: '#007bff',
     },
     secondary: {
-      main: '#DFC053',
+      main: '#9c27b0',
       // main: '#f50057',
+      // main: '#6c757d',
+    },
+    error: {
+      main: '#f50057',
+      // main: '#f50057',
+      // main: '#6c757d',
+    },
+    success: {
+      main: '#DFC053',
+      // main: '#9c27b0 ',
       // main: '#6c757d',
     },
   },
