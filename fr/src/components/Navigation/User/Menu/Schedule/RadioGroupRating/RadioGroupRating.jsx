@@ -8,6 +8,13 @@ import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied"
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined"
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied"
 
+
+import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
+import StarRateOutlinedIcon from '@mui/icons-material/StarRateOutlined';
+import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
+import StarHalfOutlinedIcon from '@mui/icons-material/StarHalfOutlined';
+import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
+
 const StyledRating = styled(Rating)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -19,23 +26,23 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 
 const customIcons = {
   1: {
-    icon: <SentimentVeryDissatisfiedIcon color="error" />,
+    icon: <StarBorderOutlinedIcon color="error" />,
     label: "Very Dissatisfied",
   },
   2: {
-    icon: <SentimentDissatisfiedIcon color="error" />,
+    icon: <GradeOutlinedIcon color="error" />,
     label: "Dissatisfied",
   },
   3: {
-    icon: <SentimentSatisfiedIcon color="warning" />,
+    icon: <StarRateOutlinedIcon color="warning" />,
     label: "Neutral",
   },
   4: {
-    icon: <SentimentSatisfiedAltIcon color="success" />,
+    icon: <StarHalfOutlinedIcon color="success" />,
     label: "Satisfied",
   },
   5: {
-    icon: <SentimentVerySatisfiedIcon color="success" />,
+    icon: <StarOutlinedIcon color="success" />,
     label: "Very Satisfied",
   },
 }
