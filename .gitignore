@@ -8,8 +8,8 @@ bk/uploads/
 fr/package-lock.json
 
 fr/public/files/Mutula2024/
-bk/controllers/Tasks/mailFor.js
-fr/src/utils/remoteHosts.js
+# bk/controllers/Tasks/mailFor.js
+# fr/src/utils/remoteHosts.js
 
 /.pnp
 .pnp.js
