@@ -6,6 +6,7 @@ export const TextDataField = props => {
   return (
     <>
       <TextField
+        sx={{ pl:2, pr: 2 }}
         id="task_description"
         label="Введите описание задачи"
         placeholder="текст задачи"
@@ -21,6 +22,7 @@ export const TextDataField = props => {
         required
       />
       <TextField
+        sx={{p:2}}
         id="date"
         label="Выпонить до:"
         type="date"
