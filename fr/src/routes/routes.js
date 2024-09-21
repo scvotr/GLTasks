@@ -40,7 +40,7 @@ import { AllTasksToSubDep } from "../components/Navigation/User/Menu/Tasks/AllTa
 export const routes = createBrowserRouter([
   {
     path: '/',
-    element: <App/>,
+    element: <App />,
     children: [
       {
         path: '/main',
