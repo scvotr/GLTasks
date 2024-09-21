@@ -27,12 +27,12 @@ export const AddStuctForm = ({reRender}) => {
     reRender(prevKey => prevKey + 1)
   }, [updatedForm])
 
-  const handleSubmitAddNewDep = (isApprove, event) => {
+  const handleSubmitAddNewDep = async(isApprove, event) => {
     event.preventDefault()
     if (isApprove) {
       try {
         setReqStatus({ loading: true, error: null })
-        getDataFromEndpoint(currentUser.token, "/admin/createNewDep", "POST", formData, setReqStatus)
+        await getDataFromEndpoint(currentUser.token, "/admin/createNewDep", "POST", formData, setReqStatus)
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
@@ -41,7 +41,7 @@ export const AddStuctForm = ({reRender}) => {
     } else {
       try {
         setReqStatus({ loading: true, error: null })
-        getDataFromEndpoint(currentUser.token, "/admin/deleteDep", "POST", formData.department_id, setReqStatus)
+        await getDataFromEndpoint(currentUser.token, "/admin/deleteDep", "POST", formData.department_id, setReqStatus)
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
@@ -50,12 +50,12 @@ export const AddStuctForm = ({reRender}) => {
     }
   }
 
-  const handleSubmitAddNewSubDep = (isApprove, event) => {
+  const handleSubmitAddNewSubDep = async (isApprove, event) => {
     event.preventDefault()
     if (isApprove) {
       try {
         setReqStatus({ loading: true, error: null })
-        getDataFromEndpoint(currentUser.token, "/admin/createNewSubDep", "POST", formData, setReqStatus)
+        await getDataFromEndpoint(currentUser.token, "/admin/createNewSubDep", "POST", formData, setReqStatus)
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
@@ -64,7 +64,7 @@ export const AddStuctForm = ({reRender}) => {
     } else {
       try {
         setReqStatus({ loading: true, error: null })
-        getDataFromEndpoint(currentUser.token, "/admin/deleteSubDep", "POST", formData.subdepartment_id, setReqStatus)
+        await getDataFromEndpoint(currentUser.token, "/admin/deleteSubDep", "POST", formData.subdepartment_id, setReqStatus)
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
@@ -73,12 +73,12 @@ export const AddStuctForm = ({reRender}) => {
     }
   }
 
-  const handleSubmitAddNewPosition = (isApprove, event) => {
+  const handleSubmitAddNewPosition = async(isApprove, event) => {
     event.preventDefault()
     if (isApprove) {
       try {
         setReqStatus({ loading: true, error: null })
-        getDataFromEndpoint(currentUser.token, "/admin/createNewPosition", "POST", formData, setReqStatus)
+        await getDataFromEndpoint(currentUser.token, "/admin/createNewPosition", "POST", formData, setReqStatus)
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
@@ -87,7 +87,7 @@ export const AddStuctForm = ({reRender}) => {
     } else {
       try {
         setReqStatus({ loading: true, error: null })
-        getDataFromEndpoint(currentUser.token, "/admin/deletePosition", "POST", formData.position_id, setReqStatus)
+        await getDataFromEndpoint(currentUser.token, "/admin/deletePosition", "POST", formData.position_id, setReqStatus)
         setUpdatedForm(prevKey => prevKey + 1)
         setReqStatus({ loading: false, error: null })
       } catch (error) {

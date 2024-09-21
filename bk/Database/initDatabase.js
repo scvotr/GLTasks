@@ -49,6 +49,16 @@ db.serialize(async () => {
   // await testPGQuery()
   // await testPGQuery2()
   // createTableUsersPG()
+
+  // ! FOR REMOVE ONLY
+  createVenchelTable()
+  createTableVenchelFiles()
+  createTableVenchelComments()
+  createMachineTable()
+  createMachineFilesTable()
+  createMachineTypeTable()
+  createPowerRangeTable()
+  
 })
 
 module.exports ={

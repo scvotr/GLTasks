@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useAuthContext } from '../context/AuthProvider'
 
-export const AuthRotes = ({ component: Component }) => {
+export const AuthRotesCheck = ({ component: Component }) => {
   const currentUser = useAuthContext()
   return (
     <>
