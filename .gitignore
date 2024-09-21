@@ -7,6 +7,9 @@ bk/warnAuth.log
 bk/uploads/
 fr/package-lock.json
 
+bk/controllers/Tasks/mailFor.js
+fr/src/utils/remoteHosts.js
+
 /.pnp
 .pnp.js
 *.drawio
