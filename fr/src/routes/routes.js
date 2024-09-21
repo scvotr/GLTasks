@@ -16,12 +16,6 @@ import { ClosedTask } from '../components/Navigation/User/Menu/Tasks/ClosedTask'
 import { GeneralTasksMain } from '../components/Navigation/User/Menu/Tasks/General/GeneralTasksMain'
 import InstructionComponent from '../components/Layouts/DefaultLayoutMain/FAQ/InstructionComponent'
 import { AnalyticsChart } from '../components/Navigation/User/Menu/Tasks/AnalyticsChart'
-import { DocsMain } from '../components/Navigation/User/Menu/Docs/DocsMain'
-import { DocsAtchive } from '../components/Navigation/User/Menu/Docs/DocsAtchive'
-import { DocsOrdinance } from '../components/Navigation/User/Menu/Docs/DocsOrdinance'
-import { SchedulMain } from '../components/Navigation/User/Menu/Schedule/SchedulMain'
-import { SchedulsArchive } from '../components/Navigation/User/Menu/Schedule/SchedulsArchive'
-import { UsersSchedules } from '../components/Navigation/User/Menu/Schedule/UsersSchedules'
 import { InfoNews } from '../components/Layouts/DefaultLayoutMain/FAQ/InfoNews'
 import { TasksManualCmp } from '../components/Layouts/DefaultLayoutMain/Manual/TasksManualCmp'
 import { LeadTasks } from '../components/Navigation/User/Menu/Tasks/LeadTasks'
@@ -42,6 +36,8 @@ import { MotorTechnicalList } from './RoutesList/Admin/devices/motor/technical/M
 import { MotorServiceTypeList } from './RoutesList/Admin/devices/motor/serviceType/MotorServiceType'
 import { UserSettingsRoutesList } from './RoutesList/User/settings/UserSettingsRoutesList'
 import { MutualRoutesList } from './RoutesList/Mutual/MutualRoutesList'
+import { ScheduleRoutesList } from './RoutesList/User/schedule/ScheduleRoutesList'
+import { DocsRoutesList } from './RoutesList/Docs/DocsRoutesList'
 
 export const routes = createBrowserRouter([
   {
@@ -155,35 +151,9 @@ export const routes = createBrowserRouter([
         element: <PrivateRoutesCheck component={AnalyticsChart} roles={['chife', 'user', 'general']} />,
       },
       ...UserSettingsRoutesList,
-      {
-        path: '/docs',
-        element: <PrivateRoutesCheck component={DocsMain} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/docs/docsArchive',
-        element: <PrivateRoutesCheck component={DocsAtchive} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/docs/ordinance',
-        element: <PrivateRoutesCheck component={DocsOrdinance} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/docs/ordinance',
-        element: <PrivateRoutesCheck component={DocsOrdinance} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/schedule',
-        element: <PrivateRoutesCheck component={SchedulMain} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/schedule/schedulesArchive',
-        element: <PrivateRoutesCheck component={SchedulsArchive} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/schedule/taskScheduler',
-        element: <PrivateRoutesCheck component={UsersSchedules} roles={['chife', 'user', 'general']} />,
-      },
-      ...MutualRoutesList
+      ...DocsRoutesList,
+      ...ScheduleRoutesList,
+      ...MutualRoutesList,
     ],
   },
 ])
