@@ -62,7 +62,11 @@ import { BearingType } from '../components/Navigation/Admin/Menu/Devices/Motors/
 import { Mounting } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Mounting/Mounting'
 import { Dimensions } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Dimensions/Dimensions'
 import { AuthRoutesList } from './RoutesList/Auth/AuthRoutesList'
-
+import { MotorElectricalRoutesList } from './RoutesList/Admin/devices/motor/electrical/MotoElectrical'
+import { MotorMechanicalRoutesList } from './RoutesList/Admin/devices/motor/mechanical/MotorMechanical'
+import { MotorProtectionList } from './RoutesList/Admin/devices/motor/protection/MotorProtection'
+import { MotorTechnicalList } from './RoutesList/Admin/devices/motor/technical/MotorTechnical'
+import { MotorServiceTypeList } from './RoutesList/Admin/devices/motor/serviceType/MotorServiceType'
 
 export const routes = createBrowserRouter([
   {
@@ -129,88 +133,11 @@ export const routes = createBrowserRouter([
         element: <PrivateRoutesCheck component={CreateMotor} roles={['admin']} />,
       },
       // !-----------------------------------------
-      // !-----------------------------------------
-      {
-        path: '/admin/devices/motor/electrical',
-        element: <PrivateRoutesCheck component={Electrical} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/electrical/power',
-        element: <PrivateRoutesCheck component={Power} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/electrical/voltage',
-        element: <PrivateRoutesCheck component={Voltage} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/electrical/amperage',
-        element: <PrivateRoutesCheck component={Amperage} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/electrical/efficiency',
-        element: <PrivateRoutesCheck component={Efficiency} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/electrical/cosF',
-        element: <PrivateRoutesCheck component={CosF} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/mechanical',
-        element: <PrivateRoutesCheck component={Mechanical} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/mechanical/rotationSpeed',
-        element: <PrivateRoutesCheck component={RotationSpeed} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/mechanical/torque',
-        element: <PrivateRoutesCheck component={Torque} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/mechanical/temperature',
-        element: <PrivateRoutesCheck component={Temperature} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/mechanical/operationMode',
-        element: <PrivateRoutesCheck component={OperationMode} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/protection',
-        element: <PrivateRoutesCheck component={Protection} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/protection/protectionLevel',
-        element: <PrivateRoutesCheck component={ProtectionLevel} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/protection/explosionProof',
-        element: <PrivateRoutesCheck component={ExplosionProof} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/protection/brake',
-        element: <PrivateRoutesCheck component={Brake} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/technical',
-        element: <PrivateRoutesCheck component={Technical} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/technical/mounting',
-        element: <PrivateRoutesCheck component={Mounting} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/technical/Dimensions',
-        element: <PrivateRoutesCheck component={Dimensions} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/technical/bearingType',
-        element: <PrivateRoutesCheck component={BearingType} roles={['admin']} />,
-      },
-      {
-        path: '/admin/devices/motor/serviceType',
-        element: <PrivateRoutesCheck component={ServiceType} roles={['admin']} />,
-      },
-      // !-----------------------------------------
+      ...MotorElectricalRoutesList,
+      ...MotorMechanicalRoutesList,
+      ...MotorProtectionList,
+      ...MotorTechnicalList,
+      ...MotorServiceTypeList,
       // !-----------------------------------------
       {
         path: '/main2',
