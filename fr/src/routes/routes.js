@@ -13,10 +13,6 @@ import { TasksMain } from '../components/Navigation/User/Menu/Tasks/TasksMain'
 import { Tasks } from '../components/Navigation/Admin/Menu/Tasks/Tasks'
 import { AllTasks } from '../components/Navigation/Admin/Menu/Tasks/AllTasks'
 import { ClosedTask } from '../components/Navigation/User/Menu/Tasks/ClosedTask'
-import { ChangePasPin } from '../components/Navigation/User/Menu/Tasks/UserSettings/ChangePasPin'
-import { EditProfile } from '../components/Navigation/User/Menu/Tasks/UserSettings/EditProfile'
-import { SettingsMain } from '../components/Navigation/User/Menu/Tasks/UserSettings/SettingsMain'
-import { EmptyProfile } from '../components/Navigation/User/Menu/Tasks/UserSettings/EmptyProfile'
 import { GeneralTasksMain } from '../components/Navigation/User/Menu/Tasks/General/GeneralTasksMain'
 import InstructionComponent from '../components/Layouts/DefaultLayoutMain/FAQ/InstructionComponent'
 import { AnalyticsChart } from '../components/Navigation/User/Menu/Tasks/AnalyticsChart'
@@ -26,9 +22,6 @@ import { DocsOrdinance } from '../components/Navigation/User/Menu/Docs/DocsOrdin
 import { SchedulMain } from '../components/Navigation/User/Menu/Schedule/SchedulMain'
 import { SchedulsArchive } from '../components/Navigation/User/Menu/Schedule/SchedulsArchive'
 import { UsersSchedules } from '../components/Navigation/User/Menu/Schedule/UsersSchedules'
-import { MutualVerificationMain } from '../components/Navigation/User/Menu/MutualVerification/MutualVerificationMain'
-import { MutualVerificationDocs } from '../components/Navigation/User/Menu/MutualVerification/MutualVerificationDocs'
-import { MutualVerificationArchive } from '../components/Navigation/User/Menu/MutualVerification/MutualVerificationArchive'
 import { InfoNews } from '../components/Layouts/DefaultLayoutMain/FAQ/InfoNews'
 import { TasksManualCmp } from '../components/Layouts/DefaultLayoutMain/Manual/TasksManualCmp'
 import { LeadTasks } from '../components/Navigation/User/Menu/Tasks/LeadTasks'
@@ -41,32 +34,14 @@ import { CreateType } from '../components/Navigation/Admin/Menu/Devices/Type/Cre
 import { CreateWorkshop } from '../components/Navigation/Admin/Menu/Devices/Workshops/CreateWorkshop'
 import { DeviceMain } from '../components/Navigation/Admin/Menu/Devices/DeviceMain'
 import { CreateMotor } from '../components/Navigation/Admin/Menu/Devices/Motors/CreateMotor'
-import { Electrical } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/Elecrical'
-import { Mechanical } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/Mechanical'
-import { Protection } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/Protection'
-import { ProtectionLevel } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/ProtectionLevel/ProtectionLevel'
-import { ExplosionProof } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/ExplosionProof/ExplosionProof'
-import { Brake } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/Brake/Brake'
-import { Technical } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Technical'
-import { ServiceType } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/ServiceType/ServiceType'
-import { Power } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/power/Power'
-import { Voltage } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/voltage/Voltage'
-import { Amperage } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/amperage/Amperage'
-import { Efficiency } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/efficiency/Efficiency'
-import { CosF } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/cosF/CosF'
-import { RotationSpeed } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/RotationSpeed/RotationSpeed'
-import { Torque } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/Torque/Torque'
-import { Temperature } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/Temperature/Temperature'
-import { OperationMode } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/OperationMode/OperationMode'
-import { BearingType } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/BearingType/BearingType'
-import { Mounting } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Mounting/Mounting'
-import { Dimensions } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Dimensions/Dimensions'
 import { AuthRoutesList } from './RoutesList/Auth/AuthRoutesList'
 import { MotorElectricalRoutesList } from './RoutesList/Admin/devices/motor/electrical/MotoElectrical'
 import { MotorMechanicalRoutesList } from './RoutesList/Admin/devices/motor/mechanical/MotorMechanical'
 import { MotorProtectionList } from './RoutesList/Admin/devices/motor/protection/MotorProtection'
 import { MotorTechnicalList } from './RoutesList/Admin/devices/motor/technical/MotorTechnical'
 import { MotorServiceTypeList } from './RoutesList/Admin/devices/motor/serviceType/MotorServiceType'
+import { UserSettingsRoutesList } from './RoutesList/User/settings/UserSettingsRoutesList'
+import { MutualRoutesList } from './RoutesList/Mutual/MutualRoutesList'
 
 export const routes = createBrowserRouter([
   {
@@ -179,22 +154,7 @@ export const routes = createBrowserRouter([
         path: '/tasks/AnalyticsChart',
         element: <PrivateRoutesCheck component={AnalyticsChart} roles={['chife', 'user', 'general']} />,
       },
-      {
-        path: '/settings',
-        element: <PrivateRoutesCheck component={SettingsMain} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/settings/profile',
-        element: <PrivateRoutesCheck component={EditProfile} roles={['chife', 'user', 'new', 'general']} />,
-      },
-      {
-        path: '/settings/changePasPin',
-        element: <PrivateRoutesCheck component={ChangePasPin} roles={['chife', 'user', 'new', 'general']} />,
-      },
-      {
-        path: '/settings/emptyProfile',
-        element: <PrivateRoutesCheck component={EmptyProfile} roles={['chife', 'user', 'general']} />,
-      },
+      ...UserSettingsRoutesList,
       {
         path: '/docs',
         element: <PrivateRoutesCheck component={DocsMain} roles={['chife', 'user', 'general']} />,
@@ -223,18 +183,7 @@ export const routes = createBrowserRouter([
         path: '/schedule/taskScheduler',
         element: <PrivateRoutesCheck component={UsersSchedules} roles={['chife', 'user', 'general']} />,
       },
-      {
-        path: '/mutualVerification',
-        element: <PrivateRoutesCheck component={MutualVerificationMain} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/mutualVerification/docs',
-        element: <PrivateRoutesCheck component={MutualVerificationDocs} roles={['chife', 'user', 'general']} />,
-      },
-      {
-        path: '/mutualVerification/archive',
-        element: <PrivateRoutesCheck component={MutualVerificationArchive} roles={['chife', 'user', 'general']} />,
-      },
+      ...MutualRoutesList
     ],
   },
 ])
