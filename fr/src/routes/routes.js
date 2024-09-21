@@ -44,15 +44,15 @@ export const routes = createBrowserRouter([
     children: [
       {
         path: '/main',
-        element: <AuthRotes component={InfoNews} />,
+        element: <AuthRotesCheck component={InfoNews} />,
       },
       {
         path: '/login',
-        element: <AuthRotes component={Login} />,
+        element: <AuthRotesCheck component={Login} />,
       },
       {
         path: '/registration',
-        element: <AuthRotes component={Registration} />,
+        element: <AuthRotesCheck component={Registration} />,
       },
       {
         path: '/restorePassword',
