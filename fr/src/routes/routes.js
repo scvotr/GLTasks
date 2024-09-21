@@ -313,7 +313,6 @@ export const routes = createBrowserRouter([
         path: '/mutualVerification/archive',
         element: <PrivateRoutesCheck component={MutualVerificationArchive} roles={['chife', 'user', 'general']} />,
       },
-    ]
-  }
-
+    ],
+  },
 ])
