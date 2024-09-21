@@ -21,7 +21,7 @@ class ScheduleController {
     try {
       const authDecodeUserData = req.user
       await createSchedulesQ(authDecodeUserData)
-        sendResponseWithData(res, 'addNewSchedules-ok')
+      sendResponseWithData(res, 'addNewSchedules-ok')
     } catch (error) {
       handleError(res, 'addNewSchedules')
     }
@@ -31,7 +31,7 @@ class ScheduleController {
     try {
       const authDecodeUserData = req.user
       await updateScheduleQ(authDecodeUserData)
-        sendResponseWithData(res, 'updateSchedule-ok')
+      sendResponseWithData(res, 'updateSchedule-ok')
     } catch (error) {
       handleError(res, 'updateSchedule')
     }
