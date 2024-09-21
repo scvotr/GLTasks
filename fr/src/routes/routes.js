@@ -5,8 +5,6 @@ import { Registration } from '../components/Authtorization/Registration/Registra
 import { RestorePassword } from '../components/Authtorization/RestorePassword/RestorePassword'
 import { AuthRotesCheck } from './AuthRotesCheck'
 import { PrivateRoutesCheck } from './PrivateRoutesCheck'
-
-
 import { NewUsers } from '../components/Navigation/Admin/Menu/Users/NewUsers'
 import { Users } from '../components/Navigation/Admin/Menu/Users/Users'
 import { Struct } from '../components/Navigation/Admin/Menu/Struct/Struct'
@@ -315,6 +313,7 @@ export const routes = createBrowserRouter([
         path: '/mutualVerification/archive',
         element: <PrivateRoutesCheck component={MutualVerificationArchive} roles={['chife', 'user', 'general']} />,
       },
-    ],
-  },
+    ]
+  }
+
 ])
