@@ -61,7 +61,7 @@ import { OperationMode } from '../components/Navigation/Admin/Menu/Devices/Motor
 import { BearingType } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/BearingType/BearingType'
 import { Mounting } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Mounting/Mounting'
 import { Dimensions } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Dimensions/Dimensions'
-import { AuthRoutesList } from './RoutesList/AuthRoutesList'
+import { AuthRoutesList } from './RoutesList/Auth/AuthRoutesList'
 
 
 export const routes = createBrowserRouter([
