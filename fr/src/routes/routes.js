@@ -61,6 +61,8 @@ import { OperationMode } from '../components/Navigation/Admin/Menu/Devices/Motor
 import { BearingType } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/BearingType/BearingType'
 import { Mounting } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Mounting/Mounting'
 import { Dimensions } from '../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Dimensions/Dimensions'
+import { AuthRoutesList } from './RoutesList/AuthRoutesList'
+
 
 export const routes = createBrowserRouter([
   {
@@ -72,17 +74,10 @@ export const routes = createBrowserRouter([
         element: <AuthRotesCheck component={InfoNews} />,
       },
       {
-        path: '/login',
-        element: <AuthRotesCheck component={Login} />,
-      },
-      {
-        path: '/registration',
-        element: <AuthRotesCheck component={Registration} />,
-      },
-      {
         path: '/restorePassword',
         element: <RestorePassword />,
       },
+      ...AuthRoutesList,
       {
         path: '/admin/users',
         element: <PrivateRoutesCheck component={Users} roles={['admin']} />,
@@ -313,10 +308,6 @@ export const routes = createBrowserRouter([
         path: '/mutualVerification/archive',
         element: <PrivateRoutesCheck component={MutualVerificationArchive} roles={['chife', 'user', 'general']} />,
       },
-    ]
-  }
-
+    ],
+  },
 ])
-
-
-
