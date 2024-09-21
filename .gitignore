@@ -6,8 +6,9 @@ bk/errorAuth.log
 bk/warnAuth.log
 bk/uploads/
 fr/package-lock.json
-
 fr/public/files/Mutula2024/
+fr/src/utils/remoteHosts.js
+
 
 /.pnp
 .pnp.js
