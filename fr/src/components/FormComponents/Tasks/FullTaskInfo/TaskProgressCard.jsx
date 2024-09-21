@@ -13,7 +13,7 @@ export const TaskProgressCard = ({ task }) => {
     {
       key: "responsible_user_last_name",
       value: task.responsible_user_last_name ? "Ответственный: " + task.responsible_user_last_name + " " + task.responsible_position_name : null,
-      default: "ФИО ответсвенного",
+      default: "ФИО ответственного",
     },
     { key: "confirmation_on", value: task.confirmation_on ? "Отправлена на проверку: " + formatDate(task.confirmation_on) : null, default: "В работе" },
     { key: "closed_on", value: task.closed_on ? "Закрыта: " + formatDate(task.closed_on) : null, default: "Требует подтверждения" },

@@ -367,7 +367,7 @@ const getAllUserTasksQ = async (user_id) => {
 }
 
 const updateTaskByEventrQ = async (data) => {
-  console.log('updateTaskByEventrQ', data)
+  console.log('updateTaskByEventrQ', data.deadline_changed)
   try {
     const {
       responsible_position_id,
@@ -377,8 +377,10 @@ const updateTaskByEventrQ = async (data) => {
       setResponseUser_on,
       confirmation_on,
       reject_on,
+      deadline_changed,
       closed_on
     } = data
+
     let fieldsToUpdate = []
 
     if (setResponseUser_on) {
@@ -388,18 +390,27 @@ const updateTaskByEventrQ = async (data) => {
       fieldsToUpdate.push('confirmation_on = CURRENT_TIMESTAMP')
     }
     if (reject_on) {
-      fieldsToUpdate.push('reject_on = CURRENT_TIMESTAMP')
+      fieldsToUpdate.push('deadline = ?, reject_on = CURRENT_TIMESTAMP')
+      // fieldsToUpdate.push('deadline = ?')
     }
     if (closed_on) {
       fieldsToUpdate.push('closed_on = CURRENT_TIMESTAMP')
     }
 
-    const command = `
+    let command = `
       UPDATE tasks
       SET responsible_position_id = ?, task_status = ?, responsible_user_id = ?, ${fieldsToUpdate}
       WHERE task_id = ?
     `;
-    await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, task_id, ])
+
+    let params = [responsible_position_id, task_status, responsible_user_id]
+    if (reject_on) {
+      params.push(deadline_changed); // Добавляем значение deadline только при reject_on
+    }
+    params.push(task_id);
+
+    // await executeDatabaseQueryAsync(command, [responsible_position_id, task_status, responsible_user_id, deadline_changed, task_id, ])
+    await executeDatabaseQueryAsync(command, params);
   } catch (error) {
     throw new Error('Ошибка запроса к базе данных updateTaskByEventrQ')
   }

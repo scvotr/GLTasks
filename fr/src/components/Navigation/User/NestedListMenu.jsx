@@ -13,10 +13,14 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined"
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined"
-import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
+import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined"
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 import Diversity1OutlinedIcon from "@mui/icons-material/Diversity1Outlined"
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -60,6 +64,36 @@ export const NestedListMenu = ({ isOpen }) => {
       path: "/tasks",
       tasksCount: 0,
       subItems: [
+        currentUser.role === "chife"
+          ? {
+              name: "Мои задачи",
+              icon: <PeopleAltOutlinedIcon fontSize="large" />,
+              path: "/tasks/leadTasks",
+              btn: true,
+            }
+          : null,
+        currentUser.role === "chife"
+          ? {
+              name: "От отдела",
+              icon: <CloudUploadOutlinedIcon fontSize="large" />,
+              path: "/tasks/allTasksFromSubDep",
+              btn: true,
+            }
+          : null,
+        currentUser.role === "chife"
+          ? {
+              name: "Для отдела",
+              icon: <CloudDownloadOutlinedIcon fontSize="large" />,
+              path: "/tasks/allTasksToSubDep",
+              btn: true,
+            }
+          : null,
+        {
+          name: "Тех. поддрежка",
+          icon: <SupportAgentOutlinedIcon fontSize="large" />,
+          path: "/tasks/helpDesk",
+          btn: true,
+        },
         {
           name: "Архив",
           icon: <Inventory2OutlinedIcon fontSize="large" />,
@@ -72,7 +106,7 @@ export const NestedListMenu = ({ isOpen }) => {
           path: "/tasks/AnalyticsChart",
           btn: true,
         },
-      ],
+      ].filter(item => item !== null), // Фильтруем null значения
     },
     {
       name: "Документы(alfa)",
@@ -114,7 +148,7 @@ export const NestedListMenu = ({ isOpen }) => {
           path: "/schedule/schedulesArchive",
           btn: true,
         },
-      ].filter(Boolean)
+      ].filter(Boolean),
     },
     {
       name: "Взаимопроверка",

@@ -9,6 +9,9 @@ import { sendNewTaskData } from "../../../../../../utils/sendNewTaskData"
 import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { getPreviewFileContent } from "../../../../../FormComponents/Tasks/FullTaskInfo/FullTaskInfo"
+import fileTypes from "../../../../../../utils/fileTypes"
+
+const { image, pdf, msWord, msExcel, wordDoc, excelDoc } = fileTypes
 
 export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
   const currentUser = useAuthContext()
@@ -56,7 +59,8 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
     const { name, value, files, checked } = e.target
     if (name === "add_new_files" || name === "append_new_files") {
       setReqStatus({ loading: true })
-      const allowedTypes = ["image/jpeg", "image/png", "application/pdf"]
+      // ! Переписать!!!
+      const allowedTypes = ["image/jpeg", "image/png", "application/pdf", "application/msword", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
       const data = Array.from(files).filter(file => allowedTypes.includes(file.type))
       const previews = await Promise.all(
         data.map(file => {
@@ -69,8 +73,11 @@ export const TaskForm = ({ taskToEdit, onTaskSubmit }) => {
                 img.onload = () => {
                   resolve(e.target.result)
                 }
-              } else if (file.type.startsWith("application/pdf")) {
+              } else if (file.type.startsWith(`${pdf}`)) {
                 resolve(e.target.result)
+                // ??????
+              } else if (file.type.startsWith(`${msWord}`) || file.type.startsWith(`${msExcel}`) || file.type.startsWith(`${wordDoc}`) || file.type.startsWith(`${excelDoc}`)) {
+                resolve(e.target.result);
               }
             }
             reader.readAsDataURL(file)

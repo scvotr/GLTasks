@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { ScheduleCardView } from "../../../../FormComponents/Schedule/ScheduleCardView"
+import { ScheduleCardViewV2 } from "../../../../FormComponents/Schedule/ScheduleCardViewV2"
 
 export const UsersSchedules = () => {
   const currentUser = useAuthContext()
@@ -15,7 +16,7 @@ export const UsersSchedules = () => {
   const [value, setValue] = useState("1")
   const [allSchedules, setAllScheduls] = useState([])
   const [allUsers, setAllUsers] = useState({})
-
+ 
   const handleChange = async (event, newValue) => {
     setValue(newValue)
     try {
@@ -28,17 +29,23 @@ export const UsersSchedules = () => {
   }
 
   useEffect(() => {
-    try {
-      setReqStatus({ loading: true, error: null })
-      if (currentUser.role === "chife") {
-        getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus).then(data => setAllUsers(data))
-      } else {
-        getDataFromEndpoint(currentUser.token, "/schedule/getAllSchedulesByUserId", "POST", currentUser.id, setReqStatus).then(data => setAllScheduls(data))
+    const fetchData = async () => {
+      try {
+        setReqStatus({ loading: true, error: null })
+        if (currentUser.role === "chife") {
+          const data = await getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus)
+          const filteredData = data.filter(user => user.id.toString() !== currentUser.id.toString())
+          setAllUsers(filteredData)
+        } else {
+          const data = await getDataFromEndpoint(currentUser.token, "/schedule/getAllSchedulesByUserId", "POST", currentUser.id, setReqStatus)
+          setAllScheduls(data)
+        }
+        setReqStatus({ loading: false, error: null })
+      } catch (error) {
+        setReqStatus({ loading: false, error: error })
       }
-      setReqStatus({ loading: false, error: null })
-    } catch (error) {
-      setReqStatus({ loading: false, error: error })
     }
+    fetchData()
   }, [formKey, value])
 
   return (
@@ -55,16 +62,21 @@ export const UsersSchedules = () => {
           ".MuiTabs-scrollButtons.Mui-disabled": {
             opacity: 0.3,
           },
-        }}
-      >
+        }}>
         {currentUser.role === "chife" && Array.isArray(allUsers) && allUsers.length > 0 ? (
           <TabContext value={value} centered variant="scrollable" scrollButtons="auto">
-              <TabList onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="lab API tabs example" sx={{maxWidth: { xs: 320, sm: 1200, margin: "0 auto" }}}>
-                {allUsers.map(user => (
-                  <Tab key={user.id} label={user.last_name} value={user.id} />
-                ))}
-              </TabList>
-            <ScheduleCardView schedules={allSchedules} reRender={setFormKey} />
+            <TabList
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="lab API tabs example"
+              sx={{ maxWidth: { xs: 320, sm: 1200, margin: "0 auto" } }}>
+              {allUsers.map(user => (
+                <Tab key={user.id} label={user.last_name} value={user.id} />
+              ))}
+            </TabList>
+            {/* <ScheduleCardView schedules={allSchedules} reRender={setFormKey} /> */}
+            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey} isLead={true}/>
           </TabContext>
         ) : (
           <></>
@@ -73,3 +85,25 @@ export const UsersSchedules = () => {
     </>
   )
 }
+
+// useEffect(() => {
+//   console.log('dddsss')
+//   try {
+//     setReqStatus({ loading: true, error: null })
+//     if (currentUser.role === "chife") {
+//       // getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus).then(data => setAllUsers(data))
+//       getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus).then(data => {
+//         const filteredData = data.filter(user => user.id.toString() !== currentUser.id)
+//         console.log('Zzzz', filteredData)
+//         setAllUsers(filteredData)
+//         // data.map(data => data.id.toString() !== currentUser.id)
+//         // console.log("bb", data)
+//       })
+//     } else {
+//       getDataFromEndpoint(currentUser.token, "/schedule/getAllSchedulesByUserId", "POST", currentUser.id, setReqStatus).then(data => setAllScheduls(data))
+//     }
+//     setReqStatus({ loading: false, error: null })
+//   } catch (error) {
+//     setReqStatus({ loading: false, error: error })
+//   }
+// }, [formKey, value])

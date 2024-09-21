@@ -15,8 +15,11 @@ const createTableSchedules = async () => {
         report TEXT,
         schedule_comment TEXT,
         deadline_time DATETIME,
+        ahead_completed_time DATETIME,
         estimated_time INTEGER,
+        ahead_estimated_time INTEGER,
         schedule_priority BOOLEAN,
+        schedule_priority_rate TEXT,
         appoint_user_id INTEGER NOT NULL,
         appoint_department_id INTEGER NOT NULL,
         appoint_subdepartment_id INTEGER NOT NULL,
@@ -38,17 +41,23 @@ const createTableSchedules = async () => {
 const addCreatedOnField = async () => {
   try {
     // 1. Добавляем новый столбец с типом данных TIMESTAMP и значением по умолчанию CURRENT_TIMESTAMP
-    await executeDatabaseQueryAsync(
-      `ALTER TABLE schedules ADD COLUMN created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
-    );
+    // await executeDatabaseQueryAsync(
+    //   `ALTER TABLE schedules ADD COLUMN created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
+    // );
 
     // 2. Обновляем существующие записи, присваивая им текущее время
-    await executeDatabaseQueryAsync(
-      `UPDATE schedules SET created_on = CURRENT_TIMESTAMP WHERE created_on IS NULL`
-    );
+    // await executeDatabaseQueryAsync(
+    //   `UPDATE schedules SET created_on = CURRENT_TIMESTAMP WHERE created_on IS NULL`
+    // );
 
-    // Не нужно менять тип данных столбца и его значение по умолчанию, так как это уже сделано в первом запросе
-
+    // !
+    // await executeDatabaseQueryAsync(
+    //   `ALTER TABLE schedules ADD COLUMN ahead_completed_time DATETIME`
+    // )
+    // // !
+    // await executeDatabaseQueryAsync(
+    //   `ALTER TABLE schedules ADD COLUMN ahead_estimated_time INTEGER`
+    // )
   } catch (error) {
     console.log('DB ERROR - addCreatedOnField: ', error);
   }
@@ -77,8 +86,32 @@ const addReportColumnToSchedules = async () => {
   }
 };
 
+const addSchedulePriorityRateColumnToSchedules = async () => {
+  try {
+    // Получаем информацию о столбцах таблицы schedules
+    const checkColumnQuery = "PRAGMA table_info('schedules')";
+    const columns = await executeDatabaseQueryAsync(checkColumnQuery);
+
+    // Проверяем, существует ли столбец schedule_priority_rate
+    const columnExists = columns.some(column => column.name === 'schedule_priority_rate');
+
+    if (!columnExists) {
+      // Добавляем столбец schedule_priority_rate, если его еще нет
+      await executeDatabaseQueryAsync(
+        `ALTER TABLE schedules ADD COLUMN schedule_priority_rate TEXT`
+      );
+      console.log("Столбец 'schedule_priority_rate' успешно добавлен.");
+    } else {
+      console.log("Столбец 'schedule_priority_rate' уже существует.");
+    }
+  } catch (error) {
+    console.log('DB ERROR - addSchedulePriorityRateColumnToSchedules: ', error);
+  }
+};
+
 module.exports = {
   createTableSchedules,
   addCreatedOnField,
   addReportColumnToSchedules,
+  addSchedulePriorityRateColumnToSchedules,
 };

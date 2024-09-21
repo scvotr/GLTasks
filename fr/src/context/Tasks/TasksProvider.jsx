@@ -149,6 +149,28 @@ export const TasksProvider = ({currentUser, children}) => {
     return await getDataFromEndpoint(token, "/tasks/getAllUserTasks", "POST", null, setReqStatus)
   }
 // !---------------------------------------------------------------------------------------
+  const [allLeadTasks, countAllLeadTasks] = useFilteredTasks(allTasks, currentUser, task => 
+    (task.appoint_user_id && task.appoint_user_id.toString() === currentUser.id.toString()) || 
+    (task.responsible_user_id && task.responsible_user_id.toString() === currentUser.id.toString())
+  );
+
+  const [allLeadTasksForSupp, countAllLeadTasksForSupp] = useFilteredTasks(allLeadTasks, currentUser, task => 
+    task.responsible_subdepartment_id && task.responsible_subdepartment_id === 9
+  );  
+
+  const [allTasksFromSubDep, countAllTasksFromSubDep] = useFilteredTasks(allTasks, currentUser, task => 
+    task.appoint_subdepartment_id && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString() && 
+    ((task.appoint_user_id && task.appoint_user_id.toString() !== currentUser.id.toString()) 
+    // || 
+    // (task.responsible_subdepartment_id && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString() && 
+    // (task.responsible_user_id && task.responsible_user_id.toString() !== currentUser.id.toString()))
+  ));
+
+  const [allTasksToSubDep, countAllTasksToSubDep] = useFilteredTasks(allTasks, currentUser, task => 
+    task.responsible_subdepartment_id && task.responsible_subdepartment_id.toString() === currentUser.subDep.toString() && 
+    ((task.appoint_user_id && task.appoint_user_id.toString() !== currentUser.id.toString()) 
+  ));
+
   const [allTasksClosed, countAllTasksClosed] = useFilteredTasks(allTasks, currentUser, task => 
     (task.task_status === "closed" && task.appoint_subdepartment_id.toString() === currentUser.subDep.toString() &&
     task.read_status === "readed") ||
@@ -174,6 +196,14 @@ export const TasksProvider = ({currentUser, children}) => {
     <TaskContext.Provider
       value={{
         allTasks,
+        allLeadTasks,
+        countAllLeadTasks,
+        allLeadTasksForSupp,
+        countAllLeadTasksForSupp,
+        allTasksFromSubDep,
+        countAllTasksFromSubDep,
+        allTasksToSubDep,
+        countAllTasksToSubDep,
         allTasksNoClosed,
         countAllTasksNoClosed,
         allTasksClosed,

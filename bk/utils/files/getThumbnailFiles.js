@@ -20,7 +20,7 @@ const getThumbnailFiles = async ( allTasks, folderName) => {
         let file_path
         let file_content
 
-        if(file_ext === ".pdf") {
+        if(file_ext !== ".jpg" && file_ext !== ".png") {
           file_path = file_name
           file_content = file_path
         } else {

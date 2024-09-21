@@ -14,7 +14,7 @@ const { createTableVenchelComments } = require('./models/venchel/venchelCommets'
 const { createTablePendingNotifications } = require('./models/Notification/pendingNotification')
 const { createUserRoles } = require('./models/User/userRoles')
 const { createTableTasksFiles } = require('./models/Task/tasksFiles')
-const { createTableSchedules, addCreatedOnField, addReportColumnToSchedules } = require('./models/Schedules/schedules')
+const { createTableSchedules, addCreatedOnField, addReportColumnToSchedules, addSchedulePriorityRateColumnToSchedules } = require('./models/Schedules/schedules')
 const { createTableSchedulesComments } = require('./models/Schedules/schedulesComments')
 const { testPGQuery, testPGQuery2 } = require('./queries/pg_test/test_pg_query')
 const { createTableUsersPG } = require('./models/User/createTableUsersPG')
@@ -45,9 +45,20 @@ db.serialize(async () => {
   createTableSchedulesComments()
   // addCreatedOnField()
   // addReportColumnToSchedules()
+  // addSchedulePriorityRateColumnToSchedules()
   // await testPGQuery()
   // await testPGQuery2()
   // createTableUsersPG()
+
+  // ! FOR REMOVE ONLY
+  createVenchelTable()
+  createTableVenchelFiles()
+  createTableVenchelComments()
+  createMachineTable()
+  createMachineFilesTable()
+  createMachineTypeTable()
+  createPowerRangeTable()
+  
 })
 
 module.exports ={

@@ -5,10 +5,11 @@ import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { useAuthContext } from "../../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
+import { RadioGroupRating } from "../RadioGroupRating/RadioGroupRating"
 
 export const SchedulePlane = ({ onClose, reRender }) => {
   const currentUser = useAuthContext()
-  const [reqStatus, setReqStatus] = useState({ loading: false, error: null, })
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
   const initVal = {
     schedule_id: uuidv4(),
@@ -20,7 +21,9 @@ export const SchedulePlane = ({ onClose, reRender }) => {
     schedule_comment: [],
     deadline_time: "",
     estimated_time: 0,
+    ahead_completed_time: 0,
     schedule_priority: false,
+    schedule_priority_rate: 0,
     appoint_user_id: currentUser.id,
     appoint_department_id: currentUser.dep,
     appoint_subdepartment_id: currentUser.subDep,
@@ -31,7 +34,11 @@ export const SchedulePlane = ({ onClose, reRender }) => {
   const [planeTasks, setPlaneTasks] = useState([initVal])
 
   const handleAddTask = () => {
-    setPlaneTasks([initVal, ...planeTasks])
+    const newTask = {
+      ...initVal,
+      schedule_id: uuidv4(), // Генерируем новый UUID для новой задачи
+    }
+    setPlaneTasks([newTask, ...planeTasks])
   }
 
   const handleDeleteTask = index => {
@@ -51,12 +58,28 @@ export const SchedulePlane = ({ onClose, reRender }) => {
     try {
       setReqStatus({ loading: true, error: null })
       getDataFromEndpoint(currentUser.token, "/schedule/addSchedules", "POST", planeTasks, setReqStatus)
-       reRender(prevKey => prevKey + 1)
+      reRender(prevKey => prevKey + 1)
       setReqStatus({ loading: false, error: null })
     } catch (error) {
       setReqStatus({ loading: false, error: error })
     }
     onClose()
+  }
+
+  const handleRatingChange = (index, newValue) => {
+    // Обновляем значение schedule_priority_rate в planeTasks
+    setPlaneTasks(prevTasks => {
+      // Клонируем массив задач
+      const updatedTasks = [...prevTasks]
+      // console.log("xxx", updatedTasks[index].schedule_priority_rate)
+      // Обновляем поле schedule_priority_rate для первой задачи
+      updatedTasks[index] = {
+        ...updatedTasks[index],
+        schedule_priority_rate: newValue,
+        schedule_priority: newValue !== 0,
+      }
+      return updatedTasks
+    })
   }
 
   return (
@@ -73,7 +96,7 @@ export const SchedulePlane = ({ onClose, reRender }) => {
           </Grid>
           <Grid item>
             <Button variant="contained" color="primary" type="submit">
-              Создать
+              Создать план
             </Button>
           </Grid>
         </Grid>
@@ -84,7 +107,7 @@ export const SchedulePlane = ({ onClose, reRender }) => {
                 id="schedule_description"
                 placeholder="Описание паланируемой задачи"
                 multiline
-                minRows={4}
+                minRows={1}
                 maxRows={10}
                 variant="outlined"
                 label={`Задача ${planeTasks.length - index}`}
@@ -116,6 +139,11 @@ export const SchedulePlane = ({ onClose, reRender }) => {
                     Удалить
                   </Typography>
                 </IconButton>
+                <RadioGroupRating
+                  onRatingChange={newValue => handleRatingChange(index, newValue)}
+                  viewOnly={false}
+                  rate={task.schedule_priority_rate} 
+                />
               </Stack>
             </Stack>
           </Box>

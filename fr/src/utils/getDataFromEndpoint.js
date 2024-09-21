@@ -1,32 +1,35 @@
-import { HOST_ADDR } from "./remoteHosts";
+import { HOST_ADDR } from './remoteHosts'
 
-export const getDataFromEndpoint = async (
-  token,
-  endpoint,
-  method,
-  data = null,
-  onSuccess
-) => {
+export const getDataFromEndpoint = async (token, endpoint, method, data = null, onSuccess) => {
   try {
-    const responce = await fetch(HOST_ADDR + endpoint, {
+    const response = await fetch(HOST_ADDR + endpoint, {
       method: method,
       headers: {
         Authorization: token,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: data ? JSON.stringify(data) : null,
-    });
-    if (responce.ok) {
-      const responceData = await responce.json();
-      // onSuccess(responceData);
-      return responceData;
+    })
+    if (response.ok) {
+      const responseData = await response.json()
+      return responseData
     } else {
-      throw new Error("Server response was not ok or content type is not JSON");
+      // Извлекаем текст и код ошибки из ответа
+      const errorData = await response.json() // Предполагаем, что сервер возвращает JSON с ошибкой
+      const errorMessage = errorData.error || 'Неизвестная ошибка' // Сообщение об ошибке
+      const errorCode = response.status // Код ошибки
+      // Возвращаем объект ошибки вместо строки
+      throw  {
+        code: errorCode,
+        message: errorMessage,
+      }
+      // throw new Error(`Error ${errorCode}: ${errorMessage}`);
+      // throw new Error('Server response was not ok or content type is not JSON')
     }
   } catch (error) {
-    onSuccess(error);
+    onSuccess(error)
   }
-};
+}
 
 // ! USAGE 1
 // При использовании блока try/catch, любая ошибка,
@@ -53,7 +56,6 @@ export const getDataFromEndpoint = async (
 // } catch (error) {
 //   console.error('Caught an error:', error);
 // }
-
 
 // ! USAGE 2
 // При использовании методов then/catch, вы обрабатываете

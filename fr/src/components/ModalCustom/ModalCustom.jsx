@@ -18,14 +18,20 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
+  "& .MuiPaper-root": {
+    // maxWidth: "100%",
+    display: "flex",
+    width: "100%",
+    alignItems: "center",
+  },
 }))
 
 export const ModalCustom = ({ isOpen, onClose, children, infoText }) => {
   return (
-    <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
+    <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description" sx={{width: '800px'}}>
       <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={isOpen}>
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          {infoText ? infoText : ''}
+        <DialogTitle sx={{ m: 0, p: 1 }} id="customized-dialog-title">
+          {infoText ? infoText : ""}
         </DialogTitle>
         <IconButton
           aria-label="close"

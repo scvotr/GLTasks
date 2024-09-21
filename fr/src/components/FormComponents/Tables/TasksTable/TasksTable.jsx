@@ -262,6 +262,15 @@ export const TasksTable = ({ tasks, reRender }) => {
     reRender(prevKey => prevKey + 1)
   }
 
+  const [filterModel, setFilterModel] = useState({ items: [] })
+
+  const handleFilterModelChange = newFilterModel => {
+    console.log("New filter model:", newFilterModel.items)
+    setFilterModel(newFilterModel)
+  }
+
+  // console.log("filterModel:", filterModel)
+
   return (
     <>
       <>
@@ -329,6 +338,7 @@ export const TasksTable = ({ tasks, reRender }) => {
               }
               return params.row.read_status === "unread" ? "bold-row" : ""
             }}
+            onFilterModelChange={handleFilterModelChange}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 25 },

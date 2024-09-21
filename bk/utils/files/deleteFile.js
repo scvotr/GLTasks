@@ -25,7 +25,8 @@ const deleteFile = async (fileName, folder = null, folderPath = defaultPath) => 
       });
     };
 
-    if (file_ext === '.pdf') {
+    // if (file_ext === '.pdf') {
+    if (file_ext !== '.jpg' && file_ext !== '.png') {
       await unlinkFile(filePath);
     } else {
       await Promise.all([
