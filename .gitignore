@@ -5,6 +5,7 @@ bk/error.log
 bk/errorAuth.log
 bk/warnAuth.log
 bk/uploads/
+bk/.env/
 fr/package-lock.json
 
 fr/public/files/Mutula2024/
