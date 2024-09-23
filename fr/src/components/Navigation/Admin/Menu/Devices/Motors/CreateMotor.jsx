@@ -54,6 +54,7 @@ export const CreateMotor = () => {
     { path: "/admin/devices/motor/protection", label: "Защита" },
     { path: "/admin/devices/motor/technical", label: "Технические характеристики" },
     { path: "/admin/devices/motor/ServiceType", label: "Обслуживание" },
+    { path: "/admin/devices/motor/brands", label: "Производитель" },
   ]
 
   const NavigationButtons = ({ sections }) => {
