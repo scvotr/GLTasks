@@ -187,7 +187,7 @@ const createAllMotorTables = async (allowDrop = false) => {
     await createMotorsModelsTable(true)
     await insertMotorModels()
     await createMotorsTable(allowDrop)
-    await createMotorsConfigTable(true)
+    await createMotorsConfigTable(allowDrop)
     await createMotorsPLCSignalsTable(allowDrop)
     await createMotorsProtectionEquipmentTable(allowDrop)
     await createMotorsDocumentsTable(allowDrop)
