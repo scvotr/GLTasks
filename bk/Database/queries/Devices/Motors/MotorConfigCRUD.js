@@ -65,19 +65,19 @@ class MotorConfigCRUD {
         mc.bearingType,
         mc.mounting,
         m.engine_number AS motor_name,  -- Имя мотора из таблицы motors
-        bt.type AS bearing_type,  -- Тип подшипника из таблицы bearingTypeT
-        br.type AS brake_type,  -- Тип тормоза из таблицы MotorBrakeT
-        cf.value AS cosF_value,  -- Значение cosF из таблицы MotorCosFT
-        ef.value AS efficiency_value,  -- Значение эффективности из таблицы MotorEfficiencyT
-        ep.value AS explosion_proof_value,  -- Значение взрывозащиты из таблицы MotorExplosionProofT
-        mt.type AS mounting_type,  -- Тип монтажа из таблицы MotorMountingT
-        om.mode AS operation_mode,  -- Режим работы из таблицы MotorOperationModeT
-        pr.range AS power_range,  -- Диапазон мощности из таблицы motorPowerRangeT
-        pl.level AS protection_level,  -- Уровень защиты из таблицы MotorProtectionLevelT
-        rs.speed AS rotation_speed,  -- Скорость вращения из таблицы MotorRotationSpeedT
-        tt.temperature AS temperature_value,  -- Температура из таблицы MotorTemperatureT
-        tq.torque AS torque_value,  -- Момент силы из таблицы MotorTorqueT
-        vt.voltage AS voltage_value  -- Напряжение из таблицы motorVoltageT
+        bt.name AS bearing_type,  -- Тип подшипника из таблицы bearingTypeT
+        br.name AS brake_type,  -- Тип тормоза из таблицы MotorBrakeT
+        cf.name AS cosF_value,  -- Значение cosF из таблицы MotorCosFT
+        ef.name AS efficiency_value,  -- Значение эффективности из таблицы MotorEfficiencyT
+        ep.name AS explosion_proof_value,  -- Значение взрывозащиты из таблицы MotorExplosionProofT
+        mt.name AS mounting_type,  -- Тип монтажа из таблицы MotorMountingT
+        om.name AS operation_mode,  -- Режим работы из таблицы MotorOperationModeT
+        pr.name AS power_range,  -- Диапазон мощности из таблицы motorPowerRangeT
+        pl.name AS protection_level,  -- Уровень защиты из таблицы MotorProtectionLevelT
+        rs.name AS rotation_speed,  -- Скорость вращения из таблицы MotorRotationSpeedT
+        tt.name AS temperature_value,  -- Температура из таблицы MotorTemperatureT
+        tq.name AS torque_value,  -- Момент силы из таблицы MotorTorqueT
+        vt.name AS voltage_value  -- Напряжение из таблицы motorVoltageT
       FROM 
         motors_config mc
       LEFT JOIN 
