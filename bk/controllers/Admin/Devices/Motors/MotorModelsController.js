@@ -11,7 +11,7 @@ class MotorModelsController extends BaseMotorController {
   async readAll(req, res) {
     try {
       const command = `
-        SELECT mm.id, mm.name AS model_name, mb.name AS brand_name
+        SELECT mm.id, mm.name AS model_name, mb.id AS brand_id, mb.name AS brand_name
         FROM motor_brands mb
         JOIN motor_models mm ON mb.id = mm.brand_id
       `
