@@ -132,15 +132,15 @@ const routeHandlers = {
   '/admin/devices/motor/technical/mounting/update': MotorMountingController.update,
   '/admin/devices/motor/technical/mounting/delete': MotorMountingController.delete,
   // -------------------
-  '/admin/devices/motor/brands/brands/create': MotorBrandsController.create,
-  '/admin/devices/motor/brands/brands/read': MotorBrandsController.read,
-  '/admin/devices/motor/brands/brands/update': MotorBrandsController.update,
-  '/admin/devices/motor/brands/brands/delete': MotorBrandsController.delete,
+  '/admin/devices/motor/brands/create': MotorBrandsController.create,
+  '/admin/devices/motor/brands/read': MotorBrandsController.read,
+  '/admin/devices/motor/brands/update': MotorBrandsController.update,
+  '/admin/devices/motor/brands/delete': MotorBrandsController.delete,
   // -------------------
-  '/admin/devices/motor/brands/models/create': MotorModelsController.create,
-  '/admin/devices/motor/brands/models/read': MotorModelsController.read,
-  '/admin/devices/motor/brands/models/update': MotorModelsController.update,
-  '/admin/devices/motor/brands/models/delete': MotorModelsController.delete,
+  '/admin/devices/motor/models/create': MotorModelsController.create,
+  '/admin/devices/motor/models/read': MotorModelsController.read,
+  '/admin/devices/motor/models/update': MotorModelsController.update,
+  '/admin/devices/motor/models/delete': MotorModelsController.delete,
   // -------------------
 
   // -------------------
