@@ -1,5 +1,6 @@
 'use strict'
 
+const { executeDatabaseQueryAsync } = require('../../../../Database/utils/executeDatabaseQuery/executeDatabaseQuery')
 const { sendResponseWithData, handleError } = require('../../../../utils/response/responseUtils')
 const BaseMotorController = require('./BaseMotorController')
 
@@ -7,17 +8,19 @@ class MotorModelsController extends BaseMotorController {
   constructor() {
     super('motor_models') // Передаем имя таблицы в базовый класс
   }
-  // async doSomething(req, res) {
-  //   try {
-  //     const authDecodeUserData = req.user
-  //     const data = JSON.parse(authDecodeUserData.payLoad)
-  //     console.log('doSomething', data)
-  //   //   await this.crud.createQ(data, { checkForExist: 'name' })
-  //     sendResponseWithData(res, 'MotorRotationSpeedController -create-ok')
-  //   } catch (error) {
-  //     handleError(res, 'Error: create MotorRotationSpeed - ' + error.message)
-  //   }
-  // }
+  async readAll(req, res) {
+    try {
+      const command = `
+        SELECT mm.id, mm.name AS model_name, mb.name AS brand_name
+        FROM motor_brands mb
+        JOIN motor_models mm ON mb.id = mm.brand_id
+      `
+      const data = await executeDatabaseQueryAsync(command, [])
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: read Motor Models - ' + error.message)
+    }
+  }
 }
 
 module.exports = new MotorModelsController()
