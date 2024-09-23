@@ -1,6 +1,7 @@
 'use strict'
 
 const { executeDatabaseQueryAsync } = require('../../../utils/executeDatabaseQuery/executeDatabaseQuery')
+const { executeInsertIfEmpty } = require('../../../utils/executeInsertIfEmpty/executeInsertIfEmpty')
 
 const executeTableCreation = async (tableName, createTableQuery, allowDrop = false) => {
   try {
@@ -82,10 +83,27 @@ const createMotorsBrandsTable = async (allowDrop = false) => {
     CREATE TABLE IF NOT EXISTS motor_brands (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       brand_name TEXT NOT NULL UNIQUE
-    )`
+    )`;
 
-  await executeTableCreation('motor_brands', createTableQuery, allowDrop)
-}
+  await executeTableCreation('motor_brands', createTableQuery, allowDrop);
+};
+
+const insertMotorBrands = async () => {
+  console.log('dddddddd')
+  const insertQuery = `
+    INSERT INTO motor_brands (brand_name) VALUES
+      ('АИС'),
+      ('АИР'),
+      ('УралЭлектро'),
+      ('5АИ'),
+      ('Eldin'),
+      ('БЭМЗ'),
+      ('Eneral'),
+      ('Электромаш'),
+      ('Элком')
+  `;
+  await executeInsertIfEmpty('motor_brands', insertQuery);
+};
 
 const createMotorsModelsTable = async (allowDrop = false) => {
   const createTableQuery = `
@@ -98,6 +116,32 @@ const createMotorsModelsTable = async (allowDrop = false) => {
 
   await executeTableCreation('motor_models', createTableQuery, allowDrop)
 }
+
+const insertMotorModels = async () => {
+  console.log('ssssssss')
+  const insertQuery = `
+    INSERT INTO motor_models (model_name, brand_id) VALUES
+      ('АИС112L2', 1),
+      ('АИС132SB2', 1),
+      ('АИС132МВ2', 1),
+      ('АИР 56 А2', 2),
+      ('АИР 56 А4', 2),
+      ('АИР 56 B2', 2),
+      ('АИР 56 B4', 2),
+      ('АИР 63 A2', 2),
+      ('АИР 63 A4', 2),
+      ('АИР 63 A6', 2),
+      ('IMМ 112LM2 5,50 кВт 3000 об/мин', 3),
+      ('IMМ 112LS4 5,50 кВт 1500 об/мин', 3),
+      ('АДМ 100L8 1,50 кВт 750 об/мин', 3),
+      ('АДМ 132S6 5,50 кВт 1000 об/мин', 3),
+      ('5АИ 56 А4', 4),
+      ('5АИ 56 Б2', 4),
+      ('5АИ 56 Б4', 4),
+      ('5АИ 63 А2', 4)
+  `;
+  await executeInsertIfEmpty('motor_models', insertQuery);
+};
 
 const createMotorsConfigTable = async (allowDrop = false) => {
   const createTableQuery = `
@@ -141,7 +185,9 @@ const createMotorsConfigTable = async (allowDrop = false) => {
 const createAllMotorTables = async (allowDrop = false) => {
   try {
     await createMotorsBrandsTable(allowDrop)
+    await insertMotorBrands()
     await createMotorsModelsTable(allowDrop)
+    await insertMotorModels()
     await createMotorsTable(allowDrop)
     await createMotorsConfigTable(allowDrop)
     await createMotorsPLCSignalsTable(allowDrop)
