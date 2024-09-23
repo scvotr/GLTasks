@@ -145,7 +145,7 @@ const createMotorsConfigTable = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS motors_config (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      motor_config_id TEXT NOT NULL UNIQUE,
+      motor_config_id TEXT NOT NULL,
       motor_id INTEGER NOT NULL,
       power INTEGER NOT NULL,
       voltage INTEGER NOT NULL,
@@ -187,7 +187,7 @@ const createAllMotorTables = async (allowDrop = false) => {
     await createMotorsModelsTable(true)
     await insertMotorModels()
     await createMotorsTable(allowDrop)
-    await createMotorsConfigTable(allowDrop)
+    await createMotorsConfigTable(true)
     await createMotorsPLCSignalsTable(allowDrop)
     await createMotorsProtectionEquipmentTable(allowDrop)
     await createMotorsDocumentsTable(allowDrop)
