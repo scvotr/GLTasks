@@ -23,6 +23,8 @@ const MotorBrakeController = require('../controllers/Admin/Devices/Motors/MotorB
 const MotorMountingController = require('../controllers/Admin/Devices/Motors/MotorMountingController')
 const MotorBearingTypeController = require('../controllers/Admin/Devices/Motors/MotorBearingTypeController')
 const MotorRotationSpeedController2 = require('../controllers/Admin/Devices/Motors/MotorRotationSpeedController2')
+const MotorBrandsController = require('../controllers/Admin/Devices/Motors/MotorBrandsController')
+const MotorModelsController = require('../controllers/Admin/Devices/Motors/MotorModelsController')
 
 
 const routeHandlers = {
@@ -130,15 +132,15 @@ const routeHandlers = {
   '/admin/devices/motor/technical/mounting/update': MotorMountingController.update,
   '/admin/devices/motor/technical/mounting/delete': MotorMountingController.delete,
   // -------------------
-  '/admin/devices/motor/brands/brands/create': MotorMountingController.create,
-  '/admin/devices/motor/brands/brands/read': MotorMountingController.read,
-  '/admin/devices/motor/brands/brands/update': MotorMountingController.update,
-  '/admin/devices/motor/brands/brands/delete': MotorMountingController.delete,
+  '/admin/devices/motor/brands/brands/create': MotorBrandsController.create,
+  '/admin/devices/motor/brands/brands/read': MotorBrandsController.read,
+  '/admin/devices/motor/brands/brands/update': MotorBrandsController.update,
+  '/admin/devices/motor/brands/brands/delete': MotorBrandsController.delete,
   // -------------------
-  '/admin/devices/motor/brands/models/create': MotorMountingController.create,
-  '/admin/devices/motor/brands/models/read': MotorMountingController.read,
-  '/admin/devices/motor/brands/models/update': MotorMountingController.update,
-  '/admin/devices/motor/brands/models/delete': MotorMountingController.delete,
+  '/admin/devices/motor/brands/models/create': MotorModelsController.create,
+  '/admin/devices/motor/brands/models/read': MotorModelsController.read,
+  '/admin/devices/motor/brands/models/update': MotorModelsController.update,
+  '/admin/devices/motor/brands/models/delete': MotorModelsController.delete,
   // -------------------
 
   // -------------------
