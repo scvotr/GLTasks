@@ -5,7 +5,10 @@ import { useState } from "react"
 import CustomSelect from "./Form/CustomSelect"
 
 export const CreateMotorForm = ({ onClose }) => {
-  const { electricalParams, mechanicalParams, protectionParams, technicalParams } = useMotorsParams()
+  const { electricalParams, mechanicalParams, protectionParams, technicalParams, motorModel, motorBrand } = useMotorsParams()
+
+  console.log("model", motorModel.model)
+  console.log("brand", motorBrand.brand)
 
   const [formValues, setFormValues] = useState({
     id: uuidv4(),
@@ -27,10 +30,27 @@ export const CreateMotorForm = ({ onClose }) => {
 
     bearingType: "",
     mounting: "",
+
+    brand: "",
+
+    model: "",
   })
+  // console.log("formValues:", formValues)
   console.log("formValues:", formValues)
 
+  // Проверка, является ли motorModel.model массивом
+  const filteredModels = Array.isArray(motorModel.model) ? motorModel.model.filter(model => model.brand_id === formValues.brand) : []
+
+  console.log('filteredModels', filteredModels)
+
+  // Если нужно отсортировать по имени модели
+  const sortedModels = filteredModels.sort((a, b) => a.model_name.localeCompare(b.model_name))
+
+  console.log("Отфильтрованные и отсортированные модели:", sortedModels)
+
+
   const handleChange = field => event => {
+    console.log(field, event.target.value)
     setFormValues({
       ...formValues,
       [field]: event.target.value,
@@ -175,6 +195,27 @@ export const CreateMotorForm = ({ onClose }) => {
             placeholder="Выберите В"
             id="mounting-select"
             units="IM"
+          />
+        </Stack>
+        {/* --------------------ModelsBrandsParams-------------------- */}
+        <Stack direction="row" spacing={1}>
+          <CustomSelect
+            label="Производитель"
+            value={formValues.brand}
+            onChange={handleChange("brand")}
+            options={motorBrand.brand || []}
+            placeholder="Выберите В"
+            id="brand-select"
+            units=""
+          />
+          <CustomSelect
+            label="Модель"
+            value={formValues.model}
+            onChange={handleChange("model")}
+            options={filteredModels || []}
+            placeholder="Выберите В"
+            id="brand-select"
+            units=""
           />
         </Stack>
       </Stack>
