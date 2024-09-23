@@ -2,7 +2,7 @@ import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 
 import { Container, Typography, TextField, Grid, Button } from "@mui/material"
 
-export const DocsAtchive = () => {
+export const DocsArchive = () => {
   return (
     <>
       <AppBarForPage title="Архив документов:" />

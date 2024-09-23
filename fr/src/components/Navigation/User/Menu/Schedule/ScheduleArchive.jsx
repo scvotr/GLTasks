@@ -1,7 +1,7 @@
 import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 
 
-export const SchedulsArchive = () => {
+export const ScheduleArchive = () => {
     return(
         <>
             <AppBarForPage title='Архив' />
