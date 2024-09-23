@@ -130,6 +130,16 @@ const routeHandlers = {
   '/admin/devices/motor/technical/mounting/update': MotorMountingController.update,
   '/admin/devices/motor/technical/mounting/delete': MotorMountingController.delete,
   // -------------------
+  '/admin/devices/motor/brands/brands/create': MotorMountingController.create,
+  '/admin/devices/motor/brands/brands/read': MotorMountingController.read,
+  '/admin/devices/motor/brands/brands/update': MotorMountingController.update,
+  '/admin/devices/motor/brands/brands/delete': MotorMountingController.delete,
+  // -------------------
+  '/admin/devices/motor/brands/models/create': MotorMountingController.create,
+  '/admin/devices/motor/brands/models/read': MotorMountingController.read,
+  '/admin/devices/motor/brands/models/update': MotorMountingController.update,
+  '/admin/devices/motor/brands/models/delete': MotorMountingController.delete,
+  // -------------------
 
   // -------------------
   // -------------------
