@@ -1,4 +1,4 @@
-import { MotorBrands } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Brands/MotorBrands'
+import { MotorBrands } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Brands/MotorBrands'
 import { PrivateRoutesCheck } from '../../../../../PrivateRoutesCheck'
 
 export const MotorBrandsModelsList = [
