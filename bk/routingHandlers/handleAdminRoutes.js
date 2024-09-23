@@ -25,6 +25,7 @@ const MotorBearingTypeController = require('../controllers/Admin/Devices/Motors/
 const MotorRotationSpeedController2 = require('../controllers/Admin/Devices/Motors/MotorRotationSpeedController2')
 const MotorBrandsController = require('../controllers/Admin/Devices/Motors/MotorBrandsController')
 const MotorModelsController = require('../controllers/Admin/Devices/Motors/MotorModelsController')
+const MotorConfigController = require('../controllers/Admin/Devices/Motors/MotorConfigController')
 
 
 const routeHandlers = {
@@ -143,7 +144,17 @@ const routeHandlers = {
   '/admin/devices/motor/models/update': MotorModelsController.update,
   '/admin/devices/motor/models/delete': MotorModelsController.delete,
   // -------------------
+  '/admin/devices/motor/create': MotorConfigController.create,
+  '/admin/devices/motor/read': MotorConfigController.read,
+  '/admin/devices/motor/readAll': MotorConfigController.readAll,
+  '/admin/devices/motor/update': MotorConfigController.update,
+  '/admin/devices/motor/delete': MotorConfigController.delete,
 
+  '/admin/devices/motor/config/create': MotorConfigController.createMotorConfig,
+  '/admin/devices/motor/config/read': MotorConfigController.readAllMotorConfigs,
+  '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
+  '/admin/devices/motor/config/delete': MotorConfigController.createMotorConfig,
+  
   // -------------------
   // -------------------
   // ! РАЗОБРАТЬ
