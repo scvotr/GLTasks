@@ -16,13 +16,15 @@ export const CreateMotor = () => {
   const [formKey, setFormKey] = useState(0)
   const [devicesTypes, setDevicesTypes] = useState([])
 
+  console.log(devicesTypes)
+
   const closeModal = () => {
     setModalOpen(false)
     setFormKey(prev => prev + 1)
   }
 
   const getDevicesTypes = useCallback(() => {
-    fetchData(currentUser, "/admin/devices/types/read", setReqStatus, setDevicesTypes)
+    fetchData(currentUser, "/admin/devices/motor/config/read", setReqStatus, setDevicesTypes)
   }, [currentUser])
 
   useEffect(() => {
