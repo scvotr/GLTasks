@@ -1,5 +1,7 @@
 'use strict'
 
+import { executeDatabaseQueryAsync } from "../executeDatabaseQuery/executeDatabaseQuery"
+
 export const executeTableCreation = async (tableName, createTableQuery, allowDrop = false) => {
   try {
     // Удаляем таблицу только если разрешено
