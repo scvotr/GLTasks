@@ -7,6 +7,7 @@ import { fetchData } from "../../../../../../../../utils/fetchData"
 import { Loader } from "../../../../../../../FormComponents/Loader/Loader"
 import { getDataFromEndpoint } from "../../../../../../../../utils/getDataFromEndpoint"
 import { useAuthContext } from "../../../../../../../../context/AuthProvider"
+import { CreateModelForm } from "../Models/CreateModelForm"
 
 export const MotorBrands = () => {
   const currentUser = useAuthContext()
@@ -14,14 +15,14 @@ export const MotorBrands = () => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [formKey, setFormKey] = useState(0)
   const [devicesTypes, setDevicesTypes] = useState([])
-
+ 
   const closeModal = () => {
     setModalOpen(false)
     setFormKey(prev => prev + 1)
   }
 
   const getDevicesTypes = useCallback(() => {
-    fetchData(currentUser, "/admin/devices/brands/read", setReqStatus, setDevicesTypes)
+    fetchData(currentUser, "/admin/devices/motor/models/readAll", setReqStatus, setDevicesTypes)
   }, [currentUser])
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export const MotorBrands = () => {
     console.log("Delete item with id:", id)
     try {
       setReqStatus({ loading: true, error: null })
-      await getDataFromEndpoint(currentUser.token, `/admin/devices/types/delete`, "POST", id, setReqStatus)
+      await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/models/delete`, "POST", id, setReqStatus)
       setReqStatus({ loading: false, error: null })
       setFormKey(prev => prev + 1)
     } catch (error) {
@@ -59,10 +60,22 @@ export const MotorBrands = () => {
   //   ))
   // }
 
+  const groupByBrand = devicesTypes.reduce((acc, item) => {
+    if (!acc[item.brand_name]) {
+      acc[item.brand_name] = []
+    }
+    acc[item.brand_name].push({
+      id: item.id,
+      model_name: item.model_name,
+    })
+
+    return acc
+  }, {})
+
   return (
     <>
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Добавить тип марку и модель">
-        {/* <CreateMotorForm onClose={closeModal} /> */}
+        <CreateModelForm onClose={closeModal} />
       </ModalCustom>
       <Box>
         <AppBar
@@ -88,38 +101,44 @@ export const MotorBrands = () => {
         </AppBar>
       </Box>
       <Loader reqStatus={reqStatus}>
+
+        
         <Box>
-          <TableContainer>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-              <TableHead>
-                <TableRow></TableRow>
-                <TableRow>
-                  <TableCell align="left">ID</TableCell>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {devicesTypes &&
-                  devicesTypes.map(deviceType => (
-                    <TableRow key={deviceType.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }} hover onClick={() => handleClick(deviceType)}>
-                      <TableCell align="left">{deviceType.id}</TableCell>
-                      <TableCell align="left">{deviceType.name}</TableCell>
-                      <TableCell align="left">
-                        <Stack direction="row">
-                          <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => handleEdit(deviceType.id)}>
-                            Изменить
-                          </Button>
-                          <Button variant="contained" color="error" onClick={() => handleDelete(deviceType.id)}>
-                            Удалить
-                          </Button>
-                        </Stack>
-                      </TableCell>
+          {Object.keys(groupByBrand).map(brandName => (
+            <Box key={brandName}>
+              <Typography variant="h6">{brandName}</Typography>
+              <TableContainer>
+                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                  <TableHead>
+                    <TableRow></TableRow>
+                    <TableRow>
+                      <TableCell align="left">ID</TableCell>
+                      <TableCell align="left">Name</TableCell>
+                      <TableCell align="left">Actions</TableCell>
                     </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {groupByBrand[brandName].map(({ id, model_name }) => (
+                      <TableRow key={id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }} hover onClick={() => handleClick(id)}>
+                        <TableCell align="left">{id}</TableCell>
+                        <TableCell align="left">{model_name}</TableCell>
+                        <TableCell align="left">
+                          <Stack direction="row">
+                            <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => handleEdit(id)}>
+                              Изменить
+                            </Button>
+                            <Button variant="contained" color="error" onClick={() => handleDelete(id)}>
+                              Удалить
+                            </Button>
+                          </Stack>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          ))}
         </Box>
       </Loader>
     </>
