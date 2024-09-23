@@ -38,6 +38,7 @@ import { UserSettingsRoutesList } from './RoutesList/User/settings/UserSettingsR
 import { MutualRoutesList } from './RoutesList/Mutual/MutualRoutesList'
 import { ScheduleRoutesList } from './RoutesList/User/schedule/ScheduleRoutesList'
 import { DocsRoutesList } from './RoutesList/Docs/DocsRoutesList'
+import { MotorBrandsModelsList } from './RoutesList/Admin/devices/motor/BrandsModels/BrandsModels'
 
 export const routes = createBrowserRouter([
   {
@@ -109,6 +110,7 @@ export const routes = createBrowserRouter([
       ...MotorProtectionList,
       ...MotorTechnicalList,
       ...MotorServiceTypeList,
+      ...MotorBrandsModelsList,
       // !-----------------------------------------
       {
         path: '/main2',
