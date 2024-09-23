@@ -5,7 +5,7 @@ const BaseMotorController = require('./BaseMotorController')
 
 class MotorBrandsController extends BaseMotorController {
   constructor() {
-    super('MotorMountingT') // Передаем имя таблицы в базовый класс
+    super('motor_brands') // Передаем имя таблицы в базовый класс
   }
   // async doSomething(req, res) {
   //   try {
