@@ -32,6 +32,14 @@ export const useMotorsParams = () => {
     mounting: "",
   })
 
+  const [motorBrand, setMotorBrand] = useState({
+    brand: "",
+  })
+
+  const [motorModel, setMotorModel] = useState({
+    model: "",
+  })
+
   const fetchData = useCallback(async () => {
     if (currentUser.login) {
       try {
@@ -50,6 +58,8 @@ export const useMotorsParams = () => {
           brake,
           bearingType,
           mounting,
+          brand,
+          model,
         ] = await Promise.all([
           getDataFromEndpoint(currentUser.token, `/admin/devices/motor/electrical/power/read`, "POST", null, setRequest),
           getDataFromEndpoint(currentUser.token, `/admin/devices/motor/electrical/voltage/read`, "POST", null, setRequest),
@@ -65,6 +75,8 @@ export const useMotorsParams = () => {
           getDataFromEndpoint(currentUser.token, `/admin/devices/motor/protection/brake/read`, "POST", null, setRequest),
           getDataFromEndpoint(currentUser.token, `/admin/devices/motor/technical/bearingType/read`, "POST", null, setRequest),
           getDataFromEndpoint(currentUser.token, `/admin/devices/motor/technical/mounting/read`, "POST", null, setRequest),
+          getDataFromEndpoint(currentUser.token, `/admin/devices/motor/brands/read`, "POST", null, setRequest),
+          getDataFromEndpoint(currentUser.token, `/admin/devices/motor/models/readAll`, "POST", null, setRequest),
         ])
 
         // Обновляем состояние с полученными данными
@@ -93,6 +105,13 @@ export const useMotorsParams = () => {
           bearingType,
           mounting,
         })
+
+        setMotorBrand({
+          brand
+        })
+        setMotorModel({
+          model
+        })
       } catch (error) {
         console.error("Ошибка при загрузке данных:", error)
       }
@@ -103,5 +122,5 @@ export const useMotorsParams = () => {
     fetchData()
   }, [fetchData])
 
-  return { electricalParams, mechanicalParams, protectionParams, technicalParams }
+  return { electricalParams, mechanicalParams, protectionParams, technicalParams, motorModel, motorBrand }
 }
