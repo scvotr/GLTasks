@@ -139,6 +139,7 @@ const routeHandlers = {
   // -------------------
   '/admin/devices/motor/models/create': MotorModelsController.create,
   '/admin/devices/motor/models/read': MotorModelsController.read,
+  '/admin/devices/motor/models/readAll': MotorModelsController.readAll,
   '/admin/devices/motor/models/update': MotorModelsController.update,
   '/admin/devices/motor/models/delete': MotorModelsController.delete,
   // -------------------
