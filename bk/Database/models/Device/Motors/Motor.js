@@ -82,16 +82,15 @@ const createMotorsBrandsTable = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS motor_brands (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      brand_name TEXT NOT NULL UNIQUE
+      name TEXT NOT NULL UNIQUE
     )`;
 
   await executeTableCreation('motor_brands', createTableQuery, allowDrop);
 };
 
 const insertMotorBrands = async () => {
-  console.log('dddddddd')
   const insertQuery = `
-    INSERT INTO motor_brands (brand_name) VALUES
+    INSERT INTO motor_brands (name) VALUES
       ('АИС'),
       ('АИР'),
       ('УралЭлектро'),
@@ -109,7 +108,7 @@ const createMotorsModelsTable = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS motor_models (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      model_name TEXT NOT NULL,
+      name TEXT NOT NULL,
       brand_id INTEGER NOT NULL,
       FOREIGN KEY (brand_id) REFERENCES motor_brands (id)
     )`
@@ -118,9 +117,8 @@ const createMotorsModelsTable = async (allowDrop = false) => {
 }
 
 const insertMotorModels = async () => {
-  console.log('ssssssss')
   const insertQuery = `
-    INSERT INTO motor_models (model_name, brand_id) VALUES
+    INSERT INTO motor_models (name, brand_id) VALUES
       ('АИС112L2', 1),
       ('АИС132SB2', 1),
       ('АИС132МВ2', 1),
@@ -184,9 +182,9 @@ const createMotorsConfigTable = async (allowDrop = false) => {
 
 const createAllMotorTables = async (allowDrop = false) => {
   try {
-    await createMotorsBrandsTable(allowDrop)
+    await createMotorsBrandsTable(true)
     await insertMotorBrands()
-    await createMotorsModelsTable(allowDrop)
+    await createMotorsModelsTable(true)
     await insertMotorModels()
     await createMotorsTable(allowDrop)
     await createMotorsConfigTable(allowDrop)
