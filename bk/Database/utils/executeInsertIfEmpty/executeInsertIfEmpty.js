@@ -1,9 +1,8 @@
 'use strict'
 
-const { executeDatabaseQueryAsync } = require("../executeDatabaseQuery/executeDatabaseQuery")
+const { executeDatabaseQueryAsync } = require('../executeDatabaseQuery/executeDatabaseQuery')
 
 const executeInsertIfEmpty = async (tableName, insertQuery) => {
-    console.log('executeInsertIfEmpty', tableName, insertQuery)
   try {
     // Проверяем количество записей в таблице
     const rows = await executeDatabaseQueryAsync(`SELECT COUNT(*) as count FROM ${tableName}`, [])
