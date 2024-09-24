@@ -83,10 +83,10 @@ const createMotorsBrandsTable = async (allowDrop = false) => {
     CREATE TABLE IF NOT EXISTS motor_brands (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL UNIQUE
-    )`;
+    )`
 
-  await executeTableCreation('motor_brands', createTableQuery, allowDrop);
-};
+  await executeTableCreation('motor_brands', createTableQuery, allowDrop)
+}
 
 const insertMotorBrands = async () => {
   const insertQuery = `
@@ -100,9 +100,9 @@ const insertMotorBrands = async () => {
       ('Eneral'),
       ('Электромаш'),
       ('Элком')
-  `;
-  await executeInsertIfEmpty('motor_brands', insertQuery);
-};
+  `
+  await executeInsertIfEmpty('motor_brands', insertQuery)
+}
 
 const createMotorsModelsTable = async (allowDrop = false) => {
   const createTableQuery = `
@@ -137,9 +137,9 @@ const insertMotorModels = async () => {
       ('5АИ 56 Б2', 4),
       ('5АИ 56 Б4', 4),
       ('5АИ 63 А2', 4)
-  `;
-  await executeInsertIfEmpty('motor_models', insertQuery);
-};
+  `
+  await executeInsertIfEmpty('motor_models', insertQuery)
+}
 
 const createMotorsConfigTable = async (allowDrop = false) => {
   const createTableQuery = `
@@ -161,6 +161,8 @@ const createMotorsConfigTable = async (allowDrop = false) => {
       brake INTEGER NOT NULL,
       bearingType INTEGER NOT NULL,
       mounting INTEGER NOT NULL,
+      brand_id INTEGER,  -- Добавлено поле для идентификатора бренда
+      model_id INTEGER,  -- Добавлено поле для идентификатора модели
       created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (motor_id) REFERENCES motors (id),
       FOREIGN KEY (bearingType) REFERENCES bearingTypeT (id),
@@ -175,7 +177,9 @@ const createMotorsConfigTable = async (allowDrop = false) => {
       FOREIGN KEY (rotationSpeed) REFERENCES MotorRotationSpeedT (id),
       FOREIGN KEY (temperature) REFERENCES MotorTemperatureT (id),
       FOREIGN KEY (torque) REFERENCES MotorTorqueT (id),
-      FOREIGN KEY (voltage) REFERENCES motorVoltageT (id)
+      FOREIGN KEY (voltage) REFERENCES motorVoltageT (id),
+      FOREIGN KEY (brand_id) REFERENCES motor_brands (id),  -- Внешний ключ для brand_id
+      FOREIGN KEY (model_id) REFERENCES motor_models (id)   -- Внешний ключ для model_id
     )`
   await executeTableCreation('motors_config', createTableQuery, allowDrop)
 }
@@ -187,7 +191,7 @@ const createAllMotorTables = async (allowDrop = false) => {
     await createMotorsModelsTable(true)
     await insertMotorModels()
     await createMotorsTable(allowDrop)
-    await createMotorsConfigTable(allowDrop)
+    await createMotorsConfigTable(true)
     await createMotorsPLCSignalsTable(allowDrop)
     await createMotorsProtectionEquipmentTable(allowDrop)
     await createMotorsDocumentsTable(allowDrop)
