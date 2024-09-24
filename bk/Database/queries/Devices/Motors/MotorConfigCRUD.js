@@ -61,6 +61,30 @@ class MotorConfigCRUD {
     JOIN 
         motor_models mm ON mc.model_id = mm.id;
     `
+    const command222 = `
+      SELECT 
+          mc.*,
+          mb.name AS brand_name,
+          mm.name AS model_name
+      FROM 
+          motors_config mc
+      LEFT JOIN 
+          motor_brands mb ON mc.brand_id = mb.id
+      LEFT JOIN 
+          motor_models mm ON mc.model_id = mm.id
+    `
+    const command2222 = `
+      SELECT 
+          mb.name AS brand_name,
+          mm.name AS model_name
+      FROM 
+          motors_config mc
+      JOIN 
+          motor_brands mb ON mc.brand_id = mb.id
+      JOIN 
+          motor_models mm ON mc.model_id = mm.id;
+    `
+
     const command2 = `
       SELECT 
         mc.motor_config_id AS motor_config_id,
@@ -211,7 +235,7 @@ class MotorConfigCRUD {
       motorVoltageT vt ON mc.voltage = vt.id;
   `
     try {
-      const rows = await executeDatabaseQueryAsync(command22, [])
+      const rows = await executeDatabaseQueryAsync(command222, [])
       // console.log(rows)
       return rows
     } catch (error) {
