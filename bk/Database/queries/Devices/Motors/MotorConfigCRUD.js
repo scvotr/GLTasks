@@ -7,6 +7,7 @@ class MotorConfigCRUD {
         INSERT INTO motors_config (
           motor_config_id,
           motor_id,
+          motor_tech_num,
           power,
           voltage,
           amperage,
@@ -23,10 +24,11 @@ class MotorConfigCRUD {
           mounting,
           brand_id,
           model_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       await executeDatabaseQueryAsync(insertQuery, [
         motorConfig.motor_config_id,
         motorConfig.motor_config_id, //motor_id
+        motorConfig.motor_tech_num, //motor_id
         motorConfig.power,
         motorConfig.voltage,
         motorConfig.amperage,
