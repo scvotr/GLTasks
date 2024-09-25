@@ -7,7 +7,8 @@ class DeviceController {
   async createBucketElevator(req, res) {
     try {
       const authDecodeUserData = req.user
-      await DeviceCRUD.createQ(JSON.parse(authDecodeUserData.payLoad))
+      // создаем отдельно устройство
+      await DeviceCRUD.createDeviceQ(JSON.parse(authDecodeUserData.payLoad))
       await DeviceCRUD.createBucketElevatorQ(JSON.parse(authDecodeUserData.payLoad))
       sendResponseWithData(res, 'createBucketElevator-ok')
     } catch (error) {
