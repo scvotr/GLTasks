@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
-import { Box, Button, Stack } from "@mui/material"
+import { Box, Button, FormControl, Stack, TextField } from "@mui/material"
 import { useMotorsParams } from "./useMotorsParams"
 import { useState } from "react"
 import CustomSelect from "./Form/CustomSelect"
@@ -44,12 +44,12 @@ export const CreateMotorForm = ({ onClose, isEdit }) => {
   // Проверка, является ли motorModel.model массивом
   const filteredModels = Array.isArray(motorModel.model) ? motorModel.model.filter(model => model.brand_id === formValues.brand) : []
 
-  console.log("filteredModels", filteredModels)
+  // console.log("filteredModels", filteredModels)
 
   // Если нужно отсортировать по имени модели
   const sortedModels = filteredModels.sort((a, b) => a.model_name.localeCompare(b.model_name))
 
-  console.log("Отфильтрованные и отсортированные модели:", sortedModels)
+  // console.log("Отфильтрованные и отсортированные модели:", sortedModels)
 
   const handleChange = field => event => {
     console.log(field, event.target.value)
@@ -83,16 +83,27 @@ export const CreateMotorForm = ({ onClose, isEdit }) => {
           boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
           border: "1px solid #e0e0e0",
           borderRadius: "5px",
-          "& .MuiTextField-root": { m: 1, width: "55ch" },
+          "& .MuiTextField-root": { m: 1, width: "100%" },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          // alignItems: "center",
+          alignItems: "stretch",
           p: 2,
         }}
         onSubmit={handleSubmit} // Добавляем обработчик на форме
       >
         <Stack direction="column" spacing={2}>
+          <Stack direction="row" spacing={1}>
+            <FormControl>
+              <TextField
+                label="Технический номер мотора" // Add a label for clarity
+                value={formValues.motor_tech_num} // Bind the value to the state
+                onChange={handleChange("motor_tech_num")} // Update the state on change
+                placeholder="Введите технический номер"
+                fullWidth
+              />
+            </FormControl>
+          </Stack>
           <Stack direction="row" spacing={1}>
             <CustomSelect
               label="Мощность"
