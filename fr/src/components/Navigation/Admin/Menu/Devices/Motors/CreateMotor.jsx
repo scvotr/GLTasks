@@ -103,8 +103,10 @@ export const CreateMotor = () => {
                 <TableRow></TableRow>
                 <TableRow>
                   <TableCell align="left">ID</TableCell>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Actions</TableCell>
+                  <TableCell align="left">Марка</TableCell>
+                  <TableCell align="left">модель</TableCell>
+                  <TableCell align="left">power</TableCell>
+                  <TableCell align="left">rotationSpeed</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -112,7 +114,10 @@ export const CreateMotor = () => {
                   devicesTypes.map(deviceType => (
                     <TableRow key={deviceType.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }} hover onClick={() => handleClick(deviceType)}>
                       <TableCell align="left">{deviceType.id}</TableCell>
-                      <TableCell align="left">{deviceType.name}</TableCell>
+                      <TableCell align="left">{deviceType.brand_name}</TableCell>
+                      <TableCell align="left">{deviceType.model_name}</TableCell>
+                      <TableCell align="left">{deviceType.power}</TableCell>
+                      <TableCell align="left">{deviceType.rotationSpeed}</TableCell>
                       <TableCell align="left">
                         <Stack direction="row">
                           <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => handleEdit(deviceType.id)}>
