@@ -24,6 +24,7 @@ export const CreateMotor = () => {
   }
 
   const getDevicesTypes = useCallback(() => {
+    // fetchData(currentUser, "/admin/devices/motor/read", setReqStatus, setDevicesTypes)
     fetchData(currentUser, "/admin/devices/motor/config/read", setReqStatus, setDevicesTypes)
   }, [currentUser])
 
