@@ -12,7 +12,7 @@ class MotorConfigController extends BaseMotorController {
     try {
       const authDecodeUserData = req.user
       const data = JSON.parse(authDecodeUserData.payLoad)
-      // console.log('createMotorConfig', data)
+      await MotorConfigCRUD.createMotorQ(data)
       await MotorConfigCRUD.createConfigQ(data)
       sendResponseWithData(res, 'createMotorConfig -create-ok')
     } catch (error) {
