@@ -1,7 +1,7 @@
 const { executeDatabaseQueryAsync } = require('../../../utils/executeDatabaseQuery/executeDatabaseQuery')
 
 class MotorConfigCRUD {
-  async createMotorQ(data){
+  async createMotorQ(data) {
     const insertQuery = `
       INSERT INTO motors (
         engine_number,
@@ -9,10 +9,8 @@ class MotorConfigCRUD {
       ) VALUES (?, ?)
     `
     try {
-      await executeDatabaseQueryAsync(insertQuery,[data.motor_tech_num, data.motor_config_id] )
-    } catch (error) {
-      
-    }
+      await executeDatabaseQueryAsync(insertQuery, [data.motor_tech_num, data.motor_config_id])
+    } catch (error) {}
   }
   async createConfigQ(motorConfig) {
     try {
@@ -63,29 +61,6 @@ class MotorConfigCRUD {
   async updateConfigQ(data) {}
 
   async readAllConfigsQ() {
-    const command22 = `
-     SELECT 
-        mb.name AS brand_name,
-        mm.name AS model_name
-    FROM 
-        motors_config mc
-    JOIN 
-        motor_brands mb ON mc.brand_id = mb.id
-    JOIN 
-        motor_models mm ON mc.model_id = mm.id;
-    `
-    const command222 = `
-      SELECT 
-          mc.*,
-          mb.name AS brand_name,
-          mm.name AS model_name
-      FROM 
-          motors_config mc
-      LEFT JOIN 
-          motor_brands mb ON mc.brand_id = mb.id
-      LEFT JOIN 
-          motor_models mm ON mc.model_id = mm.id
-    `
     const commandWR = `
     SELECT 
         mc.motor_tech_num,
@@ -140,24 +115,49 @@ class MotorConfigCRUD {
     LEFT JOIN 
         MotorMountingT mmt ON mc.mounting_id = mmt.id
   `
-
-    const command2 = `
-      SELECT 
-        mc.motor_config_id AS motor_config_id,
-        mm.name AS model_name,
-        mb.name AS brand_name
-      FROM 
-        motors_config mc
-      LEFT JOIN 
-        motors m ON mc.motor_id = m.id  -- Соединяем с таблицей motors
-      LEFT JOIN 
-        motor_models mm ON m.model_id = mm.id  -- Соединяем с таблицей motor_models
-      LEFT JOIN 
-        motor_brands mb ON mm.brand_id = mb.id;  -- Соединяем с таблицей motor_brands
-    `
-
     try {
       const rows = await executeDatabaseQueryAsync(commandWR, [])
+      // console.log(rows)
+      return rows
+    } catch (error) {
+      throw new Error('Ошибка удаления записи: ' + error.message)
+    }
+  }
+  async readAllMotorsQ() {
+    const selectQuery = `
+    SELECT 
+        m.id AS motor_id,
+        m.motor_config_id,
+        m.device_id,
+        m.engine_number,
+        m.created_on,
+        mc.power_id,
+        pr.name AS power_name,
+        mc.voltage_id,
+        mc.amperage_id,
+        mc.efficiency_id,
+        mc.cosF_id,
+        mc.rotationSpeed_id,
+        mc.torque_id,
+        mc.temperature_id,
+        mc.operationMode_id,
+        mc.protectionLevel_id,
+        mc.explosionProof_id,
+        mc.brake_id,
+        mc.bearingType_id,
+        mc.mounting_id,
+        mc.brand_id,
+        mc.model_id
+    FROM 
+        motors m
+    LEFT JOIN 
+        motors_config mc ON m.motor_config_id = mc.motor_config_id
+    LEFT JOIN 
+        motorPowerRangeT pr ON mc.power_id = pr.id    
+  `
+
+    try {
+      const rows = await executeDatabaseQueryAsync(selectQuery, [])
       // console.log(rows)
       return rows
     } catch (error) {
@@ -167,3 +167,42 @@ class MotorConfigCRUD {
 }
 
 module.exports = new MotorConfigCRUD()
+
+// const command2 = `
+// SELECT
+//   mc.motor_config_id AS motor_config_id,
+//   mm.name AS model_name,
+//   mb.name AS brand_name
+// FROM
+//   motors_config mc
+// LEFT JOIN
+//   motors m ON mc.motor_id = m.id  -- Соединяем с таблицей motors
+// LEFT JOIN
+//   motor_models mm ON m.model_id = mm.id  -- Соединяем с таблицей motor_models
+// LEFT JOIN
+//   motor_brands mb ON mm.brand_id = mb.id;  -- Соединяем с таблицей motor_brands
+// `
+
+// const command22 = `
+// SELECT
+//    mb.name AS brand_name,
+//    mm.name AS model_name
+// FROM
+//    motors_config mc
+// JOIN
+//    motor_brands mb ON mc.brand_id = mb.id
+// JOIN
+//    motor_models mm ON mc.model_id = mm.id;
+// `
+// const command222 = `
+//  SELECT
+//      mc.*,
+//      mb.name AS brand_name,
+//      mm.name AS model_name
+//  FROM
+//      motors_config mc
+//  LEFT JOIN
+//      motor_brands mb ON mc.brand_id = mb.id
+//  LEFT JOIN
+//      motor_models mm ON mc.model_id = mm.id
+// `
