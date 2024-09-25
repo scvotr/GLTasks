@@ -26,15 +26,12 @@ const createMotorsTable = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS motors (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      motor_id TEXT NOT NULL UNIQUE,
-      device_id INTEGER NOT NULL,
-      engine_number TEXT,  -- Номер двигателя
-      brand_id INTEGER,
-      model_id INTEGER,
+      motor_config_id TEXT NOT NULL,
+      device_id INTEGER,
+      engine_number TEXT,
       created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (device_id) REFERENCES devices (device_id),
-      FOREIGN KEY (brand_id) REFERENCES motor_brands (id),
-      FOREIGN KEY (model_id) REFERENCES motor_models (id)
+      FOREIGN KEY (device_id) REFERENCES devices (device_id)
+      FOREIGN KEY (motor_config_id) REFERENCES motors_config(motor_config_id)
     )`
 
   await executeTableCreation('motors', createTableQuery, allowDrop)
@@ -146,41 +143,40 @@ const createMotorsConfigTable = async (allowDrop = false) => {
     CREATE TABLE IF NOT EXISTS motors_config (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       motor_config_id TEXT NOT NULL,
-      motor_id INTEGER NOT NULL,
-      motor_tech_num TEXT NOT NULL,
-      power INTEGER NOT NULL,
-      voltage INTEGER NOT NULL,
-      amperage INTEGER NOT NULL,
-      efficiency INTEGER NOT NULL,
-      cosF INTEGER NOT NULL,
-      rotationSpeed INTEGER NOT NULL,
-      torque INTEGER NOT NULL,
-      temperature INTEGER NOT NULL,
-      operationMode INTEGER NOT NULL,
-      protectionLevel INTEGER NOT NULL,
-      explosionProof INTEGER NOT NULL,
-      brake INTEGER NOT NULL,
-      bearingType INTEGER NOT NULL,
-      mounting INTEGER NOT NULL,
-      brand_id INTEGER,  -- Добавлено поле для идентификатора бренда
-      model_id INTEGER,  -- Добавлено поле для идентификатора модели
+      motor_tech_num TEXT NOT NULL, -- Технологический номер (может быть дублирующимся)
+      power_id INTEGER NOT NULL,
+      voltage_id INTEGER NOT NULL,
+      amperage_id INTEGER NOT NULL,
+      efficiency_id INTEGER NOT NULL,
+      cosF_id INTEGER NOT NULL,
+      rotationSpeed_id INTEGER NOT NULL,
+      torque_id INTEGER NOT NULL,
+      temperature_id INTEGER NOT NULL,
+      operationMode_id INTEGER NOT NULL,
+      protectionLevel_id INTEGER NOT NULL,
+      explosionProof_id INTEGER NOT NULL,
+      brake_id INTEGER NOT NULL,
+      bearingType_id INTEGER NOT NULL,
+      mounting_id INTEGER NOT NULL,
+      brand_id INTEGER NOT NULL,
+      model_id INTEGER NOT NULL,
       created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (motor_id) REFERENCES motors (id),
-      FOREIGN KEY (bearingType) REFERENCES bearingTypeT (id),
-      FOREIGN KEY (brake) REFERENCES MotorBrakeT (id),
-      FOREIGN KEY (cosF) REFERENCES MotorCosFT (id),
-      FOREIGN KEY (efficiency) REFERENCES MotorEfficiencyT (id),
-      FOREIGN KEY (explosionProof) REFERENCES MotorExplosionProofT (id),
-      FOREIGN KEY (mounting) REFERENCES MotorMountingT (id),
-      FOREIGN KEY (operationMode) REFERENCES MotorOperationModeT (id),
-      FOREIGN KEY (power) REFERENCES motorPowerRangeT (id),
-      FOREIGN KEY (protectionLevel) REFERENCES MotorProtectionLevelT (id),
-      FOREIGN KEY (rotationSpeed) REFERENCES MotorRotationSpeedT (id),
-      FOREIGN KEY (temperature) REFERENCES MotorTemperatureT (id),
-      FOREIGN KEY (torque) REFERENCES MotorTorqueT (id),
-      FOREIGN KEY (voltage) REFERENCES motorVoltageT (id),
-      FOREIGN KEY (brand_id) REFERENCES motor_brands (id),  -- Внешний ключ для brand_id
-      FOREIGN KEY (model_id) REFERENCES motor_models (id)   -- Внешний ключ для model_id
+      FOREIGN KEY (bearingType_id) REFERENCES bearingTypeT (id),
+      FOREIGN KEY (brake_id) REFERENCES MotorBrakeT (id),
+      FOREIGN KEY (cosF_id) REFERENCES MotorCosFT (id),
+      FOREIGN KEY (efficiency_id) REFERENCES MotorEfficiencyT (id),
+      FOREIGN KEY (explosionProof_id) REFERENCES MotorExplosionProofT (id),
+      FOREIGN KEY (mounting_id) REFERENCES MotorMountingT (id),
+      FOREIGN KEY (operationMode_id) REFERENCES MotorOperationModeT (id),
+      FOREIGN KEY (power_id) REFERENCES motorPowerRangeT (id),
+      FOREIGN KEY (protectionLevel_id) REFERENCES MotorProtectionLevelT (id),
+      FOREIGN KEY (rotationSpeed_id) REFERENCES MotorRotationSpeedT (id),
+      FOREIGN KEY (temperature_id) REFERENCES MotorTemperatureT (id),
+      FOREIGN KEY (torque_id) REFERENCES MotorTorqueT (id),
+      FOREIGN KEY (voltage_id) REFERENCES motorVoltageT (id),
+      FOREIGN KEY (amperage_id) REFERENCES MotorAmperageT (id),
+      FOREIGN KEY (brand_id) REFERENCES motor_brands (id),
+      FOREIGN KEY (model_id) REFERENCES motor_models (id)
     )`
   await executeTableCreation('motors_config', createTableQuery, allowDrop)
 }
@@ -191,8 +187,8 @@ const createAllMotorTables = async (allowDrop = false) => {
     await insertMotorBrands()
     await createMotorsModelsTable(allowDrop)
     await insertMotorModels()
-    await createMotorsTable(allowDrop)
-    await createMotorsConfigTable(allowDrop)
+    await createMotorsTable(true)
+    await createMotorsConfigTable(true)
     await createMotorsPLCSignalsTable(allowDrop)
     await createMotorsProtectionEquipmentTable(allowDrop)
     await createMotorsDocumentsTable(allowDrop)
