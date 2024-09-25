@@ -12,11 +12,9 @@ export const CreateMotorForm = ({ onClose, isEdit }) => {
   const currentUser = useAuthContext()
   const [response, setResponse] = useState()
 
-  console.log("model", motorModel.model)
-  console.log("brand", motorBrand.brand)
-
   const [formValues, setFormValues] = useState({
     motor_config_id: uuidv4(),
+    motor_tech_num: "",
 
     power: "",
     voltage: "",
@@ -62,11 +60,9 @@ export const CreateMotorForm = ({ onClose, isEdit }) => {
   }
 
   const handleSubmit = async e => {
-    console.log('AAAAAAAA', isEdit=false)
+    console.log("AAAAAAAA", (isEdit = false))
     e.preventDefault()
-    const endpoint = isEdit 
-      ? `/admin/devices/motor/config/update` 
-      : `/admin/devices/motor/config/create`
+    const endpoint = isEdit ? `/admin/devices/motor/config/update` : `/admin/devices/motor/config/create`
     try {
       // response({ loading: true })
       console.log(endpoint)
@@ -80,7 +76,7 @@ export const CreateMotorForm = ({ onClose, isEdit }) => {
   }
 
   return (
-    <Box sx={{ width: "100%" , m: 2}}>
+    <Box sx={{ width: "100%", m: 2 }}>
       <Box
         component="form"
         sx={{
