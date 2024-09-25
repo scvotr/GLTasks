@@ -154,6 +154,8 @@ const routeHandlers = {
   '/admin/devices/motor/config/read': MotorConfigController.readAllMotorConfigs,
   '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/delete': MotorConfigController.createMotorConfig,
+
+  '/admin/devices/motor/read': MotorConfigController.readAllMotor,
   
   // -------------------
   // -------------------
