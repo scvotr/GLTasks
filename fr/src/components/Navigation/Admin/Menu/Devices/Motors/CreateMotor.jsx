@@ -100,24 +100,66 @@ export const CreateMotor = () => {
           <TableContainer>
             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
               <TableHead>
-                <TableRow></TableRow>
+                <TableRow>
+                  <TableCell align="center" colSpan={2} sx={{ border: '1px solid black' }}>номер</TableCell>
+                  <TableCell align="center" colSpan={2} sx={{ border: '1px solid black' }}>Производитель</TableCell>
+                  <TableCell align="center" colSpan={5} sx={{ border: '1px solid black' }}>Электрические</TableCell>
+                  <TableCell align="center" colSpan={4} sx={{ border: '1px solid black' }}>Механические</TableCell>
+                  <TableCell align="center" colSpan={3} sx={{ border: '1px solid black' }}>Защита</TableCell>
+                  <TableCell align="center" colSpan={3} sx={{ border: '1px solid black' }}>Технические</TableCell>
+                </TableRow>
                 <TableRow>
                   <TableCell align="left">ID</TableCell>
+                  <TableCell align="left">motor_tech_num</TableCell>
+
                   <TableCell align="left">Марка</TableCell>
                   <TableCell align="left">модель</TableCell>
-                  <TableCell align="left">power</TableCell>
-                  <TableCell align="left">rotationSpeed</TableCell>
+
+                  <TableCell align="left">кВт</TableCell>
+                  <TableCell align="left">А</TableCell>
+                  <TableCell align="left">V</TableCell>
+                  <TableCell align="left">КПД</TableCell>
+                  <TableCell align="left">cos φ</TableCell>
+
+                  <TableCell align="left">об\мин</TableCell>
+                  <TableCell align="left">Нм</TableCell>
+                  <TableCell align="left">t</TableCell>
+                  <TableCell align="left">S</TableCell>
+
+                  <TableCell align="left">IP</TableCell>
+                  <TableCell align="left">Ex</TableCell>
+                  <TableCell align="left">Ed</TableCell>
+
+                  <TableCell align="left">подшипник</TableCell>
+                  <TableCell align="left">IM</TableCell>
+                  <TableCell align="left">DM</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {devicesTypes &&
                   devicesTypes.map(deviceType => (
                     <TableRow key={deviceType.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }} hover onClick={() => handleClick(deviceType)}>
-                      <TableCell align="left">{deviceType.id}</TableCell>
+                      <TableCell align="left" >{deviceType.id}</TableCell>
+                      <TableCell align="left">{deviceType.motor_tech_num}</TableCell>
                       <TableCell align="left">{deviceType.brand_name}</TableCell>
                       <TableCell align="left">{deviceType.model_name}</TableCell>
-                      <TableCell align="left">{deviceType.power}</TableCell>
-                      <TableCell align="left">{deviceType.rotationSpeed}</TableCell>
+                      <TableCell align="left">{deviceType.power_range}</TableCell>
+                      <TableCell align="left">{deviceType.amperage_value}</TableCell>
+                      <TableCell align="left">{deviceType.voltage_value}</TableCell>
+                      <TableCell align="left">{deviceType.torque_value}</TableCell>
+                      <TableCell align="left">{deviceType.cosF_value}</TableCell>
+                      <TableCell align="left">{deviceType.rotation_speed}</TableCell>
+                      <TableCell align="left">{deviceType.protection_level}</TableCell>
+                      <TableCell align="left">{deviceType.temperature_value}</TableCell>
+                      <TableCell align="left">{deviceType.operation_mode}</TableCell>
+
+                      <TableCell align="left">{deviceType.protection_level}</TableCell>
+                      <TableCell align="left">{deviceType.explosion_proof}</TableCell>
+                      <TableCell align="left">{deviceType.brake_value}</TableCell>
+
+                      <TableCell align="left">{deviceType.bearing_type}</TableCell>
+                      <TableCell align="left">{deviceType.mounting_type}</TableCell>
+                      <TableCell align="left">{deviceType.brake_value}</TableCell>
                       <TableCell align="left">
                         <Stack direction="row">
                           <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => handleEdit(deviceType.id)}>
