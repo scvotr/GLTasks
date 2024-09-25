@@ -147,6 +147,7 @@ const createMotorsConfigTable = async (allowDrop = false) => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       motor_config_id TEXT NOT NULL,
       motor_id INTEGER NOT NULL,
+      motor_tech_num TEXT NOT NULL,
       power INTEGER NOT NULL,
       voltage INTEGER NOT NULL,
       amperage INTEGER NOT NULL,
