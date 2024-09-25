@@ -27,6 +27,14 @@ class MotorConfigController extends BaseMotorController {
       handleError(res, 'Error: create MotorAmperage - ' + error.message)
     }
   }
+  async readAllMotor(req, res) {
+    try {
+      const data = await MotorConfigCRUD.readAllMotorsQ()
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: create MotorAmperage - ' + error.message)
+    }
+  }
 }
 
 module.exports = new MotorConfigController()
