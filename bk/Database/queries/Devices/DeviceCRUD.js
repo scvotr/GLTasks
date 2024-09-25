@@ -16,7 +16,7 @@ const generateQRCodeToURL = async machineId => {
 }
 
 class DeviceCRUD {
-  async createQ(data) {
+  async createDeviceQ(data) {
     const { device_id, tech_num, type_id, workshop_id, department_id } = data
     const QRC = await generateQRCodeToURL(device_id)
     try {
