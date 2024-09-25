@@ -20,7 +20,6 @@ class MotorConfigController extends BaseMotorController {
     }
   }
   async readAllMotorConfigs(req, res) {
-    console.log('ddd')
     try {
       const data = await MotorConfigCRUD.readAllConfigsQ()
       sendResponseWithData(res, data)
