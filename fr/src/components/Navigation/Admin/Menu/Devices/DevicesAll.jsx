@@ -1,20 +1,25 @@
 import { useCallback, useEffect, useState } from "react"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
-import { AppBar, Box, Button, Fab, Table, TableBody, TableCell, TableContainer, Toolbar, TableHead, TableRow, Typography, Paper } from "@mui/material"
+import { AppBar, Box, Button, Fab, Table, TableBody, TableCell, TableContainer, Toolbar, TableHead, TableRow, Typography, Paper, Stack } from "@mui/material"
 import { Loader } from "../../../../FormComponents/Loader/Loader"
 import AddIcon from "@mui/icons-material/Add"
 import { NavLink } from "react-router-dom"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { CreateNewDevice } from "./CreateNewDevice"
 import { QRCodePrinter } from "../Machines/QRCode/QRCodePrinter"
+import { ConfirmationDialog } from "../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 
 export const DevicesAll = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [dataFromEndpoint, setDataFromEndpoint] = useState([])
+  console.log("dataFromEndpoint", dataFromEndpoint)
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [dialogText, setDialogText] = useState({ title: "", message: "" })
+  const [toDelete, setToDelete] = useState()
 
   const closeModal = () => {
     setModalOpen(false)
@@ -25,7 +30,7 @@ export const DevicesAll = () => {
     if (currentUser.login) {
       try {
         setReqStatus({ loading: true, error: null })
-        const data = await getDataFromEndpoint(currentUser.token, "/admin/devices/bucketElevators/readAll", "POST", null, setReqStatus)
+        const data = await getDataFromEndpoint(currentUser.token, "/admin/devices/readAll", "POST", null, setReqStatus)
         setDataFromEndpoint(data)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
@@ -37,9 +42,21 @@ export const DevicesAll = () => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
-
+ 
   const handleClick = row => {
     console.log("row clicked", row)
+  }
+
+  const handleDelete = async() => {
+    console.log('delete', toDelete)
+    try {
+      setReqStatus({ loading: true, error: null })
+      await getDataFromEndpoint(currentUser.token, `/admin/devices/delete`, "POST", toDelete, setReqStatus)
+      setReqStatus({ loading: false, error: null })
+      setFormKey(prev => prev + 1)
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+    }
   }
 
   const sections = [
@@ -83,13 +100,9 @@ export const DevicesAll = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell align="center" colSpan={1}></TableCell>
-                    <TableCell align="center" colSpan={4}>
+                    <TableCell align="center" colSpan={2}>
                       Цех и Департамент
                     </TableCell>
-                    <TableCell align="center" colSpan={6}>
-                      Лента Ковш и Редуктор
-                    </TableCell>
-                    <TableCell align="center" colSpan={2}></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell align="center">ID</TableCell>
@@ -97,16 +110,9 @@ export const DevicesAll = () => {
                     <TableCell align="center">Цех (п\м.)</TableCell>
                     <TableCell align="center">Тип</TableCell>
                     <TableCell align="center">Тех. номер</TableCell>
-                    <TableCell align="center">Высота (п\м.)</TableCell>
-                    <TableCell align="center">Лента</TableCell>
-                    <TableCell align="center">Длина (м.)</TableCell>
-                    <TableCell align="center">Ковш</TableCell>
-                    <TableCell align="center">кол-во. (шт.)</TableCell>
-                    <TableCell align="center">кол-во. ковшей на 1 м ленты (шт.)</TableCell>
-                    <TableCell align="center">Редуктор</TableCell>
-                    <TableCell align="center">Приводной ремень</TableCell>
-                    <TableCell align="center">кол-во. (шт.)</TableCell>
+                    <TableCell align="center">кВт</TableCell>
                     <TableCell align="center">qr_code</TableCell>
+                    <TableCell align="center">actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -118,15 +124,7 @@ export const DevicesAll = () => {
                         <TableCell align="center">{row.workshop_name || "---"}</TableCell>
                         <TableCell align="center">{row.type_name || "---"}</TableCell>
                         <TableCell align="center">{row.tech_num || "---"}</TableCell>
-                        <TableCell align="center">{row.height || "---"}</TableCell>
-                        <TableCell align="center">{row.beltBrands_name || "---"}</TableCell>
-                        <TableCell align="center">{row.belt_length || "---"}</TableCell>
-                        <TableCell align="center">{row.bucketBrand_name || "---"}</TableCell>
-                        <TableCell align="center">{row.bucket_quantity || "---"}</TableCell>
-                        <TableCell align="center">{row.belt_length ? (row.bucket_quantity / row.belt_length).toFixed(2) : "---"}</TableCell>
-                        <TableCell align="center">{row.gearboxBrand_name || "---"}</TableCell>
-                        <TableCell align="center">{row.driveBeltsBrand_name || "---"}</TableCell>
-                        <TableCell align="center">{row.driveBelt_quantity || "---"}</TableCell>
+                        <TableCell align="center">{row.power_value || "---"}</TableCell>
                         <TableCell align="center">
                           {row.qr_code && typeof row.qr_code === "string" && row.qr_code.startsWith("data:image/png;base64,") ? (
                             <>
@@ -137,6 +135,27 @@ export const DevicesAll = () => {
                             <p>QR Code not available</p>
                           )}
                         </TableCell>
+                        <TableCell align="center">
+                          <Stack direction="column">
+                            <Button variant="contained" color="primary" sx={{ mr: 1 }}>
+                              Edit
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              sx={{ mr: 1 }}
+                              onClick={() => {
+                                setToDelete(row.device_id)
+                                setDialogText({
+                                  title: "Подтверждение удаления",
+                                  message: "Вы уверены, что хотите удалить это устройство?",
+                                })
+                                setOpenDialog(true)
+                              }}>
+                              DELETE
+                            </Button>
+                          </Stack>
+                        </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
@@ -144,6 +163,15 @@ export const DevicesAll = () => {
             </TableContainer>
           </Box>
         </Loader>
+        <ConfirmationDialog
+          open={openDialog}
+          onClose={()=> setOpenDialog(false)}
+          onConfirm={() => {
+            handleDelete()
+          }}          
+          title={dialogText.title}
+          message={dialogText.message}
+        />
       </Box>
     </>
   )
