@@ -158,6 +158,7 @@ const routeHandlers = {
   '/admin/devices/motor/readAll': MotorConfigController.readAllMotor,
   '/admin/devices/readAll': DeviceController.readAllDevices,
   '/admin/devices/delete': DeviceController.deleteDevice,
+  '/admin/devices/emptyDevice/create': DeviceController.createEmptyDevice,
   
   // -------------------
   // -------------------
