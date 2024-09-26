@@ -5,6 +5,7 @@ import { useDeviceData } from "./useDeviceData"
 import { BucketElevatorsCreate } from "./BucketElevators/BucketElevatorsCreate"
 import { v4 as uuidv4 } from "uuid"
 import { AspirationFanCreate } from "./AspirationFan/AspirationFanCreate"
+import { TechNumTechTypeOnly } from "./TechNumTechTypeOnly/TechNumTechTypeOnly"
 
 export const CreateNewDevice = ({ onClose }) => {
   const { useAllDeviceTypes, useGroupedWorkflowsByDep, useReqStatus } = useDeviceData()
@@ -60,13 +61,15 @@ export const CreateNewDevice = ({ onClose }) => {
 
   const deviceTypeComponents = {
     1: { title: "Нория", component: <BucketElevatorsCreate generalDeviceData={generalDeviceData} onClose={onClose} /> },
-    2: { title: "Вентилятор", component: <AspirationFanCreate generalDeviceData={generalDeviceData} onClose={onClose} /> }, // замените FanComponent на ваш компонент
-    3: { title: "Транспортер", component: "" }, // замените TransporterComponent на ваш компонент
-    4: { title: "Конвейер", component: "" }, // замените ConveyorComponent на ваш компонент
-    5: { title: "Сепаратор", component: "" }, // замените SeparatorComponent на ваш компонент
-    6: { title: "БЗО", component: "" }, // замените BZOComponent на ваш компонент
-    7: { title: "МПО", component: "" }, // замените MPOComponent на ваш компонент
-    8: { title: "Шнек", component: "" }, // замените ScrewComponent на ваш компонент
+    2: { title: "Вентилятор", component: <AspirationFanCreate generalDeviceData={generalDeviceData} onClose={onClose} /> },
+    3: { title: "Транспортер", component: "" },
+    4: { title: "Конвейер", component: "" },
+    5: { title: "Сепаратор", component: "" },
+    6: { title: "БЗО", component: "" },
+    7: { title: "МПО", component: "" },
+    8: { title: "Шнек", component: "" },
+    9: { title: "Тех. номер и тип", component: <TechNumTechTypeOnly generalDeviceData={generalDeviceData} onClose={onClose} /> },
+    10: { title: "Шлюзовой затвор", component: "" },
   }
 
   return (
