@@ -9,20 +9,24 @@ import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { CreateNewDevice } from "./CreateNewDevice"
 import { QRCodePrinter } from "../Machines/QRCode/QRCodePrinter"
 import { ConfirmationDialog } from "../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
+import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
+import { DeviceInfoView } from "../../../../FormComponents/Device/DeviceInfoView/DeviceInfoView"
 
 export const DevicesAll = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: true, error: null })
   const [dataFromEndpoint, setDataFromEndpoint] = useState([])
-  console.log("dataFromEndpoint", dataFromEndpoint)
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogText, setDialogText] = useState({ title: "", message: "" })
   const [toDelete, setToDelete] = useState()
+  const [fullScreenOpen, setFullScreenOpen] = useState(false)
+  const [deviceToView, setDeviceToView] = useState(false)
 
   const closeModal = () => {
     setModalOpen(false)
+    setFullScreenOpen(false)
     setFormKey(prev => prev + 1)
   }
 
@@ -45,6 +49,8 @@ export const DevicesAll = () => {
  
   const handleClick = row => {
     console.log("row clicked", row)
+    setDeviceToView(row)
+    setFullScreenOpen(true)
   }
 
   const handleDelete = async() => {
@@ -70,6 +76,9 @@ export const DevicesAll = () => {
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Добавить оборудование">
         <CreateNewDevice onClose={closeModal} />
       </ModalCustom>
+      <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={'statusText'}>
+        <DeviceInfoView device={deviceToView}/>
+      </FullScreenDialog>
       <Box>
         <AppBar
           position="static"
