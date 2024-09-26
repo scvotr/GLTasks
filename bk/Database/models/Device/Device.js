@@ -15,7 +15,7 @@ const createDevicesTable = async () => {
           type_id INTEGER,
           workshop_id INTEGER,
           department_id INTEGER,
-          FOREIGN KEY (type_id) REFERENCES machineTypes (id),
+          FOREIGN KEY (type_id) REFERENCES devicesTypes (id),
           FOREIGN KEY (workshop_id) REFERENCES workshops (id),
           FOREIGN KEY (department_id) REFERENCES departments (id)
          )`,
@@ -26,195 +26,7 @@ const createDevicesTable = async () => {
   }
 }
 
-const createBeltBrandsTable = async () => {
-  try {
-    //await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS beltBrands`, [])
 
-    await executeDatabaseQueryAsync(
-      `CREATE TABLE IF NOT EXISTS beltBrands   (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          brand_name  TEXT NOT NULL
-         )`,
-      []
-    )
-
-    const rows = await executeDatabaseQueryAsync('SELECT COUNT(*) as count FROM beltBrands')
-    if (rows[0].count === 0) {
-      await executeDatabaseQueryAsync(
-        `INSERT INTO beltBrands (brand_name) VALUES 
-          ('бкнл-65-2-300Х8'), 
-          ('бкнл-65-2-200Х6'), 
-          ('бкнл-65-2-400х8'), 
-          ('бкнл-65-2-450х8')`
-      )
-    }
-  } catch (error) {
-    console.log('DB ERROR: ', error)
-  }
-}
-
-const createBucketBrandsTable = async () => {
-  try {
-    //await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS bucketBrands`, [])
-
-    await executeDatabaseQueryAsync(
-      `CREATE TABLE IF NOT EXISTS bucketBrands (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          brand_name  TEXT NOT NULL
-         )`,
-      []
-    )
-
-    const rows = await executeDatabaseQueryAsync('SELECT COUNT(*) as count FROM bucketBrands')
-    if (rows[0].count === 0) {
-      await executeDatabaseQueryAsync(
-        `INSERT INTO bucketBrands (brand_name) VALUES 
-          ('МАСТУ-100'), 
-          ('МАСТУ-010'), 
-          ('МАСТУ-п175'), 
-          ('МАСТУ-175'), 
-          ('УКЗ-100'), 
-          ('УКЗ-175')`
-      )
-    }
-  } catch (error) {
-    console.log('DB ERROR: ', error)
-  }
-}
-
-const createGearboxBrandsTable = async () => {
-  try {
-    //await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS gearboxBrands`, [])
-
-    await executeDatabaseQueryAsync(
-      `CREATE TABLE IF NOT EXISTS gearboxBrands  (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            brand_name  TEXT NOT NULL
-           )`,
-      []
-    )
-
-    const rows = await executeDatabaseQueryAsync('SELECT COUNT(*) as count FROM gearboxBrands')
-    if (rows[0].count === 0) {
-      await executeDatabaseQueryAsync(
-        `INSERT INTO gearboxBrands (brand_name) VALUES 
-            ('1Ц2У200-20-12-У1'), 
-            ('Ц2У200-16.31У1')`
-      )
-    }
-  } catch (error) {
-    console.log('DB ERROR: ', error)
-  }
-}
-
-const createDriveBeltsBrandsTable = async () => {
-  try {
-    // await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS driveBelts`, [])
-
-    await executeDatabaseQueryAsync(
-      `CREATE TABLE IF NOT EXISTS driveBelts  (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            brand_name  TEXT NOT NULL
-           )`,
-      []
-    )
-
-    const rows = await executeDatabaseQueryAsync('SELECT COUNT(*) as count FROM driveBelts')
-    if (rows[0].count === 0) {
-      await executeDatabaseQueryAsync(
-        `INSERT INTO driveBelts (brand_name) VALUES 
-            ('B 1800')`,
-      )
-    }
-  } catch (error) {
-    console.log('DB ERROR: ', error)
-  }
-}
-
-const createBucketElevatorsTable = async () => {
-  try {
-    // await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS bucketElevators`, [])
-
-    await executeDatabaseQueryAsync(
-      `CREATE TABLE IF NOT EXISTS bucketElevators (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        device_id INTEGER NOT NULL,
-        height REAL, -- Высота нории
-        belt_brand_id INTEGER, -- Марка ленты
-        belt_installation_date DATETIME, -- Дата установки ленты
-        belt_length INTEGER, -- Длина ленты
-        bucket_brand_id INTEGER, -- Марка ковшей
-        bucket_installation_date DATETIME, -- Дата установки ковшей
-        bucket_quantity INTEGER, -- Количество ковшей
-        gearbox_brand_id INTEGER, -- Марка редуктора
-        gearbox_installation_date DATETIME, -- Дата установки редуктора
-        driveBelt_brand_id INTEGER,
-        driveBelt_quantity INTEGER,
-        driveBelt_installation_date DATETIME, -- Дата установки ремней
-        created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (device_id) REFERENCES devices(id),
-        FOREIGN KEY (belt_brand_id) REFERENCES beltBrands(id),
-        FOREIGN KEY (bucket_brand_id) REFERENCES bucketBrands(id),
-        FOREIGN KEY (gearbox_brand_id) REFERENCES gearboxBrands(id)
-        FOREIGN KEY (driveBelt_brand_id) REFERENCES driveBelts(id)
-    )`,
-      []
-    )
-  } catch (error) {
-    console.log('DB ERROR: ', error)
-  }
-}
-// !-------------------------------------------------------------
-const createRollerBrandsTable = async () => {
-  try {
-    // await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS rollerBelts`, [])
-
-    await executeDatabaseQueryAsync(
-      `CREATE TABLE IF NOT EXISTS rollerBelts  (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            brand_name  TEXT NOT NULL
-           )`,
-      []
-    )
-
-    const rows = await executeDatabaseQueryAsync('SELECT COUNT(*) as count FROM rollerBelts')
-    if (rows[0].count === 0) {
-      await executeDatabaseQueryAsync(
-        `INSERT INTO rollerBelts (brand_name) VALUES 
-            ('3-500-3-БКНЛ-65-2'),
-            ('3-650-3-БКНЛ-65-2'),
-            ('3-800-3-БКНЛ-65-2')
-            `
-      )
-    }
-  } catch (error) {
-    console.log('DB ERROR: ', error)
-  }
-}
-const createBeltConveyorTable = async () => {
-  try {
-    // await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS beltConveyors`, [])
-
-    await executeDatabaseQueryAsync(
-      `CREATE TABLE IF NOT EXISTS beltConveyors (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        device_id INTEGER NOT NULL,
-        belt_brand_id INTEGER, -- Марка ленты
-        belt_installation_date DATETIME, -- Дата установки ленты
-        belt_length INTEGER, -- Длина ленты
-        chute_roller_quantity INTEGER, -- Количество желобчатых роликоопор
-        straight_roller_quantity INTEGER, -- Количество прямых роликоопор
-        roller_installation_date DATETIME, -- Дата установки роликоопор
-        created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (device_id) REFERENCES devices(id),
-        FOREIGN KEY (belt_brand_id) REFERENCES rollerBelts(id)
-    )`,
-      []
-    )
-  } catch (error) {
-    console.log('DB ERROR: ', error)
-  }
-}
 // !-----------------------------HISTORY LOG---------------------
 const createBeltReplacementHistoryTable = async () => {
   try {
@@ -338,17 +150,10 @@ const createGearboxReplacementHistoryTable = async () => {
 
 module.exports = {
   createDevicesTable,
-  createBeltBrandsTable,
-  createBucketBrandsTable,
-  createGearboxBrandsTable,
-  createDriveBeltsBrandsTable,
-  createBucketElevatorsTable,
+  
   createBeltReplacementHistoryTable,
   createBucketReplacementHistoryTable,
   createGearboxReplacementHistoryTable,
-  // -------------
-  createRollerBrandsTable,
-  createBeltConveyorTable,
 }
 
 // INSERT INTO Machines (tech_number, brand, installation_location, installation_date)
