@@ -13,12 +13,14 @@ export const BucketElevatorsAddForm = ({
   setGearboxesSelected,
   setDriveBeltSelected,
   setDriveBeltsQuantity,
+  setMotor,
 }) => {
-
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
-  const [formData, setFormData] = useState({ belts: {}, buckets: {}, gearboxes: {}, driveBelts: {} })
+  const [formData, setFormData] = useState({ belts: {}, buckets: {}, gearboxes: {}, driveBelts: {}, motors: {} })
+
+  console.log(formData.motors)
 
   const fetchData = useCallback(async () => {
     if (currentUser.login) {
@@ -28,6 +30,8 @@ export const BucketElevatorsAddForm = ({
         const buckets = await getDataFromEndpoint(currentUser.token, "/admin/machines/bucketElevators/bucketBrands/readAll", "POST", null, setReqStatus)
         const gearboxes = await getDataFromEndpoint(currentUser.token, "/admin/machines/bucketElevators/gearboxBrands/readAll", "POST", null, setReqStatus)
         const driveBelts = await getDataFromEndpoint(currentUser.token, "/admin/machines/bucketElevators/driveBelts/readAll", "POST", null, setReqStatus)
+        const motors = await getDataFromEndpoint(currentUser.token, "/admin/devices/motor/config/readAll", "POST", null, setReqStatus)
+        // const motors = await getDataFromEndpoint(currentUser.token, "/admin/devices/motor/readAll", "POST", null, setReqStatus)
 
         // Обновление состояния с объединением данных
         setFormData({
@@ -35,6 +39,7 @@ export const BucketElevatorsAddForm = ({
           buckets: buckets || {},
           gearboxes: gearboxes || {},
           driveBelts: driveBelts || {},
+          motors: motors || {},
         })
 
         setReqStatus({ loading: false, error: null })
@@ -160,6 +165,26 @@ export const BucketElevatorsAddForm = ({
           <TextField type="number" name="driveBelts_quantity" onChange={e => setDriveBeltsQuantity(e.target.value)} />
         </FormControl>
       </Stack>
+      <FormControl fullWidth>
+        <InputLabel variant="standard" htmlFor="motors-select" sx={{ pl: 1 }}>
+          Двигатель:
+        </InputLabel>
+        <Select
+          onChange={e => setMotor(e.target.value)}
+          inputProps={{
+            name: "motors",
+            id: "motors-select",
+          }}>
+          <MenuItem value="" disabled>
+            Выберите приводной ремень
+          </MenuItem>
+          {Object.values(formData.motors).map(data => (
+            <MenuItem key={data.id} value={data.motor_config_id}>
+              {data.motor_tech_num}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Stack>
   )
 }
