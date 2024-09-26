@@ -20,8 +20,6 @@ export const BucketElevatorsAddForm = ({
 
   const [formData, setFormData] = useState({ belts: {}, buckets: {}, gearboxes: {}, driveBelts: {}, motors: {} })
 
-  console.log(formData.motors)
-
   const fetchData = useCallback(async () => {
     if (currentUser.login) {
       try {
