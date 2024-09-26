@@ -34,6 +34,8 @@ const { createMotorBrakeTable } = require('./models/Device/Motors/MotorBrake')
 const { createMotorMountingTable } = require('./models/Device/Motors/MotorMounting')
 const { createMotorBearingTypeTable } = require('./models/Device/Motors/MotorBearingType')
 const { createAllMotorTables } = require('./models/Device/Motors/Motor')
+const { createAllBucketElevatorTables } = require('./models/Device/BucketElevators/BucketElevators')
+const { createAllBeltConveyorTables } = require('./models/Device/BeltConveyors/BeltConveyors')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
@@ -59,18 +61,15 @@ db.serialize(async () => {
   createTableSchedulesComments()
  
   createDevicesTable()
-  createBeltBrandsTable()
-  createBucketBrandsTable()
-  createGearboxBrandsTable()
-  createDriveBeltsBrandsTable()
-  createBucketElevatorsTable()
+
+  // !25-09-24
+  createAllBucketElevatorTables()
+  createAllBeltConveyorTables()
 
   createBeltReplacementHistoryTable()
   createBucketReplacementHistoryTable()
   createGearboxReplacementHistoryTable()
 
-  createRollerBrandsTable()
-  createBeltConveyorTable()
 
   // ----12-09-2024
   createDevicesTypesTable()
