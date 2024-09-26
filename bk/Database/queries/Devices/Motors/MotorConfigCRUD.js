@@ -62,8 +62,9 @@ class MotorConfigCRUD {
 
   async readAllConfigsQ() {
     const commandWR = `
-    SELECT 
+    SELECT
         mc.motor_tech_num,
+        mc.motor_config_id,
         mb.name AS brand_name,
         mm.name AS model_name,
         pr.name AS power_range,
@@ -124,36 +125,42 @@ class MotorConfigCRUD {
     }
   }
   async readAllMotorsQ() {
+  //   const selectQuery = `
+  //   SELECT 
+  //       m.id AS motor_id,
+  //       m.motor_config_id,
+  //       m.device_id,
+  //       m.engine_number,
+  //       m.created_on,
+  //       mc.power_id,
+  //       pr.name AS power_name,
+  //       mc.voltage_id,
+  //       mc.amperage_id,
+  //       mc.efficiency_id,
+  //       mc.cosF_id,
+  //       mc.rotationSpeed_id,
+  //       mc.torque_id,
+  //       mc.temperature_id,
+  //       mc.operationMode_id,
+  //       mc.protectionLevel_id,
+  //       mc.explosionProof_id,
+  //       mc.brake_id,
+  //       mc.bearingType_id,
+  //       mc.mounting_id,
+  //       mc.brand_id,
+  //       mc.model_id
+  //   FROM 
+  //       motors m
+  //   LEFT JOIN 
+  //       motors_config mc ON m.motor_config_id = mc.motor_config_id
+  //   LEFT JOIN 
+  //       motorPowerRangeT pr ON mc.power_id = pr.id    
+  // `
     const selectQuery = `
     SELECT 
-        m.id AS motor_id,
-        m.motor_config_id,
-        m.device_id,
-        m.engine_number,
-        m.created_on,
-        mc.power_id,
-        pr.name AS power_name,
-        mc.voltage_id,
-        mc.amperage_id,
-        mc.efficiency_id,
-        mc.cosF_id,
-        mc.rotationSpeed_id,
-        mc.torque_id,
-        mc.temperature_id,
-        mc.operationMode_id,
-        mc.protectionLevel_id,
-        mc.explosionProof_id,
-        mc.brake_id,
-        mc.bearingType_id,
-        mc.mounting_id,
-        mc.brand_id,
-        mc.model_id
+        *
     FROM 
-        motors m
-    LEFT JOIN 
-        motors_config mc ON m.motor_config_id = mc.motor_config_id
-    LEFT JOIN 
-        motorPowerRangeT pr ON mc.power_id = pr.id    
+      motors m
   `
 
     try {
