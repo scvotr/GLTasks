@@ -14,7 +14,7 @@ export const MotorTechnicalList = [
         element: <PrivateRoutesCheck component={Mounting} roles={['admin']} />,
       },
       {
-        path: '/admin/devices/motor/technical/Dimensions',
+        path: '/admin/devices/motor/technical/dimensions',
         element: <PrivateRoutesCheck component={Dimensions} roles={['admin']} />,
       },
       {
