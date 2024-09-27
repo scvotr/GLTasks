@@ -13,6 +13,7 @@ class MotorConfigCRUD {
     } catch (error) {}
   }
   async createConfigQ(motorConfig) {
+    //! нет проверки на тех номер! Тут нужен номер конфигурации а не технический!!
     try {
       const insertQuery = `
         INSERT INTO motors_config (
