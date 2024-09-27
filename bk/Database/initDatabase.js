@@ -36,6 +36,7 @@ const { createMotorBearingTypeTable } = require('./models/Device/Motors/MotorBea
 const { createAllMotorTables } = require('./models/Device/Motors/Motor')
 const { createAllBucketElevatorTables } = require('./models/Device/BucketElevators/BucketElevators')
 const { createAllBeltConveyorTables } = require('./models/Device/BeltConveyors/BeltConveyors')
+const { createAllMotorConfigTables } = require('./models/Device/Motors/MotorConfig')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
@@ -93,7 +94,9 @@ db.serialize(async () => {
   createMotorBearingTypeTable()
   // dimensions
   // ServiceType
+  createAllMotorConfigTables()
   createAllMotorTables()
+  
 
 
 
