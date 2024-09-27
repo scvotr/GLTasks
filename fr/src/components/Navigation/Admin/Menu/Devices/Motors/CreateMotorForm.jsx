@@ -38,7 +38,6 @@ export const CreateMotorForm = ({ onClose, isEdit }) => {
 
     model: "",
   })
-  // console.log("formValues:", formValues)
   console.log("formValues:", formValues)
 
   // Проверка, является ли motorModel.model массивом
@@ -60,7 +59,6 @@ export const CreateMotorForm = ({ onClose, isEdit }) => {
   }
 
   const handleSubmit = async e => {
-    console.log("AAAAAAAA", (isEdit = false))
     e.preventDefault()
     const endpoint = isEdit ? `/admin/devices/motor/config/update` : `/admin/devices/motor/config/create`
     try {
