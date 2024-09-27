@@ -46,15 +46,15 @@ export const DevicesAll = () => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
- 
+
   const handleClick = row => {
     console.log("row clicked", row)
     setDeviceToView(row)
     setFullScreenOpen(true)
   }
 
-  const handleDelete = async() => {
-    console.log('delete', toDelete)
+  const handleDelete = async () => {
+    console.log("delete", toDelete)
     try {
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, `/admin/devices/delete`, "POST", toDelete, setReqStatus)
@@ -76,8 +76,8 @@ export const DevicesAll = () => {
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Добавить оборудование">
         <CreateNewDevice onClose={closeModal} />
       </ModalCustom>
-      <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={'statusText'}>
-        <DeviceInfoView device={deviceToView}/>
+      <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={deviceToView.device_id}>
+        <DeviceInfoView device={deviceToView} />
       </FullScreenDialog>
       <Box>
         <AppBar
@@ -146,14 +146,21 @@ export const DevicesAll = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Stack direction="column">
-                            <Button variant="contained" color="primary" sx={{ mr: 1 }}>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              sx={{ mr: 1 }}
+                              onClick={event => {
+                                event.stopPropagation() // Остановить всплытие события
+                              }}>
                               Edit
                             </Button>
                             <Button
                               variant="contained"
                               color="error"
                               sx={{ mr: 1 }}
-                              onClick={() => {
+                              onClick={event => {
+                                event.stopPropagation() // Остановить всплытие события
                                 setToDelete(row.device_id)
                                 setDialogText({
                                   title: "Подтверждение удаления",
@@ -174,10 +181,10 @@ export const DevicesAll = () => {
         </Loader>
         <ConfirmationDialog
           open={openDialog}
-          onClose={()=> setOpenDialog(false)}
+          onClose={() => setOpenDialog(false)}
           onConfirm={() => {
             handleDelete()
-          }}          
+          }}
           title={dialogText.title}
           message={dialogText.message}
         />
