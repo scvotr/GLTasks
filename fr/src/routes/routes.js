@@ -37,6 +37,7 @@ import { MutualRoutesList } from './RoutesList/Mutual/MutualRoutesList'
 import { ScheduleRoutesList } from './RoutesList/User/schedule/ScheduleRoutesList'
 import { DocsRoutesList } from './RoutesList/Docs/DocsRoutesList'
 import { MotorBrandsModelsList } from './RoutesList/Admin/devices/motor/BrandsModels/BrandsModels'
+import { TechUnit } from '../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/TechUnit/TechUnit'
 
 export const routes = createBrowserRouter([
   {
@@ -101,6 +102,11 @@ export const routes = createBrowserRouter([
       {
         path: '/admin/devices/motors/createMotor',
         element: <PrivateRoutesCheck component={CreateMotor} roles={['admin']} />,
+      },
+
+      {
+        path: '/admin/devices/motor/techUnit',
+        element: <PrivateRoutesCheck component={TechUnit} roles={['admin']} />,
       },
       // !-----------------------------------------
       ...MotorElectricalRoutesList,
