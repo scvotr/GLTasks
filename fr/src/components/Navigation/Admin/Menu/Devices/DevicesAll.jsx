@@ -120,7 +120,6 @@ export const DevicesAll = () => {
                     <TableCell align="center">Тип</TableCell>
                     <TableCell align="center">Тех. номер</TableCell>
                     <TableCell align="center">кВт</TableCell>
-                    <TableCell align="center">qr_code</TableCell>
                     <TableCell align="center">actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -135,17 +134,7 @@ export const DevicesAll = () => {
                         <TableCell align="center">{row.tech_num || "---"}</TableCell>
                         <TableCell align="center">{row.power_value || "---"}</TableCell>
                         <TableCell align="center">
-                          {row.qr_code && typeof row.qr_code === "string" && row.qr_code.startsWith("data:image/png;base64,") ? (
-                            <>
-                              <img src={row.qr_code} alt="QR Code" style={{ maxWidth: "100%", height: "auto" }} />
-                              {/* <QRCodePrinter qrCodeData={row.qr_code} /> */}
-                            </>
-                          ) : (
-                            <p>QR Code not available</p>
-                          )}
-                        </TableCell>
-                        <TableCell align="center">
-                          <Stack direction="column">
+                          <Stack direction="column" spacing={1} >
                             <Button
                               variant="contained"
                               color="primary"
