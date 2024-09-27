@@ -19,7 +19,7 @@ export const getDataFromEndpoint = async (token, endpoint, method, data = null, 
       const errorMessage = errorData.error || 'Неизвестная ошибка' // Сообщение об ошибке
       const errorCode = response.status // Код ошибки
       // Возвращаем объект ошибки вместо строки
-      throw  {
+      throw {
         code: errorCode,
         message: errorMessage,
       }
@@ -28,6 +28,7 @@ export const getDataFromEndpoint = async (token, endpoint, method, data = null, 
     }
   } catch (error) {
     onSuccess(error)
+    throw error // Просто выбрасываем ошибку, чтобы она могла быть поймана в fetchData
   }
 }
 
