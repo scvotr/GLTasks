@@ -39,11 +39,6 @@ const routeHandlers = {
   '/admin/deletePosition': MangeOrgStructController.deletePosition,
   '/admin/getAllTasks': TasksController.getAllTasks,
 
-  // -------------------11-09-2024ы
-  '/admin/devices/bucketElevators/create': DeviceController.createBucketElevator,
-  '/admin/devices/bucketElevators/readAll': DeviceController.getAllBucketElevators,
-  '/admin/devices/bucketElevators/read': DeviceController.getBucketElevator,
-  
   // -------------------
   // -------------------12-09-2024ы
   '/admin/devices/types/create': DeviceController.createDeviceType,
@@ -163,6 +158,11 @@ const routeHandlers = {
   '/admin/devices/read': DeviceController.readDevice,
   '/admin/devices/delete': DeviceController.deleteDevice,
   '/admin/devices/emptyDevice/create': DeviceController.createEmptyDevice,
+
+  '/admin/devices/bucketElevators/create': BucketElevatorsController.createBucketElevator,
+  '/admin/devices/bucketElevators/readAll': BucketElevatorsController.getAllBucketElevators,
+  '/admin/devices/bucketElevators/read': BucketElevatorsController.getBucketElevator,
+  
  
   
   // -------------------
