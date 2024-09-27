@@ -1,7 +1,5 @@
 import App from '../App'
 import { createBrowserRouter } from 'react-router-dom'
-import { Login } from '../components/Authtorization/Login/Login'
-import { Registration } from '../components/Authtorization/Registration/Registration'
 import { RestorePassword } from '../components/Authtorization/RestorePassword/RestorePassword'
 import { AuthRotesCheck } from './AuthRotesCheck'
 import { PrivateRoutesCheck } from './PrivateRoutesCheck'
