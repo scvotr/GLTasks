@@ -12,7 +12,7 @@ class MotorConfigController extends BaseMotorController {
     try {
       const authDecodeUserData = req.user
       const data = JSON.parse(authDecodeUserData.payLoad)
-      await MotorConfigCRUD.createMotorQ(data)
+      // await MotorConfigCRUD.createMotorQ(data)
       await MotorConfigCRUD.createConfigQ(data)
       sendResponseWithData(res, 'createMotorConfig -create-ok')
     } catch (error) {
@@ -22,6 +22,16 @@ class MotorConfigController extends BaseMotorController {
   async readAllMotorConfigs(req, res) {
     try {
       const data = await MotorConfigCRUD.readAllConfigsQ()
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: create MotorAmperage - ' + error.message)
+    }
+  }
+  async readMotorConfigs(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const device_id = JSON.parse(authDecodeUserData.payLoad)
+      const data = await MotorConfigCRUD.readConfigsQ(device_id)
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'Error: create MotorAmperage - ' + error.message)
