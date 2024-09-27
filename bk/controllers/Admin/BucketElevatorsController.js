@@ -1,5 +1,6 @@
 'use strict'
 
+const DeviceCRUD = require('../../Database/queries/Devices/DeviceCRUD')
 const {
   readAllBeltBrandsQ,
   readAllBucketBrandsQ,
@@ -14,7 +15,40 @@ const {
 const { sendResponseWithData, handleError } = require('../../utils/response/responseUtils')
 
 class BucketElevatorsController {
-
+  async createBucketElevator(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      // создаем отдельно устройство
+      await DeviceCRUD.createDeviceQ(JSON.parse(authDecodeUserData.payLoad))
+      await DeviceCRUD.createBucketElevatorQ(JSON.parse(authDecodeUserData.payLoad))
+      if (JSON.parse(authDecodeUserData.payLoad).motor_config_id) {
+        // ! Что добовляется? Мотор или конфиг?!?!?! ДОБАВЛЯЕМ МОТОР ЗАЧЕМ?
+        await DeviceCRUD.appendMotorQ(JSON.parse(authDecodeUserData.payLoad))
+      }
+      sendResponseWithData(res, 'createBucketElevator-ok')
+    } catch (error) {
+      handleError(res, 'Error: createBucketElevator')
+    }
+  }
+  async getAllBucketElevators(req, res) {
+    try {
+      const data = await DeviceCRUD.getAllBucketElevatorsWithDetailsQ()
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: createBucketElevator')
+    }
+  }
+  async getBucketElevator(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const device = JSON.parse(authDecodeUserData.payLoad)
+      const data = await DeviceCRUD.getBucketElevatorQ(device.id)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: createBucketElevator')
+    }
+  }
+  // --------------------------------------------
   async readAllBeltBrands(req, res) {
     try {
       const data = await readAllBeltBrandsQ()
