@@ -42,6 +42,8 @@ const routeHandlers = {
   // -------------------11-09-2024ы
   '/admin/devices/bucketElevators/create': DeviceController.createBucketElevator,
   '/admin/devices/bucketElevators/readAll': DeviceController.getAllBucketElevators,
+  '/admin/devices/bucketElevators/read': DeviceController.getBucketElevator,
+  
   // -------------------
   // -------------------12-09-2024ы
   '/admin/devices/types/create': DeviceController.createDeviceType,
@@ -151,14 +153,17 @@ const routeHandlers = {
   '/admin/devices/motor/delete': MotorConfigController.delete,
 
   '/admin/devices/motor/config/create': MotorConfigController.createMotorConfig,
+  '/admin/devices/motor/config/read': MotorConfigController.readMotorConfigs,
   '/admin/devices/motor/config/readAll': MotorConfigController.readAllMotorConfigs,
   '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/delete': MotorConfigController.createMotorConfig,
 
   '/admin/devices/motor/readAll': MotorConfigController.readAllMotor,
   '/admin/devices/readAll': DeviceController.readAllDevices,
+  '/admin/devices/read': DeviceController.readDevice,
   '/admin/devices/delete': DeviceController.deleteDevice,
   '/admin/devices/emptyDevice/create': DeviceController.createEmptyDevice,
+ 
   
   // -------------------
   // -------------------
