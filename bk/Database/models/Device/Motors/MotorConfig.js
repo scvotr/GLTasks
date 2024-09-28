@@ -1,19 +1,6 @@
 'use strict'
-
-const { executeDatabaseQueryAsync } = require('../../../utils/executeDatabaseQuery/executeDatabaseQuery')
 const { executeInsertIfEmpty } = require('../../../utils/executeInsertIfEmpty/executeInsertIfEmpty')
-
-const executeTableCreation = async (tableName, createTableQuery, allowDrop = false) => {
-  try {
-    if (allowDrop) {
-      await executeDatabaseQueryAsync(`DROP TABLE IF EXISTS ${tableName}`, [])
-    }
-    await executeDatabaseQueryAsync(createTableQuery, [])
-  } catch (error) {
-    console.log(`DB ERROR (${tableName}): `, error)
-    throw new Error(`Failed to create ${tableName} table`)
-  }
-}
+const { executeTableCreation } = require('../../../utils/executeTableCreation/executeTableCreation')
 
 const createMotorsConfigTable = async (allowDrop = false) => {
   const createTableQuery = `
