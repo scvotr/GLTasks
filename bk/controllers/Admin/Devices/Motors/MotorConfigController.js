@@ -45,6 +45,17 @@ class MotorConfigController extends BaseMotorController {
       handleError(res, 'Error: create MotorAmperage - ' + error.message)
     }
   }
+
+  async deleteMotorConfig(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const device_id = JSON.parse(authDecodeUserData.payLoad)
+      await MotorConfigCRUD.deleteMotorConfigQ(device_id)
+      sendResponseWithData(res, 'motor config delete ok')
+    } catch (error) {
+      handleError(res, 'Error: create MotorAmperage - ' + error.message)
+    }
+  }
 }
 
 module.exports = new MotorConfigController()
