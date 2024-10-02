@@ -142,23 +142,21 @@ const routeHandlers = {
   '/admin/devices/motor/models/update': MotorModelsController.update,
   '/admin/devices/motor/models/delete': MotorModelsController.delete,
   // -------------------
-  '/admin/devices/motor/delete': MotorController.create,
+  '/admin/devices/motor/create': MotorController.create,
   '/admin/devices/motor/read': MotorController.read,
   '/admin/devices/motor/update': MotorController.update,
   '/admin/devices/motor/delete': MotorController.delete,
 
-  '/admin/devices/motor/techUnit/delete': MotorTechUnitController.create,
+  '/admin/devices/motor/techUnit/create': MotorTechUnitController.create,
   '/admin/devices/motor/techUnit/read': MotorTechUnitController.read,
   '/admin/devices/motor/techUnit/update': MotorTechUnitController.update,
   '/admin/devices/motor/techUnit/delete': MotorTechUnitController.delete,
 
- 
-
-  '/admin/devices/motor/config/create': MotorConfigController.createMotorConfig,
+   '/admin/devices/motor/config/create': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/read': MotorConfigController.readMotorConfigs,
   '/admin/devices/motor/config/readAll': MotorConfigController.readAllMotorConfigs,
   '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
-  '/admin/devices/motor/config/delete': MotorConfigController.createMotorConfig,
+  '/admin/devices/motor/config/delete': MotorConfigController.deleteMotorConfig,
 
   '/admin/devices/motor/readAll': MotorConfigController.readAllMotor,
   '/admin/devices/readAll': DeviceController.readAllDevices,
@@ -169,6 +167,7 @@ const routeHandlers = {
   '/admin/devices/bucketElevators/create': BucketElevatorsController.createBucketElevator,
   '/admin/devices/bucketElevators/readAll': BucketElevatorsController.getAllBucketElevators,
   '/admin/devices/bucketElevators/read': BucketElevatorsController.getBucketElevator,
+  '/admin/devices/bucketElevators/update': BucketElevatorsController.updateBucketElevator,
   
  
   
