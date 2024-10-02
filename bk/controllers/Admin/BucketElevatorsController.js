@@ -48,6 +48,16 @@ class BucketElevatorsController {
       handleError(res, 'Error: createBucketElevator')
     }
   }
+  async updateBucketElevator(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const device = JSON.parse(authDecodeUserData.payLoad)
+      await DeviceCRUD.updateBucketElevatorQ(device)
+      sendResponseWithData(res, 'updated ok')
+    } catch (error) {
+      handleError(res, 'Error: createBucketElevator')
+    }
+  }
   // --------------------------------------------
   async readAllBeltBrands(req, res) {
     try {
