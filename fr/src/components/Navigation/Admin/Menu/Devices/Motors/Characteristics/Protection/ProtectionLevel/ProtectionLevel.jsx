@@ -132,6 +132,8 @@ export const ProtectionLevel = () => {
           popupSnackbar={popupSnackbar}
           response={setResponse}
           endpointPath={endpointPath}
+          fieldType='nn'
+          hlText='00'
         />
       </ModalCustom>
       <HeaderWithNavigation
