@@ -60,7 +60,7 @@ export const TypeInfoView = ({ device }) => {
       const Component = deviceInfo.component
       return <Component data={deviceData} />
     }
-    return <div>Неизвестный тип устройства</div>
+    return <Box>Устройство не назначено</Box>
   }
 
   return (
