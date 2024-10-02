@@ -4,7 +4,7 @@ const BaseMotorController = require('./BaseMotorController')
 
 class MotorTechUnitController extends BaseMotorController {
   constructor() {
-    super('motors')
+    super('motor_tech_units')
   }
 }
 
