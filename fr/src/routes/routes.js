@@ -38,6 +38,7 @@ import { ScheduleRoutesList } from './RoutesList/User/schedule/ScheduleRoutesLis
 import { DocsRoutesList } from './RoutesList/Docs/DocsRoutesList'
 import { MotorBrandsModelsList } from './RoutesList/Admin/devices/motor/BrandsModels/BrandsModels'
 import { TechUnit } from '../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/TechUnit/TechUnit'
+import { DeviceAllV2 } from '../components/Navigation/Admin/Menu/DeviceV2/DeviceAllV2'
 
 export const routes = createBrowserRouter([
   {
@@ -90,6 +91,11 @@ export const routes = createBrowserRouter([
       {
         path: '/admin/devices/all',
         element: <PrivateRoutesCheck component={DevicesAll} roles={['admin']} />,
+      },
+      // ! REfactoring 02.10.24
+      {
+        path: '/admin/devicesV2/all',
+        element: <PrivateRoutesCheck component={DeviceAllV2} roles={['admin']} />,
       },
       {
         path: '/admin/devices/type/createType',
