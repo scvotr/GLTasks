@@ -37,11 +37,11 @@ export const CreateMotor = () => {
     console.log("Edit item with id:", id)
   }
 
-  const handleDelete = async id => {
+  const handleDelete = async (id) => {
     console.log("Delete item with id:", id)
     try {
       setReqStatus({ loading: true, error: null })
-      await getDataFromEndpoint(currentUser.token, `/admin/devices/types/delete`, "POST", id, setReqStatus)
+      await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/config/delete`, "POST", id, setReqStatus)
       setReqStatus({ loading: false, error: null })
       setFormKey(prev => prev + 1)
     } catch (error) {
@@ -165,7 +165,7 @@ export const CreateMotor = () => {
                           <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => handleEdit(deviceType.id)}>
                             Изменить
                           </Button>
-                          <Button variant="contained" color="error" onClick={() => handleDelete(deviceType.id)}>
+                          <Button variant="contained" color="error" onClick={() => handleDelete(deviceType.motor_config_id)}>
                             Удалить
                           </Button>
                         </Stack>
