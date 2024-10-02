@@ -14,6 +14,7 @@ export const BucketElevatorsAddForm = ({
   setDriveBeltSelected,
   setDriveBeltsQuantity,
   setMotor,
+  data,
 }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -51,13 +52,36 @@ export const BucketElevatorsAddForm = ({
     fetchData()
   }, [fetchData])
 
+  // Добавьте состояния для каждого поля формы
+  const [height, setHeightState] = useState("")
+  const [beltSelected, setBeltSelectedState] = useState("")
+  const [beltLength, setBeltLengthState] = useState("")
+  // ... остальные состояния для полей
+  // Функция для обновления состояний на основе dataToEdit
+  useEffect(() => {
+    if (data) {
+      setHeightState(data.height)
+      setBeltSelectedState(data.beltBrand_id)
+      setBeltLengthState(data.belt_length)
+      // ... обновление остальных состояний на основе dataToEdit
+    }
+  }, [data])
+
   return (
     <Stack direction="column" spacing={2}>
       <FormControl>
         <InputLabel shrink variant="standard" htmlFor="height" sx={{ pl: 1 }}>
           Высота нории:
         </InputLabel>
-        <TextField type="number" name="height" onChange={e => setHeight(e.target.value)} />
+        <TextField
+          type="number"
+          name="height"
+          value={height} // используйте состояние для значения
+          onChange={e => {
+            setHeight(e.target.value) // обновление состояния родительского компонента, если нужно
+            setHeightState(e.target.value) // обновление локального состояния
+          }}
+        />
       </FormControl>
       <Stack direction="row" spacing={2}>
         <FormControl fullWidth>
@@ -65,7 +89,11 @@ export const BucketElevatorsAddForm = ({
             Лента:
           </InputLabel>
           <Select
-            onChange={e => setBeltSelected(e.target.value)}
+            value={beltSelected}
+            onChange={e => {
+              setBeltSelected(e.target.value)
+              setBeltSelectedState(e.target.value)
+            }}
             inputProps={{
               name: "belts",
               id: "belts-select",
@@ -84,7 +112,15 @@ export const BucketElevatorsAddForm = ({
           <InputLabel shrink variant="standard" htmlFor="belt_length" sx={{ pl: 1 }}>
             Длина ленты:
           </InputLabel>
-          <TextField type="number" name="belt_length" onChange={e => setBeltLength(e.target.value)} />
+          <TextField
+            type="number"
+            name="belt_length"
+            value={beltLength}
+            onChange={e => {
+              setBeltLength(e.target.value)
+              setBeltLengthState(e.target.value)
+            }}
+          />
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={2}>
