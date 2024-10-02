@@ -222,6 +222,15 @@ class MotorConfigCRUD {
       throw new Error('Ошибка удаления записи: ' + error.message)
     }
   }
+
+  async deleteMotorConfigQ (id) {
+    try {
+      const command = `DELETE FROM motors_config WHERE motor_config_id = ?`
+      await executeDatabaseQueryAsync(command, [id])
+    } catch (error) {
+      throw new Error('Ошибка удаления записи: ' + error.message)
+    }
+  }
 }
 
 module.exports = new MotorConfigCRUD()
