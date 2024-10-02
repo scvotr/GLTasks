@@ -1,7 +1,7 @@
 const BucketElevatorsController = require('../controllers/Admin/BucketElevatorsController')
 const DeviceController = require('../controllers/Admin/DeviceController')
 const MangeOrgStructController = require('../controllers/Admin/MangeOrgStructController')
-const MotorController = require('../controllers/Admin/Devices/Motors/MotorPowerRangeController')
+const MotorController = require('../controllers/Admin/Devices/Motors/MotorController')
 const TasksController = require('../controllers/Admin/TasksController')
 const UserController = require('../controllers/Admin/UserController')
 const WorkflowController = require('../controllers/Admin/WorkflowController')
@@ -26,6 +26,7 @@ const MotorRotationSpeedController2 = require('../controllers/Admin/Devices/Moto
 const MotorBrandsController = require('../controllers/Admin/Devices/Motors/MotorBrandsController')
 const MotorModelsController = require('../controllers/Admin/Devices/Motors/MotorModelsController')
 const MotorConfigController = require('../controllers/Admin/Devices/Motors/MotorConfigController')
+const MotorTechUnitController = require('../controllers/Admin/Devices/Motors/MotorTechUnitController')
 
 
 const routeHandlers = {
@@ -141,11 +142,17 @@ const routeHandlers = {
   '/admin/devices/motor/models/update': MotorModelsController.update,
   '/admin/devices/motor/models/delete': MotorModelsController.delete,
   // -------------------
-  '/admin/devices/motor/create': MotorConfigController.create,
-  '/admin/devices/motor/read': MotorConfigController.read,
-  '/admin/devices/motor/readAll': MotorConfigController.readAll,
-  '/admin/devices/motor/update': MotorConfigController.update,
-  '/admin/devices/motor/delete': MotorConfigController.delete,
+  '/admin/devices/motor/delete': MotorController.create,
+  '/admin/devices/motor/read': MotorController.read,
+  '/admin/devices/motor/update': MotorController.update,
+  '/admin/devices/motor/delete': MotorController.delete,
+
+  '/admin/devices/motor/techUnit/delete': MotorTechUnitController.create,
+  '/admin/devices/motor/techUnit/read': MotorTechUnitController.read,
+  '/admin/devices/motor/techUnit/update': MotorTechUnitController.update,
+  '/admin/devices/motor/techUnit/delete': MotorTechUnitController.delete,
+
+ 
 
   '/admin/devices/motor/config/create': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/read': MotorConfigController.readMotorConfigs,
