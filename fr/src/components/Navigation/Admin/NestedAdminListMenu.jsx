@@ -69,6 +69,7 @@ export const NestedAdminListMenu = ({isOpen}) => {
       path: "/admin/devices/main",
       subItems: [
         { name: "Устройства", icon: <InboxIcon />, path: "/admin/devices/all" },
+        { name: "Устройства v2", icon: <InboxIcon />, path: "/admin/devicesV2/all" },
       ],
     },
   ]
