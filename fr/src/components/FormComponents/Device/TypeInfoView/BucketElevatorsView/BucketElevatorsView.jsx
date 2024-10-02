@@ -1,9 +1,13 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Divider } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
+import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
+import { BucketElevatorEditForm } from "../../../../Navigation/Admin/Menu/Devices/BucketElevators/BucketElevatorEditForm"
 
 export const BucketElevatorsView = ({ data }) => {
+  const [modalOpen, setModalOpen] = useState(false)
+  const [formKey, setFormKey] = useState(0)
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
@@ -18,8 +22,23 @@ export const BucketElevatorsView = ({ data }) => {
     setAnchorEl({ top: clientY, left: clientX })
   }
 
+  const closeModal = () => {
+    setModalOpen(false)
+    setAnchorEl(null)
+    setFormKey(prev => prev + 1)
+  }
+
+  const handleEdit = () => {
+    setModalOpen(true)
+  }
+
+  useEffect(() => {}, [formKey])
+
   return (
     <>
+      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Редактировать оборудование">
+        <BucketElevatorEditForm data={data} onClose={closeModal}/> 
+      </ModalCustom>
       <Menu
         id="basic-menu"
         anchorReference="anchorPosition"
@@ -28,12 +47,11 @@ export const BucketElevatorsView = ({ data }) => {
         onClose={handleClose}
         MenuListProps={{
           "aria-labelledby": "basic-button",
-        }}
-        >
+        }}>
         <MenuItem onClick={handleClose}>Забрать на ремонт</MenuItem>
         <MenuItem onClick={handleClose}>Запланировать ТО</MenuItem>
-        <Divider/>
-        <MenuItem onClick={handleClose}>Редактировать</MenuItem>
+        <Divider />
+        <MenuItem onClick={handleEdit}>Редактировать</MenuItem>
       </Menu>
       <Box>
         <TableContainer component={Paper}>
