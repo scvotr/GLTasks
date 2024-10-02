@@ -12,7 +12,7 @@ import { Loader } from "../../../../../../../FormComponents/Loader/Loader"
 import { CrUpMotorChar } from "../../Form/CrUpMotorChar"
 
 export const TechUnit = () => {
-  const endpointPath = "mechanical/rotationSpeed"
+  const endpointPath = "techUnit"
   const backPath = "/admin/devices/motors/createMotor"
   const subjectName = "эту технологическую единицу"
   //  const sections = [{ path: `/admin/devices/${endpointPath}/...`, label: "Мощность кВт" }]
@@ -132,6 +132,8 @@ export const TechUnit = () => {
           popupSnackbar={popupSnackbar}
           response={setResponse}
           endpointPath={endpointPath}
+          fieldType='n5' //n.n, n.nt
+          hlText='M1000'
         />
       </ModalCustom>
       <HeaderWithNavigation
