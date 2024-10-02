@@ -137,42 +137,137 @@ class DeviceCRUD {
   // !USE
   async getBucketElevatorQ(device_id) {
     try {
+      // const command = `
+      // SELECT
+      //     be.device_id,
+      //     be.height,
+      //     d.tech_num,
+      //     d.qr_code,
+      //     w.name AS workshop_name,
+      //     dep.name AS department_name,
+      //     mt.name AS type_name,
+      //     bb.brand_name AS beltBrands_name,
+      //     be.belt_installation_date,
+      //     be.belt_length,
+      //     bub.brand_name AS bucketBrand_name,
+      //     be.bucket_quantity,
+      //     be.bucket_installation_date,
+      //     gb.brand_name AS gearboxBrand_name,
+      //     be.gearbox_installation_date,
+      //     db.brand_name AS driveBeltsBrand_name,
+      //     be.driveBelt_quantity,
+      //     be.driveBelt_installation_date
+      // FROM
+      //     bucketElevators be
+      //     JOIN devices d ON be.device_id = d.device_id
+      //     LEFT JOIN workshops w ON d.workshop_id = w.id
+      //     LEFT JOIN departments dep ON d.department_id = dep.id
+      //     LEFT JOIN devicesTypes mt ON d.type_id = mt.id
+      //     LEFT JOIN beltBrands bb ON be.belt_brand_id = bb.id
+      //     LEFT JOIN bucketBrands bub ON be.bucket_brand_id = bub.id
+      //     LEFT JOIN gearboxBrands gb ON be.gearbox_brand_id = gb.id
+      //     LEFT JOIN driveBelts db ON be.driveBelt_brand_id = db.id
+      // WHERE be.device_id = ?
+      // `
       const command = `
-      SELECT
-          be.device_id,
-          be.height,
-          d.tech_num,
-          d.qr_code,
-          w.name AS workshop_name,
-          dep.name AS department_name,
-          mt.name AS type_name,
-          bb.brand_name AS beltBrands_name,
-          be.belt_installation_date,
-          be.belt_length,
-          bub.brand_name AS bucketBrand_name,
-          be.bucket_quantity,
-          be.bucket_installation_date,
-          gb.brand_name AS gearboxBrand_name,
-          be.gearbox_installation_date,
-          db.brand_name AS driveBeltsBrand_name,
-          be.driveBelt_quantity,
-          be.driveBelt_installation_date
-      FROM
-          bucketElevators be
-          JOIN devices d ON be.device_id = d.device_id
-          LEFT JOIN workshops w ON d.workshop_id = w.id
-          LEFT JOIN departments dep ON d.department_id = dep.id
-          LEFT JOIN devicesTypes mt ON d.type_id = mt.id
-          LEFT JOIN beltBrands bb ON be.belt_brand_id = bb.id
-          LEFT JOIN bucketBrands bub ON be.bucket_brand_id = bub.id
-          LEFT JOIN gearboxBrands gb ON be.gearbox_brand_id = gb.id
-          LEFT JOIN driveBelts db ON be.driveBelt_brand_id = db.id
-      WHERE be.device_id = ?
+          SELECT
+            be.device_id,
+            be.height,
+            d.tech_num,
+            d.qr_code,
+            w.id AS workshop_id,
+            w.name AS workshop_name,
+            dep.id AS department_id,
+            dep.name AS department_name,
+            mt.id AS type_id,
+            mt.name AS type_name,
+            bb.id AS beltBrand_id,
+            bb.brand_name AS beltBrands_name,
+            be.belt_installation_date,
+            be.belt_length,
+            bub.id AS bucketBrand_id,
+            bub.brand_name AS bucketBrand_name,
+            be.bucket_quantity,
+            be.bucket_installation_date,
+            gb.id AS gearboxBrand_id,
+            gb.brand_name AS gearboxBrand_name,
+            be.gearbox_installation_date,
+            db.id AS driveBeltBrand_id,
+            db.brand_name AS driveBeltsBrand_name,
+            be.driveBelt_quantity,
+            be.driveBelt_installation_date
+          FROM
+            bucketElevators be
+            JOIN devices d ON be.device_id = d.device_id
+            LEFT JOIN workshops w ON d.workshop_id = w.id
+            LEFT JOIN departments dep ON d.department_id = dep.id
+            LEFT JOIN devicesTypes mt ON d.type_id = mt.id
+            LEFT JOIN beltBrands bb ON be.belt_brand_id = bb.id
+            LEFT JOIN bucketBrands bub ON be.bucket_brand_id = bub.id
+            LEFT JOIN gearboxBrands gb ON be.gearbox_brand_id = gb.id
+            LEFT JOIN driveBelts db ON be.driveBelt_brand_id = db.id
+         WHERE be.device_id = ?
       `
       const results = await executeDatabaseQueryAsync(command, [device_id])
       return results
     } catch (error) {
       console.error('Error fetching bucket elevators with details:', error)
+      throw new Error('Ошибка запроса к базе данных')
+    }
+  }
+
+  async updateBucketElevatorQ(
+    device_id,
+    height,
+    beltBrand_id,
+    belt_installation_date,
+    belt_length,
+    bucketBrand_id,
+    bucket_quantity,
+    bucket_installation_date,
+    gearboxBrand_id,
+    gearbox_installation_date,
+    driveBeltBrand_id,
+    driveBelt_quantity,
+    driveBelt_installation_date
+  ) {
+    try {
+      const command = `
+        UPDATE bucketElevators 
+        SET 
+          height = ?, 
+          belt_brand_id = ?, 
+          belt_installation_date = ?, 
+          belt_length = ?, 
+          bucket_brand_id = ?, 
+          bucket_quantity = ?, 
+          bucket_installation_date = ?, 
+          gearbox_brand_id = ?, 
+          gearbox_installation_date = ?, 
+          driveBelt_brand_id = ?, 
+          driveBelt_quantity = ?, 
+          driveBelt_installation_date = ?
+        WHERE device_id = ?
+      `
+      const params = [
+        height,
+        beltBrand_id,
+        belt_installation_date,
+        belt_length,
+        bucketBrand_id,
+        bucket_quantity,
+        bucket_installation_date,
+        gearboxBrand_id,
+        gearbox_installation_date,
+        driveBeltBrand_id,
+        driveBelt_quantity,
+        driveBelt_installation_date,
+        device_id,
+      ]
+      const results = await executeDatabaseQueryAsync(command, params)
+      return results
+    } catch (error) {
+      console.error('Error updating bucket elevator details:', error)
       throw new Error('Ошибка запроса к базе данных')
     }
   }
@@ -224,9 +319,16 @@ class DeviceCRUD {
   }
 
   async deleteDeviceQ(data) {
+    const { id, haveMotor } = data
     try {
+      if (haveMotor) {
+        const command = `DELETE FROM devices WHERE device_id = ?`
+        await executeDatabaseQueryAsync(command, [id])
+        const command2 = `DELETE FROM motors WHERE device_id = ?`
+        await executeDatabaseQueryAsync(command2, [id])
+      }
       const command = `DELETE FROM devices WHERE device_id = ?`
-      await executeDatabaseQueryAsync(command, [data])
+      await executeDatabaseQueryAsync(command, [id])
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных')
     }
