@@ -35,7 +35,11 @@ export const DevicesAll = () => {
       try {
         setReqStatus({ loading: true, error: null })
         const data = await getDataFromEndpoint(currentUser.token, "/admin/devices/readAll", "POST", null, setReqStatus)
-        setDataFromEndpoint(data)
+        // за чем то получаем все двигателя!!
+        const data2 = await getDataFromEndpoint(currentUser.token, "/admin/devices/motor/readAll", "POST", null, setReqStatus)
+        const combinedData = [...data, ...data2]
+        setDataFromEndpoint(combinedData)
+        // setDataFromEndpoint(data)
         setReqStatus({ loading: false, error: null })
       } catch (error) {
         setReqStatus({ loading: false, error: error.message })
@@ -131,7 +135,7 @@ export const DevicesAll = () => {
                         <TableCell align="center">{row.department_name || "---"}</TableCell>
                         <TableCell align="center">{row.workshop_name || "---"}</TableCell>
                         <TableCell align="center">{row.type_name || "---"}</TableCell>
-                        <TableCell align="center">{row.tech_num || "---"}</TableCell>
+                        <TableCell align="center">{row.engine_number ? row.engine_number : row.tech_num || "---"}</TableCell>
                         <TableCell align="center">{row.power_value || "---"}</TableCell>
                         <TableCell align="center">
                           <Stack direction="column" spacing={1} >
@@ -150,7 +154,7 @@ export const DevicesAll = () => {
                               sx={{ mr: 1 }}
                               onClick={event => {
                                 event.stopPropagation() // Остановить всплытие события
-                                setToDelete(row.device_id)
+                                setToDelete( row.power_value ? { id : row.device_id, haveMotor: true} : { id : row.device_id, haveMotor: false})
                                 setDialogText({
                                   title: "Подтверждение удаления",
                                   message: "Вы уверены, что хотите удалить это устройство?",
