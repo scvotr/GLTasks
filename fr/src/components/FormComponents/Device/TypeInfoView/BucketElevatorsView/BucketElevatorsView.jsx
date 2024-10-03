@@ -5,9 +5,8 @@ import MenuItem from "@mui/material/MenuItem"
 import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
 import { BucketElevatorEditForm } from "../../../../Navigation/Admin/Menu/Devices/BucketElevators/BucketElevatorEditForm"
 
-export const BucketElevatorsView = ({ data }) => {
+export const BucketElevatorsView = ({ data, reRender }) => {
   const [modalOpen, setModalOpen] = useState(false)
-  const [formKey, setFormKey] = useState(0)
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
@@ -25,19 +24,16 @@ export const BucketElevatorsView = ({ data }) => {
   const closeModal = () => {
     setModalOpen(false)
     setAnchorEl(null)
-    setFormKey(prev => prev + 1)
   }
 
   const handleEdit = () => {
     setModalOpen(true)
   }
 
-  useEffect(() => {}, [formKey])
-
   return (
     <>
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Редактировать оборудование">
-        <BucketElevatorEditForm data={data} onClose={closeModal}/> 
+        <BucketElevatorEditForm data={data} onClose={closeModal} reRender={reRender}/> 
       </ModalCustom>
       <Menu
         id="basic-menu"
