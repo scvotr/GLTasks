@@ -142,8 +142,9 @@ const routeHandlers = {
   '/admin/devices/motor/models/update': MotorModelsController.update,
   '/admin/devices/motor/models/delete': MotorModelsController.delete,
   // -------------------
-  '/admin/devices/motor/create': MotorController.create,
+  '/admin/devices/motor/create': MotorController.createMotor,
   '/admin/devices/motor/read': MotorController.read,
+  '/admin/devices/motor/readAll': MotorController.readAllMotors,
   '/admin/devices/motor/update': MotorController.update,
   '/admin/devices/motor/delete': MotorController.delete,
 
@@ -158,7 +159,7 @@ const routeHandlers = {
   '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/delete': MotorConfigController.deleteMotorConfig,
 
-  '/admin/devices/motor/readAll': MotorConfigController.readAllMotor,
+  // '/admin/devices/motor/readAll': MotorConfigController.readAllMotor,
   '/admin/devices/readAll': DeviceController.readAllDevices,
   '/admin/devices/read': DeviceController.readDevice,
   '/admin/devices/delete': DeviceController.deleteDevice,
