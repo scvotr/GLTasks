@@ -1,17 +1,18 @@
 const { executeDatabaseQueryAsync } = require('../../../utils/executeDatabaseQuery/executeDatabaseQuery')
 
 class MotorConfigCRUD {
-  async createMotorQ(data) {
-    const insertQuery = `
-      INSERT INTO motors (
-        engine_number,
-        motor_config_id
-      ) VALUES (?, ?)
-    `
-    try {
-      await executeDatabaseQueryAsync(insertQuery, [data.motor_tech_num, data.motor_config_id])
-    } catch (error) {}
-  }
+  // async createMotorQ(data) {
+  //   const insertQuery = `
+  //     INSERT INTO motors (
+  //       engine_number,
+  //       motor_config_id
+  //     ) VALUES (?, ?)
+  //   `
+  //   try {
+  //     await executeDatabaseQueryAsync(insertQuery, [data.motor_tech_num, data.motor_config_id])
+  //   } catch (error) {}
+  // }
+
   async createConfigQ(motorConfig) {
     //! нет проверки на тех номер! Тут нужен номер конфигурации а не технический!!
     try {
