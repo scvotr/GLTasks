@@ -216,21 +216,22 @@ class DeviceCRUD {
     }
   }
 
-  async updateBucketElevatorQ(
-    device_id,
-    height,
-    beltBrand_id,
-    belt_installation_date,
-    belt_length,
-    bucketBrand_id,
-    bucket_quantity,
-    bucket_installation_date,
-    gearboxBrand_id,
-    gearbox_installation_date,
-    driveBeltBrand_id,
-    driveBelt_quantity,
-    driveBelt_installation_date
-  ) {
+  async updateBucketElevatorQ(device) {
+    const {
+      device_id,
+      height,
+      belt_brand_id,
+      belt_installation_date,
+      belt_length,
+      bucket_brand_id,
+      bucket_quantity,
+      bucket_installation_date,
+      gearbox_brand_id,
+      gearbox_installation_date,
+      driveBelts_brand_id,
+      driveBelts_quantity,
+      driveBelt_installation_date,
+    } = device
     try {
       const command = `
         UPDATE bucketElevators 
@@ -251,21 +252,23 @@ class DeviceCRUD {
       `
       const params = [
         height,
-        beltBrand_id,
+        belt_brand_id,
         belt_installation_date,
         belt_length,
-        bucketBrand_id,
+        bucket_brand_id,
         bucket_quantity,
         bucket_installation_date,
-        gearboxBrand_id,
+        gearbox_brand_id,
         gearbox_installation_date,
-        driveBeltBrand_id,
-        driveBelt_quantity,
+        driveBelts_brand_id,
+        driveBelts_quantity,
         driveBelt_installation_date,
         device_id,
       ]
-      const results = await executeDatabaseQueryAsync(command, params)
-      return results
+
+      // console.log(params)
+
+      await executeDatabaseQueryAsync(command, params)
     } catch (error) {
       console.error('Error updating bucket elevator details:', error)
       throw new Error('Ошибка запроса к базе данных')
@@ -321,6 +324,7 @@ class DeviceCRUD {
   async deleteDeviceQ(data) {
     const { id, haveMotor } = data
     try {
+      // при удалении устройства удаляем запись из таблицы motors зачем? хз
       if (haveMotor) {
         const command = `DELETE FROM devices WHERE device_id = ?`
         await executeDatabaseQueryAsync(command, [id])
