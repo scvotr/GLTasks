@@ -1,5 +1,5 @@
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Tab from "@mui/material/Tab"
 import TabContext from "@mui/lab/TabContext"
 import TabList from "@mui/lab/TabList"
@@ -14,6 +14,10 @@ export const DeviceInfoView = ({ device }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
+
+  const [formKey, setFormKey] = useState(0)
+  // setFormKey(prev => prev + 1)
+  useEffect(() => {}, [formKey])
 
   return (
     <>
@@ -60,7 +64,7 @@ export const DeviceInfoView = ({ device }) => {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <TypeInfoView device={{ id: device.device_id, type_id: device.type_id }} />
+            <TypeInfoView device={{ id: device.device_id, type_id: device.type_id }} reRender={setFormKey}/>
           </TabPanel>
           <TabPanel value="2">
             <MotorInfoView device={device.device_id} />
