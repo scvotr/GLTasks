@@ -7,6 +7,7 @@ import { useAuthContext } from "../../../../../../context/AuthProvider"
 import { fetchData } from "../../../../../../utils/fetchData"
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
+import { CreateMotorFormV2 } from "./CreateMotorFormV2"
 
 export const CreateMotorV2 = () => {
   const [modalOpen, setModalOpen] = useState(false)
@@ -17,7 +18,9 @@ export const CreateMotorV2 = () => {
 
   return (
     <>
-      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Добавить двигатель"></ModalCustom>
+      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Добавить номер двигателя">
+        <CreateMotorFormV2 onClose={closeModal}/>
+      </ModalCustom>
       <Box>
         <AppBar
           position="static"
