@@ -39,6 +39,7 @@ import { DocsRoutesList } from './RoutesList/Docs/DocsRoutesList'
 import { MotorBrandsModelsList } from './RoutesList/Admin/devices/motor/BrandsModels/BrandsModels'
 import { TechUnit } from '../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/TechUnit/TechUnit'
 import { DeviceAllV2 } from '../components/Navigation/Admin/Menu/DeviceV2/DeviceAllV2'
+import { CreateMotorV2 } from '../components/Navigation/Admin/Menu/DeviceV2/MotorV2/CreateMotorV2'
 
 export const routes = createBrowserRouter([
   {
@@ -108,6 +109,10 @@ export const routes = createBrowserRouter([
       {
         path: '/admin/devices/motors/createMotor',
         element: <PrivateRoutesCheck component={CreateMotor} roles={['admin']} />,
+      },
+      {
+        path: '/admin/devices/motors/createMotorV2',
+        element: <PrivateRoutesCheck component={CreateMotorV2} roles={['admin']} />,
       },
 
       {
