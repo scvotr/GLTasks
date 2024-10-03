@@ -2,8 +2,11 @@ import { Box, Button, Stack } from "@mui/material"
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
 import { BucketElevatorsAddForm } from "./BucketElevatorsAddForm"
 import { useState } from "react"
+import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
+import { useAuthContext } from "../../../../../../context/AuthProvider"
 
-export const BucketElevatorEditForm = ({ data, onClose }) => {
+export const BucketElevatorEditForm = ({ data, onClose, reRender }) => {
+  const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [beltSelected, setBeltSelected] = useState()
   const [bucketSelected, setBucketSelected] = useState()
@@ -40,6 +43,15 @@ export const BucketElevatorEditForm = ({ data, onClose }) => {
   const handleSubmit = async () => {
     console.log("dataToUpdate", dataToUpdate)
     onClose()
+    try {
+      setReqStatus({ loading: true, error: null })
+      await getDataFromEndpoint(currentUser.token, `/admin/devices/bucketElevators/update`, "POST", dataToUpdate, setReqStatus)
+      setReqStatus({ loading: false, error: null })
+      onClose()
+      reRender(prev => prev + 1)
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+    }
   }
 
   return (
