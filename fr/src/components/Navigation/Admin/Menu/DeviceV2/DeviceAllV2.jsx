@@ -1,11 +1,21 @@
 import { AppBar, Box, Button, Fab, Table, TableBody, TableCell, TableContainer, Toolbar, TableHead, TableRow, Typography, Paper, Stack } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import { useCallback, useEffect, useState } from "react"
+import { ModalCustom } from "../../../../ModalCustom/ModalCustom"
+import { NavLink } from "react-router-dom"
 
 export const DeviceAllV2 = () => {
   const [modalOpen, setModalOpen] = useState(false)
+
+  const closeModal = () => {
+    setModalOpen(false)
+  }
+
+  const sections = [{ path: "/admin/devices/motors/createMotorV2", label: "Создать Двигатель" }]
+
   return (
     <>
+      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Добавить оборудование"></ModalCustom>
       <Box>
         <AppBar
           position="static"
@@ -17,13 +27,13 @@ export const DeviceAllV2 = () => {
           }}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Добавить оборудование
+              Добавить устройство:
             </Typography>
-            {/* {sections.map((section, index) => (
+            {sections.map((section, index) => (
               <NavLink to={section.path} key={index} style={{ textDecoration: "none", color: "inherit", margin: "0 8px" }}>
                 <Button color="inherit">{section.label}</Button>
               </NavLink>
-            ))} */}
+            ))}
             <Fab color="secondary" aria-label="add" onClick={() => setModalOpen(true)}>
               <AddIcon />
             </Fab>
