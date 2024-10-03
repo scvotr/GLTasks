@@ -6,7 +6,7 @@ import { CustomSnackbar } from "../../../CustomSnackbar/CustomSnackbar"
 import { Loader } from "../../Loader/Loader"
 import { BucketElevatorsView } from "./BucketElevatorsView/BucketElevatorsView"
 
-export const TypeInfoView = ({ device }) => {
+export const TypeInfoView = ({ device, reRender }) => {
   const currentUser = useAuthContext()
   const [response, setResponse] = useState({ loading: false, error: null })
   const [deviceData, setDeviceData] = useState({})
@@ -58,7 +58,7 @@ export const TypeInfoView = ({ device }) => {
     const deviceInfo = deviceMapping[device.type_id]
     if (deviceInfo) {
       const Component = deviceInfo.component
-      return <Component data={deviceData} />
+      return <Component data={deviceData} reRender={reRender}/>
     }
     return <Box>Устройство не назначено</Box>
   }
