@@ -6,6 +6,7 @@ import { BucketElevatorsCreate } from "./BucketElevators/BucketElevatorsCreate"
 import { v4 as uuidv4 } from "uuid"
 import { AspirationFanCreate } from "./AspirationFan/AspirationFanCreate"
 import { TechNumTechTypeOnly } from "./TechNumTechTypeOnly/TechNumTechTypeOnly"
+import { MotorTechNumOnly } from "./Motors/MotorTechNumOnly"
 
 export const CreateNewDevice = ({ onClose }) => {
   const { useAllDeviceTypes, useGroupedWorkflowsByDep, useReqStatus } = useDeviceData()
@@ -70,6 +71,7 @@ export const CreateNewDevice = ({ onClose }) => {
     8: { title: "Шнек", component: "" },
     9: { title: "Тех. номер и тип", component: <TechNumTechTypeOnly generalDeviceData={generalDeviceData} onClose={onClose} /> },
     10: { title: "Шлюзовой затвор", component: "" },
+    11: { title: "Двигатель", component: <MotorTechNumOnly generalDeviceData={generalDeviceData} onClose={onClose} /> },
   }
 
   return (
