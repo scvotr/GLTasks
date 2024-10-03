@@ -3,7 +3,6 @@
 const { executeInsertIfEmpty } = require('../../../utils/executeInsertIfEmpty/executeInsertIfEmpty')
 const { executeTableCreation } = require('../../../utils/executeTableCreation/executeTableCreation')
 
-
 // const createMotors____Table = async (allowDrop = false) => {
 //   const createTableQuery = `
 //     )`
@@ -15,12 +14,21 @@ const createMotorsTable = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS motors (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      motor_config_id TEXT NOT NULL,
+      motor_id INTEGER NOT NULL,
       device_id INTEGER,
+      motor_config_id TEXT,
       engine_number TEXT,
       created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (device_id) REFERENCES devices (device_id)
-      FOREIGN KEY (motor_config_id) REFERENCES motors_config(motor_config_id)
+      devices_installation_date DATETIME,
+      qr_code BLOB,
+      type_id INTEGER,
+      workshop_id INTEGER,
+      department_id INTEGER,
+      FOREIGN KEY (type_id) REFERENCES devicesTypes (id),
+      FOREIGN KEY (device_id) REFERENCES devices (device_id),
+      FOREIGN KEY (motor_config_id) REFERENCES motors_config(motor_config_id),
+      FOREIGN KEY (workshop_id) REFERENCES workshops (id),
+      FOREIGN KEY (department_id) REFERENCES departments (id)
     )`
 
   await executeTableCreation('motors', createTableQuery, allowDrop)
