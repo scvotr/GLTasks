@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material"
 import { useDeviceData } from "../../Devices/useDeviceData"
 import { v4 as uuidv4 } from "uuid"
@@ -7,7 +7,7 @@ import { useAuthContext } from "../../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 
-export const CreateMotorFormV2 = ({ onClose }) => {
+export const CreateMotorFormV2 = ({ onClose, popupSnackbar, isEdit, motor, handleEdit }) => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const { useGroupedWorkflowsByDep, useReqStatus } = useDeviceData()
@@ -22,11 +22,13 @@ export const CreateMotorFormV2 = ({ onClose }) => {
   const [error, setError] = useState("")
 
   const generalDeviceData = {
-    device_id: deviceId, //! change for motor_id
-    department_id: selectedDepartment.id,
-    workshop_id: selectedWorkshop,
-    tech_num: technoNumber,
+    device_id: isEdit ? motor.motor_id : deviceId, //! change for motor_id
+    department_id: isEdit ? motor.department_id : selectedDepartment.id,
+    workshop_id: isEdit ? motor.workshop_id : selectedWorkshop,
+    tech_num: isEdit ? motor.engine_number : technoNumber,
   }
+
+  console.log("sss", generalDeviceData)
 
   const handleDepartmentChange = e => {
     const selected = useGroupedWorkflowsByDep[e.target.value]
@@ -67,14 +69,34 @@ export const CreateMotorFormV2 = ({ onClose }) => {
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/create`, "POST", generalDeviceData, setReqStatus)
       setReqStatus({ loading: false, error: null })
+      popupSnackbar("ok")
       onClose()
     } catch (error) {
       setReqStatus({ loading: false, error: error.message })
+      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
+    }
+  }
+
+  // Используем useEffect для инициализации состояния при редактировании
+  useEffect(() => {
+    if (isEdit && motor) {
+      // setFormData({
+      //   motor_id: motor.motor_id,
+      //   // Инициализируйте другие поля из объекта motor
+      // })
+      console.log(isEdit, motor)
+    }
+  }, [isEdit, motor])
+
+  const handleKeyDown = e => {
+    if (e.key === "Enter") {
+      e.preventDefault() // Предотвращаем стандартное поведение формы
+      setOpenDialog(true) // Открываем диалог подтверждения
     }
   }
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }} component="form" onKeyDown={handleKeyDown}>
       <Loader reqStatus={useReqStatus}>
         <Stack direction="column">
           <Stack direction="row">
