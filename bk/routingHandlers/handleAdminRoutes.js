@@ -145,8 +145,8 @@ const routeHandlers = {
   '/admin/devices/motor/create': MotorController.createMotor,
   '/admin/devices/motor/read': MotorController.read,
   '/admin/devices/motor/readAll': MotorController.readAllMotors,
-  '/admin/devices/motor/update': MotorController.update,
-  '/admin/devices/motor/delete': MotorController.delete,
+  '/admin/devices/motor/update': MotorController.updateMotor,
+  '/admin/devices/motor/delete': MotorController.deleteMotors,
 
   '/admin/devices/motor/techUnit/create': MotorTechUnitController.create,
   '/admin/devices/motor/techUnit/read': MotorTechUnitController.read,
