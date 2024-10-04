@@ -38,8 +38,48 @@ class MotorCRUD {
     `
       await executeDatabaseQueryAsync(command, [device_id, tech_num, QRC, type_id, workshop_id, department_id])
     } catch (error) {
-      console.error('Error creating new device:', error)
-      throw new Error('Ошибка запроса к базе данных')
+      console.error('Error creating new motor:', error)
+      throw error
+      // throw new Error('Ошибка запроса к базе данных')
+    }
+  }
+  async updateMotorQ(data) {
+    const { motor_id, engine_number, type_id, workshop_id, department_id } = data
+    console.log(motor_id, engine_number, type_id, workshop_id, department_id)
+    // const QRC = await generateQRCodeToURL(device_id)
+    try {
+      // Проверка на существование имени, если передано название поля
+      if (engine_number) {
+        const checkCommand = `SELECT COUNT(*) AS count FROM motors WHERE engine_number = ?
+          AND workshop_id = ?`
+        const checkResult = await executeDatabaseQueryAsync(checkCommand, [engine_number, workshop_id])
+
+        if (checkResult[0].count > 0) {
+          throw new Error(`Запись с таким ${engine_number} уже существует`) // Выбрасываем ошибку, если запись уже существует
+        }
+      }
+
+      const command = `
+      INSERT INTO motors (motor_id, engine_number, qr_code, type_id, workshop_id, department_id)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `
+      // await executeDatabaseQueryAsync(command, [device_id, tech_num, QRC, type_id, workshop_id, department_id])
+    } catch (error) {
+      console.error('Error creating new motor:', error)
+      throw error
+      // throw new Error('Ошибка запроса к базе данных')
+    }
+  }
+  async deleteMotorsQ(motor_id) {
+    try {
+      const command = `
+      DELETE FROM motors WHERE motor_id = ?
+    `
+      await executeDatabaseQueryAsync(command, [motor_id])
+    } catch (error) {
+      console.error('Error delete motor:', error)
+      throw error
+      // throw new Error('Ошибка запроса к базе данных')
     }
   }
   async getAllMotorsQ() {
@@ -52,7 +92,9 @@ class MotorCRUD {
         m.engine_number, 
         m.qr_code, 
         dt.name AS type_name,
+        w.id AS workshop_id, 
         w.name AS workshop_name,  
+        dep.id AS department_id,
         dep.name AS department_name,
         mc.power_id, 
         p.name AS power_value
