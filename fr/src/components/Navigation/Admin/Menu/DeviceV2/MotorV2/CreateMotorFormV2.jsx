@@ -13,7 +13,7 @@ export const CreateMotorFormV2 = ({ onClose, popupSnackbar, isEdit, motor, handl
   const { useGroupedWorkflowsByDep, useReqStatus } = useDeviceData()
 
   const [openDialog, setOpenDialog] = useState(false)
-  const [dialogText, setDialogText] = useState({ title: "Создать номер двигателя?", message: "" })
+  const [dialogText, setDialogText] = useState({ title: isEdit ? "изменить номер двигателя?" : "Создать номер двигателя?", message: "" })
 
   const [selectedDepartment, setSelectedDepartment] = useState([])
   const [selectedWorkshop, setSelectedWorkshop] = useState("")
@@ -22,13 +22,11 @@ export const CreateMotorFormV2 = ({ onClose, popupSnackbar, isEdit, motor, handl
   const [error, setError] = useState("")
 
   const generalDeviceData = {
-    device_id: isEdit ? motor.motor_id : deviceId, //! change for motor_id
-    department_id: isEdit ? motor.department_id : selectedDepartment.id,
-    workshop_id: isEdit ? motor.workshop_id : selectedWorkshop,
-    tech_num: isEdit ? motor.engine_number : technoNumber,
+    device_id: deviceId, //! change for motor_id
+    department_id: isEdit ? selectedDepartment : selectedDepartment.id, //! what?
+    workshop_id: selectedWorkshop,
+    tech_num: technoNumber,
   }
-
-  console.log("sss", generalDeviceData)
 
   const handleDepartmentChange = e => {
     const selected = useGroupedWorkflowsByDep[e.target.value]
@@ -65,9 +63,10 @@ export const CreateMotorFormV2 = ({ onClose, popupSnackbar, isEdit, motor, handl
   }
 
   const handleSubmit = async () => {
+    const endPoint = isEdit ? "/admin/devices/motor/update" : "/admin/devices/motor/create"
     try {
       setReqStatus({ loading: true, error: null })
-      await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/create`, "POST", generalDeviceData, setReqStatus)
+      await getDataFromEndpoint(currentUser.token, endPoint, "POST", generalDeviceData, setReqStatus)
       setReqStatus({ loading: false, error: null })
       popupSnackbar("ok")
       onClose()
@@ -80,11 +79,10 @@ export const CreateMotorFormV2 = ({ onClose, popupSnackbar, isEdit, motor, handl
   // Используем useEffect для инициализации состояния при редактировании
   useEffect(() => {
     if (isEdit && motor) {
-      // setFormData({
-      //   motor_id: motor.motor_id,
-      //   // Инициализируйте другие поля из объекта motor
-      // })
-      console.log(isEdit, motor)
+      setSelectedDepartment(motor.department_id)
+      setSelectedWorkshop(motor.workshop_id)
+      setTechnoNumber(motor.engine_number)
+      setDeviceId(motor.motor_id)
     }
   }, [isEdit, motor])
 
@@ -99,56 +97,58 @@ export const CreateMotorFormV2 = ({ onClose, popupSnackbar, isEdit, motor, handl
     <Box sx={{ width: "100%" }} component="form" onKeyDown={handleKeyDown}>
       <Loader reqStatus={useReqStatus}>
         <Stack direction="column">
-          <Stack direction="row">
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <InputLabel variant="standard" htmlFor="department-select" sx={{ pl: 1 }}>
-                Департамент:
-              </InputLabel>
-              <Select
-                value={selectedDepartment?.name || ""}
-                onChange={handleDepartmentChange}
-                inputProps={{
-                  name: "department",
-                  id: "department-select",
-                }}>
-                <MenuItem value="" disabled>
-                  Выберите департамент
-                </MenuItem>
-                {Object.keys(useGroupedWorkflowsByDep).map(department => (
-                  <MenuItem key={department} value={department}>
-                    {department}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            {selectedDepartment?.name && (
+          {!isEdit && (
+            <Stack direction="row">
               <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel variant="standard" htmlFor="workshop-select" sx={{ pl: 1 }}>
-                  Цех
+                <InputLabel variant="standard" htmlFor="department-select" sx={{ pl: 1 }}>
+                  Департамент:
                 </InputLabel>
                 <Select
-                  value={selectedWorkshop}
-                  onChange={e => {
-                    setSelectedWorkshop(e.target.value)
-                    handleWorkshopChange()
-                  }}
+                  value={selectedDepartment?.name || ""}
+                  onChange={handleDepartmentChange}
                   inputProps={{
-                    name: "workshop",
-                    id: "workshop-select",
+                    name: "department",
+                    id: "department-select",
                   }}>
                   <MenuItem value="" disabled>
-                    Выберите цех
+                    Выберите департамент
                   </MenuItem>
-                  {useGroupedWorkflowsByDep[selectedDepartment.name]?.map(workshop => (
-                    <MenuItem key={workshop.id} value={workshop.id}>
-                      {workshop.workshop_name}
+                  {Object.keys(useGroupedWorkflowsByDep).map(department => (
+                    <MenuItem key={department} value={department}>
+                      {department}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
-            )}
-          </Stack>
+
+              {selectedDepartment?.name && (
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                  <InputLabel variant="standard" htmlFor="workshop-select" sx={{ pl: 1 }}>
+                    Цех
+                  </InputLabel>
+                  <Select
+                    value={selectedWorkshop}
+                    onChange={e => {
+                      setSelectedWorkshop(e.target.value)
+                      handleWorkshopChange()
+                    }}
+                    inputProps={{
+                      name: "workshop",
+                      id: "workshop-select",
+                    }}>
+                    <MenuItem value="" disabled>
+                      Выберите цех
+                    </MenuItem>
+                    {useGroupedWorkflowsByDep[selectedDepartment.name]?.map(workshop => (
+                      <MenuItem key={workshop.id} value={workshop.id}>
+                        {workshop.workshop_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            </Stack>
+          )}
           {selectedWorkshop && (
             <>
               <Box sx={{ mt: 2 }} component="form">
@@ -177,7 +177,7 @@ export const CreateMotorFormV2 = ({ onClose, popupSnackbar, isEdit, motor, handl
                     setOpenDialog(true)
                   }}
                   disabled={!generalDeviceData.tech_num}>
-                  создать
+                  {isEdit ? "изменить" : "создать"}
                 </Button>
               </Stack>
             </>
