@@ -44,26 +44,26 @@ class MotorCRUD {
     }
   }
   async updateMotorQ(data) {
-    const { motor_id, engine_number, type_id, workshop_id, department_id } = data
-    console.log(motor_id, engine_number, type_id, workshop_id, department_id)
+    const { device_id, tech_num, workshop_id, department_id } = data
     // const QRC = await generateQRCodeToURL(device_id)
     try {
       // Проверка на существование имени, если передано название поля
-      if (engine_number) {
+      if (tech_num) {
         const checkCommand = `SELECT COUNT(*) AS count FROM motors WHERE engine_number = ?
           AND workshop_id = ?`
-        const checkResult = await executeDatabaseQueryAsync(checkCommand, [engine_number, workshop_id])
+        const checkResult = await executeDatabaseQueryAsync(checkCommand, [tech_num, workshop_id])
 
         if (checkResult[0].count > 0) {
-          throw new Error(`Запись с таким ${engine_number} уже существует`) // Выбрасываем ошибку, если запись уже существует
+          throw new Error(`Запись с таким ${tech_num} уже существует`) // Выбрасываем ошибку, если запись уже существует
         }
       }
 
       const command = `
-      INSERT INTO motors (motor_id, engine_number, qr_code, type_id, workshop_id, department_id)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `
-      // await executeDatabaseQueryAsync(command, [device_id, tech_num, QRC, type_id, workshop_id, department_id])
+        UPDATE motors
+        SET engine_number = ?, workshop_id = ?, department_id = ?
+        WHERE motor_id = ?
+      `
+      await executeDatabaseQueryAsync(command, [tech_num, workshop_id, department_id, device_id])
     } catch (error) {
       console.error('Error creating new motor:', error)
       throw error
