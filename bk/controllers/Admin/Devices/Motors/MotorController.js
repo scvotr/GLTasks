@@ -42,7 +42,6 @@ class MotorController extends BaseMotorController {
     try {
       const authDecodeUserData = req.user
       const motor_id = JSON.parse(authDecodeUserData.payLoad)
-      console.log(motor_id)
       await MotorCRUD.deleteMotorsQ(motor_id)
       sendResponseWithData(res, `Успешно удален ${motor_id}`)
     } catch (error) {
