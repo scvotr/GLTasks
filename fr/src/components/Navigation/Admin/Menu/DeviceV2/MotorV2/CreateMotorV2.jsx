@@ -68,7 +68,6 @@ export const CreateMotorV2 = () => {
     setMotor(data)
   }
   const handleDelete = async () => {
-    console.log("remove: ", motor.motor_id)
     try {
       setReqStatus({ loading: true, error: null })
       const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/delete`, "POST", motor.motor_id, setReqStatus)
@@ -81,29 +80,14 @@ export const CreateMotorV2 = () => {
     }
   }
   const handleOpenEdit = async () => {
-    console.log("edit: ", motor)
     setIsEdit(true)
     setModalOpen(true)
-    
-  }
-  const handleEdit = async (editedMotor) => {
-    // console.log("edit: ", editedMotor)
-    try {
-      setReqStatus({ loading: true, error: null })
-      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/update`, "POST", editedMotor, setReqStatus)
-      popupSnackbar(res)
-      setFormKey(prev => prev + 1)
-      setReqStatus({ loading: false, error: null })
-    } catch (error) {
-      setReqStatus({ loading: false, error: error.message })
-      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
-    }
   }
 
   return (
     <>
-      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText="Добавить номер двигателя">
-        <CreateMotorFormV2 onClose={closeModal} popupSnackbar={popupSnackbar} isEdit={isEdit} motor={motor} handleEdit={handleEdit}/>
+      <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={isEdit ? "Изменить?" : "Добавить номер двигателя"}>
+        <CreateMotorFormV2 onClose={closeModal} popupSnackbar={popupSnackbar} isEdit={isEdit} motor={motor} />
       </ModalCustom>
       <Menu
         id="basic-menu"
