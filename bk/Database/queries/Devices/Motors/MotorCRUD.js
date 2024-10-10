@@ -148,6 +148,18 @@ class MotorCRUD {
       throw new Error('Ошибка запроса к базе данных')
     }
   }
+  async readAllRepairsLogQ() {
+    try {
+      const command = `
+ 
+      `
+      const results = await executeDatabaseQueryAsync(command)
+      return results
+    } catch (error) {
+      console.error('Error fetching bucket elevators with details:', error)
+      throw new Error('Ошибка запроса к базе данных')
+    }
+  }
 }
 
 module.exports = new MotorCRUD()
