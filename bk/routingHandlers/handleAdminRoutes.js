@@ -150,6 +150,7 @@ const routeHandlers = {
   // !
   '/admin/devices/motor/takeMotorForRepair': MotorController.takeMotorForRepair,
   '/admin/devices/motor/completeMotorRepair': MotorController.completeMotorRepair,
+  '/admin/devices/motor/log/repair/readAll': MotorController.readAllRepairsLog,
 
 
 
