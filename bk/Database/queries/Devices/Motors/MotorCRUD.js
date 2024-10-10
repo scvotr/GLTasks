@@ -150,12 +150,12 @@ class MotorCRUD {
   async readAllRepairsLogQ(motor_id) {
     try {
       const command = `
-      SELECT 
-        strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_start, 'localtime')) AS repair_start_local, 
-        strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_end, 'localtime')) AS repair_end_local 
-      FROM motor_repair_history 
-      WHERE motor_id = ?
-    `
+        SELECT 
+          DATETIME(repair_start, 'localtime') AS repair_start_local, 
+          DATETIME(repair_end, 'localtime') AS repair_end_local 
+        FROM motor_repair_history 
+        WHERE motor_id = ?
+      `
       const results = await executeDatabaseQueryAsync(command, [motor_id])
       return results
     } catch (error) {
@@ -166,3 +166,12 @@ class MotorCRUD {
 }
 
 module.exports = new MotorCRUD()
+
+
+// const command = `
+// SELECT 
+//   strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_start, 'localtime')) AS repair_start_local, 
+//   strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_end, 'localtime')) AS repair_end_local 
+// FROM motor_repair_history 
+// WHERE motor_id = ?
+// `;
