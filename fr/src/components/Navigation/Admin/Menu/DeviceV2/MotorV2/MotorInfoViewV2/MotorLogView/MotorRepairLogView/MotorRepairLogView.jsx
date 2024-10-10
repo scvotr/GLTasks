@@ -28,7 +28,7 @@ export const MotorRepairLogView = ({ motor }) => {
     const endpoint = "/admin/devices/motor/log/repair/readAll"
     try {
       setResponse({ loading: true, error: null })
-      const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", motor, setResponse)
+      const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", motor.by_history_id, setResponse)
       setTableData(...data)
       setResponse({ loading: false, error: null })
     } catch (error) {
