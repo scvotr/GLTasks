@@ -3,11 +3,14 @@ import { useAuthContext } from "../../../../../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../../../../../utils/getDataFromEndpoint"
 import { CustomSnackbar } from "../../../../../../../../CustomSnackbar/CustomSnackbar"
 import { Loader } from "../../../../../../../../FormComponents/Loader/Loader"
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Divider } from "@mui/material"
 
 export const MotorRepairLogView = ({ motor }) => {
   const currentUser = useAuthContext()
   const [response, setResponse] = useState({ loading: false, error: null })
   const [tableData, setTableData] = useState([])
+
+  console.log("ddd", tableData)
 
   // SnackBar
   const [openSnackbar, setOpenSnackbar] = useState(false)
@@ -29,7 +32,7 @@ export const MotorRepairLogView = ({ motor }) => {
     try {
       setResponse({ loading: true, error: null })
       const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", motor.by_history_id, setResponse)
-      setTableData(...data)
+      setTableData(data)
       setResponse({ loading: false, error: null })
     } catch (error) {
       setResponse({ loading: false, error: error.message })
@@ -45,7 +48,31 @@ export const MotorRepairLogView = ({ motor }) => {
 
   return (
     <>
-      <Loader reqStatus={response}></Loader>
+      <Loader reqStatus={response}>
+        <Box>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} size="small" aria-label="журнал ремонтов">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">№</TableCell>
+                  <TableCell align="center">Начат</TableCell>
+                  <TableCell align="center">Завершён</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tableData &&
+                  tableData.map((row, id) => (
+                    <TableRow key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }} hover onClick={() => console.log('qq')}>
+                      <TableCell align="center">{id}</TableCell>
+                      <TableCell align="center">{row.repair_start_local}</TableCell>
+                      <TableCell align="center">{row.repair_end_local}</TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Loader>
       <CustomSnackbar open={openSnackbar} message={snackbarMessage} severity={snackbarSeverity} onClose={handleCloseSnackbar} />
     </>
   )
