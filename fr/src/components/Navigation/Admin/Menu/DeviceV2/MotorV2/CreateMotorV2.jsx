@@ -176,7 +176,7 @@ export const CreateMotorV2 = () => {
           }}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Добавить двигатель:
+              Двигателя:
             </Typography>
             {/* <NavigationButtons sections={sections} /> */}
             <Fab color="secondary" aria-label="add" onClick={() => setModalOpen(true)}>

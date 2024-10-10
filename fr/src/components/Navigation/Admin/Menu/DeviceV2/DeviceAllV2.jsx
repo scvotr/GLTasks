@@ -11,7 +11,7 @@ export const DeviceAllV2 = () => {
     setModalOpen(false)
   }
 
-  const sections = [{ path: "/admin/devices/motors/createMotorV2", label: "Создать Двигатель" }]
+  const sections = [{ path: "/admin/devices/motors/createMotorV2", label: "Двигателя" }]
 
   return (
     <>
