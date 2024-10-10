@@ -2,7 +2,7 @@ import TabContext from "@mui/lab/TabContext"
 import TabList from "@mui/lab/TabList"
 import TabPanel from "@mui/lab/TabPanel"
 import { Box, Tab } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { MotorRepairLogView } from "./MotorLogView/MotorRepairLogView/MotorRepairLogView"
 import { MotorServiceLogView } from "./MotorLogView/MotorServiceLogView/MotorServiceLogView"
 
@@ -10,6 +10,10 @@ export const MotorInfoViewV2 = ({ motor }) => {
   console.log(motor)
   const [value, setValue] = useState("1")
   const [logTabValue, setLogTabValue] = useState("1")
+
+  const [formKey, setFormKey] = useState(0)
+  // setFormKey(prev => prev + 1)
+  useEffect(() => {}, [formKey])
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -38,10 +42,10 @@ export const MotorInfoViewV2 = ({ motor }) => {
                 <Tab label="Сводная" value="3" />
               </TabList>
               <TabPanel value="1">
-                <MotorRepairLogView motor={motor} />
+                <MotorRepairLogView motor={motor} reRender={setFormKey}/>
               </TabPanel>
               <TabPanel value="2">
-                <MotorServiceLogView motor={motor} />
+                <MotorServiceLogView motor={motor} reRender={setFormKey}/>
               </TabPanel>
               <TabPanel value="3">{/* Содержимое для "Сводная" */}</TabPanel>
             </TabContext>
