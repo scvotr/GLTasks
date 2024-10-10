@@ -31,6 +31,7 @@ export const MotorRepairLogView = ({ motor }) => {
       setResponse({ loading: false, error: null })
     } catch (error) {
       setResponse({ loading: false, error: error.message })
+      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
     }
   }
 
