@@ -196,20 +196,22 @@ export const CreateMotorV2 = () => {
             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="center" colSpan={1} sx={{ border: "1px solid black" }}></TableCell>
-                  <TableCell align="center" colSpan={1} sx={{ border: "1px solid black" }}>
-                    номер
+                  <TableCell align="center" colSpan={3} sx={{ border: "1px solid black" }}>
+                    Нумерация
                   </TableCell>
-                  <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}></TableCell>
+                  <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}>
+                    Эксплуатация
+                  </TableCell>
                   <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}>
                     Принадлежность
                   </TableCell>
                   <TableCell align="center" colSpan={1} sx={{ border: "1px solid black" }}>
-                    Электрические
+                    Установка
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell align="center">ID</TableCell>
+                  <TableCell align="center">П.П</TableCell>
                   <TableCell align="center">Тех. номер</TableCell>
                   <TableCell align="center">Состояние</TableCell>
                   <TableCell align="center">Последний ремонт</TableCell>
@@ -221,13 +223,14 @@ export const CreateMotorV2 = () => {
               </TableHead>
               <TableBody>
                 {motors &&
-                  motors.map(motor => (
+                  motors.map((motor, id) => (
                     <TableRow
                       key={motor.motor_id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 }, backgroundColor: motor.on_repair ? "rgba(255, 0, 0, 0.1)" : "inherit" }}
                       hover
                       onClick={event => handleClick(event, motor)}>
                       <TableCell align="center">{motor.motor_id.substring(0, 5)}</TableCell>
+                      <TableCell align="center">{id + 1}</TableCell>
                       <TableCell align="center">{motor.engine_number}</TableCell>
                       <TableCell align="center">
                         {motor.on_repair ? (
