@@ -5,6 +5,7 @@ import { CustomSnackbar } from "../../../../../../../../CustomSnackbar/CustomSna
 import { Loader } from "../../../../../../../../FormComponents/Loader/Loader"
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Divider } from "@mui/material"
 import { formatDateV2 } from "../../../../../../../../../utils/formatDate"
+import { calculateTotalTime } from "../../../../../../../../../utils/calculateTotalTime"
 
 export const MotorRepairLogView = ({ motor }) => {
   const currentUser = useAuthContext()
@@ -46,18 +47,6 @@ export const MotorRepairLogView = ({ motor }) => {
       fetchData()
     }
   }, [currentUser, motor])
-
-  // Функция для вычисления затраченного времени
-  const calculateTotalTime = (start, end) => {
-    console.log(start, end)
-    const startDate = new Date(start.split(" ").join("T")) // Преобразуем строку в формат ISO
-    const endDate = new Date(end.split(" ").join("T"))
-    const totalTimeInSeconds = (endDate - startDate) / 1000 // Разница в миллисекундах
-    const hours = Math.floor(totalTimeInSeconds / 3600)
-    const minutes = Math.floor((totalTimeInSeconds % 3600) / 60)
-    const seconds = Math.floor(totalTimeInSeconds % 60)
-    return `${hours}ч ${minutes}м ${seconds}с` // Форматируем результат
-  }
 
   return (
     <>
