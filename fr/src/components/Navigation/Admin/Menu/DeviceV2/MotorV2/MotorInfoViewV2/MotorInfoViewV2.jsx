@@ -28,7 +28,7 @@ export const MotorInfoViewV2 = ({ motor }) => {
       <Box>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider", width: "100%", mt: 2 }}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <TabList onChange={handleChange} aria-label="Общая информация">
               <Tab label="Журналы" value="1" />
               <Tab label="Конфигурация" value="2" />
               <Tab label="Информация" value="3" />
@@ -36,7 +36,7 @@ export const MotorInfoViewV2 = ({ motor }) => {
           </Box>
           <TabPanel value="1">
             <TabContext value={logTabValue}>
-              <TabList onChange={handleLogTabChange} aria-label="lab API tabs example">
+              <TabList onChange={handleLogTabChange} aria-label="Журналы">
                 <Tab label="Аварии" value="1" />
                 <Tab label="Обслуживание" value="2" />
                 <Tab label="Сводная" value="3" />
