@@ -48,6 +48,27 @@ class MotorController extends BaseMotorController {
       handleError(res, 'Error: readAllDevices')
     }
   }
+
+  async takeMotorForRepair(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const motor_id = JSON.parse(authDecodeUserData.payLoad)
+      await MotorCRUD.takeMotorForRepairQ(motor_id)
+      sendResponseWithData(res, `Принят в ремонт ${motor_id}`)
+    } catch (error) {
+      handleError(res, 'Error: readAllDevices')
+    }
+  }
+  async completeMotorRepair(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const motor_id = JSON.parse(authDecodeUserData.payLoad)
+      await MotorCRUD.completeMotorRepairQ(motor_id)
+      sendResponseWithData(res, `Ремонт завершён ${motor_id}`)
+    } catch (error) {
+      handleError(res, 'Error: readAllDevices')
+    }
+  }
 }
 
 module.exports = new MotorController()
