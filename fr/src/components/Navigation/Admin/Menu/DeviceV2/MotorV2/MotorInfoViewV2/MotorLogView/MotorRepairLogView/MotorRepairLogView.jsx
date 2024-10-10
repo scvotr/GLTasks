@@ -25,9 +25,10 @@ export const MotorRepairLogView = ({ motor }) => {
   }
 
   const fetchData = async () => {
+    const endpoint = ""
     try {
       setResponse({ loading: true, error: null })
-      const data = await getDataFromEndpoint(currentUser.token, "", "POST", motor, setResponse)
+      const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", motor, setResponse)
       setTableData(...data)
       setResponse({ loading: false, error: null })
     } catch (error) {
