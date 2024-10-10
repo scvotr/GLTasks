@@ -65,11 +65,17 @@ export const MotorRepairLogView = ({ motor }) => {
               <TableBody>
                 {tableData &&
                   tableData.map((row, id) => (
-                    <TableRow key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }} hover onClick={() => console.log("qq")}>
-                      <TableCell align="center">{id}</TableCell>
+                    <TableRow
+                      key={row.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 }, backgroundColor: !row.repair_end_local ? "rgba(255, 0, 0, 0.1)" : "inherit" }}
+                      hover
+                      onClick={() => console.log("qq")}>
+                      <TableCell align="center">{id + 1}</TableCell>
                       <TableCell align="center">{formatDateV2(row.repair_start_local, true)}</TableCell>
-                      <TableCell align="center">{formatDateV2(row.repair_end_local, true)}</TableCell>
-                      <TableCell align="center">{calculateTotalTime(row.repair_start_local, row.repair_end_local)}</TableCell>
+                      <TableCell align="center">{row.repair_end_local ? formatDateV2(row.repair_end_local, true) : "Идет ремонт"}</TableCell>
+                      <TableCell align="center">
+                        {row.repair_end_local ? calculateTotalTime(row.repair_start_local, row.repair_end_local) : "Идет ремонт"}
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
