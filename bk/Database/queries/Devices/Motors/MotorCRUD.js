@@ -148,12 +148,11 @@ class MotorCRUD {
     }
   }
   async readAllRepairsLogQ(motor_id) {
-    console.log(motor_id)
     try {
       const command = `
       SELECT 
-        DATETIME(repair_start, 'localtime') AS repair_start_local, 
-        DATETIME(repair_end, 'localtime') AS repair_end_local 
+        strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_start, 'localtime')) AS repair_start_local, 
+        strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_end, 'localtime')) AS repair_end_local 
       FROM motor_repair_history 
       WHERE motor_id = ?
     `
