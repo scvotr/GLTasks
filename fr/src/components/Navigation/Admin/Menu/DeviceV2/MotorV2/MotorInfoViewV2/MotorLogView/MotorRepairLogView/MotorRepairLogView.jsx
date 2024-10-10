@@ -34,7 +34,9 @@ export const MotorRepairLogView = ({ motor }) => {
     try {
       setResponse({ loading: true, error: null })
       const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", motor.by_history_id, setResponse)
-      setTableData(data)
+      // Сортируем данные по repair_start_local
+      const sortedData = data.sort((a, b) => new Date(b.repair_start_local) - new Date(a.repair_start_local))
+      setTableData(sortedData)
       setResponse({ loading: false, error: null })
     } catch (error) {
       setResponse({ loading: false, error: error.message })
