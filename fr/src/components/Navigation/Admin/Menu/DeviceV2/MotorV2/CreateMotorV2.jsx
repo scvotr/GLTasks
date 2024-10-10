@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { ModalCustom } from "../../../../../ModalCustom/ModalCustom"
 import { Divider, AppBar, Box, Button, Fab, Toolbar, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Stack } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
@@ -12,6 +12,7 @@ import { CustomSnackbar } from "../../../../../CustomSnackbar/CustomSnackbar"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
+import { CheckCircle, Cancel } from "@mui/icons-material"
 
 export const CreateMotorV2 = () => {
   const currentUser = useAuthContext()
@@ -27,6 +28,8 @@ export const CreateMotorV2 = () => {
 
   const [motors, setMotors] = useState([])
   const [motor, setMotor] = useState([])
+
+  console.log(motors)
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -83,6 +86,36 @@ export const CreateMotorV2 = () => {
     setIsEdit(true)
     setModalOpen(true)
   }
+  const handleToRepair = async () => {
+    try {
+      setReqStatus({ loading: true, error: null })
+      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
+      popupSnackbar(res)
+      setFormKey(prev => prev + 1)
+      setAnchorEl(null)
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
+    }
+  }
+  const handleCompleteRepair = async () => {
+    try {
+      setReqStatus({ loading: true, error: null })
+      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/completeMotorRepair`, "POST", motor.motor_id, setReqStatus)
+      popupSnackbar(res)
+      setFormKey(prev => prev + 1)
+      setAnchorEl(null)
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
+    }
+  }
+
+  const handleInfoView = async () => {
+
+  }
 
   return (
     <>
@@ -98,7 +131,13 @@ export const CreateMotorV2 = () => {
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}>
-        <MenuItem onClick={closeModal}>Забрать на ремонт</MenuItem>
+        <MenuItem onClick={handleInfoView}>Информация</MenuItem>
+        {!motor.on_repair ? (
+          <MenuItem onClick={handleToRepair}>Забрать на ремонт</MenuItem>
+        ) : (
+          <MenuItem onClick={handleCompleteRepair}>Завершить ремонт</MenuItem>
+        )}
+
         <MenuItem onClick={closeModal}>Запланировать ТО</MenuItem>
         <Divider />
         <MenuItem onClick={handleOpenEdit}>Редактировать</MenuItem>
@@ -152,6 +191,7 @@ export const CreateMotorV2 = () => {
                   <TableCell align="center" colSpan={1} sx={{ border: "1px solid black" }}>
                     номер
                   </TableCell>
+                  <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}></TableCell>
                   <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}>
                     Принадлежность
                   </TableCell>
@@ -160,12 +200,14 @@ export const CreateMotorV2 = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align="left">ID</TableCell>
-                  <TableCell align="left">Тех. номер</TableCell>
+                  <TableCell align="center">ID</TableCell>
+                  <TableCell align="center">Тех. номер</TableCell>
+                  <TableCell align="center">Состояние</TableCell>
+                  <TableCell align="center">Последний ремонт</TableCell>
 
-                  <TableCell align="left">Департамент</TableCell>
-                  <TableCell align="left">Объект</TableCell>
-                  <TableCell align="left">Статус</TableCell>
+                  <TableCell align="center">Департамент</TableCell>
+                  <TableCell align="center">Объект</TableCell>
+                  <TableCell align="center">Статус</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -173,24 +215,22 @@ export const CreateMotorV2 = () => {
                   motors.map(motor => (
                     <TableRow
                       key={motor.motor_id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 }, backgroundColor: motor.on_repair ? "rgba(255, 0, 0, 0.1)" : "inherit" }}
                       hover
                       onClick={event => handleClick(event, motor)}>
-                      <TableCell align="left">{motor.motor_id.substring(0, 5)}</TableCell>
-                      <TableCell align="left">{motor.engine_number}</TableCell>
-                      <TableCell align="left">{motor.department_name}</TableCell>
-                      <TableCell align="left">{motor.workshop_name}</TableCell>
-                      <TableCell align="left">{motor.device_id ? motor.device_id : "Не установлен"}</TableCell>
-                      {/* <TableCell align="left">
-                        <Stack direction="row">
-                          <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => handleEdit(motor.id)}>
-                            Изменить
-                          </Button>
-                          <Button variant="contained" color="error" onClick={() => handleDelete(motor.motor_config_id)}>
-                            Удалить
-                          </Button>
-                        </Stack>
-                      </TableCell> */}
+                      <TableCell align="center">{motor.motor_id.substring(0, 5)}</TableCell>
+                      <TableCell align="center">{motor.engine_number}</TableCell>
+                      <TableCell align="center">
+                        {motor.on_repair ? (
+                          <Cancel color="error" /> // Иконка для состояния "не в ремонте"
+                        ) : (
+                          <CheckCircle color="success" /> // Иконка для состояния "в ремонте"
+                        )}
+                      </TableCell>
+                      <TableCell align="center">{motor.on_repair ? "На ремонте" : motor.last_repair_date}</TableCell>
+                      <TableCell align="center">{motor.department_name}</TableCell>
+                      <TableCell align="center">{motor.workshop_name}</TableCell>
+                      <TableCell align="center">{motor.device_id ? motor.device_id : "Не установлен"}</TableCell>
                     </TableRow>
                   ))}
               </TableBody>
