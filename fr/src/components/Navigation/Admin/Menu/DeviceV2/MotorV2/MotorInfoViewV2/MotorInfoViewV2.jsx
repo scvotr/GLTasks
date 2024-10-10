@@ -4,6 +4,7 @@ import TabPanel from "@mui/lab/TabPanel"
 import { Box, Tab } from "@mui/material"
 import { useState } from "react"
 import { MotorRepairLogView } from "./MotorLogView/MotorRepairLogView/MotorRepairLogView"
+import { MotorServiceLogView } from "./MotorLogView/MotorServiceLogView/MotorServiceLogView"
 
 export const MotorInfoViewV2 = ({ motor }) => {
   console.log(motor)
@@ -36,8 +37,12 @@ export const MotorInfoViewV2 = ({ motor }) => {
                 <Tab label="Обслуживание" value="2" />
                 <Tab label="Сводная" value="3" />
               </TabList>
-              <TabPanel value="1"><MotorRepairLogView motor={motor}/></TabPanel>
-              <TabPanel value="2">{/* Содержимое для "Обслуживание" */}</TabPanel>
+              <TabPanel value="1">
+                <MotorRepairLogView motor={motor} />
+              </TabPanel>
+              <TabPanel value="2">
+                <MotorServiceLogView motor={motor} />
+              </TabPanel>
               <TabPanel value="3">{/* Содержимое для "Сводная" */}</TabPanel>
             </TabContext>
           </TabPanel>
