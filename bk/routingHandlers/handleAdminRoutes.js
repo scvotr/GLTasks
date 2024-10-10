@@ -147,6 +147,11 @@ const routeHandlers = {
   '/admin/devices/motor/readAll': MotorController.readAllMotors,
   '/admin/devices/motor/update': MotorController.updateMotor,
   '/admin/devices/motor/delete': MotorController.deleteMotors,
+  // !
+  '/admin/devices/motor/takeMotorForRepair': MotorController.takeMotorForRepair,
+  '/admin/devices/motor/completeMotorRepair': MotorController.completeMotorRepair,
+
+
 
   '/admin/devices/motor/techUnit/create': MotorTechUnitController.create,
   '/admin/devices/motor/techUnit/read': MotorTechUnitController.read,
