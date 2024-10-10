@@ -15,6 +15,7 @@ import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDi
 import { CheckCircle, Cancel } from "@mui/icons-material"
 import { FullScreenDialog } from "../../../../../FullScreenDialog/FullScreenDialog"
 import { MotorInfoViewV2 } from "./MotorInfoViewV2/MotorInfoViewV2"
+import { formatDateV2 } from "../../../../../../utils/formatDate"
 
 export const CreateMotorV2 = () => {
   const currentUser = useAuthContext()
@@ -128,7 +129,7 @@ export const CreateMotorV2 = () => {
         <CreateMotorFormV2 onClose={closeModal} popupSnackbar={popupSnackbar} isEdit={isEdit} motor={motor} />
       </ModalCustom>
       <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={motor.motor_id}>
-        <MotorInfoViewV2 motor={motor}/>
+        <MotorInfoViewV2 motor={motor} />
       </FullScreenDialog>
       <Menu
         id="basic-menu"
@@ -235,7 +236,7 @@ export const CreateMotorV2 = () => {
                           <CheckCircle color="success" /> // Иконка для состояния "в ремонте"
                         )}
                       </TableCell>
-                      <TableCell align="center">{motor.on_repair ? "На ремонте" : motor.last_repair_date}</TableCell>
+                      <TableCell align="center">{motor.on_repair ? "На ремонте" : formatDateV2(motor.last_repair_date, true)}</TableCell>
                       <TableCell align="center">{motor.department_name}</TableCell>
                       <TableCell align="center">{motor.workshop_name}</TableCell>
                       <TableCell align="center">{motor.device_id ? motor.device_id : "Не установлен"}</TableCell>
