@@ -13,6 +13,7 @@ import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 import { CheckCircle, Cancel } from "@mui/icons-material"
+import { FullScreenDialog } from "../../../../../FullScreenDialog/FullScreenDialog"
 
 export const CreateMotorV2 = () => {
   const currentUser = useAuthContext()
@@ -37,6 +38,8 @@ export const CreateMotorV2 = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogText, setDialogText] = useState({ title: "Удалить номер двигателя?", message: "" })
 
+  const [fullScreenOpen, setFullScreenOpen] = useState(false)
+
   const getAllMotors = useCallback(() => {
     fetchData(currentUser, "/admin/devices/motor/readAll", setReqStatus, setMotors)
   })
@@ -49,6 +52,7 @@ export const CreateMotorV2 = () => {
     setModalOpen(false)
     setAnchorEl(null)
     setIsEdit(false)
+    setFullScreenOpen(false)
     setFormKey(prev => prev + 1)
   }
 
@@ -114,7 +118,7 @@ export const CreateMotorV2 = () => {
   }
 
   const handleInfoView = async () => {
-
+    setFullScreenOpen(true)
   }
 
   return (
@@ -122,6 +126,7 @@ export const CreateMotorV2 = () => {
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={isEdit ? "Изменить?" : "Добавить номер двигателя"}>
         <CreateMotorFormV2 onClose={closeModal} popupSnackbar={popupSnackbar} isEdit={isEdit} motor={motor} />
       </ModalCustom>
+      <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={motor.motor_id}></FullScreenDialog>
       <Menu
         id="basic-menu"
         anchorReference="anchorPosition"
