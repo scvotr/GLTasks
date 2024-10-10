@@ -7,6 +7,21 @@ export const MotorRepairLogView = ({ motor }) => {
   const [response, setResponse] = useState({ loading: false, error: null })
   const [tableData, setTableData] = useState([])
 
+    // SnackBar
+    const [openSnackbar, setOpenSnackbar] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState("")
+    const [snackbarSeverity, setSnackbarSeverity] = useState("success")
+  
+    const popupSnackbar = (text, severity) => {
+      setSnackbarMessage(text)
+      setSnackbarSeverity(severity)
+      setOpenSnackbar(true)
+    }
+  
+    const handleCloseSnackbar = () => {
+      setOpenSnackbar(false)
+    }
+
   const fetchData = async () => {
     try {
       setResponse({ loading: true, error: null })
