@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useAuthContext } from "../../../../../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../../../../../utils/getDataFromEndpoint"
 import { CustomSnackbar } from "../../../../../../../../CustomSnackbar/CustomSnackbar"
+import { Loader } from "../../../../../../../../FormComponents/Loader/Loader"
 
 export const MotorRepairLogView = ({ motor }) => {
   const currentUser = useAuthContext()
@@ -43,7 +44,7 @@ export const MotorRepairLogView = ({ motor }) => {
 
   return (
     <>
-      MotorRepairLogView
+      <Loader reqStatus={response}></Loader>
       <CustomSnackbar open={openSnackbar} message={snackbarMessage} severity={snackbarSeverity} onClose={handleCloseSnackbar} />
     </>
   )
