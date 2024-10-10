@@ -148,12 +148,13 @@ class MotorCRUD {
       throw new Error('Ошибка запроса к базе данных')
     }
   }
-  async readAllRepairsLogQ() {
+  async readAllRepairsLogQ(motor_id) {
+    console.log(motor_id)
     try {
       const command = `
- 
+        SELECT * FROM motor_repair_history WHERE motor_id = ?;
       `
-      const results = await executeDatabaseQueryAsync(command)
+      const results = await executeDatabaseQueryAsync(command, [motor_id])
       return results
     } catch (error) {
       console.error('Error fetching bucket elevators with details:', error)
