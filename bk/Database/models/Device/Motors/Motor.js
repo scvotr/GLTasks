@@ -24,6 +24,7 @@ const createMotorsTable = async (allowDrop = false) => {
       type_id INTEGER,
       workshop_id INTEGER,
       department_id INTEGER,
+      on_repair BOOLEAN DEFAULT FALSE,
       FOREIGN KEY (type_id) REFERENCES devicesTypes (id),
       FOREIGN KEY (device_id) REFERENCES devices (device_id),
       FOREIGN KEY (motor_config_id) REFERENCES motors_config(motor_config_id),
