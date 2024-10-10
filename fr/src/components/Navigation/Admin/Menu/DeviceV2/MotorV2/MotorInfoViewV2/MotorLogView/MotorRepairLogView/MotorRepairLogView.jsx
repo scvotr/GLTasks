@@ -10,16 +10,19 @@ export const MotorRepairLogView = ({ motor }) => {
   const fetchData = async () => {
     try {
       setResponse({ loading: true, error: null })
-      const data = await getDataFromEndpoint(currentUser.token, '', "POST", motor, setResponse)
+      const data = await getDataFromEndpoint(currentUser.token, "", "POST", motor, setResponse)
       setTableData(...data)
       setResponse({ loading: false, error: null })
     } catch (error) {
       setResponse({ loading: false, error: error.message })
-
     }
   }
 
-
+  useEffect(() => {
+    if (currentUser.login) {
+      fetchData()
+    }
+  }, [currentUser, motor])
 
   return <>MotorRepairLogView</>
 }
