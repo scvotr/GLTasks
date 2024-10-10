@@ -82,29 +82,64 @@ class MotorCRUD {
       // throw new Error('Ошибка запроса к базе данных')
     }
   }
+  async takeMotorForRepairQ(motor_id) {
+    try {
+      const command = `
+        UPDATE motors SET on_repair = TRUE WHERE motor_id = ?
+      `
+      await executeDatabaseQueryAsync(command, [motor_id])
+      
+    } catch (error) {
+      console.error('Error takeMotorForRepairQ motor:', error)
+      throw error
+      // throw new Error('Ошибка запроса к базе данных')
+    }
+  }
+  async completeMotorRepairQ(motor_id) {
+    try {
+      const command = `
+        UPDATE motors SET on_repair = FALSE WHERE motor_id = ?
+      `
+      await executeDatabaseQueryAsync(command, [motor_id])
+    } catch (error) {
+      console.error('Error completeMotorRepairQ motor:', error)
+      throw error
+      // throw new Error('Ошибка запроса к базе данных')
+    }
+  }
   async getAllMotorsQ() {
     try {
       const command = `
-      SELECT 
-        m.motor_id AS motor_id, 
-        m.device_id, 
-        m.devices_installation_date, 
-        m.engine_number, 
-        m.qr_code, 
-        dt.name AS type_name,
-        w.id AS workshop_id, 
-        w.name AS workshop_name,  
-        dep.id AS department_id,
-        dep.name AS department_name,
-        mc.power_id, 
-        p.name AS power_value
-      FROM 
-        motors m
-      LEFT JOIN devicesTypes dt ON m.type_id = dt.id
-      LEFT JOIN workshops w ON m.workshop_id = w.id
-      LEFT JOIN departments dep ON m.department_id = dep.id
-      LEFT JOIN motors_config mc ON mc.id = m.motor_config_id  
-      LEFT JOIN motorPowerRangeT p ON p.id = mc.power_id
+        SELECT 
+          m.motor_id AS motor_id, 
+          m.id AS by_history_id,
+          m.device_id, 
+          m.devices_installation_date, 
+          m.engine_number, 
+          m.qr_code,
+          m.on_repair, 
+          dt.name AS type_name,
+          w.id AS workshop_id, 
+          w.name AS workshop_name,  
+          dep.id AS department_id,
+          dep.name AS department_name,
+          mc.power_id, 
+          p.name AS power_value,
+          --(SELECT MAX(repair_end) FROM motor_repair_history WHERE motor_id = m.motor_id) AS last_repair_date
+          COALESCE(
+            DATETIME(
+              (SELECT MAX(repair_end)
+               FROM motor_repair_history 
+               WHERE motor_id = m.id), 
+              'localtime'), 
+            'Нет данных') AS last_repair_date
+        FROM 
+          motors m
+        LEFT JOIN devicesTypes dt ON m.type_id = dt.id
+        LEFT JOIN workshops w ON m.workshop_id = w.id
+        LEFT JOIN departments dep ON m.department_id = dep.id
+        LEFT JOIN motors_config mc ON mc.id = m.motor_config_id  
+        LEFT JOIN motorPowerRangeT p ON p.id = mc.power_id
       `
       const results = await executeDatabaseQueryAsync(command)
       return results
