@@ -73,8 +73,8 @@ class MotorController extends BaseMotorController {
     try {
       const authDecodeUserData = req.user
       const motor_id = JSON.parse(authDecodeUserData.payLoad)
-      await MotorCRUD.readAllRepairsLogQ(motor_id)
-      sendResponseWithData(res, `Ремонт завершён ${motor_id}`)
+      const data = await MotorCRUD.readAllRepairsLogQ(motor_id)
+      sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'Error: readAllDevices')
     }
