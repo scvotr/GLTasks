@@ -88,7 +88,6 @@ class MotorCRUD {
         UPDATE motors SET on_repair = TRUE WHERE motor_id = ?
       `
       await executeDatabaseQueryAsync(command, [motor_id])
-      
     } catch (error) {
       console.error('Error takeMotorForRepairQ motor:', error)
       throw error
@@ -152,8 +151,12 @@ class MotorCRUD {
     console.log(motor_id)
     try {
       const command = `
-        SELECT * FROM motor_repair_history WHERE motor_id = ?;
-      `
+      SELECT 
+        DATETIME(repair_start, 'localtime') AS repair_start_local, 
+        DATETIME(repair_end, 'localtime') AS repair_end_local 
+      FROM motor_repair_history 
+      WHERE motor_id = ?
+    `
       const results = await executeDatabaseQueryAsync(command, [motor_id])
       return results
     } catch (error) {
