@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react"
 import { useAuthContext } from "../../../../../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../../../../../utils/getDataFromEndpoint"
+import { CustomSnackbar } from "../../../../../../../../CustomSnackbar/CustomSnackbar"
 
 export const MotorRepairLogView = ({ motor }) => {
   const currentUser = useAuthContext()
   const [response, setResponse] = useState({ loading: false, error: null })
   const [tableData, setTableData] = useState([])
 
-    // SnackBar
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [snackbarMessage, setSnackbarMessage] = useState("")
-    const [snackbarSeverity, setSnackbarSeverity] = useState("success")
-  
-    const popupSnackbar = (text, severity) => {
-      setSnackbarMessage(text)
-      setSnackbarSeverity(severity)
-      setOpenSnackbar(true)
-    }
-  
-    const handleCloseSnackbar = () => {
-      setOpenSnackbar(false)
-    }
+  // SnackBar
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success")
+
+  const popupSnackbar = (text, severity) => {
+    setSnackbarMessage(text)
+    setSnackbarSeverity(severity)
+    setOpenSnackbar(true)
+  }
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false)
+  }
 
   const fetchData = async () => {
     try {
@@ -39,5 +40,10 @@ export const MotorRepairLogView = ({ motor }) => {
     }
   }, [currentUser, motor])
 
-  return <>MotorRepairLogView</>
+  return (
+    <>
+      MotorRepairLogView
+      <CustomSnackbar open={openSnackbar} message={snackbarMessage} severity={snackbarSeverity} onClose={handleCloseSnackbar} />
+    </>
+  )
 }
