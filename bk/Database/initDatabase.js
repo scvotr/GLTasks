@@ -38,6 +38,7 @@ const { createAllBucketElevatorTables } = require('./models/Device/BucketElevato
 const { createAllBeltConveyorTables } = require('./models/Device/BeltConveyors/BeltConveyors')
 const { createAllMotorConfigTables } = require('./models/Device/Motors/MotorConfig')
 const { createAllMotorTechUnitsTable } = require('./models/Device/Motors/MotorTechUnits')
+const { createAllMotorHistory } = require('./models/Device/Motors/MotorHistory')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
@@ -100,6 +101,9 @@ db.serialize(async () => {
   // ServiceType
   createAllMotorConfigTables()
   createAllMotorTables()
+
+  // 09-10-24
+  createAllMotorHistory()
   
 
 
