@@ -324,9 +324,9 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                   </Box>
                 )}
                 {/* --------------------------------------------------------------- */}
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <RadioGroupRating rate={schedule.schedule_priority_rate} viewOnly={true} />
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                {/* <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" /> */}
+                {/* <RadioGroupRating rate={schedule.schedule_priority_rate} viewOnly={true} /> */}
+                {/* <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" /> */}
                 {/* --------------------------------------------------------------- */}
                 <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
                   {editingScheduleId === schedule.schedule_id ? (
