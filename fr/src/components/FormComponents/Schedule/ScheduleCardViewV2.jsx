@@ -29,7 +29,7 @@ import { formatDate } from "../../../utils/formatDate"
 import { PrintTaskList } from "./PrintTaskList"
 import ExpandMore from "@mui/icons-material/ExpandMore"
 
-const OFF_TIME = "17:00:00"
+const OFF_TIME = "13:00:00"
 
 // Memoize the component to prevent unnecessary re-renders
 const LinearDeterminate = memo(({ created_on, deadline_time, estimated_time }) => {
@@ -51,7 +51,7 @@ const LinearDeterminate = memo(({ created_on, deadline_time, estimated_time }) =
   }, [calculateProgress])
 
   return (
-    <Box sx={{ width: "100%", marginTop: 2 }}>
+    <Box sx={{ width: "100%" }}>
       <LinearProgress variant="determinate" value={progress} />
     </Box>
   )
@@ -244,34 +244,6 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
         {filteredSchedules &&
           filteredSchedules.map((schedule, index) => (
             <Box key={schedule.schedule_id} sx={{ m: "10px", width: "100%" }}>
-              {(() => {
-                if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
-                  return (
-                    <>
-                      <LinearProgress variant="determinate" value={100} color="secondary" />
-                    </>
-                  )
-                } else if (schedule.schedule_status === "done") {
-                  return (
-                    <>
-                      <LinearProgress variant="determinate" value={100} color="success" />
-                    </>
-                  )
-                } else {
-                  return (
-                    <>
-                      {!editingScheduleId && (
-                        <LinearDeterminate
-                          sx={{ width: "100%" }}
-                          created_on={schedule.created_on}
-                          deadline_time={schedule.deadline_time}
-                          estimated_time={schedule.estimated_time}
-                        />
-                      )}
-                    </>
-                  )
-                }
-              })()}
               <Paper
                 key={schedule.schedule_id}
                 component="form"
@@ -469,6 +441,35 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                   )}
                 </Box>
               </Paper>
+
+              {(() => {
+                if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
+                  return (
+                    <>
+                      <LinearProgress variant="determinate" value={100} color="secondary" />
+                    </>
+                  )
+                } else if (schedule.schedule_status === "done") {
+                  return (
+                    <>
+                      <LinearProgress variant="determinate" value={100} color="success" />
+                    </>
+                  )
+                } else {
+                  return (
+                    <>
+                      {!editingScheduleId && (
+                        <LinearDeterminate
+                          sx={{ width: "100%" }}
+                          created_on={schedule.created_on}
+                          deadline_time={schedule.deadline_time}
+                          estimated_time={schedule.estimated_time}
+                        />
+                      )}
+                    </>
+                  )
+                }
+              })()}
             </Box>
           ))}
         <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
