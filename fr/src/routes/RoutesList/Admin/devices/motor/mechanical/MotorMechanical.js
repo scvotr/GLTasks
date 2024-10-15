@@ -1,8 +1,8 @@
-import { Mechanical } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/Mechanical'
-import { OperationMode } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/OperationMode/OperationMode'
-import { RotationSpeed } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/RotationSpeed/RotationSpeed'
-import { Temperature } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/Temperature/Temperature'
-import { Torque } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Mechanical/Torque/Torque'
+import { Mechanical } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Mechanical/Mechanical'
+import { OperationMode } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Mechanical/OperationMode/OperationMode'
+import { RotationSpeed } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Mechanical/RotationSpeed/RotationSpeed'
+import { Temperature } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Mechanical/Temperature/Temperature'
+import { Torque } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Mechanical/Torque/Torque'
 import { PrivateRoutesCheck } from '../../../../../PrivateRoutesCheck'
 
 export const MotorMechanicalRoutesList = [

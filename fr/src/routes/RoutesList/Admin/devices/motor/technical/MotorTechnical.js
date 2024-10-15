@@ -1,7 +1,7 @@
-import { BearingType } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/BearingType/BearingType'
-import { Dimensions } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Dimensions/Dimensions'
-import { Mounting } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Mounting/Mounting'
-import { Technical } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Technical/Technical'
+import { BearingType } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Technical/BearingType/BearingType'
+import { Dimensions } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Technical/Dimensions/Dimensions'
+import { Mounting } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Technical/Mounting/Mounting'
+import { Technical } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Technical/Technical'
 import { PrivateRoutesCheck } from '../../../../../PrivateRoutesCheck'
 
 export const MotorTechnicalList = [
@@ -14,7 +14,7 @@ export const MotorTechnicalList = [
         element: <PrivateRoutesCheck component={Mounting} roles={['admin']} />,
       },
       {
-        path: '/admin/devices/motor/technical/Dimensions',
+        path: '/admin/devices/motor/technical/dimensions',
         element: <PrivateRoutesCheck component={Dimensions} roles={['admin']} />,
       },
       {

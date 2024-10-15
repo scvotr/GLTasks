@@ -1,7 +1,5 @@
 import App from '../App'
 import { createBrowserRouter } from 'react-router-dom'
-import { Login } from '../components/Authtorization/Login/Login'
-import { Registration } from '../components/Authtorization/Registration/Registration'
 import { RestorePassword } from '../components/Authtorization/RestorePassword/RestorePassword'
 import { AuthRotesCheck } from './AuthRotesCheck'
 import { PrivateRoutesCheck } from './PrivateRoutesCheck'
@@ -38,6 +36,10 @@ import { UserSettingsRoutesList } from './RoutesList/User/settings/UserSettingsR
 import { MutualRoutesList } from './RoutesList/Mutual/MutualRoutesList'
 import { ScheduleRoutesList } from './RoutesList/User/schedule/ScheduleRoutesList'
 import { DocsRoutesList } from './RoutesList/Docs/DocsRoutesList'
+import { MotorBrandsModelsList } from './RoutesList/Admin/devices/motor/BrandsModels/BrandsModels'
+import { TechUnit } from '../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/TechUnit/TechUnit'
+import { DeviceAllV2 } from '../components/Navigation/Admin/Menu/DeviceV2/DeviceAllV2'
+import { CreateMotorV2 } from '../components/Navigation/Admin/Menu/DeviceV2/MotorV2/CreateMotorV2'
 
 export const routes = createBrowserRouter([
   {
@@ -91,6 +93,11 @@ export const routes = createBrowserRouter([
         path: '/admin/devices/all',
         element: <PrivateRoutesCheck component={DevicesAll} roles={['admin']} />,
       },
+      // ! REfactoring 02.10.24
+      {
+        path: '/admin/devicesV2/all',
+        element: <PrivateRoutesCheck component={DeviceAllV2} roles={['admin']} />,
+      },
       {
         path: '/admin/devices/type/createType',
         element: <PrivateRoutesCheck component={CreateType} roles={['admin']} />,
@@ -103,12 +110,22 @@ export const routes = createBrowserRouter([
         path: '/admin/devices/motors/createMotor',
         element: <PrivateRoutesCheck component={CreateMotor} roles={['admin']} />,
       },
+      {
+        path: '/admin/devices/motors/createMotorV2',
+        element: <PrivateRoutesCheck component={CreateMotorV2} roles={['admin']} />,
+      },
+
+      {
+        path: '/admin/devices/motor/techUnit',
+        element: <PrivateRoutesCheck component={TechUnit} roles={['admin']} />,
+      },
       // !-----------------------------------------
       ...MotorElectricalRoutesList,
       ...MotorMechanicalRoutesList,
       ...MotorProtectionList,
       ...MotorTechnicalList,
       ...MotorServiceTypeList,
+      ...MotorBrandsModelsList,
       // !-----------------------------------------
       {
         path: '/main2',

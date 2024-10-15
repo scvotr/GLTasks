@@ -4,6 +4,9 @@ import { Loader } from "../../../../FormComponents/Loader/Loader"
 import { useDeviceData } from "./useDeviceData"
 import { BucketElevatorsCreate } from "./BucketElevators/BucketElevatorsCreate"
 import { v4 as uuidv4 } from "uuid"
+import { AspirationFanCreate } from "./AspirationFan/AspirationFanCreate"
+import { TechNumTechTypeOnly } from "./TechNumTechTypeOnly/TechNumTechTypeOnly"
+import { MotorTechNumOnly } from "./Motors/MotorTechNumOnly"
 
 export const CreateNewDevice = ({ onClose }) => {
   const { useAllDeviceTypes, useGroupedWorkflowsByDep, useReqStatus } = useDeviceData()
@@ -12,6 +15,22 @@ export const CreateNewDevice = ({ onClose }) => {
   const [selectedDeviceType, setSelectedDeviceType] = useState("")
   const [technoNumber, setTechnoNumber] = useState("")
   const [deviceId, setDeviceId] = useState("")
+  const [error, setError] = useState("")
+
+  const validateFormat = input => {
+    const regex = /^\d*\.?\d*$/
+    return input === "" || regex.test(input)
+  }
+
+  const handleTechnoNumberChange = e => {
+    const value = e.target.value
+    if (validateFormat(value)) {
+      setTechnoNumber(value)
+      setError("")
+    } else {
+      setError("Неверный формат. Ожидается формат X.Y, где X и Y - числа.")
+    }
+  }
 
   const handleDepartmentChange = e => {
     const selected = useGroupedWorkflowsByDep[e.target.value]
@@ -42,14 +61,17 @@ export const CreateNewDevice = ({ onClose }) => {
   }
 
   const deviceTypeComponents = {
-    1: { title: "Нория", component: <BucketElevatorsCreate generalDeviceData={generalDeviceData} onClose={onClose}/> },
-    2: { title: "Вентилятор", component: "" }, // замените FanComponent на ваш компонент
-    3: { title: "Транспортер", component: "" }, // замените TransporterComponent на ваш компонент
-    4: { title: "Конвейер", component: "" }, // замените ConveyorComponent на ваш компонент
-    5: { title: "Сепаратор", component: "" }, // замените SeparatorComponent на ваш компонент
-    6: { title: "БЗО", component: "" }, // замените BZOComponent на ваш компонент
-    7: { title: "МПО", component: "" }, // замените MPOComponent на ваш компонент
-    8: { title: "Шнек", component: "" }, // замените ScrewComponent на ваш компонент
+    1: { title: "Нория", component: <BucketElevatorsCreate generalDeviceData={generalDeviceData} onClose={onClose} /> },
+    2: { title: "Вентилятор", component: <AspirationFanCreate generalDeviceData={generalDeviceData} onClose={onClose} /> },
+    3: { title: "Транспортер", component: "" },
+    4: { title: "Конвейер", component: "" },
+    5: { title: "Сепаратор", component: "" },
+    6: { title: "БЗО", component: "" },
+    7: { title: "МПО", component: "" },
+    8: { title: "Шнек", component: "" },
+    9: { title: "Тех. номер и тип", component: <TechNumTechTypeOnly generalDeviceData={generalDeviceData} onClose={onClose} /> },
+    10: { title: "Шлюзовой затвор", component: "" },
+    11: { title: "Двигатель", component: <MotorTechNumOnly generalDeviceData={generalDeviceData} onClose={onClose} /> },
   }
 
   return (
@@ -133,15 +155,17 @@ export const CreateNewDevice = ({ onClose }) => {
           <Box sx={{ p: 2 }}>
             {selectedDeviceType && (
               <Box sx={{ mt: 2 }} component="form">
-                <Stack direction='column'>
+                <Stack direction="column">
                   <FormControl sx={{ mb: 2 }}>
                     <TextField
                       label="№ технологический"
                       variant="outlined"
                       value={technoNumber}
-                      onChange={e => setTechnoNumber(e.target.value)}
+                      onChange={handleTechnoNumberChange}
                       required
-                      type="number"
+                      type="text" // Измените на text, чтобы поддерживать точку
+                      error={!!error} // Установите ошибку, если есть сообщение об ошибке
+                      helperText={error} // Отображение сообщения об ошибке
                     />
                   </FormControl>
                   {deviceTypeComponents[selectedDeviceType]?.component

@@ -1,0 +1,87 @@
+--database: ../../../../database.db
+SELECT
+    be.device_id,
+    be.height,
+    d.tech_num,
+    d.qr_code,
+    w.name AS workshop_name,
+    dep.name AS department_name,
+    mt.name AS type_name,
+    bb.brand_name AS beltBrands_name,
+    be.belt_installation_date,
+    be.belt_length,
+    bub.brand_name AS bucketBrand_name,
+    be.bucket_quantity,
+    be.bucket_installation_date,
+    gb.brand_name AS gearboxBrand_name,
+    be.gearbox_installation_date,
+    db.brand_name AS driveBeltsBrand_name,
+    be.driveBelt_quantity,
+    be.driveBelt_installation_date
+FROM
+    bucketElevators be
+    JOIN devices d ON be.device_id = d.device_id
+    LEFT JOIN workshops w ON d.workshop_id = w.id
+    LEFT JOIN departments dep ON d.department_id = dep.id
+    LEFT JOIN devicesTypes mt ON d.type_id = mt.id
+    LEFT JOIN beltBrands bb ON be.belt_brand_id = bb.id
+    LEFT JOIN bucketBrands bub ON be.bucket_brand_id = bub.id
+    LEFT JOIN gearboxBrands gb ON be.gearbox_brand_id = gb.id
+    LEFT JOIN driveBelts db ON be.driveBelt_brand_id = db.id
+WHERE be.device_id = "8fade3f1-4eaa-47c8-9938-3c044fa91dbc"
+
+    -- SELECT
+    --     mc.motor_tech_num,
+    --     mc.motor_config_id,
+    --     mb.name AS brand_name,
+    --     mm.name AS model_name,
+    --     pr.name AS power_range,
+    --     rs.name AS rotation_speed,
+    --     ma.name AS amperage_value,
+    --     vt.name AS voltage_value,
+    --     pl.name AS protection_level,
+    --     tt.name AS temperature_value,
+    --     ef.name AS efficiency_value,
+    --     cf.name AS cosF_value,
+    --     tq.name AS torque_value,
+    --     om.name AS operation_mode,
+    --     ep.name AS explosion_proof,
+    --     br.name AS brake_value,
+    --     bt.name AS bearing_type,
+    --     mmt.name AS mounting_type
+    -- FROM
+    --     motors_config mc
+    --     LEFT JOIN motor_brands mb ON mc.brand_id = mb.id
+    --     LEFT JOIN motor_models mm ON mc.model_id = mm.id
+    --     LEFT JOIN motorPowerRangeT pr ON mc.power_id = pr.id
+    --     LEFT JOIN MotorRotationSpeedT rs ON mc.rotationSpeed_id = rs.id
+    --     LEFT JOIN MotorAmperageT ma ON mc.amperage_id = ma.id
+    --     LEFT JOIN motorVoltageT vt ON mc.voltage_id = vt.id
+    --     LEFT JOIN MotorProtectionLevelT pl ON mc.protectionLevel_id = pl.id
+    --     LEFT JOIN MotorTemperatureT tt ON mc.temperature_id = tt.id
+    --     LEFT JOIN MotorEfficiencyT ef ON mc.efficiency_id = ef.id
+    --     LEFT JOIN MotorCosFT cf ON mc.cosF_id = cf.id
+    --     LEFT JOIN MotorTorqueT tq ON mc.torque_id = tq.id
+    --     LEFT JOIN MotorOperationModeT om ON mc.operationMode_id = om.id
+    --     LEFT JOIN MotorExplosionProofT ep ON mc.explosionProof_id = ep.id
+    --     LEFT JOIN MotorBrakeT br ON mc.brake_id = br.id
+    --     LEFT JOIN bearingTypeT bt ON mc.bearingType_id = bt.id
+    --     LEFT JOIN MotorMountingT mmt ON mc.mounting_id = mmt.id
+    --     LEFT JOIN motors m ON mc.motor_config_id = m.motor_config_id
+    --   WHERE m.device_id = 'd6d1d800-e446-43dd-b8d8-fdbdc9240932'  
+    -- SELECT d.device_id,
+    --     d.devices_installation_date,
+    --     d.tech_num,
+    --     d.qr_code,
+    --     dt.name AS type_name,
+    --     w.name AS workshop_name,
+    --     dep.name AS department_name,
+    --     p.name AS power_value
+    -- FROM devices d
+    --     LEFT JOIN devicesTypes dt ON d.type_id = dt.id
+    --     LEFT JOIN workshops w ON d.workshop_id = w.id
+    --     LEFT JOIN departments dep ON d.department_id = dep.id
+    --     LEFT JOIN motors m ON m.device_id = d.device_id
+    --     LEFT JOIN motors_config mc ON mc.motor_config_id = m.motor_config_id
+    --     LEFT JOIN motorPowerRangeT p ON mc.power_id = p.id
+    -- WHERE d.device_id = "b26db2e7-668f-4491-a288-ea236e596e9c"

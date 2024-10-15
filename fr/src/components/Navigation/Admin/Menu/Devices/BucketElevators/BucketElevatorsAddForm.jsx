@@ -13,12 +13,13 @@ export const BucketElevatorsAddForm = ({
   setGearboxesSelected,
   setDriveBeltSelected,
   setDriveBeltsQuantity,
+  setMotor,
+  data,
 }) => {
-
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
-  const [formData, setFormData] = useState({ belts: {}, buckets: {}, gearboxes: {}, driveBelts: {} })
+  const [formData, setFormData] = useState({ belts: {}, buckets: {}, gearboxes: {}, driveBelts: {}, motors: {} })
 
   const fetchData = useCallback(async () => {
     if (currentUser.login) {
@@ -28,6 +29,9 @@ export const BucketElevatorsAddForm = ({
         const buckets = await getDataFromEndpoint(currentUser.token, "/admin/machines/bucketElevators/bucketBrands/readAll", "POST", null, setReqStatus)
         const gearboxes = await getDataFromEndpoint(currentUser.token, "/admin/machines/bucketElevators/gearboxBrands/readAll", "POST", null, setReqStatus)
         const driveBelts = await getDataFromEndpoint(currentUser.token, "/admin/machines/bucketElevators/driveBelts/readAll", "POST", null, setReqStatus)
+        // ! Заменить на мотор, а не конфигурацию!!
+        const motors = await getDataFromEndpoint(currentUser.token, "/admin/devices/motor/config/readAll", "POST", null, setReqStatus)
+        // const motors = await getDataFromEndpoint(currentUser.token, "/admin/devices/motor/readAll", "POST", null, setReqStatus)
 
         // Обновление состояния с объединением данных
         setFormData({
@@ -35,6 +39,7 @@ export const BucketElevatorsAddForm = ({
           buckets: buckets || {},
           gearboxes: gearboxes || {},
           driveBelts: driveBelts || {},
+          motors: motors || {},
         })
 
         setReqStatus({ loading: false, error: null })
@@ -48,13 +53,66 @@ export const BucketElevatorsAddForm = ({
     fetchData()
   }, [fetchData])
 
+  // Добавьте состояния для каждого поля формы
+  const [height, setHeightState] = useState("")
+  const [beltSelected, setBeltSelectedState] = useState("")
+  const [beltLength, setBeltLengthState] = useState("")
+  const [bucketBrand, setBucketBrandState] = useState("")
+  const [bucketQuantity, setBucketQuantityState] = useState("")
+  const [gearboxBrand, setGearboxBrandState] = useState("")
+  const [driveBeltsBrand, setDriveBeltsBrandState] = useState("")
+  const [driveBeltsQuantity, setDriveBeltsQuantityState] = useState("")
+  // ! Заменить на номер мотора (dced61ee...)
+  const [motorConfig, setMotorConfigState] = useState("")
+  // ... остальные состояния для полей
+  // Функция для обновления состояний на основе dataToEdit
+  useEffect(() => {
+    if (data) {
+      setHeightState(data.height)
+      setHeight(data.height)
+
+      setBeltSelectedState(data.beltBrand_id)
+      setBeltSelected(data.beltBrand_id)
+
+      setBeltLengthState(data.belt_length)
+      setBeltLength(data.belt_length)
+
+      setBucketBrandState(data.bucketBrand_id)
+      setBucketSelected(data.bucketBrand_id)
+
+      setBucketQuantityState(data.bucket_quantity)
+      setBucketQuantity(data.bucket_quantity)
+
+      setGearboxBrandState(data.gearboxBrand_id)
+      setGearboxesSelected(data.gearboxBrand_id)
+
+      setDriveBeltsBrandState(data.driveBeltBrand_id)
+      setDriveBeltSelected(data.driveBeltBrand_id)
+
+      setDriveBeltsQuantityState(data.driveBelt_quantity)
+      setDriveBeltsQuantity(data.driveBelt_quantity)
+
+      setMotorConfigState(data.motor_config_id)
+      setMotor(data.motor_config_id)
+      // ... обновление остальных состояний на основе dataToEdit
+    }
+  }, [data])
+
   return (
     <Stack direction="column" spacing={2}>
       <FormControl>
         <InputLabel shrink variant="standard" htmlFor="height" sx={{ pl: 1 }}>
           Высота нории:
         </InputLabel>
-        <TextField type="number" name="height" onChange={e => setHeight(e.target.value)} />
+        <TextField
+          type="number"
+          name="height"
+          value={height} // используйте состояние для значения
+          onChange={e => {
+            setHeight(e.target.value) // обновление состояния родительского компонента, если нужно
+            setHeightState(e.target.value) // обновление локального состояния
+          }}
+        />
       </FormControl>
       <Stack direction="row" spacing={2}>
         <FormControl fullWidth>
@@ -62,7 +120,11 @@ export const BucketElevatorsAddForm = ({
             Лента:
           </InputLabel>
           <Select
-            onChange={e => setBeltSelected(e.target.value)}
+            value={beltSelected}
+            onChange={e => {
+              setBeltSelected(e.target.value)
+              setBeltSelectedState(e.target.value)
+            }}
             inputProps={{
               name: "belts",
               id: "belts-select",
@@ -81,7 +143,15 @@ export const BucketElevatorsAddForm = ({
           <InputLabel shrink variant="standard" htmlFor="belt_length" sx={{ pl: 1 }}>
             Длина ленты:
           </InputLabel>
-          <TextField type="number" name="belt_length" onChange={e => setBeltLength(e.target.value)} />
+          <TextField
+            type="number"
+            name="belt_length"
+            value={beltLength}
+            onChange={e => {
+              setBeltLength(e.target.value)
+              setBeltLengthState(e.target.value)
+            }}
+          />
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={2}>
@@ -90,7 +160,11 @@ export const BucketElevatorsAddForm = ({
             Ковши:
           </InputLabel>
           <Select
-            onChange={e => setBucketSelected(e.target.value)}
+            value={bucketBrand}
+            onChange={e => {
+              setBucketSelected(e.target.value)
+              setBucketBrandState(e.target.value)
+            }}
             inputProps={{
               name: "buckets",
               id: "buckets-select",
@@ -109,7 +183,15 @@ export const BucketElevatorsAddForm = ({
           <InputLabel shrink variant="standard" htmlFor="bucket_quantity" sx={{ pl: 1 }}>
             Кол-во. ковшей:
           </InputLabel>
-          <TextField type="number" name="bucket_quantity" onChange={e => setBucketQuantity(e.target.value)} />
+          <TextField
+            type="number"
+            name="bucket_quantity"
+            value={bucketQuantity}
+            onChange={e => {
+              setBucketQuantity(e.target.value)
+              setBucketQuantityState(e.target.value)
+            }}
+          />
         </FormControl>
       </Stack>
       <FormControl fullWidth>
@@ -117,7 +199,11 @@ export const BucketElevatorsAddForm = ({
           Редуктор:
         </InputLabel>
         <Select
-          onChange={e => setGearboxesSelected(e.target.value)}
+          value={gearboxBrand}
+          onChange={e => {
+            setGearboxesSelected(e.target.value)
+            setGearboxBrandState(e.target.value)
+          }}
           inputProps={{
             name: "gearboxes",
             id: "gearboxes-select",
@@ -138,7 +224,11 @@ export const BucketElevatorsAddForm = ({
             Приводной ремень:
           </InputLabel>
           <Select
-            onChange={e => setDriveBeltSelected(e.target.value)}
+            value={driveBeltsBrand}
+            onChange={e => {
+              setDriveBeltSelected(e.target.value)
+              setDriveBeltsBrandState(e.target.value)
+            }}
             inputProps={{
               name: "driveBelts",
               id: "driveBelts-select",
@@ -157,9 +247,41 @@ export const BucketElevatorsAddForm = ({
           <InputLabel shrink variant="standard" htmlFor="driveBelts_quantity" sx={{ pl: 1 }}>
             Кол-во. ремней:
           </InputLabel>
-          <TextField type="number" name="driveBelts_quantity" onChange={e => setDriveBeltsQuantity(e.target.value)} />
+          <TextField
+            type="number"
+            name="driveBelts_quantity"
+            value={driveBeltsQuantity}
+            onChange={e => {
+              setDriveBeltsQuantity(e.target.value)
+              setDriveBeltsQuantityState(e.target.value)
+            }}
+          />
         </FormControl>
       </Stack>
+      <FormControl fullWidth>
+        <InputLabel variant="standard" htmlFor="motors-select" sx={{ pl: 1 }}>
+          Двигатель:
+        </InputLabel>
+        <Select
+          value={motorConfig}
+          onChange={e => {
+            setMotor(e.target.value)
+            setMotorConfigState(e.target.value)
+          }}
+          inputProps={{
+            name: "motors",
+            id: "motors-select",
+          }}>
+          <MenuItem value="" disabled>
+            Выберите приводной ремень
+          </MenuItem>
+          {Object.values(formData.motors).map(data => (
+            <MenuItem key={data.id} value={data.motor_config_id}>
+              {data.motor_tech_num}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Stack>
   )
 }

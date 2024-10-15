@@ -1,43 +1,20 @@
 'use strict'
 
-const DeviceCRUD = require('../../Database/queries/Devices/MotorsMotorPowerCRUD')
+const DeviceCRUD = require('../../Database/queries/Devices/DeviceCRUD')
 const DeviceTypesCRUD = require('../../Database/queries/Devices/DeviceTypes/DeviceTypesCRUD')
-
-const sendResponseWithData = (res, data) => {
-  res.setHeader('Content-Type', 'application/json')
-  res.write(JSON.stringify(data))
-  res.end()
-}
-
-const handleError = (res, error) => {
-  console.log('handleError', error)
-  res.statusCode = 500
-  res.end(
-    JSON.stringify({
-      error: error,
-    })
-  )
-}
-
+const { sendResponseWithData, handleError } = require('../../utils/response/responseUtils')
 class DeviceController {
-  async createBucketElevator(req, res) {
+
+  async createEmptyDevice(req, res) {
     try {
       const authDecodeUserData = req.user
-      await DeviceCRUD.createQ(JSON.parse(authDecodeUserData.payLoad))
-      await DeviceCRUD.createBucketElevatorQ(JSON.parse(authDecodeUserData.payLoad))
+      await DeviceCRUD.createDeviceQ(JSON.parse(authDecodeUserData.payLoad))
       sendResponseWithData(res, 'createBucketElevator-ok')
     } catch (error) {
       handleError(res, 'Error: createBucketElevator')
     }
   }
-  async getAllBucketElevators(req, res) {
-    try {
-      const data = await DeviceCRUD.getAllBucketElevatorsWithDetailsQ()
-      sendResponseWithData(res, data)
-    } catch (error) {
-      handleError(res, 'Error: createBucketElevator')
-    }
-  }
+
   // TYPES OF DEVICE  -------------------
   async createDeviceType(req, res) {
     try {
@@ -81,6 +58,35 @@ class DeviceController {
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, error.message)
+    }
+  }
+  // !----------------------------------------------------
+  async readDevice(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const device_id = JSON.parse(authDecodeUserData.payLoad)
+      const data = await DeviceCRUD.getDeviceQ(device_id)
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: readDevice')
+    }
+  }
+  async readAllDevices(req, res) {
+    try {
+      const data = await DeviceCRUD.getAllDevicesQ()
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: readAllDevices')
+    }
+  }
+  async deleteDevice(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const data = JSON.parse(authDecodeUserData.payLoad)
+      await DeviceCRUD.deleteDeviceQ(data)
+      sendResponseWithData(res, 'device delete ok')
+    } catch (error) {
+      handleError(res, 'Error: createBucketElevator')
     }
   }
 }

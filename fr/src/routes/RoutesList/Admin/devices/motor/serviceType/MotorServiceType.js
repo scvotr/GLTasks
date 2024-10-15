@@ -1,4 +1,4 @@
-import { ServiceType } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/ServiceType/ServiceType'
+import { ServiceType } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/ServiceType/ServiceType'
 import { PrivateRoutesCheck } from '../../../../../PrivateRoutesCheck'
 
 export const MotorServiceTypeList = [

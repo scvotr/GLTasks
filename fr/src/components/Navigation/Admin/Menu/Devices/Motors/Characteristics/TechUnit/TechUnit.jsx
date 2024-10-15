@@ -1,29 +1,29 @@
 import { useCallback, useEffect, useState } from "react"
-import { ModalCustom } from "../../../../../../../../ModalCustom/ModalCustom"
+import { ModalCustom } from "../../../../../../../ModalCustom/ModalCustom"
 import { Box, Typography } from "@mui/material"
-import { getDataFromEndpoint } from "../../../../../../../../../utils/getDataFromEndpoint"
-import { useAuthContext } from "../../../../../../../../../context/AuthProvider"
-import { ConfirmationDialog } from "../../../../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
-import { HeaderWithNavigation } from "../../../../../../../../HeaderWithNavigation/HeaderWithNavigation"
-import { CustomSnackbar } from "../../../../../../../../CustomSnackbar/CustomSnackbar"
-import CustomTableView from "../../../../../../../../CustomTableView/CustomTableView"
-import { fetchDataV2 } from "../../../../../../../../../utils/fetchDataV2"
-import { Loader } from "../../../../../../../../FormComponents/Loader/Loader"
-import { CrUpMotorChar } from "../../../Form/CrUpMotorChar"
+import { getDataFromEndpoint } from "../../../../../../../../utils/getDataFromEndpoint"
+import { useAuthContext } from "../../../../../../../../context/AuthProvider"
+import { ConfirmationDialog } from "../../../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
+import { HeaderWithNavigation } from "../../../../../../../HeaderWithNavigation/HeaderWithNavigation"
+import { CustomSnackbar } from "../../../../../../../CustomSnackbar/CustomSnackbar"
+import CustomTableView from "../../../../../../../CustomTableView/CustomTableView"
+import { fetchDataV2 } from "../../../../../../../../utils/fetchDataV2"
+import { Loader } from "../../../../../../../FormComponents/Loader/Loader"
+import { CrUpMotorChar } from "../../Form/CrUpMotorChar"
 
-export const ProtectionLevel = () => {
-  const endpointPath = "protection/protectionLevel"
-  const backPath = "/admin/devices/motor/protection"
-  const subjectName = "эту степень защиты"
+export const TechUnit = () => {
+  const endpointPath = "techUnit"
+  const backPath = "/admin/devices/motors/createMotor"
+  const subjectName = "эту технологическую единицу"
   //  const sections = [{ path: `/admin/devices/${endpointPath}/...`, label: "Мощность кВт" }]
   const texts = {
-    title: "Климатическое исполине. Обозначение IP*. УХЛ (только в странах СНГ)",
+    title: "Технологическая единица",
     description:
-      "Указывает на защиту двигателя от попадания твердых предметов и влаги.",
-    addModalText: "Добавить тормоз",
+      "Технологический номер двигателя. Для присвоения конфигурации и ведения учета\/журналов",
+    addModalText: "Добавить технологическую единицу",
     confirmEditMessage: `Вы уверены, что хотите изменить ${subjectName}?`,
     confirmDeleteMessage: `Вы уверены, что хотите удалить ${subjectName}?`,
-    units: `IP`,
+    units: ``,
   }
 
   const currentUser = useAuthContext()
@@ -132,6 +132,8 @@ export const ProtectionLevel = () => {
           popupSnackbar={popupSnackbar}
           response={setResponse}
           endpointPath={endpointPath}
+          fieldType='n5' //n.n, n.nt
+          hlText='M1000'
         />
       </ModalCustom>
       <HeaderWithNavigation

@@ -1,7 +1,7 @@
-import { Brake } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/Brake/Brake'
-import { ExplosionProof } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/ExplosionProof/ExplosionProof'
-import { Protection } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/Protection'
-import { ProtectionLevel } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Protection/ProtectionLevel/ProtectionLevel'
+import { Brake } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Protection/Brake/Brake'
+import { ExplosionProof } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Protection/ExplosionProof/ExplosionProof'
+import { Protection } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Protection/Protection'
+import { ProtectionLevel } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Protection/ProtectionLevel/ProtectionLevel'
 import { PrivateRoutesCheck } from '../../../../../PrivateRoutesCheck'
 
 export const MotorProtectionList = [

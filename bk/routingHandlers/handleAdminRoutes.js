@@ -1,7 +1,7 @@
 const BucketElevatorsController = require('../controllers/Admin/BucketElevatorsController')
 const DeviceController = require('../controllers/Admin/DeviceController')
 const MangeOrgStructController = require('../controllers/Admin/MangeOrgStructController')
-const MotorController = require('../controllers/Admin/Devices/Motors/MotorPowerRangeController')
+const MotorController = require('../controllers/Admin/Devices/Motors/MotorController')
 const TasksController = require('../controllers/Admin/TasksController')
 const UserController = require('../controllers/Admin/UserController')
 const WorkflowController = require('../controllers/Admin/WorkflowController')
@@ -23,6 +23,10 @@ const MotorBrakeController = require('../controllers/Admin/Devices/Motors/MotorB
 const MotorMountingController = require('../controllers/Admin/Devices/Motors/MotorMountingController')
 const MotorBearingTypeController = require('../controllers/Admin/Devices/Motors/MotorBearingTypeController')
 const MotorRotationSpeedController2 = require('../controllers/Admin/Devices/Motors/MotorRotationSpeedController2')
+const MotorBrandsController = require('../controllers/Admin/Devices/Motors/MotorBrandsController')
+const MotorModelsController = require('../controllers/Admin/Devices/Motors/MotorModelsController')
+const MotorConfigController = require('../controllers/Admin/Devices/Motors/MotorConfigController')
+const MotorTechUnitController = require('../controllers/Admin/Devices/Motors/MotorTechUnitController')
 
 
 const routeHandlers = {
@@ -36,9 +40,6 @@ const routeHandlers = {
   '/admin/deletePosition': MangeOrgStructController.deletePosition,
   '/admin/getAllTasks': TasksController.getAllTasks,
 
-  // -------------------11-09-2024ы
-  '/admin/devices/bucketElevators/create': DeviceController.createBucketElevator,
-  '/admin/devices/bucketElevators/readAll': DeviceController.getAllBucketElevators,
   // -------------------
   // -------------------12-09-2024ы
   '/admin/devices/types/create': DeviceController.createDeviceType,
@@ -130,7 +131,53 @@ const routeHandlers = {
   '/admin/devices/motor/technical/mounting/update': MotorMountingController.update,
   '/admin/devices/motor/technical/mounting/delete': MotorMountingController.delete,
   // -------------------
+  '/admin/devices/motor/brands/create': MotorBrandsController.create,
+  '/admin/devices/motor/brands/read': MotorBrandsController.read,
+  '/admin/devices/motor/brands/update': MotorBrandsController.update,
+  '/admin/devices/motor/brands/delete': MotorBrandsController.delete,
+  // -------------------
+  '/admin/devices/motor/models/create': MotorModelsController.create,
+  '/admin/devices/motor/models/read': MotorModelsController.read,
+  '/admin/devices/motor/models/readAll': MotorModelsController.readAll,
+  '/admin/devices/motor/models/update': MotorModelsController.update,
+  '/admin/devices/motor/models/delete': MotorModelsController.delete,
+  // -------------------
+  '/admin/devices/motor/create': MotorController.createMotor,
+  '/admin/devices/motor/read': MotorController.read,
+  '/admin/devices/motor/readAll': MotorController.readAllMotors,
+  '/admin/devices/motor/update': MotorController.updateMotor,
+  '/admin/devices/motor/delete': MotorController.deleteMotors,
+  // !
+  '/admin/devices/motor/takeMotorForRepair': MotorController.takeMotorForRepair,
+  '/admin/devices/motor/completeMotorRepair': MotorController.completeMotorRepair,
+  '/admin/devices/motor/log/repair/readAll': MotorController.readAllRepairsLog,
 
+
+
+  '/admin/devices/motor/techUnit/create': MotorTechUnitController.create,
+  '/admin/devices/motor/techUnit/read': MotorTechUnitController.read,
+  '/admin/devices/motor/techUnit/update': MotorTechUnitController.update,
+  '/admin/devices/motor/techUnit/delete': MotorTechUnitController.delete,
+
+   '/admin/devices/motor/config/create': MotorConfigController.createMotorConfig,
+  '/admin/devices/motor/config/read': MotorConfigController.readMotorConfigs,
+  '/admin/devices/motor/config/readAll': MotorConfigController.readAllMotorConfigs,
+  '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
+  '/admin/devices/motor/config/delete': MotorConfigController.deleteMotorConfig,
+
+  // '/admin/devices/motor/readAll': MotorConfigController.readAllMotor,
+  '/admin/devices/readAll': DeviceController.readAllDevices,
+  '/admin/devices/read': DeviceController.readDevice,
+  '/admin/devices/delete': DeviceController.deleteDevice,
+  '/admin/devices/emptyDevice/create': DeviceController.createEmptyDevice,
+
+  '/admin/devices/bucketElevators/create': BucketElevatorsController.createBucketElevator,
+  '/admin/devices/bucketElevators/readAll': BucketElevatorsController.getAllBucketElevators,
+  '/admin/devices/bucketElevators/read': BucketElevatorsController.getBucketElevator,
+  '/admin/devices/bucketElevators/update': BucketElevatorsController.updateBucketElevator,
+  
+ 
+  
   // -------------------
   // -------------------
   // ! РАЗОБРАТЬ

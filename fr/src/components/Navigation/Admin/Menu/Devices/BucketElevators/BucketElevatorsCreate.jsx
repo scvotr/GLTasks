@@ -17,6 +17,7 @@ export const BucketElevatorsCreate = ({ generalDeviceData, onClose }) => {
   const [beltLength, setBeltLength] = useState()
   const [bucketQuantity, setBucketQuantity] = useState()
   const [driveBeltsQuantity, setDriveBeltsQuantity] = useState()
+  const [motor, setMotor] = useState()
 
   const handleSubmit = async () => {
     try {
@@ -35,6 +36,7 @@ export const BucketElevatorsCreate = ({ generalDeviceData, onClose }) => {
         driveBelts_brand_id: driveBeltSelected,
         driveBelts_quantity: driveBeltsQuantity,
         driveBelts_installation_date: "",
+        motor_config_id: motor,
       }
       await getDataFromEndpoint(currentUser.token, `/admin/devices/bucketElevators/create`, "POST", extendedDeviceData, setReqStatus)
       setReqStatus({ loading: false, error: null })
@@ -57,6 +59,7 @@ export const BucketElevatorsCreate = ({ generalDeviceData, onClose }) => {
             setGearboxesSelected={setGearboxesSelected}
             setDriveBeltSelected={setDriveBeltSelected}
             setDriveBeltsQuantity={setDriveBeltsQuantity}
+            setMotor={setMotor}
           />
 
           <Button variant="contained" color="primary" onClick={handleSubmit}>

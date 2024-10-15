@@ -139,11 +139,11 @@ export const SchedulePlane = ({ onClose, reRender }) => {
                     Удалить
                   </Typography>
                 </IconButton>
-                <RadioGroupRating
+                {/* <RadioGroupRating
                   onRatingChange={newValue => handleRatingChange(index, newValue)}
                   viewOnly={false}
                   rate={task.schedule_priority_rate} 
-                />
+                /> */}
               </Stack>
             </Stack>
           </Box>

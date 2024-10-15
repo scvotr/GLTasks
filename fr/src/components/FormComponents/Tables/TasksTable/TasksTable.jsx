@@ -1,5 +1,5 @@
 import "./TasksTable.css"
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, useMediaQuery } from "@mui/material"
 import { DataGrid, ruRU } from "@mui/x-data-grid"
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined"
 import DraftsOutlinedIcon from "@mui/icons-material/DraftsOutlined"
@@ -20,6 +20,12 @@ import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Loader } from "../../Loader/Loader"
 
 export const TasksTable = ({ tasks, reRender }) => {
+  // Используем useMediaQuery для определения ширины экрана
+  const isSmallScreen = useMediaQuery("(max-width:1310px)")
+  const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
+   // Устанавливаем ширину столбцов в зависимости от разрешения экрана
+   const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 565;
+
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [modalOpen, setModalOpen] = useState(false)
@@ -32,7 +38,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "id",
       headerName: "№",
       description: "This column description",
-      width: 70,
+      width: 40,
       // renderCell: params => {
       //   let test
       //   test = params.value.match(/\d{4}/)[0]
@@ -112,7 +118,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "appoint_user_last_name",
       headerName: "От ",
       description: "От кого",
-      width: 120,
+      width: 135,
       // renderCell: params => (
       //   <div>
       //     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
@@ -140,7 +146,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       },
     },
 
-    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: 300 },
+    { field: "task_descript", headerName: "Задача", description: "Краткое описание задания", width: taskColumnWidth },
 
     {
       field: "deadline",
@@ -287,7 +293,7 @@ export const TasksTable = ({ tasks, reRender }) => {
         <Box
           sx={{
             flexGrow: 1,
-            height: "75vh",
+            height: "80vh",
             width: "100%",
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
             border: "1px solid #e0e0e0",

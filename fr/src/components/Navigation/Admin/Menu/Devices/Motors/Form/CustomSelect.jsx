@@ -28,7 +28,7 @@ const CustomSelect = ({
         </MenuItem>
         {options.map(option => (
           <MenuItem key={option.id} value={option.id}>
-            {option.name} {units}
+            {option.name ? option.name : option.model_name } {units}
           </MenuItem>
         ))}
       </Select>

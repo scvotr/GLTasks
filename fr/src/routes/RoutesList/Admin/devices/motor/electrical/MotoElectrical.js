@@ -1,9 +1,9 @@
-import { Amperage } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/amperage/Amperage'
-import { CosF } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/cosF/CosF'
-import { Efficiency } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/efficiency/Efficiency'
-import { Electrical } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/Elecrical'
-import { Power } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/power/Power'
-import { Voltage } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Сharacteristics/Electrical/voltage/Voltage'
+import { Amperage } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Electrical/amperage/Amperage'
+import { CosF } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Electrical/cosF/CosF'
+import { Efficiency } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Electrical/efficiency/Efficiency'
+import { Electrical } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Electrical/Elecrical'
+import { Power } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Electrical/power/Power'
+import { Voltage } from '../../../../../../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/Electrical/voltage/Voltage'
 import { PrivateRoutesCheck } from '../../../../../PrivateRoutesCheck'
 
 export const MotorElectricalRoutesList = [

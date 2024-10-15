@@ -4,7 +4,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp"
 import { useAuthContext } from "../../../../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../../../../utils/getDataFromEndpoint"
 
-export const CrUpMotorChar = ({ onClose, isEdit, dataToEdit, popupSnackbar, response, endpointPath }) => {
+export const CrUpMotorChar = ({ onClose, isEdit, dataToEdit, popupSnackbar, response, endpointPath, fieldType, hlText }) => {
   const currentUser = useAuthContext()
   const [formData, setFormData] = useState({ name: "" })
   const inputRef = useRef(null)
@@ -18,19 +18,42 @@ export const CrUpMotorChar = ({ onClose, isEdit, dataToEdit, popupSnackbar, resp
     }
   }, [currentUser, dataToEdit, isEdit])
 
+  const checkField = {
+    nn: { regex: /^\d{1,2}$/ }, // одна или две цифры)
+    nDn: { regex: /^\d+(\.\d+)?$/ }, // число, которое может содержать одну точку после первой цифры (например, 1.0, 12.34)
+    n5: { regex: /^\d{1,5}$/ }, // строка, начинающаяся с 'M' и содержащая 6 цифр (например, M123456)
+    Tn: { regex: /^[A-Za-z]\d{6}$/ },
+    tx_1: { regex: /^[A-Za-z]+$/ }, // только буквы
+    tx_2: { regex: /^[A-Za-z\s]+$/ }, // только буквы и пробелы
+    tx_3: { regex: /^[A-Za-z0-9]+$/ }, // буквы и цифры
+    tx_4: { regex: /^[A-Za-z0-9\s!@#$%^&*()_+.,-]*$/ }, // буквы, цифры и некоторые специальные символы
+  }
+
   const handleChange = e => {
     const { name, value } = e.target
-    const regex = /^\d*\.?\d*$/
-    if (regex.test(value) || value === "") {
+    const regex = checkField[fieldType]?.regex // Получаем регулярное выражение по fieldType
+    console.log(regex)
+
+    if (regex && (regex.test(value) || value === "")) {
       setFormData({ ...formData, [name]: value })
-    }
+    } 
+    // заглушка для работы полей без валидации удалить и заменить
+    // else if(!hlText) {
+    //   setFormData({ ...formData, [name]: value })
+    // }
   }
+
+  // const handleChange = e => {
+  //   const { name, value } = e.target
+  //   const regex = /^\d*\.?\d*$/
+  //   if (regex.test(value) || value === "") {
+  //     setFormData({ ...formData, [name]: value })
+  //   }
+  // }
 
   const handleSubmit = async e => {
     e.preventDefault()
-    const endpoint = isEdit
-      ? `/admin/devices/motor/${endpointPath}/update`
-      : `/admin/devices/motor/${endpointPath}/create`
+    const endpoint = isEdit ? `/admin/devices/motor/${endpointPath}/update` : `/admin/devices/motor/${endpointPath}/create`
     try {
       response({ loading: true })
       await getDataFromEndpoint(currentUser.token, endpoint, "POST", formData, response)
@@ -61,10 +84,12 @@ export const CrUpMotorChar = ({ onClose, isEdit, dataToEdit, popupSnackbar, resp
         <FormControl>
           <TextField
             sx={{ p: 2 }}
-            helperText={formData.name.length === 0 ? "Поле не может быть пустым. ФОРМАТ: 00, 000, 0000" : ""}
+            helperText={
+              formData.name.length === 0 ? (hlText ? `Поле не может быть пустым. ФОРМАТ: ${hlText}` : `Поле не может быть пустым. ФОРМАТ: НЕ ЗАДАН`) : ""
+            }
             name="name"
             required
-            type="number"
+            type="text"
             value={formData.name}
             onChange={handleChange}
             inputRef={inputRef}
