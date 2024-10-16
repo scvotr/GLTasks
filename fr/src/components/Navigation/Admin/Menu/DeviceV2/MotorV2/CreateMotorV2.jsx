@@ -102,13 +102,13 @@ export const CreateMotorV2 = () => {
   // !!!!!!!!!
   const [toRepair, setToRepair] = useState(false)
   // -----------------------------------------------
-  const [currentView, setCurrentView] = useState(null)
+  const [currentFullScreenView, setCurrentFullScreenView] = useState(null)
   // -----------------------------------------------
 
   const handleToRepair = async () => {
     // setToView(false)
     // setToRepair(true)
-    setCurrentView("repair")
+    setCurrentFullScreenView("repair")
     setFullScreenOpen(true)
     // try {
     //   setReqStatus({ loading: true, error: null })
@@ -140,11 +140,11 @@ export const CreateMotorV2 = () => {
   const handleInfoView = async () => {
     // setToRepair(false)
     // setToView(true)
-    setCurrentView("view")
+    setCurrentFullScreenView("view")
     setFullScreenOpen(true)
   }
 
-  const views = {
+  const fullScreenViews = {
     repair: <div>Двигатель в ремонте</div>,
     view: <MotorInfoViewV2 motor={motor} />,
   }
@@ -181,7 +181,7 @@ export const CreateMotorV2 = () => {
           <div>Выберите действие</div> // Здесь можно добавить нужный контент
         )} */}
 
-        {views[currentView]}
+        {fullScreenViews[currentFullScreenView]}
       </FullScreenDialog>
       <Menu
         id="basic-menu"
