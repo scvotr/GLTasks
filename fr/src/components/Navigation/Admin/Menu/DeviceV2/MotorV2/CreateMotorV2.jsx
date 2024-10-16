@@ -99,18 +99,28 @@ export const CreateMotorV2 = () => {
     setIsEdit(true)
     setModalOpen(true)
   }
+  // !!!!!!!!!
+  const [toRepair, setToRepair] = useState(false)
+  // -----------------------------------------------
+  const [currentView, setCurrentView] = useState(null)
+  // -----------------------------------------------
+
   const handleToRepair = async () => {
-    try {
-      setReqStatus({ loading: true, error: null })
-      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
-      popupSnackbar(res)
-      setFormKey(prev => prev + 1)
-      setAnchorEl(null)
-      setReqStatus({ loading: false, error: null })
-    } catch (error) {
-      setReqStatus({ loading: false, error: error.message })
-      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
-    }
+    // setToView(false)
+    // setToRepair(true)
+    setCurrentView("repair")
+    setFullScreenOpen(true)
+    // try {
+    //   setReqStatus({ loading: true, error: null })
+    //   const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
+    //   popupSnackbar(res)
+    //   setFormKey(prev => prev + 1)
+    //   setAnchorEl(null)
+    //   setReqStatus({ loading: false, error: null })
+    // } catch (error) {
+    //   setReqStatus({ loading: false, error: error.message })
+    //   popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
+    // }
   }
   const handleCompleteRepair = async () => {
     try {
@@ -125,9 +135,18 @@ export const CreateMotorV2 = () => {
       popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
     }
   }
-
+  // !!!!!!!!!
+  const [toView, setToView] = useState(false)
   const handleInfoView = async () => {
+    // setToRepair(false)
+    // setToView(true)
+    setCurrentView("view")
     setFullScreenOpen(true)
+  }
+
+  const views = {
+    repair: <div>Двигатель в ремонте</div>,
+    view: <MotorInfoViewV2 motor={motor} />,
   }
 
   const handleAppendMotorConfig = async () => {
@@ -152,7 +171,17 @@ export const CreateMotorV2 = () => {
         )}{" "}
       </ModalCustom>
       <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={motor.motor_id}>
-        <MotorInfoViewV2 motor={motor} />
+        {/* <MotorInfoViewV2 motor={motor} /> */}
+
+        {/* {toRepair ? (
+          <div>Двигатель в ремонте</div> // Здесь можно добавить нужный контент
+        ) : toView ? (
+          <MotorInfoViewV2 motor={motor} />
+        ) : (
+          <div>Выберите действие</div> // Здесь можно добавить нужный контент
+        )} */}
+
+        {views[currentView]}
       </FullScreenDialog>
       <Menu
         id="basic-menu"
