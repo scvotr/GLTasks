@@ -67,6 +67,8 @@ class MotorConfigCRUD {
     SELECT
         mc.motor_tech_num,
         mc.motor_config_id,
+        mc.installed_on,
+        mc.on_repair,
         mb.name AS brand_name,
         mm.name AS model_name,
         pr.name AS power_range,
@@ -124,6 +126,104 @@ class MotorConfigCRUD {
       return rows
     } catch (error) {
       throw new Error('Ошибка удаления записи: ' + error.message)
+    }
+  }
+
+  async readAllConfigQ() {
+    const commandWR = `
+      SELECT
+        mc.id,
+        mc.motor_tech_num,
+        mc.motor_config_id,
+        mb.name AS brand_name,
+        mm.name AS model_name
+      FROM motors_config mc
+      LEFT JOIN motor_brands mb ON mc.brand_id = mb.id
+      LEFT JOIN motor_models mm ON mc.model_id = mm.id
+      `
+    try {
+      const rows = await executeDatabaseQueryAsync(commandWR, [])
+      return rows
+    } catch (error) {
+      throw new Error('Ошибка удаления записи: ' + error.message)
+    }
+  }
+  async readAllConfigUninstallQ() {
+    const commandWR = `
+      SELECT
+        mc.id,
+        mc.motor_tech_num,
+        mc.motor_config_id,
+        mb.name AS brand_name,
+        mm.name AS model_name
+      FROM motors_config mc
+        LEFT JOIN motor_brands mb ON mc.brand_id = mb.id
+        LEFT JOIN motor_models mm ON mc.model_id = mm.id
+      WHERE mc.installed_on = FALSE
+    `
+    try {
+      const rows = await executeDatabaseQueryAsync(commandWR, [])
+      return rows
+    } catch (error) {
+      throw new Error('Ошибка удаления записи: ' + error.message)
+    }
+  }
+  async readAllConfigInstallQ() {
+    const commandWR = `
+      SELECT
+        mc.id,
+        mc.motor_tech_num,
+        mc.motor_config_id,
+        mb.name AS brand_name,
+        mm.name AS model_name
+      FROM motors_config mc
+        LEFT JOIN motor_brands mb ON mc.brand_id = mb.id
+        LEFT JOIN motor_models mm ON mc.model_id = mm.id
+      WHERE mc.installed_on = TRUE
+    `
+    try {
+      const rows = await executeDatabaseQueryAsync(commandWR, [])
+      return rows
+    } catch (error) {
+      throw new Error('Ошибка удаления записи: ' + error.message)
+    }
+  }
+  async appendConfigToMotorQ(data) {
+    const { motor_id, motor_config_id } = data
+    const command = `
+      UPDATE motors
+      SET motor_config_id = ?
+      WHERE motor_id = ?;  
+    `
+    const command2 = `
+      UPDATE motors_config
+      SET installed_on = TRUE
+      WHERE motor_config_id = ?;  
+    `
+    try {
+      await executeDatabaseQueryAsync(command, [motor_config_id, motor_id])
+      await executeDatabaseQueryAsync(command2, [motor_config_id])
+    } catch (error) {
+      throw new Error('Ошибка установки конфигурации: ' + error.message)
+    }
+  }
+  async removeConfigFromMotorQ(data) {
+    const { motor_id, motor_config_id } = data
+    const command = `
+      UPDATE motors
+      SET motor_config_id = NULL
+      WHERE motor_id = ?;  
+    `
+    const command2 = `
+      UPDATE motors_config
+      SET installed_on = FALSE
+      WHERE motor_config_id = ?;  
+    `
+    try {
+      await executeDatabaseQueryAsync(command, [motor_id])
+      await executeDatabaseQueryAsync(command2, [motor_config_id])
+    } catch (error) {
+      throw new Error('Ошибка установки конфигурации: ' + error.message)
     }
   }
   async readConfigsQ(device_id) {
@@ -224,7 +324,7 @@ class MotorConfigCRUD {
     }
   }
 
-  async deleteMotorConfigQ (id) {
+  async deleteMotorConfigQ(id) {
     try {
       const command = `DELETE FROM motors_config WHERE motor_config_id = ?`
       await executeDatabaseQueryAsync(command, [id])
