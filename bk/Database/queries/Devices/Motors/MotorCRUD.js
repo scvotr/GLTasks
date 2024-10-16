@@ -122,8 +122,10 @@ class MotorCRUD {
           w.name AS workshop_name,  
           dep.id AS department_id,
           dep.name AS department_name,
-          mc.power_id, 
+          mc.motor_config_id, 
           p.name AS power_value,
+          mb.name AS brand_name,
+          mm.name AS model_name,
           --(SELECT MAX(repair_end) FROM motor_repair_history WHERE motor_id = m.motor_id) AS last_repair_date
           COALESCE(
             DATETIME(
@@ -137,8 +139,10 @@ class MotorCRUD {
         LEFT JOIN devicesTypes dt ON m.type_id = dt.id
         LEFT JOIN workshops w ON m.workshop_id = w.id
         LEFT JOIN departments dep ON m.department_id = dep.id
-        LEFT JOIN motors_config mc ON mc.id = m.motor_config_id  
+        LEFT JOIN motors_config mc ON mc.motor_config_id = m.motor_config_id  
         LEFT JOIN motorPowerRangeT p ON p.id = mc.power_id
+        LEFT JOIN motor_brands mb ON mc.brand_id = mb.id
+        LEFT JOIN motor_models mm ON mc.model_id = mm.id
       `
       const results = await executeDatabaseQueryAsync(command)
       return results
