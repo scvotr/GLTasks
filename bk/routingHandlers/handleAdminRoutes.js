@@ -152,8 +152,6 @@ const routeHandlers = {
   '/admin/devices/motor/completeMotorRepair': MotorController.completeMotorRepair,
   '/admin/devices/motor/log/repair/readAll': MotorController.readAllRepairsLog,
 
-
-
   '/admin/devices/motor/techUnit/create': MotorTechUnitController.create,
   '/admin/devices/motor/techUnit/read': MotorTechUnitController.read,
   '/admin/devices/motor/techUnit/update': MotorTechUnitController.update,
@@ -162,6 +160,11 @@ const routeHandlers = {
    '/admin/devices/motor/config/create': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/read': MotorConfigController.readMotorConfigs,
   '/admin/devices/motor/config/readAll': MotorConfigController.readAllMotorConfigs,
+  '/admin/devices/motor/config/readAllConfig': MotorConfigController.readAllConfig,
+  '/admin/devices/motor/config/readAllConfigUninstall': MotorConfigController.readAllConfigUninstall,
+  '/admin/devices/motor/config/readAllConfigInstall': MotorConfigController.readAllConfigInstall,
+  '/admin/devices/motor/config/appendConfigToMotor': MotorConfigController.appendConfigToMotor,
+  '/admin/devices/motor/config/removeConfigFromMotor': MotorConfigController.removeConfigFromMotor,
   '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/delete': MotorConfigController.deleteMotorConfig,
 
