@@ -18,6 +18,8 @@ import { MotorInfoViewV2 } from "./MotorInfoViewV2/MotorInfoViewV2"
 import { formatDateV2 } from "../../../../../../utils/formatDate"
 import { AppendMotorConfig } from "./MotorConfig/AppendMotorConfig"
 import { RemoveMotorConfig } from "./MotorConfig/RemoveMotorConfig"
+import { MotorRepairReasonForm } from "./MotorRepair/MotorRepairReasonForm"
+import { MotorRepairReportForm } from "./MotorRepair/MotorRepairReportForm"
 
 export const CreateMotorV2 = () => {
   const currentUser = useAuthContext()
@@ -145,7 +147,8 @@ export const CreateMotorV2 = () => {
   }
 
   const fullScreenViews = {
-    repair: <div>Двигатель в ремонте</div>,
+    repair_on: <MotorRepairReasonForm motor={motor}/>,
+    repair_off: <MotorRepairReportForm motor={motor}/>,
     view: <MotorInfoViewV2 motor={motor} />,
   }
 
