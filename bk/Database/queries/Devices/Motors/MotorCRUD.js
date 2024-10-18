@@ -88,6 +88,15 @@ class MotorCRUD {
         UPDATE motors SET on_repair = TRUE WHERE motor_id = ?
       `
       await executeDatabaseQueryAsync(command, [motor_id])
+
+      // Запись в историю ремонта
+      const historyCommand = `
+        INSERT INTO motor_repair_history (motor_id, repair_start, user_id, comments)
+        VALUES (?, CURRENT_TIMESTAMP, ?, ?)
+      `
+      await executeDatabaseQueryAsync(historyCommand, [motor_id, userId, comments])
+
+      return true // Успешно выполнено
     } catch (error) {
       console.error('Error takeMotorForRepairQ motor:', error)
       throw error
@@ -171,11 +180,10 @@ class MotorCRUD {
 
 module.exports = new MotorCRUD()
 
-
 // const command = `
-// SELECT 
-//   strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_start, 'localtime')) AS repair_start_local, 
-//   strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_end, 'localtime')) AS repair_end_local 
-// FROM motor_repair_history 
+// SELECT
+//   strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_start, 'localtime')) AS repair_start_local,
+//   strftime('%d-%m-%Y %H:%M:%S', DATETIME(repair_end, 'localtime')) AS repair_end_local
+// FROM motor_repair_history
 // WHERE motor_id = ?
 // `;
