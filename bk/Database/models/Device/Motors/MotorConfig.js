@@ -24,6 +24,8 @@ const createMotorsConfigTable = async (allowDrop = false) => {
         mounting_id INTEGER NOT NULL,
         brand_id INTEGER NOT NULL,
         model_id INTEGER NOT NULL,
+        installed_on BOOLEAN DEFAULT FALSE,
+        on_repair BOOLEAN DEFAULT FALSE,
         created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (bearingType_id) REFERENCES bearingTypeT (id),
         FOREIGN KEY (brake_id) REFERENCES MotorBrakeT (id),
@@ -114,7 +116,7 @@ const createAllMotorConfigTables = async (allowDrop = false) => {
     await insertMotorBrands()
     await createMotorsModelsTable(allowDrop)
     await insertMotorModels()
-    await createMotorsConfigTable(allowDrop)
+    await createMotorsConfigTable(true)
   } catch (error) {
     console.log('Error creating motor tables: ', error)
     throw new Error('Failed to create all motor tables')

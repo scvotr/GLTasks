@@ -16,6 +16,10 @@ import { CheckCircle, Cancel } from "@mui/icons-material"
 import { FullScreenDialog } from "../../../../../FullScreenDialog/FullScreenDialog"
 import { MotorInfoViewV2 } from "./MotorInfoViewV2/MotorInfoViewV2"
 import { formatDateV2 } from "../../../../../../utils/formatDate"
+import { AppendMotorConfig } from "./MotorConfig/AppendMotorConfig"
+import { RemoveMotorConfig } from "./MotorConfig/RemoveMotorConfig"
+import { MotorRepairReasonForm } from "./MotorRepair/MotorRepairReasonForm"
+import { MotorRepairReportForm } from "./MotorRepair/MotorRepairReportForm"
 
 export const CreateMotorV2 = () => {
   const currentUser = useAuthContext()
@@ -33,6 +37,9 @@ export const CreateMotorV2 = () => {
   const [motor, setMotor] = useState([])
 
   console.log(motors)
+  const [appendMotorConfig, setAppendMotorConfig] = useState(false)
+  const [removeMotorConfig, setRemovedMotorConfig] = useState(false)
+  const [confirmRemoveMotorConfig, setConfirmRemoveMotorConfig] = useState(false)
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -55,6 +62,8 @@ export const CreateMotorV2 = () => {
     setAnchorEl(null)
     setIsEdit(false)
     setFullScreenOpen(false)
+    setAppendMotorConfig(false)
+    setRemovedMotorConfig(false)
     setFormKey(prev => prev + 1)
   }
 
@@ -92,18 +101,28 @@ export const CreateMotorV2 = () => {
     setIsEdit(true)
     setModalOpen(true)
   }
+  // !!!!!!!!!
+  const [toRepair, setToRepair] = useState(false)
+  // -----------------------------------------------
+  const [currentFullScreenView, setCurrentFullScreenView] = useState(null)
+  // -----------------------------------------------
+
   const handleToRepair = async () => {
-    try {
-      setReqStatus({ loading: true, error: null })
-      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
-      popupSnackbar(res)
-      setFormKey(prev => prev + 1)
-      setAnchorEl(null)
-      setReqStatus({ loading: false, error: null })
-    } catch (error) {
-      setReqStatus({ loading: false, error: error.message })
-      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
-    }
+    // setToView(false)
+    // setToRepair(true)
+    setCurrentFullScreenView("repair")
+    setFullScreenOpen(true)
+    // try {
+    //   setReqStatus({ loading: true, error: null })
+    //   const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
+    //   popupSnackbar(res)
+    //   setFormKey(prev => prev + 1)
+    //   setAnchorEl(null)
+    //   setReqStatus({ loading: false, error: null })
+    // } catch (error) {
+    //   setReqStatus({ loading: false, error: error.message })
+    //   popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
+    // }
   }
   const handleCompleteRepair = async () => {
     try {
@@ -118,18 +137,54 @@ export const CreateMotorV2 = () => {
       popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
     }
   }
-
+  // !!!!!!!!!
+  const [toView, setToView] = useState(false)
   const handleInfoView = async () => {
+    // setToRepair(false)
+    // setToView(true)
+    setCurrentFullScreenView("view")
     setFullScreenOpen(true)
+  }
+
+  const fullScreenViews = {
+    repair_on: <MotorRepairReasonForm motor={motor}/>,
+    repair_off: <MotorRepairReportForm motor={motor}/>,
+    view: <MotorInfoViewV2 motor={motor} />,
+  }
+
+  const handleAppendMotorConfig = async () => {
+    setModalOpen(true)
+    setAppendMotorConfig(true)
+  }
+  const handleRemoveMotorConfig = async () => {
+    setModalOpen(true)
+    setRemovedMotorConfig(true)
+    setConfirmRemoveMotorConfig(false)
   }
 
   return (
     <>
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={isEdit ? "Изменить?" : "Добавить номер двигателя"}>
-        <CreateMotorFormV2 onClose={closeModal} popupSnackbar={popupSnackbar} isEdit={isEdit} motor={motor} />
+        {appendMotorConfig ? (
+          <AppendMotorConfig motor={motor} onClose={closeModal} popupSnackbar={popupSnackbar} />
+        ) : removeMotorConfig ? (
+          <RemoveMotorConfig motor={motor} onClose={closeModal} popupSnackbar={popupSnackbar} />
+        ) : (
+          <CreateMotorFormV2 onClose={closeModal} popupSnackbar={popupSnackbar} isEdit={isEdit} motor={motor} />
+        )}{" "}
       </ModalCustom>
       <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={motor.motor_id}>
-        <MotorInfoViewV2 motor={motor} />
+        {/* <MotorInfoViewV2 motor={motor} /> */}
+
+        {/* {toRepair ? (
+          <div>Двигатель в ремонте</div> // Здесь можно добавить нужный контент
+        ) : toView ? (
+          <MotorInfoViewV2 motor={motor} />
+        ) : (
+          <div>Выберите действие</div> // Здесь можно добавить нужный контент
+        )} */}
+
+        {fullScreenViews[currentFullScreenView]}
       </FullScreenDialog>
       <Menu
         id="basic-menu"
@@ -141,30 +196,58 @@ export const CreateMotorV2 = () => {
           "aria-labelledby": "basic-button",
         }}>
         <MenuItem onClick={handleInfoView}>Информация</MenuItem>
-        {!motor.on_repair ? (
-          <MenuItem onClick={handleToRepair}>Забрать на ремонт</MenuItem>
-        ) : (
-          <MenuItem onClick={handleCompleteRepair}>Завершить ремонт</MenuItem>
-        )}
 
+        {/* Если двигатель не на ремонте и есть конфигурация */}
+        {!motor.on_repair && motor.motor_config_id !== null ? (
+          <MenuItem onClick={handleToRepair}>Забрать на ремонт</MenuItem>
+        ) : // если двигатель не демонтирован то завершаем ремонт
+        motor.motor_config_id !== null ? (
+          <MenuItem onClick={handleCompleteRepair}>Завершить ремонт</MenuItem>
+        ) : null}
+        {/* если конфигурация отсутвует и двигатлель в ремонте то можно назначит */}
+        {!motor.motor_config_id ? (
+          <MenuItem
+            onClick={() => {
+              handleAppendMotorConfig()
+              setDialogText({ title: "Установить конфигурацию двигателя?", message: "" })
+            }}>
+            Установить двигатель
+          </MenuItem>
+        ) : motor.on_repair ? (
+          <MenuItem
+            onClick={e => {
+              e.stopPropagation()
+              setDialogText({ title: "Удалить конфигурацию двигателя?", message: "" })
+              setOpenDialog(true)
+              setConfirmRemoveMotorConfig(true)
+              setAnchorEl(null)
+            }}>
+            Демонтировать двигатель
+          </MenuItem>
+        ) : null}
         <MenuItem onClick={closeModal}>Запланировать ТО</MenuItem>
-        <Divider />
-        <MenuItem onClick={handleOpenEdit}>Редактировать</MenuItem>
-        <MenuItem
-          sx={{
-            color: "error.main", // Устанавливаем цвет текста на красный
-            "&:hover": {
-              color: "error.dark", // Устанавливаем цвет текста при наведении
-              backgroundColor: "rgba(255, 0, 0, 0.1)", // Можно добавить легкий фон при наведении
-            },
-          }}
-          onClick={e => {
-            e.stopPropagation()
-            setOpenDialog(true)
-            setAnchorEl(null)
-          }}>
-          Удалить
-        </MenuItem>
+        {!motor.on_repair &&
+          motor.motor_config_id === null && ( // Добавлено условие motor.motor_config_id === null
+            <>
+              <Divider />
+              <MenuItem onClick={handleOpenEdit}>Редактировать</MenuItem>
+              <MenuItem
+                sx={{
+                  color: "error.main", // Устанавливаем цвет текста на красный
+                  "&:hover": {
+                    color: "error.dark", // Устанавливаем цвет текста при наведении
+                    backgroundColor: "rgba(255, 0, 0, 0.1)", // Можно добавить легкий фон при наведении
+                  },
+                }}
+                onClick={e => {
+                  e.stopPropagation()
+                  setOpenDialog(true)
+                  setAnchorEl(null)
+                }}>
+                Удалить
+              </MenuItem>
+            </>
+          )}
       </Menu>
       <Box>
         <AppBar
@@ -196,10 +279,10 @@ export const CreateMotorV2 = () => {
             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="center" colSpan={3} sx={{ border: "1px solid black" }}>
+                  <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}>
                     Нумерация
                   </TableCell>
-                  <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}>
+                  <TableCell align="center" colSpan={4} sx={{ border: "1px solid black" }}>
                     Эксплуатация
                   </TableCell>
                   <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}>
@@ -213,6 +296,7 @@ export const CreateMotorV2 = () => {
                   <TableCell align="center">ID</TableCell>
                   <TableCell align="center">П.П</TableCell>
                   <TableCell align="center">Тех. номер</TableCell>
+                  <TableCell align="center">Двигатель</TableCell>
                   <TableCell align="center">Состояние</TableCell>
                   <TableCell align="center">Последний ремонт</TableCell>
 
@@ -232,6 +316,7 @@ export const CreateMotorV2 = () => {
                       <TableCell align="center">{motor.motor_id.substring(0, 5)}</TableCell>
                       <TableCell align="center">{id + 1}</TableCell>
                       <TableCell align="center">{motor.engine_number}</TableCell>
+                      <TableCell align="center">{!motor.model_name ? "не установлен" : motor.model_name}</TableCell>
                       <TableCell align="center">
                         {motor.on_repair ? (
                           <Cancel color="error" /> // Иконка для состояния "не в ремонте"
@@ -253,7 +338,11 @@ export const CreateMotorV2 = () => {
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           onConfirm={() => {
-            handleDelete()
+            if (confirmRemoveMotorConfig) {
+              handleRemoveMotorConfig()
+            } else {
+              handleDelete()
+            }
           }}
           title={dialogText.title}
           message={dialogText.message}

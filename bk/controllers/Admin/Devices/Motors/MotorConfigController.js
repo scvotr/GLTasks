@@ -16,7 +16,7 @@ class MotorConfigController extends BaseMotorController {
       await MotorConfigCRUD.createConfigQ(data)
       sendResponseWithData(res, 'createMotorConfig -create-ok')
     } catch (error) {
-      handleError(res, 'Error: create MotorAmperage - ' + error.message)
+      handleError(res, 'Error: create createMotorConfig - ' + error.message)
     }
   }
   async readAllMotorConfigs(req, res) {
@@ -24,7 +24,51 @@ class MotorConfigController extends BaseMotorController {
       const data = await MotorConfigCRUD.readAllConfigsQ()
       sendResponseWithData(res, data)
     } catch (error) {
-      handleError(res, 'Error: create MotorAmperage - ' + error.message)
+      handleError(res, 'Error: create readAllMotorConfigs - ' + error.message)
+    }
+  }
+  async readAllConfig(req, res) {
+    try {
+      const data = await MotorConfigCRUD.readAllConfigQ()
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: create readAllConfig - ' + error.message)
+    }
+  }
+  async readAllConfigUninstall(req, res) {
+    try {
+      const data = await MotorConfigCRUD.readAllConfigUninstallQ()
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: create readAllConfig - ' + error.message)
+    }
+  }
+  async readAllConfigInstall(req, res) {
+    try {
+      const data = await MotorConfigCRUD.readAllConfigInstallQ()
+      sendResponseWithData(res, data)
+    } catch (error) {
+      handleError(res, 'Error: create readAllConfig - ' + error.message)
+    }
+  }
+  async appendConfigToMotor(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const data = JSON.parse(authDecodeUserData.payLoad)
+      await MotorConfigCRUD.appendConfigToMotorQ(data)
+      sendResponseWithData(res, 'data')
+    } catch (error) {
+      handleError(res, 'Error: create appendConfigToMotor - ' + error.message)
+    }
+  }
+  async removeConfigFromMotor(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const data = JSON.parse(authDecodeUserData.payLoad)
+      await MotorConfigCRUD.removeConfigFromMotorQ(data)
+      sendResponseWithData(res, 'data')
+    } catch (error) {
+      handleError(res, 'Error: create appendConfigToMotor - ' + error.message)
     }
   }
   async readMotorConfigs(req, res) {
