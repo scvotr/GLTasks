@@ -116,7 +116,7 @@ const createAllMotorConfigTables = async (allowDrop = false) => {
     await insertMotorBrands()
     await createMotorsModelsTable(allowDrop)
     await insertMotorModels()
-    await createMotorsConfigTable(allowDrop)
+    await createMotorsConfigTable(true)
   } catch (error) {
     console.log('Error creating motor tables: ', error)
     throw new Error('Failed to create all motor tables')
