@@ -130,7 +130,7 @@ const createAllMotorConfigTables = async (allowDrop = false) => {
     await insertMotorBrands()
     await createMotorsModelsTable(allowDrop)
     await insertMotorModels()
-    await createMotorsConfigTable(true)
+    await createMotorsConfigTable(allowDrop)
     await insertMotorConfigs()
   } catch (error) {
     console.log('Error creating motor tables: ', error)
