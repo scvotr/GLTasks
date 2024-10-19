@@ -52,9 +52,9 @@ class MotorController extends BaseMotorController {
   async takeMotorForRepair(req, res) {
     try {
       const authDecodeUserData = req.user
-      const motor_id = JSON.parse(authDecodeUserData.payLoad)
-      await MotorCRUD.takeMotorForRepairQ(motor_id)
-      sendResponseWithData(res, `Принят в ремонт ${motor_id}`)
+      const motor_data = JSON.parse(authDecodeUserData.payLoad)
+      await MotorCRUD.takeMotorForRepairQ(motor_data)
+      sendResponseWithData(res, `Принят в ремонт (conf)${motor_data.motor_config_id}`)
     } catch (error) {
       handleError(res, 'Error: readAllDevices')
     }
@@ -62,9 +62,9 @@ class MotorController extends BaseMotorController {
   async completeMotorRepair(req, res) {
     try {
       const authDecodeUserData = req.user
-      const motor_id = JSON.parse(authDecodeUserData.payLoad)
-      await MotorCRUD.completeMotorRepairQ(motor_id)
-      sendResponseWithData(res, `Ремонт завершён ${motor_id}`)
+      const motor_data = JSON.parse(authDecodeUserData.payLoad)
+      await MotorCRUD.completeMotorRepairQ(motor_data)
+      sendResponseWithData(res, `Ремонт завершён(conf) ${motor_data.motor_config_id}`)
     } catch (error) {
       handleError(res, 'Error: readAllDevices')
     }
@@ -72,8 +72,8 @@ class MotorController extends BaseMotorController {
   async readAllRepairsLog(req, res) {
     try {
       const authDecodeUserData = req.user
-      const motor_id = JSON.parse(authDecodeUserData.payLoad)
-      const data = await MotorCRUD.readAllRepairsLogQ(motor_id)
+      const motor_data = JSON.parse(authDecodeUserData.payLoad)
+      const data = await MotorCRUD.readAllRepairsLogQ(motor_data)
       sendResponseWithData(res, data)
     } catch (error) {
       handleError(res, 'Error: readAllDevices')
