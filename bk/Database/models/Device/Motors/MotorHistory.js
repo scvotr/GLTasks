@@ -7,11 +7,10 @@ const createMotorsRepairHistoryTable = async (allowDrop = false) => {
   const createTableQuery = `
       CREATE TABLE IF NOT EXISTS motor_repair_history (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        --motor_id INTEGER NOT NULL,
-        motor_config_id INTEGER NOT NULL,
+        motor_id INTEGER NOT NULL,
         repair_start DATATIME,
         repair_end DATATIME,
-        FOREIGN KEY (motor_config_id) REFERENCES motors (motor_config_id)
+        FOREIGN KEY (motor_id) REFERENCES motors (motor_id)
         --FOREIGN KEY (motor_id) REFERENCES motors (id)
       )`
 
@@ -66,6 +65,7 @@ const createRepairTriggers = async useTriggers => {
   try {
     await executeTableCreation('start_repair_trigger', startRepairTrigger)
     await executeTableCreation('end_repair_trigger', endRepairTrigger)
+    console.log('triger ok!!')
   } catch (error) {
     console.error('Error creating triggers: ', error)
     throw new Error('Failed to create triggers')

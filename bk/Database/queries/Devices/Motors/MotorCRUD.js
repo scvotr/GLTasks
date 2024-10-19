@@ -82,20 +82,20 @@ class MotorCRUD {
       // throw new Error('Ошибка запроса к базе данных')
     }
   }
-  async takeMotorForRepairQ(motor_data) {
+  async takeMotorForRepairQ(motor_id) {
     try {
       // флаг для установки состояния двигателя
       const command = `
         UPDATE motors SET on_repair = TRUE WHERE motor_id = ?
       `
-      await executeDatabaseQueryAsync(command, [motor_data.motor_id])
+      await executeDatabaseQueryAsync(command, [motor_id])
 
       // Запись в историю ремонта
       const historyCommand = `
-        INSERT INTO motor_repair_history (motor_config_id, repair_start)
+        INSERT INTO motor_repair_history (motor_id, repair_start)
         VALUES (?, CURRENT_TIMESTAMP)
       `
-      await executeDatabaseQueryAsync(historyCommand, [motor_data.motor_config_id])
+      await executeDatabaseQueryAsync(historyCommand, [motor_id])
 
       return true // Успешно выполнено
     } catch (error) {
@@ -104,20 +104,20 @@ class MotorCRUD {
       // throw new Error('Ошибка запроса к базе данных')
     }
   }
-  async completeMotorRepairQ(motor_data) {
+  async completeMotorRepairQ(motor_id) {
     try {
       const command = `
         UPDATE motors SET on_repair = FALSE WHERE motor_id = ?
       `
-      await executeDatabaseQueryAsync(command, [motor_data.motor_id])
+      await executeDatabaseQueryAsync(command, [motor_id])
 
       // Запись в историю ремонта
       const historyCommand = `
         UPDATE motor_repair_history
         SET repair_end = CURRENT_TIMESTAMP
-        WHERE motor_config_id = ?
+        WHERE motor_id = ?
       `
-      await executeDatabaseQueryAsync(historyCommand, [motor_data.motor_config_id])
+      await executeDatabaseQueryAsync(historyCommand, [motor_id])
     } catch (error) {
       console.error('Error completeMotorRepairQ motor:', error)
       throw error
@@ -169,17 +169,16 @@ class MotorCRUD {
       throw new Error('Ошибка запроса к базе данных')
     }
   }
-  async readAllRepairsLogQ(motor_data) {
-    console.log(motor_data)
+  async readAllRepairsLogQ(motor_id) {
     try {
       const command = `
         SELECT 
           DATETIME(repair_start, 'localtime') AS repair_start_local, 
           DATETIME(repair_end, 'localtime') AS repair_end_local 
         FROM motor_repair_history 
-        WHERE motor_config_id = ?
+        WHERE motor_id = ?
       `
-      const results = await executeDatabaseQueryAsync(command, [motor_data.motor_config_id])
+      const results = await executeDatabaseQueryAsync(command, [motor_id])
       return results
     } catch (error) {
       console.error('Error fetching bucket elevators with details:', error)
