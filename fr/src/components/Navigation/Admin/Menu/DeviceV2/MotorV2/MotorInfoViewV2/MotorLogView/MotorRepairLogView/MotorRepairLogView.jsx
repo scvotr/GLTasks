@@ -8,6 +8,7 @@ import { formatDateV2 } from "../../../../../../../../../utils/formatDate"
 import { calculateTotalTime } from "../../../../../../../../../utils/calculateTotalTime"
 
 export const MotorRepairLogView = ({ motor }) => {
+  console.log(motor)
   const currentUser = useAuthContext()
   const [response, setResponse] = useState({ loading: false, error: null })
   const [tableData, setTableData] = useState([])
@@ -33,7 +34,8 @@ export const MotorRepairLogView = ({ motor }) => {
     const endpoint = "/admin/devices/motor/log/repair/readAll"
     try {
       setResponse({ loading: true, error: null })
-      const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", motor.by_history_id, setResponse)
+      // const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", motor.by_history_id, setResponse)
+      const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST",{ motor_id: motor.motor_id, motor_config_id: motor.motor_config_id }, setResponse)
       // Сортируем данные по repair_start_local
       const sortedData = data.sort((a, b) => new Date(b.repair_start_local) - new Date(a.repair_start_local))
       setTableData(sortedData)
