@@ -84,6 +84,7 @@ class MotorCRUD {
   }
   async takeMotorForRepairQ(motor_id) {
     try {
+      // флаг для установки состояния двигателя
       const command = `
         UPDATE motors SET on_repair = TRUE WHERE motor_id = ?
       `
@@ -91,10 +92,10 @@ class MotorCRUD {
 
       // Запись в историю ремонта
       const historyCommand = `
-        INSERT INTO motor_repair_history (motor_id, repair_start, user_id, comments)
-        VALUES (?, CURRENT_TIMESTAMP, ?, ?)
+        INSERT INTO motor_repair_history (motor_id, repair_start)
+        VALUES (?, CURRENT_TIMESTAMP)
       `
-      await executeDatabaseQueryAsync(historyCommand, [motor_id, userId, comments])
+      await executeDatabaseQueryAsync(historyCommand, [motor_id])
 
       return true // Успешно выполнено
     } catch (error) {
@@ -109,6 +110,14 @@ class MotorCRUD {
         UPDATE motors SET on_repair = FALSE WHERE motor_id = ?
       `
       await executeDatabaseQueryAsync(command, [motor_id])
+
+      // Запись в историю ремонта
+      const historyCommand = `
+        UPDATE motor_repair_history
+        SET repair_end = CURRENT_TIMESTAMP
+        WHERE motor_id = ?
+      `
+      await executeDatabaseQueryAsync(historyCommand, [motor_id])
     } catch (error) {
       console.error('Error completeMotorRepairQ motor:', error)
       throw error
