@@ -110,19 +110,19 @@ export const CreateMotorV2 = () => {
   const handleToRepair = async () => {
     // setToView(false)
     // setToRepair(true)
-    // setCurrentFullScreenView("repair")
-    // setFullScreenOpen(true)
-    try {
-      setReqStatus({ loading: true, error: null })
-      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
-      popupSnackbar(res)
-      setFormKey(prev => prev + 1)
-      setAnchorEl(null)
-      setReqStatus({ loading: false, error: null })
-    } catch (error) {
-      setReqStatus({ loading: false, error: error.message })
-      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
-    }
+    setCurrentFullScreenView("repair_on")
+    setFullScreenOpen(true)
+    // try {
+    //   setReqStatus({ loading: true, error: null })
+    //   const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
+    //   popupSnackbar(res)
+    //   setFormKey(prev => prev + 1)
+    //   setAnchorEl(null)
+    //   setReqStatus({ loading: false, error: null })
+    // } catch (error) {
+    //   setReqStatus({ loading: false, error: error.message })
+    //   popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
+    // }
   }
   const handleCompleteRepair = async () => {
     try {
@@ -147,7 +147,7 @@ export const CreateMotorV2 = () => {
   }
 
   const fullScreenViews = {
-    repair_on: <MotorRepairReasonForm motor={motor}/>,
+    repair_on: <MotorRepairReasonForm motor={motor} onClose={closeModal} />,
     repair_off: <MotorRepairReportForm motor={motor}/>,
     view: <MotorInfoViewV2 motor={motor} />,
   }
