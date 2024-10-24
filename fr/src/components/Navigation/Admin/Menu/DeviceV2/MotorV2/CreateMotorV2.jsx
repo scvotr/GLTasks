@@ -147,7 +147,7 @@ export const CreateMotorV2 = () => {
   }
 
   const fullScreenViews = {
-    repair_on: <MotorRepairReasonForm motor={motor} onClose={closeModal} />,
+    repair_on: <MotorRepairReasonForm motor={motor} popupSnackbar={popupSnackbar} onClose={closeModal} />,
     repair_off: <MotorRepairReportForm motor={motor}/>,
     view: <MotorInfoViewV2 motor={motor} />,
   }
