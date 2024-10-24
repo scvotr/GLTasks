@@ -12,13 +12,14 @@ const technicians = [
 ]
 
 export const MotorRepairReasonForm = ({ motor, popupSnackbar, onClose }) => {
-  console.log("MotorRepairReasonForm", motor)
+//   console.log("MotorRepairReasonForm", motor)
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
   const today = new Date().toISOString().split("T")[0]
 
   const [formData, setFormData] = useState({
+    motor_id: motor.motor_id,
     repairReason: "",
     technicianId: "",
     additionalNotes: "",
@@ -47,7 +48,7 @@ export const MotorRepairReasonForm = ({ motor, popupSnackbar, onClose }) => {
     console.log("Отправка данных:", formData)
     try {
       setReqStatus({ loading: true, error: null })
-      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
+      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", formData, setReqStatus)
       popupSnackbar(res)
       setReqStatus({ loading: false, error: null })
     } catch (error) {
