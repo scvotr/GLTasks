@@ -82,20 +82,20 @@ class MotorCRUD {
       // throw new Error('Ошибка запроса к базе данных')
     }
   }
-  async takeMotorForRepairQ(motor_id) {
+  async takeMotorForRepairQ(data) {
     try {
       // флаг для установки состояния двигателя
       const command = `
         UPDATE motors SET on_repair = TRUE WHERE motor_id = ?
       `
-      await executeDatabaseQueryAsync(command, [motor_id])
+      await executeDatabaseQueryAsync(command, [data.motor_id])
 
       // Запись в историю ремонта
       const historyCommand = `
         INSERT INTO motor_repair_history (motor_id, repair_start)
         VALUES (?, CURRENT_TIMESTAMP)
       `
-      await executeDatabaseQueryAsync(historyCommand, [motor_id])
+      await executeDatabaseQueryAsync(historyCommand, [data.motor_id])
 
       return true // Успешно выполнено
     } catch (error) {
