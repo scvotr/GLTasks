@@ -83,7 +83,6 @@ class MotorCRUD {
     }
   }
   async takeMotorForRepairQ(data) {
-    console.log(data)
     try {
       // флаг для установки состояния двигателя
       const command = `
@@ -95,7 +94,7 @@ class MotorCRUD {
       const historyCommand = `
         INSERT INTO motor_repair_history (motor_id, repair_start, repair_reason, technician_id, additional_notes_reason)
         VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?)
-      `;
+      `
       await executeDatabaseQueryAsync(historyCommand, [data.motor_id, data.repairReason, data.technicianId, data.additionalNotesReason])
 
       return true // Успешно выполнено
@@ -105,20 +104,23 @@ class MotorCRUD {
       // throw new Error('Ошибка запроса к базе данных')
     }
   }
-  async completeMotorRepairQ(motor_id) {
+  async completeMotorRepairQ(data) {
+    console.log(data)
     try {
       const command = `
         UPDATE motors SET on_repair = FALSE WHERE motor_id = ?
       `
-      await executeDatabaseQueryAsync(command, [motor_id])
+      await executeDatabaseQueryAsync(command, [data.motor_id])
 
       // Запись в историю ремонта
       const historyCommand = `
         UPDATE motor_repair_history
-        SET repair_end = CURRENT_TIMESTAMP
-        WHERE motor_id = ?
+        SET repair_end = CURRENT_TIMESTAMP,
+            additional_notes_report = ?
+        WHERE motor_id = ? AND repair_end IS NULL
       `
-      await executeDatabaseQueryAsync(historyCommand, [motor_id])
+      await executeDatabaseQueryAsync(historyCommand, [data.additionalNotesReport, data.motor_id])
+
     } catch (error) {
       console.error('Error completeMotorRepairQ motor:', error)
       throw error
@@ -178,7 +180,8 @@ class MotorCRUD {
           DATETIME(repair_end, 'localtime') AS repair_end_local,
           technician_id,
           repair_reason,
-          additional_notes_reason
+          additional_notes_reason,
+          additional_notes_report
         FROM motor_repair_history 
         WHERE motor_id = ?
       `
