@@ -7,7 +7,6 @@ import { MotorRepairLogView } from "./MotorLogView/MotorRepairLogView/MotorRepai
 import { MotorServiceLogView } from "./MotorLogView/MotorServiceLogView/MotorServiceLogView"
 
 export const MotorInfoViewV2 = ({ motor }) => {
-  console.log(motor)
   const [value, setValue] = useState("1")
   const [logTabValue, setLogTabValue] = useState("1")
 
