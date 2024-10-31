@@ -22,7 +22,7 @@ export const MotorRepairReasonForm = ({ motor, popupSnackbar, onClose }) => {
     motor_id: motor.motor_id,
     repairReason: "",
     technicianId: "",
-    additionalNotes: "",
+    additionalNotesReason: "",
     repairEndTime: "",
   })
 
@@ -105,8 +105,8 @@ export const MotorRepairReasonForm = ({ motor, popupSnackbar, onClose }) => {
 
       <TextField
         label="Отчет о событии"
-        name="additionalNotes"
-        value={formData.additionalNotes}
+        name="additionalNotesReason"
+        value={formData.additionalNotesReason}
         onChange={handleChange}
         multiline
         rows={4}
