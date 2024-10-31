@@ -45,7 +45,6 @@ export const MotorRepairReasonForm = ({ motor, popupSnackbar, onClose }) => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    console.log("Отправка данных:", formData)
     try {
       setReqStatus({ loading: true, error: null })
       const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", formData, setReqStatus)
