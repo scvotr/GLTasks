@@ -13,7 +13,7 @@ export const MotorRepairLogView = ({ motor }) => {
   const [response, setResponse] = useState({ loading: false, error: null })
   const [tableData, setTableData] = useState([])
 
-  console.log("ddd", tableData)
+  console.log("MotorRepairLogView", tableData)
 
   // SnackBar
   const [openSnackbar, setOpenSnackbar] = useState(false)
@@ -61,6 +61,9 @@ export const MotorRepairLogView = ({ motor }) => {
               <TableHead>
                 <TableRow>
                   <TableCell align="center">№</TableCell>
+                  <TableCell align="center">Причина</TableCell>
+                  <TableCell align="center">Описание</TableCell>
+                  <TableCell align="center">Сотрудник</TableCell>
                   <TableCell align="center">Начат</TableCell>
                   <TableCell align="center">Завершён</TableCell>
                   <TableCell align="center">Затраченное время</TableCell>
@@ -75,6 +78,9 @@ export const MotorRepairLogView = ({ motor }) => {
                       hover
                       onClick={() => console.log("qq")}>
                       <TableCell align="center">{id + 1}</TableCell>
+                      <TableCell align="center">{row.repair_reason}</TableCell>
+                      <TableCell align="center">{row.additional_notes_reason}</TableCell>
+                      <TableCell align="center">{row.technician_id}</TableCell>
                       <TableCell align="center">{formatDateV2(row.repair_start_local, true)}</TableCell>
                       <TableCell align="center">{row.repair_end_local ? formatDateV2(row.repair_end_local, true) : "Идет ремонт"}</TableCell>
                       <TableCell align="center">
