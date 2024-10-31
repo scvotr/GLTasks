@@ -83,6 +83,7 @@ class MotorCRUD {
     }
   }
   async takeMotorForRepairQ(data) {
+    console.log(data)
     try {
       // флаг для установки состояния двигателя
       const command = `
@@ -92,10 +93,10 @@ class MotorCRUD {
 
       // Запись в историю ремонта
       const historyCommand = `
-        INSERT INTO motor_repair_history (motor_id, repair_start)
-        VALUES (?, CURRENT_TIMESTAMP)
-      `
-      await executeDatabaseQueryAsync(historyCommand, [data.motor_id])
+        INSERT INTO motor_repair_history (motor_id, repair_start, repair_reason, technician_id, additional_notes_reason)
+        VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?)
+      `;
+      await executeDatabaseQueryAsync(historyCommand, [data.motor_id, data.repairReason, data.technicianId, data.additionalNotesReason])
 
       return true // Успешно выполнено
     } catch (error) {
@@ -174,7 +175,10 @@ class MotorCRUD {
       const command = `
         SELECT 
           DATETIME(repair_start, 'localtime') AS repair_start_local, 
-          DATETIME(repair_end, 'localtime') AS repair_end_local 
+          DATETIME(repair_end, 'localtime') AS repair_end_local,
+          technician_id,
+          repair_reason,
+          additional_notes_reason
         FROM motor_repair_history 
         WHERE motor_id = ?
       `
