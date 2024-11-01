@@ -159,7 +159,7 @@ class MotorConfigCRUD {
       FROM motors_config mc
         LEFT JOIN motor_brands mb ON mc.brand_id = mb.id
         LEFT JOIN motor_models mm ON mc.model_id = mm.id
-      WHERE mc.installed_on = FALSE
+      WHERE mc.installed_on = FALSE AND mc.on_repair = FALSE
     `
     try {
       const rows = await executeDatabaseQueryAsync(commandWR, [])
@@ -207,7 +207,30 @@ class MotorConfigCRUD {
       throw new Error('Ошибка установки конфигурации: ' + error.message)
     }
   }
+  // Демонтаж для ремонта\обслуживания
   async removeConfigFromMotorQ(data) {
+    const { motor_id, motor_config_id } = data
+    console.log( motor_id, motor_config_id)
+    const command = `
+      UPDATE motors
+      SET motor_config_id = NULL
+      WHERE motor_id = ?;  
+    `
+    const command2 = `
+      UPDATE motors_config
+      SET installed_on = FALSE,
+          on_repair = TRUE
+      WHERE motor_config_id = ?;  
+    `
+    try {
+      await executeDatabaseQueryAsync(command, [motor_id])
+      await executeDatabaseQueryAsync(command2, [motor_config_id])
+    } catch (error) {
+      throw new Error('Ошибка установки конфигурации: ' + error.message)
+    }
+  }
+  // Перемещение на склад с возможностью установки(подмены)
+  async removeConfigForStorageQ(data) {
     const { motor_id, motor_config_id } = data
     const command = `
       UPDATE motors
