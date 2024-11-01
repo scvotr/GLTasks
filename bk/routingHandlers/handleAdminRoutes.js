@@ -165,6 +165,7 @@ const routeHandlers = {
   '/admin/devices/motor/config/readAllConfigInstall': MotorConfigController.readAllConfigInstall,
   '/admin/devices/motor/config/appendConfigToMotor': MotorConfigController.appendConfigToMotor,
   '/admin/devices/motor/config/removeConfigFromMotor': MotorConfigController.removeConfigFromMotor,
+  '/admin/devices/motor/config/removeConfigForStorage': MotorConfigController.removeConfigForStorage,
   '/admin/devices/motor/config/update': MotorConfigController.createMotorConfig,
   '/admin/devices/motor/config/delete': MotorConfigController.deleteMotorConfig,
 
