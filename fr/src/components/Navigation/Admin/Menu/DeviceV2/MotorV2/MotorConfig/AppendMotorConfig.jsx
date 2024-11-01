@@ -87,7 +87,7 @@ export const AppendMotorConfig = ({ motor, onClose, popupSnackbar }) => {
           disabled={reqStatus.loading || !selectedMotorConfig || !allMotorConfig.length } // Отключить кнопку, если идет загрузка или не выбрана конфигурация
           sx={{ mt: 2 }} // Отступ сверху
         >
-          Установить конфигурацию
+          Установить двигатель
         </Button>
       </Stack>
     </Box>
