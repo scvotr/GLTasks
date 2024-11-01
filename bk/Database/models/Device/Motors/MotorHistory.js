@@ -11,7 +11,8 @@ const createMotorsRepairHistoryTable = async (allowDrop = false) => {
         repair_start DATATIME,
         repair_end DATATIME,
         repair_reason TEXT,
-        technician_id INTEGER,
+        technician_id_start INTEGER,
+        technician_id_end INTEGER,
         additional_notes_reason TEXT,
         additional_notes_report TEXT,
         FOREIGN KEY (motor_id) REFERENCES motors (motor_id)
