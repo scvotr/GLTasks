@@ -92,7 +92,7 @@ class MotorCRUD {
 
       // Запись в историю ремонта
       const historyCommand = `
-        INSERT INTO motor_repair_history (motor_id, repair_start, repair_reason, technician_id, additional_notes_reason)
+        INSERT INTO motor_repair_history (motor_id, repair_start, repair_reason, technician_id_start, additional_notes_reason)
         VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?)
       `
       await executeDatabaseQueryAsync(historyCommand, [data.motor_id, data.repairReason, data.technicianId, data.additionalNotesReason])
@@ -116,11 +116,11 @@ class MotorCRUD {
       const historyCommand = `
         UPDATE motor_repair_history
         SET repair_end = CURRENT_TIMESTAMP,
-            additional_notes_report = ?
+            additional_notes_report = ?,
+            technician_id_end = ?
         WHERE motor_id = ? AND repair_end IS NULL
       `
-      await executeDatabaseQueryAsync(historyCommand, [data.additionalNotesReport, data.motor_id])
-
+      await executeDatabaseQueryAsync(historyCommand, [data.additionalNotesReport, data.technicianId, data.motor_id])
     } catch (error) {
       console.error('Error completeMotorRepairQ motor:', error)
       throw error
@@ -152,7 +152,7 @@ class MotorCRUD {
             DATETIME(
               (SELECT MAX(repair_end)
                FROM motor_repair_history 
-               WHERE motor_id = m.id), 
+               WHERE motor_id = m.motor_id), 
               'localtime'), 
             'Нет данных') AS last_repair_date
         FROM 
@@ -178,8 +178,9 @@ class MotorCRUD {
         SELECT 
           DATETIME(repair_start, 'localtime') AS repair_start_local, 
           DATETIME(repair_end, 'localtime') AS repair_end_local,
-          technician_id,
           repair_reason,
+          technician_id_start,
+          technician_id_end,
           additional_notes_reason,
           additional_notes_report
         FROM motor_repair_history 
