@@ -63,8 +63,10 @@ export const MotorRepairLogView = ({ motor }) => {
                   <TableCell align="center">№</TableCell>
                   <TableCell align="center">Причина</TableCell>
                   <TableCell align="center">Описание</TableCell>
-                  <TableCell align="center">Сотрудник</TableCell>
+                  <TableCell align="center">Исполнитель</TableCell>
                   <TableCell align="center">Начат</TableCell>
+                  <TableCell align="center">Отчет</TableCell>
+                  <TableCell align="center">Исполнитель</TableCell>
                   <TableCell align="center">Завершён</TableCell>
                   <TableCell align="center">Затраченное время</TableCell>
                 </TableRow>
@@ -80,8 +82,10 @@ export const MotorRepairLogView = ({ motor }) => {
                       <TableCell align="center">{id + 1}</TableCell>
                       <TableCell align="center">{row.repair_reason}</TableCell>
                       <TableCell align="center">{row.additional_notes_reason}</TableCell>
-                      <TableCell align="center">{row.technician_id}</TableCell>
+                      <TableCell align="center">{row.technician_id_start}</TableCell>
                       <TableCell align="center">{formatDateV2(row.repair_start_local, true)}</TableCell>
+                      <TableCell align="center">{row.additional_notes_report ? row.additional_notes_report : "Идет ремонт"}</TableCell>
+                      <TableCell align="center">{row.technician_id_end ? row.technician_id_end : "Идет ремонт"}</TableCell>
                       <TableCell align="center">{row.repair_end_local ? formatDateV2(row.repair_end_local, true) : "Идет ремонт"}</TableCell>
                       <TableCell align="center">
                         {row.repair_end_local ? calculateTotalTime(row.repair_start_local, row.repair_end_local) : "Идет ремонт"}
