@@ -56,7 +56,7 @@ export const RemoveMotorConfig = ({ motor, onClose, popupSnackbar }) => {
           disabled={reqStatus.loading || !selectedMotorConfig} // Отключить кнопку, если идет загрузка или не выбрана конфигурация
           sx={{ mt: 2 }} // Отступ сверху
         >
-          Удалить конфигурацию
+          Забрать на ремонт
         </Button>
       </Stack>
     </Box>
