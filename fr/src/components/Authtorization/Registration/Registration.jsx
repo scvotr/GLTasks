@@ -80,6 +80,11 @@ export const Registration = () => {
             autoComplete="login"
             autoFocus
             onChange={handleChange}
+            onKeyDown={(e) => {
+              if (e.key === ' ') {
+                e.preventDefault(); // предотвращает ввод пробела
+              }
+            }}
             helperText={"Это поле обязательно к заполнению"}
             inputProps={{
               pattern: "^[^\\s]+$", // Регулярное выражение, запрещающее пробелы
