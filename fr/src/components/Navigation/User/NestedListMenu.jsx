@@ -31,6 +31,7 @@ import FilePresentOutlinedIcon from "@mui/icons-material/FilePresentOutlined"
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { Divider } from "@mui/material"
+import { getAllPowerEngineers } from "./Menu/Users/PowerEngineer/Chifes/getAllPowerEngineers"
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   textDecoration: "none",
@@ -43,7 +44,6 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
     /* Другие желаемые стили для выбранного пункта */
   },
 }))
-
 export const NestedListMenu = ({ isOpen }) => {
   const currentUser = useAuthContext()
   const [openSections, setOpenSections] = useState(() => {
@@ -172,29 +172,6 @@ export const NestedListMenu = ({ isOpen }) => {
         },
       ],
     },
-    // ! Полная лажа
-    // hasAccess("motors", currentUser.role, currentUser.position)
-    //   ? {
-    //       name: "Оборудование",
-    //       icon: <Diversity1OutlinedIcon fontSize="large" />,
-    //       path: "/mutualVerification",
-    //       tasksCount: 0,
-    //       subItems: [
-    //         {
-    //           name: "Документы",
-    //           icon: <FolderCopyOutlinedIcon fontSize="large" />,
-    //           path: "/mutualVerification/docs",
-    //           btn: true,
-    //         },
-    //         {
-    //           name: "Архив",
-    //           icon: <Inventory2OutlinedIcon fontSize="large" />,
-    //           path: "/mutualVerification/archive",
-    //           btn: true,
-    //         },
-    //       ]
-    //     }
-    //   : null,
     {
       name: "Настройки",
       icon: <SettingsOutlinedIcon fontSize="large" />,
@@ -208,31 +185,35 @@ export const NestedListMenu = ({ isOpen }) => {
     },
   ].filter(Boolean)
 
-  const energyServicePositions = [11, 23]; // Массив с допустимыми позициями получить всех энергетиков с сервера!
+  // const energyServicePositions = [11, 23]; // Массив с допустимыми позициями получить всех энергетиков с сервера!
 
-  if (energyServicePositions.includes(Number(currentUser.position))) {
-    sectionsData.push({
-      name: "Оборудование",
-      icon: <ConstructionOutlinedIcon  fontSize="large" />,
-      path: "/mutualVerification",
-      tasksCount: 0,
-      subItems: [
-        {
-          name: "Документы",
-          icon: <FolderCopyOutlinedIcon fontSize="large" />,
-          path: "/mutualVerification/docs",
-          btn: true,
-        },
-        {
-          name: "Архив",
-          icon: <Inventory2OutlinedIcon fontSize="large" />,
-          path: "/mutualVerification/archive",
-          btn: true,
-        },
-      ],
-    })
+  // if (energyServicePositions.includes(Number(currentUser.position))) {
+  //   sectionsData.push({
+  //     name: "Оборудование",
+  //     icon: <ConstructionOutlinedIcon  fontSize="large" />,
+  //     path: "/mutualVerification",
+  //     tasksCount: 0,
+  //     subItems: [
+  //       {
+  //         name: "Документы",
+  //         icon: <FolderCopyOutlinedIcon fontSize="large" />,
+  //         path: "/mutualVerification/docs",
+  //         btn: true,
+  //       },
+  //       {
+  //         name: "Архив",
+  //         icon: <Inventory2OutlinedIcon fontSize="large" />,
+  //         path: "/mutualVerification/archive",
+  //         btn: true,
+  //       },
+  //     ],
+  //   })
+  // }
+
+  const PowerEngineers = getAllPowerEngineers(currentUser)
+  if(PowerEngineers){
+    sectionsData.push(PowerEngineers);
   }
-  
   
 
   const sectionsWithoutSettings = sectionsData.filter(section => !section.settings)
@@ -248,6 +229,7 @@ export const NestedListMenu = ({ isOpen }) => {
       [itemName]: !prevOpenSubItems[itemName],
     }))
   }
+
 
   return (
     <>
