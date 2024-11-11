@@ -345,7 +345,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                       )}
                     </>
                   )}
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="body2" color="textSecondary" component="div">
                     {(() => {
                       if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
                         return (
