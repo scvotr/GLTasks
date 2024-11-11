@@ -19,7 +19,7 @@ export const InfoNews = ({ data }) => {
         <Grid item xs={4}></Grid>
         <Grid item xs={4}>
           <Item>
-            <Typography variant="h6" gutterBottom>
+            <Typography gutterBottom  variant="body2">
               Добавленно:
             </Typography>
             <Typography gutterBottom variant="body2">
