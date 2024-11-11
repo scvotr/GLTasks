@@ -22,7 +22,7 @@ export const InfoNews = ({ data }) => {
             <Typography variant="h6" gutterBottom>
               Добавленно:
             </Typography>
-            <Typography gutterBottom>
+            <Typography gutterBottom variant="body2">
               <strong>15.08.2024</strong>
               <ul>
                 <li>
