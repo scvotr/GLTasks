@@ -327,7 +327,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                       ) : (
                         <>
                           {/* <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" /> */}
-                          <Typography variant="body2">
+                          <Typography variant="body2" component="div">
                             <Stack>
                               <Box>До:</Box>
                               <Box>{formatDate(schedule.deadline_time)}</Box>
