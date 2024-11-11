@@ -80,26 +80,29 @@ export const TasksTable = ({ tasks, reRender }) => {
         let iconComponent
         let statusText
 
-        if (params.row.task_status === "toApprove") {
-          iconComponent = <HourglassEmptyIcon />
-          statusText = "Новая"
-          setStatusText(statusText)
-        } else if (params.row.task_status === "approved") {
-          iconComponent = <CheckCircleOutlineIcon />
-          statusText = "Согласована"
-          setStatusText(statusText)
-        } else if (params.row.task_status === "inWork") {
-          iconComponent = <AssignmentIcon />
-          statusText = "В работе"
-          setStatusText(statusText)
-        } else if (params.row.task_status === "needToConfirm") {
-          iconComponent = <DoneOutlinedIcon />
-          statusText = "На проверке"
-          setStatusText(statusText)
-        } else if (params.row.task_status === "closed") {
-          iconComponent = <DoneAllIcon />
-          statusText = "Закрыта"
-          setStatusText(statusText)
+        switch (params.row.task_status) {
+          case "toApprove":
+            iconComponent = <HourglassEmptyIcon />;
+            statusText = "Новая";
+            break;
+          case "approved":
+            iconComponent = <CheckCircleOutlineIcon />;
+            statusText = "Согласована";
+            break;
+          case "inWork":
+            iconComponent = <AssignmentIcon />;
+            statusText = "В работе";
+            break;
+          case "needToConfirm":
+            iconComponent = <DoneOutlinedIcon />;
+            statusText = "На проверке";
+            break;
+          case "closed":
+            iconComponent = <DoneAllIcon />;
+            statusText = "Закрыта";
+            break;
+          default:
+            statusText = "";
         }
 
         return (
@@ -304,9 +307,9 @@ export const TasksTable = ({ tasks, reRender }) => {
           <DataGrid
             sx={{
               flexGrow: 1,
+              width: '100%', // Change maxWidth to width
               maxWidth: { xs: "100%", sm: "100%", margin: "0 auto", justifyContent: "center" },
               display: "flex",
-              alignItems: "center",
               "& .MuiDataGrid-cell": {
                 display: "flex",
                 alignItems: "center",
