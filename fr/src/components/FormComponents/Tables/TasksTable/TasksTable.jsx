@@ -23,8 +23,8 @@ export const TasksTable = ({ tasks, reRender }) => {
   // Используем useMediaQuery для определения ширины экрана
   const isSmallScreen = useMediaQuery("(max-width:1310px)")
   const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
-   // Устанавливаем ширину столбцов в зависимости от разрешения экрана
-   const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 565;
+  // Устанавливаем ширину столбцов в зависимости от разрешения экрана
+  const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 1100
 
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -38,7 +38,9 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "id",
       headerName: "№",
       description: "This column description",
-      width: 40,
+      // width: 50,
+      // flex: 1,
+      autoWidth: true,
       // renderCell: params => {
       //   let test
       //   test = params.value.match(/\d{4}/)[0]
@@ -82,27 +84,27 @@ export const TasksTable = ({ tasks, reRender }) => {
 
         switch (params.row.task_status) {
           case "toApprove":
-            iconComponent = <HourglassEmptyIcon />;
-            statusText = "Новая";
-            break;
+            iconComponent = <HourglassEmptyIcon />
+            statusText = "Новая"
+            break
           case "approved":
-            iconComponent = <CheckCircleOutlineIcon />;
-            statusText = "Согласована";
-            break;
+            iconComponent = <CheckCircleOutlineIcon />
+            statusText = "Согласована"
+            break
           case "inWork":
-            iconComponent = <AssignmentIcon />;
-            statusText = "В работе";
-            break;
+            iconComponent = <AssignmentIcon />
+            statusText = "В работе"
+            break
           case "needToConfirm":
-            iconComponent = <DoneOutlinedIcon />;
-            statusText = "На проверке";
-            break;
+            iconComponent = <DoneOutlinedIcon />
+            statusText = "На проверке"
+            break
           case "closed":
-            iconComponent = <DoneAllIcon />;
-            statusText = "Закрыта";
-            break;
+            iconComponent = <DoneAllIcon />
+            statusText = "Закрыта"
+            break
           default:
-            statusText = "";
+            statusText = ""
         }
 
         return (
@@ -136,7 +138,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "responsible_user_last_name",
       headerName: "Ответственный",
       description: "Ответсвенное лицо",
-      width: 120,
+      width: 140,
       cellClassName: "super-app-theme--cell",
       renderCell: params => {
         let render
@@ -155,7 +157,9 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "deadline",
       headerName: "Выполнить до:",
       description: "This column description",
-      width: 120,
+      // width: 120,
+      // flex: 1,
+      autoWidth: true,
       headerClassName: "super-app-theme--header",
       type: "date",
       valueGetter: params => new Date(params.value),
@@ -280,6 +284,16 @@ export const TasksTable = ({ tasks, reRender }) => {
 
   // console.log("filterModel:", filterModel)
 
+  const columnWidths = columns.reduce((acc, column) => {
+    return acc + column.width
+  }, 0)
+
+  const containerStyle = {
+    margin: "1px auto",
+    // maxWidth: columnWidths + 1,
+    // width: columnWidths + 1,
+  }
+
   return (
     <>
       <>
@@ -295,66 +309,70 @@ export const TasksTable = ({ tasks, reRender }) => {
       <Loader reqStatus={reqStatus}>
         <Box
           sx={{
-            flexGrow: 1,
-            height: "80vh",
-            width: "100%",
+            height: "85vh",
+            display: "flex",
+            overflow: "auto",
+            mt: "5px",
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
             border: "1px solid #e0e0e0",
             borderRadius: "5px",
-            display: "flex",
-            overflow: "auto",
           }}>
-          <DataGrid
-            sx={{
-              flexGrow: 1,
-              width: '100%', // Change maxWidth to width
-              maxWidth: { xs: "100%", sm: "100%", margin: "0 auto", justifyContent: "center" },
-              display: "flex",
-              "& .MuiDataGrid-cell": {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center", // Если требуется центрировать текст в ячейках
-              },
-              "& .MuiDataGrid-columnHeaderTitleContainer": {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center", // Если требуется центрировать текст в заголовках столбцов
-              },
-              "& .super-app-theme--header": {
-                backgroundColor: "rgba(255, 7, 0, 0.55)",
-              },
-              "& .super-app-theme--cell": {
-                backgroundColor: "rgba(224, 183, 60, 0.55)",
-                color: "#1a3e72",
-                fontWeight: "600",
-              },
-            }}
-            // autoHeight
-            autoWidght
-            rowHeight={25}
-            rows={sortedTasks.map(task => ({
-              ...task,
-              id: task.id,
-            }))}
-            columns={columns}
-            localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
-            onCellClick={handleCellClick}
-            getRowClassName={params => {
-              if (params.row.read_status === "unread") {
-                return "bold-row"
-              }
-              return params.row.read_status === "unread" ? "bold-row" : ""
-            }}
-            onFilterModelChange={handleFilterModelChange}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 25 },
-              },
-            }}
-            pageSizeOptions={[10, 15, 25]}
-          />
+          <div style={containerStyle}>
+            <DataGrid
+              sx={{
+                padding: "5px",
+                boxShadow: 2,
+                border: 2,
+                borderColor: "primary.light",
+                "& .MuiDataGrid-cell": {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center", // Если требуется центрировать текст в ячейках
+                },
+                "& .MuiDataGrid-row": {
+                  cursor: "pointer",
+                },
+                "& .MuiDataGrid-columnHeaderTitleContainer": {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center", // Если требуется центрировать текст в заголовках столбцов
+                },
+                "& .super-app-theme--header": {
+                  backgroundColor: "rgba(255, 7, 0, 0.55)",
+                },
+                "& .super-app-theme--cell": {
+                  backgroundColor: "rgba(224, 183, 60, 0.55)",
+                  color: "#1a3e72",
+                  fontWeight: "600",
+                },
+              }}
+              // autoHeight
+              autoWidght
+              rowHeight={25}
+              rows={sortedTasks.map(task => ({
+                ...task,
+                id: task.id,
+              }))}
+              columns={columns}
+              localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+              onCellClick={handleCellClick}
+              getRowClassName={params => {
+                if (params.row.read_status === "unread") {
+                  return "bold-row"
+                }
+                return params.row.read_status === "unread" ? "bold-row" : ""
+              }}
+              onFilterModelChange={handleFilterModelChange}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 25 },
+                },
+              }}
+              pageSizeOptions={[10, 15, 25]}
+            />
+          </div>
         </Box>
       </Loader>
     </>
