@@ -21,13 +21,14 @@ import LocalPrintshopOutlinedIcon from "@mui/icons-material/LocalPrintshopOutlin
 import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import { RadioGroupRating } from "../../Navigation/User/Menu/Schedule/RadioGroupRating/RadioGroupRating"
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
 import { formatDate } from "../../../utils/formatDate"
 import { PrintTaskList } from "./PrintTaskList"
 import ExpandMore from "@mui/icons-material/ExpandMore"
+import { Loader } from "../Loader/Loader"
 
 const OFF_TIME = "13:00:00"
 
@@ -79,20 +80,15 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
 
   let transferData = {}
 
-  const popupSuccess = text => {
+  const popupSnackbar = useCallback((text, severity) => {
     setSnackbarMessage(text)
-    setSnackbarSeverity("success")
+    setSnackbarSeverity(severity)
     setOpenSnackbar(true)
-  }
-  const popupError = text => {
-    setSnackbarMessage(text)
-    setSnackbarSeverity("error")
-    setOpenSnackbar(true)
-  }
+  }, [])
 
-  const handleCloseSnackbar = () => {
+  const handleCloseSnackbar = useCallback(() => {
     setOpenSnackbar(false)
-  }
+  }, [])
 
   const calculateEstimatedTime = (createdOn, deadlineTime) => {
     const createdDate = new Date(createdOn)
@@ -127,20 +123,25 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     }
   }
 
-  const schedulesWithTime = Object.values(schedules)
-    .map(scheduleItem => ({
-      ...scheduleItem,
-      // estimated_time: calculateEstimatedTime(scheduleItem.created_on, scheduleItem.deadline_time),
-      estimated_time: calculateRemainingTime(scheduleItem.deadline_time),
-    }))
-    .sort((a, b) => {
-      // Сначала сортируем по статусу: new выше done
-      if (a.schedule_status === "new" && b.schedule_status !== "new") return -1
-      if (a.schedule_status !== "new" && b.schedule_status === "new") return 1
+// console.log(schedules)
+// Преобразуем объект в массив значений
+const schedulesArray = Object.values(schedules);
+// Теперь можно использовать filter
+const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
+// console.log(ts)
 
-      // Если статусы одинаковы, сортируем по дате создания
-      return new Date(a.deadline_time) - new Date(b.deadline_time)
-    })
+  const schedulesWithTime = useMemo(() => {
+    return Object.values(schedules)
+      .map(scheduleItem => ({
+        ...scheduleItem,
+        estimated_time: calculateRemainingTime(scheduleItem.deadline_time),
+      }))
+      .sort((a, b) => {
+        if (a.schedule_status === "new" && b.schedule_status !== "new") return -1
+        if (a.schedule_status !== "new" && b.schedule_status === "new") return 1
+        return new Date(a.deadline_time) - new Date(b.deadline_time)
+      })
+  }, [schedules])
 
   // Фильтрация расписаний на основе введенного запроса
   const filteredSchedules = schedulesWithTime.filter(schedule => schedule.schedule_description.toLowerCase().includes(keyWordsFilter.toLowerCase()))
@@ -163,10 +164,12 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
         setReqStatus({ loading: false, error: null })
         setEditingScheduleId(null)
         setEditableDescription("")
-        popupSuccess("Задача успешно обновлена!")
+        popupSnackbar("Задача удалена!", "success")
       } catch (error) {
-        popupError("Ошибка при обновлении задачи.")
+        popupSnackbar("Ошибка при удалении задачи.", "error")
         setReqStatus({ loading: false, error: error })
+      } finally {
+        setReqStatus({ loading: false, error: null })
       }
     }
   }
@@ -182,10 +185,12 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
       await getDataFromEndpoint(currentUser.token, "/schedule/updateSchedule", "POST", transferData, setReqStatus)
       reRender(prevKey => prevKey + 1)
       setReqStatus({ loading: false, error: null })
-      popupSuccess("Задача выполнена!")
+      popupSnackbar("Задача выполнена!", "success")
     } catch (error) {
-      popupError("Ошибка при закрытии задачи.")
+      popupSnackbar("Ошибка при закрытии задачи.", "error")
       setReqStatus({ loading: false, error: error })
+    } finally {
+      setReqStatus({ loading: false, error: null })
     }
   }
 
@@ -195,10 +200,12 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
       await getDataFromEndpoint(currentUser.token, "/schedule/removeSchedule", "POST", schedule_id, setReqStatus)
       reRender(prevKey => prevKey + 1)
       setReqStatus({ loading: false, error: null })
-      popupSuccess("Задача удаленна!")
+      popupSnackbar("Задача удаленна!", "success")
     } catch (error) {
-      popupError("Ошибка при удалении задачи.")
+      popupSnackbar("Ошибка при удалении задачи.", "error")
       setReqStatus({ loading: false, error: error })
+    } finally {
+      setReqStatus({ loading: false, error: null })
     }
   }
 
@@ -223,6 +230,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
           margin="normal"
         />
       </Box>
+      <Loader reqStatus={reqStatus}>
       {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
       <Box>
         <Accordion>
@@ -239,6 +247,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
           </AccordionDetails>
         </Accordion>
       </Box>
+      </Loader>
       {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
       <Box sx={{ mb: "50px" }}>
         {filteredSchedules &&
