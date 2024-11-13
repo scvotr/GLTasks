@@ -24,7 +24,7 @@ export const TasksTable = ({ tasks, reRender }) => {
   const isSmallScreen = useMediaQuery("(max-width:1310px)")
   const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
   // Устанавливаем ширину столбцов в зависимости от разрешения экрана
-  const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 600
+  const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 720
 
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -38,9 +38,9 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "id",
       headerName: "№",
       description: "This column description",
-      // width: 50,
+      width: 50,
       // flex: 1,
-      autoWidth: true,
+      // autoWidth: true,
       // renderCell: params => {
       //   let test
       //   test = params.value.match(/\d{4}/)[0]
@@ -51,7 +51,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "read_status",
       headerName: "",
       description: "This column description",
-      width: 20,
+      width: 5,
       renderCell: params => (
         <Stack style={{ fontWeight: params.value === "unread" ? "bold" : "normal", color: params.value === "unread" ? "green" : "black" }}>
           {params.value === "unread" ? <EmailOutlinedIcon /> : <DraftsOutlinedIcon />}
@@ -62,7 +62,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       field: "appoint_subdepartment_id",
       headerName: "",
       description: "This column description",
-      width: 20,
+      width: 5,
       renderCell: params => {
         let render
         if (params.row.appoint_subdepartment_id.toString() === currentUser.subDep.toString()) {
@@ -119,18 +119,18 @@ export const TasksTable = ({ tasks, reRender }) => {
 
     // { field: "appoint_department_name", headerName: "Назначил", description: "От кого", width: 150 },
     // { field: "appoint_subdepartment_name", headerName: "Отдел", description: "От кого", width: 170 },
-    {
-      field: "appoint_user_last_name",
-      headerName: "От ",
-      description: "От кого",
-      width: 135,
-      // renderCell: params => (
-      //   <div>
-      //     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
-      //     {params.value}
-      //   </div>
-      // ),
-    },
+    // {
+    //   field: "appoint_user_last_name",
+    //   headerName: "От ",
+    //   description: "От кого",
+    //   width: 135,
+      //! renderCell: params => (
+      //!  <div>
+      //!     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
+      //!     {params.value}
+      //!   </div>
+      //! ),
+    // },
 
     // { field: "responsible_department_name", headerName: "Исполнитель", description: "Для кого", width: 220 },
     { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 200 },
@@ -367,10 +367,10 @@ export const TasksTable = ({ tasks, reRender }) => {
               onFilterModelChange={handleFilterModelChange}
               initialState={{
                 pagination: {
-                  paginationModel: { page: 0, pageSize: 25 },
+                  paginationModel: { page: 0, pageSize: 20 },
                 },
               }}
-              pageSizeOptions={[10, 15, 25]}
+              pageSizeOptions={[10, 15, 20]}
             />
           </div>
         </Box>
