@@ -327,7 +327,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                       ) : (
                         <>
                           {/* <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" /> */}
-                          <Typography variant="body2">
+                          <Typography variant="body2" component="div">
                             <Stack>
                               <Box>До:</Box>
                               <Box>{formatDate(schedule.deadline_time)}</Box>
@@ -345,7 +345,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                       )}
                     </>
                   )}
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="body2" color="textSecondary" component="div">
                     {(() => {
                       if (schedule.estimated_time === true && schedule.schedule_status !== "done") {
                         return (

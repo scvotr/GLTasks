@@ -1,5 +1,5 @@
 export const calculateTotalTime = (start, end) => {
-  console.log(start, end)
+  // console.log(start, end)
   const startDate = new Date(start.split(' ').join('T')) // Преобразуем строку в формат ISO
   const endDate = new Date(end.split(' ').join('T'))
   const totalTimeInSeconds = (endDate - startDate) / 1000 // Разница в миллисекундах

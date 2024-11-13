@@ -11,8 +11,6 @@ export const LeadTasks = () => {
   const [formKey, setFormKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
 
-  console.log(allLeadTasks)
-
   useEffect(() => {
     notifyEvent("need-all-Tasks")
   }, [formKey])

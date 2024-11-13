@@ -71,6 +71,16 @@ class MotorConfigController extends BaseMotorController {
       handleError(res, 'Error: create appendConfigToMotor - ' + error.message)
     }
   }
+  async removeConfigForStorage(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const data = JSON.parse(authDecodeUserData.payLoad)
+      await MotorConfigCRUD.removeConfigForStorageQ(data)
+      sendResponseWithData(res, 'data')
+    } catch (error) {
+      handleError(res, 'Error: create appendConfigToMotor - ' + error.message)
+    }
+  }
   async readMotorConfigs(req, res) {
     try {
       const authDecodeUserData = req.user

@@ -17,10 +17,11 @@ import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined"
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 import Diversity1OutlinedIcon from "@mui/icons-material/Diversity1Outlined"
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined"
+import SupportAgentOutlinedIcon from "@mui/icons-material/SupportAgentOutlined"
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined"
+import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined"
+import ConstructionOutlinedIcon from "@mui/icons-material/ConstructionOutlined"
 import { NavLink } from "react-router-dom"
 // import { useTaskContext } from "../../../../../context/Tasks/TasksProvider"
 // import getTasksData from "./MenuListData/TasksData.jsx"
@@ -30,6 +31,7 @@ import FilePresentOutlinedIcon from "@mui/icons-material/FilePresentOutlined"
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { Divider } from "@mui/material"
+import { getAllPowerEngineers } from "./Menu/Users/PowerEngineer/Chifes/getAllPowerEngineers"
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   textDecoration: "none",
@@ -42,7 +44,6 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
     /* Другие желаемые стили для выбранного пункта */
   },
 }))
-
 export const NestedListMenu = ({ isOpen }) => {
   const currentUser = useAuthContext()
   const [openSections, setOpenSections] = useState(() => {
@@ -57,6 +58,7 @@ export const NestedListMenu = ({ isOpen }) => {
   const handleSectionClick = section => {
     setOpenSections({ ...openSections, [section]: !openSections[section] })
   }
+
   const sectionsData = [
     {
       name: "Задачи",
@@ -108,26 +110,26 @@ export const NestedListMenu = ({ isOpen }) => {
         },
       ].filter(item => item !== null), // Фильтруем null значения
     },
-    {
-      name: "Документы(alfa)",
-      icon: <FilePresentOutlinedIcon fontSize="large" />,
-      path: "/docs",
-      tasksCount: 0,
-      subItems: [
-        {
-          name: "Распоряжения(alfa)",
-          icon: <FolderCopyOutlinedIcon fontSize="large" />,
-          path: "/docs/ordinance",
-          btn: true,
-        },
-        {
-          name: "Архив",
-          icon: <Inventory2OutlinedIcon fontSize="large" />,
-          path: "/docs/docsArchive",
-          btn: true,
-        },
-      ],
-    },
+    // {
+    //   name: "Документы(alfa)",
+    //   icon: <FilePresentOutlinedIcon fontSize="large" />,
+    //   path: "/docs",
+    //   tasksCount: 0,
+    //   subItems: [
+    //     {
+    //       name: "Распоряжения(alfa)",
+    //       icon: <FolderCopyOutlinedIcon fontSize="large" />,
+    //       path: "/docs/ordinance",
+    //       btn: true,
+    //     },
+    //     {
+    //       name: "Архив",
+    //       icon: <Inventory2OutlinedIcon fontSize="large" />,
+    //       path: "/docs/docsArchive",
+    //       btn: true,
+    //     },
+    //   ],
+    // },
     {
       name: "Планирование",
       icon: <CalendarMonthOutlinedIcon fontSize="large" />,
@@ -181,7 +183,38 @@ export const NestedListMenu = ({ isOpen }) => {
         { name: "Изменить Пароль", icon: <PasswordOutlinedIcon fontSize="large" />, path: "/settings/changePasPin", btn: true },
       ],
     },
-  ]
+  ].filter(Boolean)
+
+  // const energyServicePositions = [11, 23]; // Массив с допустимыми позициями получить всех энергетиков с сервера!
+
+  // if (energyServicePositions.includes(Number(currentUser.position))) {
+  //   sectionsData.push({
+  //     name: "Оборудование",
+  //     icon: <ConstructionOutlinedIcon  fontSize="large" />,
+  //     path: "/mutualVerification",
+  //     tasksCount: 0,
+  //     subItems: [
+  //       {
+  //         name: "Документы",
+  //         icon: <FolderCopyOutlinedIcon fontSize="large" />,
+  //         path: "/mutualVerification/docs",
+  //         btn: true,
+  //       },
+  //       {
+  //         name: "Архив",
+  //         icon: <Inventory2OutlinedIcon fontSize="large" />,
+  //         path: "/mutualVerification/archive",
+  //         btn: true,
+  //       },
+  //     ],
+  //   })
+  // }
+
+  const PowerEngineers = getAllPowerEngineers(currentUser)
+  if(PowerEngineers){
+    sectionsData.push(PowerEngineers);
+  }
+  
 
   const sectionsWithoutSettings = sectionsData.filter(section => !section.settings)
   const sectionsWithSettings = sectionsData.filter(section => section.settings)
@@ -196,6 +229,7 @@ export const NestedListMenu = ({ isOpen }) => {
       [itemName]: !prevOpenSubItems[itemName],
     }))
   }
+
 
   return (
     <>
@@ -221,7 +255,7 @@ export const NestedListMenu = ({ isOpen }) => {
               <Collapse in={openSections[section.name.toLowerCase()]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {section.subItems.map((subItem, subIndex) => (
-                    <div key={subIndex}>
+                    <div key={subItem.name}>
                       {subItem.btn ? ( // Проверка наличия nameBnt вместо name
                         <StyledListItemButton
                           component={NavLink}

@@ -13,10 +13,10 @@ export const UsersSchedules = () => {
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [formKey, setFormKey] = useState(0)
-  const [value, setValue] = useState("1")
+  const [value, setValue] = useState()
   const [allSchedules, setAllScheduls] = useState([])
   const [allUsers, setAllUsers] = useState({})
- 
+
   const handleChange = async (event, newValue) => {
     setValue(newValue)
     try {
@@ -35,6 +35,10 @@ export const UsersSchedules = () => {
         if (currentUser.role === "chife") {
           const data = await getDataFromEndpoint(currentUser.token, "/user/getAllUsersBySubDepId", "POST", currentUser.subDep, setReqStatus)
           const filteredData = data.filter(user => user.id.toString() !== currentUser.id.toString())
+          // Установите значение только если оно еще не установлено
+          if (filteredData.length > 0 && !value) {
+            setValue(filteredData[0].id) // Установите значение на id первого пользователя
+          }
           setAllUsers(filteredData)
         } else {
           const data = await getDataFromEndpoint(currentUser.token, "/schedule/getAllSchedulesByUserId", "POST", currentUser.id, setReqStatus)
@@ -46,7 +50,7 @@ export const UsersSchedules = () => {
       }
     }
     fetchData()
-  }, [formKey, value])
+  }, [formKey])
 
   return (
     <>
@@ -76,7 +80,7 @@ export const UsersSchedules = () => {
               ))}
             </TabList>
             {/* <ScheduleCardView schedules={allSchedules} reRender={setFormKey} /> */}
-            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey} isLead={true}/>
+            <ScheduleCardViewV2 schedules={allSchedules} reRender={setFormKey} isLead={true} />
           </TabContext>
         ) : (
           <></>

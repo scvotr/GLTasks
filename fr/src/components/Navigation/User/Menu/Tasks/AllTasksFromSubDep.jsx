@@ -7,8 +7,6 @@ export const AllTasksFromSubDep = () => {
   const { allLeadTasks, allTasksFromSubDep } = useTaskContext()
   const [formKey, setFormKey] = useState(0)
 
-  console.log(allLeadTasks)
-
   useEffect(() => {}, [formKey])
 
   return (

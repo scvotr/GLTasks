@@ -3,7 +3,6 @@ import { formatDate } from "../../../utils/formatDate"
 import { Box, List, ListItem, ListItemText, Checkbox, Button, Typography } from "@mui/material"
 
 export const PrintTaskList = ({ tasks }) => {
-  console.log(tasks)
   const [selectedTasks, setSelectedTasks] = useState([])
 
   const handleSelectTask = taskId => {

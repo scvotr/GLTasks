@@ -20,6 +20,7 @@ import { AppendMotorConfig } from "./MotorConfig/AppendMotorConfig"
 import { RemoveMotorConfig } from "./MotorConfig/RemoveMotorConfig"
 import { MotorRepairReasonForm } from "./MotorRepair/MotorRepairReasonForm"
 import { MotorRepairReportForm } from "./MotorRepair/MotorRepairReportForm"
+import { RemoveMotorConfigForStorage } from "./MotorConfig/RemoveMotorConfigForStorage"
 
 export const CreateMotorV2 = () => {
   const currentUser = useAuthContext()
@@ -34,12 +35,14 @@ export const CreateMotorV2 = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success")
 
   const [motors, setMotors] = useState([])
+  console.log(motors)
   const [motor, setMotor] = useState([])
 
-  console.log(motors)
   const [appendMotorConfig, setAppendMotorConfig] = useState(false)
-  const [removeMotorConfig, setRemovedMotorConfig] = useState(false)
+  const [removeConfigForRepair, setRemovedMotorConfig] = useState(false)
+  const [removeConfigForStorage, setRemovedMotorConfigForStorage] = useState(false)
   const [confirmRemoveMotorConfig, setConfirmRemoveMotorConfig] = useState(false)
+  const [confirmRemoveMotorConfigForStorage, setConfirmRemoveMotorConfigForStorage] = useState(false)
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -64,6 +67,7 @@ export const CreateMotorV2 = () => {
     setFullScreenOpen(false)
     setAppendMotorConfig(false)
     setRemovedMotorConfig(false)
+    setRemovedMotorConfigForStorage(false)
     setFormKey(prev => prev + 1)
   }
 
@@ -108,36 +112,15 @@ export const CreateMotorV2 = () => {
   // -----------------------------------------------
 
   const handleToRepair = async () => {
-    // setToView(false)
-    // setToRepair(true)
-    setCurrentFullScreenView("repair")
+    setCurrentFullScreenView("repair_on")
     setFullScreenOpen(true)
-    // try {
-    //   setReqStatus({ loading: true, error: null })
-    //   const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/takeMotorForRepair`, "POST", motor.motor_id, setReqStatus)
-    //   popupSnackbar(res)
-    //   setFormKey(prev => prev + 1)
-    //   setAnchorEl(null)
-    //   setReqStatus({ loading: false, error: null })
-    // } catch (error) {
-    //   setReqStatus({ loading: false, error: error.message })
-    //   popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
-    // }
   }
+
   const handleCompleteRepair = async () => {
-    try {
-      setReqStatus({ loading: true, error: null })
-      const res = await getDataFromEndpoint(currentUser.token, `/admin/devices/motor/completeMotorRepair`, "POST", motor.motor_id, setReqStatus)
-      popupSnackbar(res)
-      setFormKey(prev => prev + 1)
-      setAnchorEl(null)
-      setReqStatus({ loading: false, error: null })
-    } catch (error) {
-      setReqStatus({ loading: false, error: error.message })
-      popupSnackbar(`Ошибка: ${error.message} Код: ${error.code}`, "error")
-    }
+    setCurrentFullScreenView("repair_off")
+    setFullScreenOpen(true)
   }
-  // !!!!!!!!!
+
   const [toView, setToView] = useState(false)
   const handleInfoView = async () => {
     // setToRepair(false)
@@ -147,8 +130,8 @@ export const CreateMotorV2 = () => {
   }
 
   const fullScreenViews = {
-    repair_on: <MotorRepairReasonForm motor={motor}/>,
-    repair_off: <MotorRepairReportForm motor={motor}/>,
+    repair_on: <MotorRepairReasonForm motor={motor} popupSnackbar={popupSnackbar} onClose={closeModal} />,
+    repair_off: <MotorRepairReportForm motor={motor} popupSnackbar={popupSnackbar} onClose={closeModal} />,
     view: <MotorInfoViewV2 motor={motor} />,
   }
 
@@ -161,17 +144,24 @@ export const CreateMotorV2 = () => {
     setRemovedMotorConfig(true)
     setConfirmRemoveMotorConfig(false)
   }
+  const handleRemoveMotorConfigForStorage = async () => {
+    setModalOpen(true)
+    setRemovedMotorConfigForStorage(true)
+    setConfirmRemoveMotorConfigForStorage(false)
+  }
 
   return (
     <>
       <ModalCustom isOpen={modalOpen} onClose={closeModal} infoText={isEdit ? "Изменить?" : "Добавить номер двигателя"}>
         {appendMotorConfig ? (
           <AppendMotorConfig motor={motor} onClose={closeModal} popupSnackbar={popupSnackbar} />
-        ) : removeMotorConfig ? (
+        ) : removeConfigForRepair ? (
           <RemoveMotorConfig motor={motor} onClose={closeModal} popupSnackbar={popupSnackbar} />
+        ) : removeConfigForStorage ? ( // Новое условие для removeConfigForStorage
+          <RemoveMotorConfigForStorage motor={motor} onClose={closeModal} popupSnackbar={popupSnackbar} />
         ) : (
           <CreateMotorFormV2 onClose={closeModal} popupSnackbar={popupSnackbar} isEdit={isEdit} motor={motor} />
-        )}{" "}
+        )}
       </ModalCustom>
       <FullScreenDialog isOpen={fullScreenOpen} onClose={closeModal} infoText={motor.motor_id}>
         {/* <MotorInfoViewV2 motor={motor} /> */}
@@ -214,16 +204,28 @@ export const CreateMotorV2 = () => {
             Установить двигатель
           </MenuItem>
         ) : motor.on_repair ? (
-          <MenuItem
-            onClick={e => {
-              e.stopPropagation()
-              setDialogText({ title: "Удалить конфигурацию двигателя?", message: "" })
-              setOpenDialog(true)
-              setConfirmRemoveMotorConfig(true)
-              setAnchorEl(null)
-            }}>
-            Демонтировать двигатель
-          </MenuItem>
+          <>
+            <MenuItem
+              onClick={e => {
+                e.stopPropagation()
+                setDialogText({ title: "Забрать двигатель в ремонт?", message: "" })
+                setOpenDialog(true)
+                setConfirmRemoveMotorConfig(true)
+                setAnchorEl(null)
+              }}>
+              Забрать двигатель в ремонт
+            </MenuItem>
+            <MenuItem
+              onClick={e => {
+                e.stopPropagation()
+                setDialogText({ title: "Снять двигатель?", message: "" })
+                setOpenDialog(true)
+                setConfirmRemoveMotorConfigForStorage(true)
+                setAnchorEl(null)
+              }}>
+              Переместить двигатель на склад
+            </MenuItem>
+          </>
         ) : null}
         <MenuItem onClick={closeModal}>Запланировать ТО</MenuItem>
         {!motor.on_repair &&
@@ -340,6 +342,8 @@ export const CreateMotorV2 = () => {
           onConfirm={() => {
             if (confirmRemoveMotorConfig) {
               handleRemoveMotorConfig()
+            } else if (confirmRemoveMotorConfigForStorage) {
+              handleRemoveMotorConfigForStorage()
             } else {
               handleDelete()
             }
