@@ -24,7 +24,7 @@ export const TasksTable = ({ tasks, reRender }) => {
   const isSmallScreen = useMediaQuery("(max-width:1310px)")
   const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
   // Устанавливаем ширину столбцов в зависимости от разрешения экрана
-  const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 1100
+  const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 600
 
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -309,7 +309,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       <Loader reqStatus={reqStatus}>
         <Box
           sx={{
-            height: "85vh",
+            height: "80vh",
             display: "flex",
             overflow: "auto",
             mt: "5px",
