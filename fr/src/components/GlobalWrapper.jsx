@@ -13,18 +13,26 @@ import { LeftSideDrawerGeneral } from "./Navigation/User/LeftSideDrawerGeneral/L
 
 export const GlobalWrapper = () => {
   const currentUser = useAuthContext()
-
-  const comtentMap = new Map([
-    ["admin", () => (<LefSideAdmin currentUser={currentUser}><SocketProvider><AdminLayout /></SocketProvider></LefSideAdmin>),],
-    ["general", () => (<LeftSideDrawerGeneral currentUser={currentUser}><SocketProvider><GeneralLayout /></SocketProvider></LeftSideDrawerGeneral>),],
-    ["chife", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><LeadLayout /></SocketProvider></LeftSideDrawer>),],
-    ["user", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><UserLayout /></SocketProvider></LeftSideDrawer>),],
-    ["new", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><NewUserLayout /></SocketProvider></LeftSideDrawer>),],
+  // ! need test wtf
+  // const comtentMap = new Map([
+  //   ["admin", () => (<LefSideAdmin currentUser={currentUser}><SocketProvider><AdminLayout /></SocketProvider></LefSideAdmin>),],
+  //   ["general", () => (<LeftSideDrawerGeneral currentUser={currentUser}><SocketProvider><GeneralLayout /></SocketProvider></LeftSideDrawerGeneral>),],
+  //   ["chife", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><LeadLayout /></SocketProvider></LeftSideDrawer>),],
+  //   ["user", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><UserLayout /></SocketProvider></LeftSideDrawer>),],
+  //   ["new", () => (<LeftSideDrawer currentUser={currentUser}><SocketProvider><NewUserLayout /></SocketProvider></LeftSideDrawer>),],
+  // ])
+  
+  const contentMap = new Map([
+    ["admin", () => (<LefSideAdmin currentUser={currentUser}><AdminLayout /></LefSideAdmin>),],
+    ["general", () => (<LeftSideDrawerGeneral currentUser={currentUser}><GeneralLayout /></LeftSideDrawerGeneral>),],
+    ["chife", () => (<LeftSideDrawer currentUser={currentUser}><LeadLayout /></LeftSideDrawer>),],
+    ["user", () => (<LeftSideDrawer currentUser={currentUser}><UserLayout /></LeftSideDrawer>),],
+    ["new", () => (<LeftSideDrawer currentUser={currentUser}><NewUserLayout /></LeftSideDrawer>),],
   ])
 
   const renderContent = () => {
     if (currentUser && currentUser.login) {
-      const getContentByRole = comtentMap.get(currentUser.role)
+      const getContentByRole = contentMap.get(currentUser.role)
       return getContentByRole ? getContentByRole() : <DefaultLayoutMain />
     } else {
       return <DefaultLayoutMain />
