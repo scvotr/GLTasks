@@ -1,5 +1,5 @@
 import { useAuthContext } from "../context/AuthProvider"
-import { SocketProvider } from "../context/SocketProvider"
+// import { SocketProvider } from "../context/SocketProvider"
 import { TasksProvider } from "../context/Tasks/TasksProvider"
 import { AdminLayout } from "./Layouts/AdminLayout/AdminLayout"
 import { DefaultLayoutMain } from "./Layouts/DefaultLayoutMain/DefaultLayoutMain"
@@ -31,6 +31,7 @@ export const GlobalWrapper = () => {
   ])
 
   const renderContent = () => {
+    // need check token then render content!!!
     if (currentUser && currentUser.login) {
       const getContentByRole = contentMap.get(currentUser.role)
       return getContentByRole ? getContentByRole() : <DefaultLayoutMain />
