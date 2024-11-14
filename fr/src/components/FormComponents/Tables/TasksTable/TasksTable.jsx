@@ -20,11 +20,26 @@ import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Loader } from "../../Loader/Loader"
 
 export const TasksTable = ({ tasks, reRender }) => {
+  // // Используем useMediaQuery для определения ширины экрана
+  // const isSmallScreen = useMediaQuery("(max-width:1310px)")
+  // const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
+  // // Устанавливаем ширину столбцов в зависимости от разрешения экрана
+  // const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 720
+  
   // Используем useMediaQuery для определения ширины экрана
-  const isSmallScreen = useMediaQuery("(max-width:1310px)")
-  const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
+  const isExtraSmallScreen = useMediaQuery("(max-width:600px)"); // XS
+  const isSmallScreen = useMediaQuery("(min-width:601px) and (max-width:900px)"); // SM
+  const isMediumScreen = useMediaQuery("(min-width:901px) and (max-width:1200px)"); // MD
+  const isLargeScreen = useMediaQuery("(min-width:1201px) and (max-width:1600px)"); // LG
+  const isExtraLargeScreen = useMediaQuery("(min-width:1601px)"); // XL
+
   // Устанавливаем ширину столбцов в зависимости от разрешения экрана
-  const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 720
+  const taskColumnWidth = isExtraSmallScreen ? 250 
+                        : isSmallScreen ? 300 
+                        : isMediumScreen ? 400 
+                        : isLargeScreen ? 500 
+                        : isExtraLargeScreen ? 720 // Используем для очень больших экранов
+                        : 720; // Значение по умолчанию
 
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
