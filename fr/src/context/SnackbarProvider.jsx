@@ -1,80 +1,48 @@
-import { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
-const SnackbarContext = createContext()
+const SnackbarContext = createContext();
 
 export const useSnackbar = () => {
-  return useContext(SnackbarContext)
-}
+  return useContext(SnackbarContext);
+};
 
 export const SnackbarProvider = ({ children }) => {
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const openSnackbar = message => {
-    setSnackbarMessage(message)
-    setSnackbarOpen(true)
-  }
+  const popupSnackbar = useCallback((text, severity) => {
+    setSnackbarMessage(text);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  }, []);
 
-  const closeSnackbar = () => {
-    setSnackbarOpen(false)
-  }
+  const handleCloseSnackbar = useCallback(() => {
+    setOpenSnackbar(false);
+    setSnackbarMessage(""); // Сброс сообщения
+    setSnackbarSeverity("success"); // Сброс уровня серьезности
+  }, []);
 
   return (
-    <SnackbarContext.Provider value={{
-        openSnackbar, snackbarOpen, snackbarMessage 
-      }}>
-    {children}
-   </SnackbarContext.Provider>)
-}
+    <SnackbarContext.Provider value={{ popupSnackbar }}>
+      {children}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </SnackbarContext.Provider>
+  );
+};
 
-// export const CreateMotorV2 = () => {
-//   const [modalOpen, setModalOpen] = useState(false);
-//   const { openSnackbar } = useSnackbar(); // Получаем функцию openSnackbar
+// usage
 
-//   const closeModal = () => {
-//     setModalOpen(false);
-//   };
-
-//   const handleCreateMotor = () => {
-//     // Логика создания двигателя
-//     // После успешного создания двигателя
-//     openSnackbar("Двигатель успешно добавлен!"); // Открываем Snackbar с сообщением
-//     closeModal(); // Закрываем модальное окно
-//   };
-
-// import React, { createContext, useContext, useState } from "react";
-// import { CustomSnackbar } from "./CustomSnackbar"; // Убедитесь, что путь правильный
-
-// const SnackbarContext = createContext();
-
-// export const useSnackbar = () => {
-//   return useContext(SnackbarContext);
-// };
-
-// export const SnackbarProvider = ({ children }) => {
-//   const [snackbarOpen, setSnackbarOpen] = useState(false);
-//   const [snackbarMessage, setSnackbarMessage] = useState("");
-//   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Уровень серьезности по умолчанию
-
-//   const openSnackbar = (message, severity = "success") => {
-//     setSnackbarMessage(message);
-//     setSnackbarSeverity(severity);
-//     setSnackbarOpen(true);
-//   };
-
-//   const closeSnackbar = () => {
-//     setSnackbarOpen(false);
-//   };
-
-//   return (
-//     <SnackbarContext.Provider value={{ openSnackbar, snackbarOpen, snackbarMessage, snackbarSeverity }}>
-//       {children}
-//       <CustomSnackbar 
-//         open={snackbarOpen} 
-//         message={snackbarMessage} 
-//         severity={snackbarSeverity} 
-//         onClose={closeSnackbar} 
-//       />
-//     </SnackbarContext.Provider>
-//   );
-// };
+// popupSnackbar("Все ок!", "success")
+// popupSnackbar("Не ок!", "error")
