@@ -1,7 +1,7 @@
 import io from "socket.io-client"
 import { HOST_SOCKET } from "../utils/remoteHosts"
 import { useEffect, createContext, useContext } from "react"
-import App from "../App"
+// import App from "../App"
 import { useAuthContext } from "./AuthProvider"
 
 export const SocketContext = createContext()
@@ -53,15 +53,15 @@ export const SocketProvider = ({ children }) => {
       socket.disconnect()
       window.removeEventListener("beforeunload", () => socket.disconnect())
     }
-  }, [currentUser])
+  }, [adminSocket, currentUser, generalDep, leadSubDep, socket, userSocket])
 
   return currentUser ? <SocketContext.Provider value={socket}>{children}</SocketContext.Provider> : <>d</>
 }
-
-export default function SocketConnectedApp() {
-  return (
-    <SocketProvider>
-      <App />
-    </SocketProvider>
-  )
-}
+// ! need test wtf
+// export default function SocketConnectedApp() {
+//   return (
+//     <SocketProvider>
+//       <App />
+//     </SocketProvider>
+//   )
+// }
