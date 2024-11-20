@@ -324,19 +324,11 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                         <></>
                       ) : (
                         <>
-                          {/* <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" /> */}
                           <Typography variant="body2" component="div">
                             <Stack>
                               <Box>До:</Box>
                               <Box>{formatDate(schedule.deadline_time)}</Box>
-                              {/* <Box>
-                                {" "}
-                                {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
-                                {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
-                                {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
-                                {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
-                              </Box> */}
-                            </Stack>
+                             </Stack>
                           </Typography>
                           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                         </>
@@ -369,8 +361,7 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
                             {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
                             {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
                             {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
-                            {/* {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>} */}
-                          </>
+                              </>
                         )
                       }
                     })()}
@@ -499,28 +490,3 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     </>
   )
 }
-
-// function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
-//   const [progress, setProgress] = useState(0)
-
-//   useEffect(() => {
-//     console.log('re render LinearDeterminate')
-//     const calculateProgress = () => {
-//       const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
-//       const createdDate = new Date(created_on)
-//       const totalTime = deadlineDate.getTime() - createdDate.getTime() // общее время выполнения в миллисекундах
-//       const elapsedTime = Date.now() - createdDate.getTime() // время, прошедшее с момента создания
-
-//       const newProgress = Math.min((elapsedTime / totalTime) * 100, 100)
-//       setProgress(newProgress)
-//     }
-
-//     calculateProgress()
-//   }, [created_on, deadline_time, estimated_time])
-
-//   return (
-//     <Box sx={{ width: "100%", marginTop: 2 }}>
-//       <LinearProgress variant="determinate" value={progress} />
-//     </Box>
-//   )
-// }
