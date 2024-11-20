@@ -1,4 +1,4 @@
-import { Box, TextField, Button, List, ListItem, ListItemText, Typography, styled } from "@mui/material"
+import { TextField, Button, List, ListItem, ListItemText, Typography, styled } from "@mui/material"
 import { useAuthContext } from "../../../../context/AuthProvider"
 import { getDataFromEndpoint } from "../../../../utils/getDataFromEndpoint"
 import { useEffect, useState } from "react"
