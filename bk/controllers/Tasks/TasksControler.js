@@ -645,8 +645,8 @@ class TasksControler {
       const postPayload = JSON.parse(authDecodeUserData.payLoad)
       await addNewCommentQ(postPayload)
       // Условия уведомления:
-      await handleTaskComment(postPayload, 'Новый коментарий')
-      sendResponseWithData(res, 'addTaskCommet')
+      await handleTaskComment(postPayload, 'Новый комментарий')
+      sendResponseWithData(res, 'addTaskComment')
     } catch (error) {
       handleError(res, 'addTaskCommet')
     }
@@ -679,21 +679,6 @@ const handleTaskComment = async (postPayload, message) => {
     appoint_department_id,
     task_id,
   } = postPayload
-
-  // console.log(
-  //   user_role,
-  //   task_status,
-  //   user_id,
-  //   appoint_user_id,
-  //   user_dep,
-  //   user_subDep,
-  //   appoint_subdepartment_id,
-  //   responsible_user_id,
-  //   responsible_subdepartment_id,
-  //   responsible_department_id,
-  //   appoint_department_id,
-  //   task_id
-  // )
 
   const inDifDep = appoint_department_id !== responsible_department_id
   const inOneSubDep = appoint_subdepartment_id === responsible_subdepartment_id
