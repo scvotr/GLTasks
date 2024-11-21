@@ -29,8 +29,9 @@ import { formatDate } from "../../../utils/formatDate"
 import { PrintTaskList } from "./PrintTaskList"
 import ExpandMore from "@mui/icons-material/ExpandMore"
 import { Loader } from "../Loader/Loader"
+import { useSnackbar } from "../../../context/SnackbarProvider"
 
-const OFF_TIME = "13:00:00"
+const OFF_TIME = "17:00:00"
 
 // Memoize the component to prevent unnecessary re-renders
 const LinearDeterminate = memo(({ created_on, deadline_time, estimated_time }) => {
@@ -62,12 +63,10 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   // const today = new Date().toISOString().split("T")[0]
   const today = new Date()
   const currentUser = useAuthContext()
+  const { popupSnackbar } = useSnackbar()
   const [editingScheduleId, setEditingScheduleId] = useState(null)
   const [editableDescription, setEditableDescription] = useState("")
   const [editableDeadline, setEditableDeadline] = useState("")
-  const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState("")
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success")
   const [dialogText, setDialogText] = useState({ title: "", message: "" })
   const [openDialog, setOpenDialog] = useState(false)
   const [keyWordsFilter, setKeyWordsFilter] = useState("")
@@ -79,16 +78,6 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
   let transferData = {}
-
-  const popupSnackbar = useCallback((text, severity) => {
-    setSnackbarMessage(text)
-    setSnackbarSeverity(severity)
-    setOpenSnackbar(true)
-  }, [])
-
-  const handleCloseSnackbar = useCallback(() => {
-    setOpenSnackbar(false)
-  }, [])
 
   const calculateEstimatedTime = (createdOn, deadlineTime) => {
     const createdDate = new Date(createdOn)
@@ -123,12 +112,12 @@ export const ScheduleCardViewV2 = ({ schedules, reRender, isLead }) => {
     }
   }
 
-// console.log(schedules)
-// Преобразуем объект в массив значений
-const schedulesArray = Object.values(schedules);
-// Теперь можно использовать filter
-const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
-// console.log(ts)
+  //! console.log(schedules)
+  //! Преобразуем объект в массив значений
+  //! const schedulesArray = Object.values(schedules)
+  //! Теперь можно использовать filter
+  //! const ts = schedulesArray.filter(sc => sc.schedule_status !== "done")
+  //! console.log(ts)
 
   const schedulesWithTime = useMemo(() => {
     return Object.values(schedules)
@@ -164,9 +153,9 @@ const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
         setReqStatus({ loading: false, error: null })
         setEditingScheduleId(null)
         setEditableDescription("")
-        popupSnackbar("Задача удалена!", "success")
+        popupSnackbar("Задача изменена!", "success")
       } catch (error) {
-        popupSnackbar("Ошибка при удалении задачи.", "error")
+        popupSnackbar("Ошибка при редактировании задачи.", "error")
         setReqStatus({ loading: false, error: error })
       } finally {
         setReqStatus({ loading: false, error: null })
@@ -231,22 +220,22 @@ const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
         />
       </Box>
       <Loader reqStatus={reqStatus}>
-      {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-      <Box>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1-content" id="panel1-header">
-            <Box display="flex" alignItems="center" justifyContent="center" width="100%">
-              <LocalPrintshopOutlinedIcon sx={{ marginRight: 1 }} />
-              <Typography variant="h6" gutterBottom align="center">
-                Распечатать задачи
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <PrintTaskList tasks={filteredSchedules} />
-          </AccordionDetails>
-        </Accordion>
-      </Box>
+        {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
+        <Box>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1-content" id="panel1-header">
+              <Box display="flex" alignItems="center" justifyContent="center" width="100%">
+                <LocalPrintshopOutlinedIcon sx={{ marginRight: 1 }} />
+                <Typography variant="h6" gutterBottom align="center">
+                  Распечатать задачи
+                </Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <PrintTaskList tasks={filteredSchedules} />
+            </AccordionDetails>
+          </Accordion>
+        </Box>
       </Loader>
       {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
       <Box sx={{ mb: "50px" }}>
@@ -335,19 +324,11 @@ const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
                         <></>
                       ) : (
                         <>
-                          {/* <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" /> */}
                           <Typography variant="body2" component="div">
                             <Stack>
                               <Box>До:</Box>
                               <Box>{formatDate(schedule.deadline_time)}</Box>
-                              {/* <Box>
-                                {" "}
-                                {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
-                                {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
-                                {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
-                                {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>}
-                              </Box> */}
-                            </Stack>
+                             </Stack>
                           </Typography>
                           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                         </>
@@ -380,8 +361,7 @@ const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
                             {schedule.estimated_time.daysRemaining > 0 && <span>{schedule.estimated_time.daysRemaining} дн. </span>}
                             {schedule.estimated_time.hoursRemaining > 0 && <span>{schedule.estimated_time.hoursRemaining} ч. </span>}
                             {schedule.estimated_time.minutesRemaining > 0 && <span>{schedule.estimated_time.minutesRemaining} м. </span>}
-                            {/* {schedule.estimated_time.secondsRemaining > 0 && <span>{schedule.estimated_time.secondsRemaining} с.</span>} */}
-                          </>
+                              </>
                         )
                       }
                     })()}
@@ -481,11 +461,6 @@ const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
               })()}
             </Box>
           ))}
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-          <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
       </Box>
 
       <ConfirmationDialog
@@ -515,28 +490,3 @@ const ts = schedulesArray.filter(sc => sc.schedule_status !== 'done');
     </>
   )
 }
-
-// function LinearDeterminate({ created_on, deadline_time, estimated_time }) {
-//   const [progress, setProgress] = useState(0)
-
-//   useEffect(() => {
-//     console.log('re render LinearDeterminate')
-//     const calculateProgress = () => {
-//       const deadlineDate = new Date(`${deadline_time} ${OFF_TIME}`)
-//       const createdDate = new Date(created_on)
-//       const totalTime = deadlineDate.getTime() - createdDate.getTime() // общее время выполнения в миллисекундах
-//       const elapsedTime = Date.now() - createdDate.getTime() // время, прошедшее с момента создания
-
-//       const newProgress = Math.min((elapsedTime / totalTime) * 100, 100)
-//       setProgress(newProgress)
-//     }
-
-//     calculateProgress()
-//   }, [created_on, deadline_time, estimated_time])
-
-//   return (
-//     <Box sx={{ width: "100%", marginTop: 2 }}>
-//       <LinearProgress variant="determinate" value={progress} />
-//     </Box>
-//   )
-// }

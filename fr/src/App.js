@@ -28,7 +28,7 @@ let defaultTheme = createTheme({
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',
-    fontSize: 16,
+    fontSize: 15,
   },
 })
 
@@ -38,7 +38,7 @@ function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      {/* <SocketProvider> */}
+      <SocketProvider>
       <Container maxWidth={false}>
         <Box>
           <SnackbarProvider>
@@ -46,7 +46,7 @@ function App() {
           </SnackbarProvider>
         </Box>
       </Container>
-      {/* </SocketProvider> */}
+      </SocketProvider>
     </ThemeProvider>
   )
 }

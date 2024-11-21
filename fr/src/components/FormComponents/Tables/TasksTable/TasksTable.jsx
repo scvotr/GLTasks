@@ -20,11 +20,26 @@ import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Loader } from "../../Loader/Loader"
 
 export const TasksTable = ({ tasks, reRender }) => {
+  // // Используем useMediaQuery для определения ширины экрана
+  // const isSmallScreen = useMediaQuery("(max-width:1310px)")
+  // const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
+  // // Устанавливаем ширину столбцов в зависимости от разрешения экрана
+  // const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 720
+  
   // Используем useMediaQuery для определения ширины экрана
-  const isSmallScreen = useMediaQuery("(max-width:1310px)")
-  const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
+  const isExtraSmallScreen = useMediaQuery("(max-width:600px)"); // XS
+  const isSmallScreen = useMediaQuery("(min-width:601px) and (max-width:900px)"); // SM
+  const isMediumScreen = useMediaQuery("(min-width:901px) and (max-width:1200px)"); // MD
+  const isLargeScreen = useMediaQuery("(min-width:1201px) and (max-width:1600px)"); // LG
+  const isExtraLargeScreen = useMediaQuery("(min-width:1601px)"); // XL
+
   // Устанавливаем ширину столбцов в зависимости от разрешения экрана
-  const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 720
+  const taskColumnWidth = isExtraSmallScreen ? 250 
+                        : isSmallScreen ? 300 
+                        : isMediumScreen ? 400 
+                        : isLargeScreen ? 500 
+                        : isExtraLargeScreen ? 600// Используем для очень больших экранов
+                        : 720; // Значение по умолчанию
 
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -116,24 +131,23 @@ export const TasksTable = ({ tasks, reRender }) => {
       },
     },
     // { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
-
     // { field: "appoint_department_name", headerName: "Назначил", description: "От кого", width: 150 },
     // { field: "appoint_subdepartment_name", headerName: "Отдел", description: "От кого", width: 170 },
-    // {
-    //   field: "appoint_user_last_name",
-    //   headerName: "От ",
-    //   description: "От кого",
-    //   width: 135,
-      //! renderCell: params => (
-      //!  <div>
-      //!     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
-      //!     {params.value}
-      //!   </div>
-      //! ),
-    // },
+    {
+      field: "appoint_user_last_name",
+      headerName: "От ",
+      description: "От кого",
+      width: 130,
+      // ! renderCell: params => (
+      // !  <div>
+      // !     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
+      // !     {params.value}
+      // !   </div>
+      // ! ),
+    },
 
     // { field: "responsible_department_name", headerName: "Исполнитель", description: "Для кого", width: 220 },
-    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 200 },
+    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 145 },
     {
       field: "responsible_user_last_name",
       headerName: "Ответственный",
