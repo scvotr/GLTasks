@@ -38,7 +38,7 @@ export const TasksTable = ({ tasks, reRender }) => {
                         : isSmallScreen ? 300 
                         : isMediumScreen ? 400 
                         : isLargeScreen ? 500 
-                        : isExtraLargeScreen ? 720 // Используем для очень больших экранов
+                        : isExtraLargeScreen ? 600// Используем для очень больших экранов
                         : 720; // Значение по умолчанию
 
   const currentUser = useAuthContext()
@@ -131,24 +131,23 @@ export const TasksTable = ({ tasks, reRender }) => {
       },
     },
     // { field: "created_on", headerName: "Создана", description: "This column description", width: 250 },
-
     // { field: "appoint_department_name", headerName: "Назначил", description: "От кого", width: 150 },
     // { field: "appoint_subdepartment_name", headerName: "Отдел", description: "От кого", width: 170 },
-    // {
-    //   field: "appoint_user_last_name",
-    //   headerName: "От ",
-    //   description: "От кого",
-    //   width: 135,
-      //! renderCell: params => (
-      //!  <div>
-      //!     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
-      //!     {params.value}
-      //!   </div>
-      //! ),
-    // },
+    {
+      field: "appoint_user_last_name",
+      headerName: "От ",
+      description: "От кого",
+      width: 130,
+      // ! renderCell: params => (
+      // !  <div>
+      // !     <SportsKabaddiOutlinedIcon style={{ marginRight: "5px" }} />
+      // !     {params.value}
+      // !   </div>
+      // ! ),
+    },
 
     // { field: "responsible_department_name", headerName: "Исполнитель", description: "Для кого", width: 220 },
-    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 200 },
+    { field: "responsible_subdepartment_name", headerName: "Для", description: "Для какого отдела", width: 145 },
     {
       field: "responsible_user_last_name",
       headerName: "Ответственный",
