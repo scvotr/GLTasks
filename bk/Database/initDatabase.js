@@ -11,11 +11,28 @@ const { createTableWorkshops } = require('./models/workshop/workshop')
 const { createTablePendingNotifications } = require('./models/Notification/pendingNotification')
 const { createUserRoles } = require('./models/User/userRoles')
 const { createTableTasksFiles } = require('./models/Task/tasksFiles')
-const { createTableSchedules, addCreatedOnField, addReportColumnToSchedules, addSchedulePriorityRateColumnToSchedules } = require('./models/Schedules/schedules')
+const {
+  createTableSchedules,
+  addCreatedOnField,
+  addReportColumnToSchedules,
+  addSchedulePriorityRateColumnToSchedules,
+} = require('./models/Schedules/schedules')
 const { createTableSchedulesComments } = require('./models/Schedules/schedulesComments')
 const { testPGQuery, testPGQuery2 } = require('./queries/pg_test/test_pg_query')
 const { createTableUsersPG } = require('./models/User/createTableUsersPG')
-const { createDevicesTable, createBeltBrandsTable, createBucketBrandsTable, createGearboxBrandsTable, createBucketElevatorsTable, createBeltReplacementHistoryTable, createBucketReplacementHistoryTable, createGearboxReplacementHistoryTable, createDriveBeltsBrandsTable, createRollerBrandsTable, createBeltConveyorTable } = require('./models/Device/Device')
+const {
+  createDevicesTable,
+  createBeltBrandsTable,
+  createBucketBrandsTable,
+  createGearboxBrandsTable,
+  createBucketElevatorsTable,
+  createBeltReplacementHistoryTable,
+  createBucketReplacementHistoryTable,
+  createGearboxReplacementHistoryTable,
+  createDriveBeltsBrandsTable,
+  createRollerBrandsTable,
+  createBeltConveyorTable,
+} = require('./models/Device/Device')
 const { createDevicesTypesTable } = require('./models/Device/DevicesTypes')
 const { createTableDeviceComments } = require('./models/Device/DeviceCommets')
 const { createTableDeviceFiles } = require('./models/Device/DeviceFiles')
@@ -39,11 +56,12 @@ const { createAllBeltConveyorTables } = require('./models/Device/BeltConveyors/B
 const { createAllMotorConfigTables } = require('./models/Device/Motors/MotorConfig')
 const { createAllMotorTechUnitsTable } = require('./models/Device/Motors/MotorTechUnits')
 const { createAllMotorHistory } = require('./models/Device/Motors/MotorHistory')
+const { createAllReqForAvailable } = require('./models/Lab/reqForAvailable')
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('../database.db')
 
-const initDatabase = async() => {}
+const initDatabase = async () => {}
 
 db.serialize(async () => {
   createTableTasks()
@@ -62,7 +80,7 @@ db.serialize(async () => {
   createTablePendingNotifications()
   createTableSchedules()
   createTableSchedulesComments()
- 
+
   createDevicesTable()
 
   // !25-09-24
@@ -72,7 +90,6 @@ db.serialize(async () => {
   createBeltReplacementHistoryTable()
   createBucketReplacementHistoryTable()
   createGearboxReplacementHistoryTable()
-
 
   // ----12-09-2024
   createDevicesTypesTable()
@@ -104,9 +121,9 @@ db.serialize(async () => {
 
   // 09-10-24
   createAllMotorHistory()
-  
 
-
+  //10-11-2024
+  createAllReqForAvailable()
 
   // addCreatedOnField()
   // addReportColumnToSchedules()
@@ -114,10 +131,9 @@ db.serialize(async () => {
   // await testPGQuery()
   // await testPGQuery2()
   // createTableUsersPG()
-  
 })
 
-module.exports ={
+module.exports = {
   initDatabase,
 }
 
@@ -128,7 +144,6 @@ module.exports ={
 // 1. Добавление Foreign Keys в таблицы устройств:
 
 // В каждой из таблиц, описывающих конкретный тип устройства (например, bucketElevators и beltConveyors), вы должны добавить столбец device_type (или подобный), который будет указывать на тип устройства.
-
 
 // -- Таблица для конвейеров с ковшами
 // CREATE TABLE IF NOT EXISTS bucketElevators (
@@ -170,7 +185,6 @@ module.exports ={
 
 // Теперь вы можете создать функции для добавления устройств разных типов:
 
-
 // const addBucketElevator = async (
 //     deviceId,
 //     height,
@@ -186,14 +200,14 @@ module.exports ={
 //     try {
 //         // Вставка данных об устройстве
 //         await executeDatabaseQueryAsync(
-//             `INSERT INTO devices (device_id, tech_num, created_on, devices_installation_date, qr_code, workshop_id, department_id) 
+//             `INSERT INTO devices (device_id, tech_num, created_on, devices_installation_date, qr_code, workshop_id, department_id)
 //              VALUES (?, ?, ?, ?, ?, ?, ?)`,
 //             [deviceId, 'tech_num_example', new Date(), new Date(), null, 1, 1] // Замените значения на свои
 //         );
 
 //         // Вставка данных о конвейере с ковшами
 //         await executeDatabaseQueryAsync(
-//             `INSERT INTO bucketElevators (device_id, device_type, height, belt_brand_id, belt_installation_date, belt_length, bucket_brand_id, bucket_installation_date, bucket_quantity, gearbox_brand_id, gearbox_installation_date) 
+//             `INSERT INTO bucketElevators (device_id, device_type, height, belt_brand_id, belt_installation_date, belt_length, bucket_brand_id, bucket_installation_date, bucket_quantity, gearbox_brand_id, gearbox_installation_date)
 //              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 //             [
 //                 deviceId,
@@ -228,14 +242,14 @@ module.exports ={
 //     try {
 //         // Вставка данных об устройстве
 //         await executeDatabaseQueryAsync(
-//             `INSERT INTO devices (device_id, tech_num, created_on, devices_installation_date, qr_code, workshop_id, department_id) 
+//             `INSERT INTO devices (device_id, tech_num, created_on, devices_installation_date, qr_code, workshop_id, department_id)
 //              VALUES (?, ?, ?, ?, ?, ?, ?)`,
 //             [deviceId, 'tech_num_example', new Date(), new Date(), null, 1, 1] // Замените значения на свои
 //         );
 
 //         // Вставка данных о ленточном конвейере
 //         await executeDatabaseQueryAsync(
-//             `INSERT INTO beltConveyors (device_id, device_type, belt_brand_id, belt_installation_date, belt_length, chute_roller_quantity, straight_roller_quantity, roller_installation_date) 
+//             `INSERT INTO beltConveyors (device_id, device_type, belt_brand_id, belt_installation_date, belt_length, chute_roller_quantity, straight_roller_quantity, roller_installation_date)
 //              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 //             [
 //                 deviceId,
@@ -258,11 +272,10 @@ module.exports ={
 
 // Чтобы получить данные об устройстве, вы можете использовать JOIN-запросы. Например, чтобы получить информацию о конвейере с ковшами, используя его device_id:
 
-
 // const getBucketElevatorByDeviceId = async (deviceId) => {
 //     try {
 //         const [rows] = await executeDatabaseQueryAsync(
-//             `SELECT devices.*, bucketElevators.* 
+//             `SELECT devices.*, bucketElevators.*
 //              FROM devices
 //              JOIN bucketElevators ON devices.id = bucketElevators.device_id
 //              WHERE devices.id = ?`,
