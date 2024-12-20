@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation, Link } from "react-router-dom"
 import { Box } from "@mui/material"
 import Snackbar from "@mui/material/Snackbar"
 import MuiAlert from "@mui/material/Alert"
@@ -13,6 +13,11 @@ export const GeneralLayout = () => {
   const { notifyEvent } = useTaskContext()
   const [open, setOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [snackbarLink, setSnackbarLink] = useState("") // Состояние для ссылки
+  const location = useLocation() // Получаем текущий путь
+  // Проверяем, находится ли пользователь уже по этому адресу
+  const isCurrentPath = location.pathname === snackbarLink
+
   useLocalStorageRoute()
 
   useEffect(() => {
@@ -26,6 +31,10 @@ export const GeneralLayout = () => {
       return
     }
     setOpen(false)
+  }
+
+  const handleLinkClick = () => {
+    setOpen(false) // Закрываем Snackbar при клике на ссылку
   }
 
   const socket = useSocketContext()
@@ -42,11 +51,19 @@ export const GeneralLayout = () => {
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })
+    socket.on("reqForLab", taskData => {
+      // notifyEvent("need-all-dep-Tasks")
+      setSnackbarMessage(taskData.message)
+      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setLogSnackbarMessage(prev => [...prev, taskData])
+      setOpen(true)
+    })
 
     return () => {
       socket.off("yourRooms")
       socket.off("taskCreated")
       socket.off("taskApproved")
+      socket.off("reqForLab")
       socket.disconnect()
       window.removeEventListener("beforeunload", () => socket.disconnect())
     }
@@ -68,7 +85,12 @@ export const GeneralLayout = () => {
       <Box>
         <Snackbar open={open} autoHideDuration={16000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
           <MuiAlert onClose={handleClose} severity="success" variant="filled" sx={{ width: "100%" }}>
-            {snackbarMessage}
+            {snackbarMessage}{" "}
+            {!isCurrentPath && snackbarLink && (
+              <Link to={snackbarLink} style={{ color: "inherit", textDecoration: "underline" }} onClick={handleLinkClick}>
+                Перейти
+              </Link>
+            )}
           </MuiAlert>
         </Snackbar>
       </Box>
