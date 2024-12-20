@@ -40,6 +40,7 @@ import { MotorBrandsModelsList } from './RoutesList/Admin/devices/motor/BrandsMo
 import { TechUnit } from '../components/Navigation/Admin/Menu/Devices/Motors/Characteristics/TechUnit/TechUnit'
 import { DeviceAllV2 } from '../components/Navigation/Admin/Menu/DeviceV2/DeviceAllV2'
 import { CreateMotorV2 } from '../components/Navigation/Admin/Menu/DeviceV2/MotorV2/CreateMotorV2'
+import { LabForSalesRoutesList } from './RoutesList/LabForSales/LabForSalesRoutesList'
 
 export const routes = createBrowserRouter([
   {
@@ -171,6 +172,7 @@ export const routes = createBrowserRouter([
       ...DocsRoutesList,
       ...ScheduleRoutesList,
       ...MutualRoutesList,
+      ...LabForSalesRoutesList,
     ],
   },
 ])
