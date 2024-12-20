@@ -17,6 +17,7 @@ const { handleTaskRoutes } = require('./routingHandlers/handleTaskRoutes')
 const { handleUserRoutes } = require('./routingHandlers/handleUserRoutes')
 const { handleDocsRoutes } = require('./routingHandlers/handleDocsRouters')
 const { handelScheduleRoutes } = require('./routingHandlers/handelScheduleRoutes')
+const { handelLabRoutes } = require('./routingHandlers/handelLabRoutes')
 
 const routeHandlers = [
   { prefix: '/auth', handler: handleAuthRoutes },
@@ -26,6 +27,7 @@ const routeHandlers = [
   { prefix: '/user', handler: handleUserRoutes },
   { prefix: '/docs', handler: handleDocsRoutes },
   { prefix: '/schedule', handler: handelScheduleRoutes },
+  { prefix: '/lab', handler: handelLabRoutes },
 ]
 
 const server = http.createServer(async (req, res) => {
