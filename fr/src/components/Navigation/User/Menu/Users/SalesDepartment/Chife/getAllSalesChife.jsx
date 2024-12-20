@@ -4,9 +4,9 @@ import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2';
 
 
 export const getAllSalesChife = (currentUser) => {
-  const energyServicePositions = [2, 33, 15,  16, 27, 28 ,45, 47, ] // Массив с допустимыми позициями получить всех энергетиков с сервера!
+  const salesServicePositions = [2, 33, 15,  16, 27, 28 ,45, 47, ] // Массив с допустимыми позициями получить всех продавщиков с сервера!
 
-  if (energyServicePositions.includes(Number(currentUser.position))) {
+  if (salesServicePositions.includes(Number(currentUser.position))) {
     return {
       name: "Лаборатория",
       icon: <BiotechOutlinedIcon fontSize="large" />,
