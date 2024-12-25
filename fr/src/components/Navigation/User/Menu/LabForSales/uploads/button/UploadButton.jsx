@@ -4,6 +4,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import fileTypes from "../../../../../../../utils/fileTypes"
 import { FilesListView } from "../view/FilesListView"
 import { useSnackbar } from "../../../../../../../context/SnackbarProvider"
+import { Loader } from "../../../../../../FormComponents/Loader/Loader"
+import { sendNewTaskData } from "../../../../../../../utils/sendNewTaskData"
+import { useAuthContext } from "../../../../../../../context/AuthProvider"
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -18,12 +21,14 @@ const VisuallyHiddenInput = styled("input")({
 })
 
 export const UploadButton = ({ data }) => {
-  console.log("data", data)
-
+  const currentUser = useAuthContext()
   const acceptedTypes = Object.values(fileTypes).join(", ") // Создаем строку с допустимыми типами файлов
   const { popupSnackbar } = useSnackbar()
+  const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
+  const [ok, setOk] = useState()
 
   const initValue = {
+    reqForAvail_id: data.reqForAvail_id,
     files: [],
     filePreviews: [],
     filesToRemove: [],
@@ -31,7 +36,7 @@ export const UploadButton = ({ data }) => {
   }
 
   const [formData, setFormData] = useState(initValue)
-  console.log(formData)
+  // console.log(formData)
   const [loading, setLoading] = useState()
 
   const handleFileInput = event => {
@@ -110,6 +115,19 @@ export const UploadButton = ({ data }) => {
     }))
   }
 
+  const handleUpload = async event => {
+    event.preventDefault()
+    try {
+      setReqStatus({ loading: true, error: null })
+      await sendNewTaskData(currentUser.token, formData, '/lab/addFilesForRequest', setOk)
+      setReqStatus({ loading: false, error: null })
+      popupSnackbar(`Файлы загружёны успешно`, "success")
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+      popupSnackbar(`${error.message}`, "error")
+    }
+  }
+
   return (
     <Stack spacing={2}>
       {loading ? (
@@ -118,10 +136,17 @@ export const UploadButton = ({ data }) => {
         <Paper>
           <Stack spacing={2} padding={2}>
             <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-              {formData.files.length === 0 ? `Добавить файлы` : 'Загрузить'}
-              <VisuallyHiddenInput type="file" accept={acceptedTypes} multiple onChange={handleFileInput} name={"add_new_files"} />
+              Добавить файлы
+              <input type="file" accept={acceptedTypes} multiple onChange={handleFileInput} style={{ display: "none" }} />
             </Button>
-            <FilesListView files={formData} removeTaskAddedFiles={removeTaskAddedFiles} />
+            {formData.files.length > 0 && (
+              <Button variant="contained" onClick={handleUpload}>
+                Загрузить
+              </Button>
+            )}
+            <Loader reqStatus={reqStatus}>
+              <FilesListView files={formData} removeTaskAddedFiles={removeTaskAddedFiles} />
+            </Loader>
           </Stack>
         </Paper>
       )}
