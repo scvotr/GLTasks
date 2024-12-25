@@ -10,6 +10,7 @@ const {
   updateLabReqReadStatusQ,
   updateAppendApprovalsUsersQ,
 } = require('../../Database/queries/Lab/labQueries')
+const { saveAndConvert } = require('../../utils/files/saveAndConvert')
 const { handleError, sendResponseWithData } = require('../../utils/response/responseUtils')
 const { update } = require('../Admin/Devices/Motors/MotorController')
 
@@ -91,6 +92,38 @@ class LabController {
     } catch (error) {
       console.error('Ошибка при updateReadStatus:', error)
       handleError(res, 'updateReadStatus')
+    }
+  }
+  async addFilesForRequest(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = authDecodeUserData.payLoad
+      const fields = postPayload.fields
+      const files = postPayload.files
+      const taskFolderName = fields.reqForAvail_id
+      const fileNames = []
+
+      for (const [key, file] of Object.entries(files)) {
+        try {
+          const fileName = await saveAndConvert(file, 'labRequests', taskFolderName)
+          fileNames.push(fileName.fileName)
+        } catch (error) {
+          console.error('Error saving file:', error)
+        }
+      }
+
+      const data = {
+        fields,
+        fileNames,
+      }
+
+      console.log(data)
+
+      // await updateLabReqReadStatusQ(payLoad)
+      sendResponseWithData(res, 'addFilesForRequest-ok')
+    } catch (error) {
+      console.error('Ошибка при addFilesForRequest:', error)
+      handleError(res, 'addFilesForRequest')
     }
   }
 }
