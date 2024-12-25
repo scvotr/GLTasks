@@ -2,7 +2,7 @@ import { convertToFormData } from "./convertToFormData";
 import { HOST_ADDR } from "./remoteHosts";
 
 export const sendNewTaskData = async (token, formData, api_path ,onSuccess) => {
-  delete formData.filePreviews;
+  // delete formData.filePreviews;
   const data = convertToFormData(formData);
   try {
     const res = await fetch(HOST_ADDR + api_path, {
