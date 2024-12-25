@@ -8,6 +8,7 @@ const routeHandlers = {
   "/lab/getAllRequestsWithApprovals": LabController.getAllRequestsWithApprovals,
   "/lab/getUserConfirmation": LabController.getUserConfirmation,
   "/lab/updateReadStatus": LabController.updateReadStatus,
+  "/lab/addFilesForRequest": LabController.addFilesForRequest,
 }
 
 const handelLabRoutes = async(req, res) => {
