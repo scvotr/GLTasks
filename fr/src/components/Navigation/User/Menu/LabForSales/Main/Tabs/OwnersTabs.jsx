@@ -19,9 +19,6 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
   const [unreadCountAE, setUnreadCountAE] = useState(0) // Количество непрочитанных для отдела 3
   const [unreadCountPE, setUnreadCountPE] = useState(0) // Количество непрочитанных для отдела 4
   const [totalUnreadCount, setTotalUnreadCount] = useState(0) // Общее количество непрочитанных сообщений
-  console.log('unreadCountAE', unreadCountAE)
-  console.log('unreadCountPE', unreadCountPE)
-  console.log('totalUnreadCount', totalUnreadCount)
 
   // Сохранение значений вкладок в localStorage при изменении
   useEffect(() => {
