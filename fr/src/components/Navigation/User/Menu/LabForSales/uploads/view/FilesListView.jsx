@@ -13,7 +13,7 @@ export const FilesListView = ({ files = [], removeTaskAddedFiles }) => {
 
   return (
     <ImageList sx={{ width: "100%", height: "100%" }} cols={3} rowHeight={164}>
-      {files.filePreviews.map((preview, index) => {
+      {files?.filePreviews.map((preview, index) => {
         const isPdf = preview.startsWith(`data:${pdf};base64,`)
         const isOfficeFile =
           preview.startsWith(`data:${msWord};base64,`) ||
