@@ -118,10 +118,12 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount
                       <TableRow
                         key={req.id}
                         sx={{
-                          fontWeight: unread ? "bold" : "normal", // Устанавливаем жирный шрифт, если есть непрочитанные
                           backgroundColor: unread ? "lightgreen" : "inherit", // Выделяем строку, если есть непрочитанные
+                          '&:hover': {
+                            backgroundColor: 'lightblue', // Цвет фона при наведении
+                          },
                         }}
-                        hover
+                        // hover
                         onClick={event => handleRowClick(event, req)}>
                         <TableCell align="center">
                           {/* {req.users.map(user => (
@@ -136,8 +138,8 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount
                           ))} */}
                         </TableCell>
                         {/* ----------------------- */}
-                        <TableCell align="center">{req.approved ? <CheckBoxOutlinedIcon /> : <CheckBoxOutlineBlankOutlinedIcon />}</TableCell>
-                        <TableCell align="center">{req.req_number}</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>{req.approved ? <CheckBoxOutlinedIcon /> : <CheckBoxOutlineBlankOutlinedIcon />}</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>{req.req_number}</TableCell>
                         <TableCell align="center">{formatDateV2(req.created_at, true)}</TableCell>
                         <TableCell align="center">{req.department_name}</TableCell>
                         <TableCell align="center">
