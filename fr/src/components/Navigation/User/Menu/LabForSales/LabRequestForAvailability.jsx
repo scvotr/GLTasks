@@ -2,11 +2,8 @@ import { useEffect, useState } from "react"
 import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 import { useAuthContext } from "../../../../../context/AuthProvider"
 import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
-import { LabsRequestForAvailability } from "../../../../FormComponents/LabsRequestForAvailability/LabsRequestForAvailability"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
-import RequestDetails from "./Tables/RequestDetails"
 import TestForm from "../../../../FormComponents/LabsRequestForAvailability/TestForm"
-import { ReqForLabTable } from "./Tables/ReqForLabTable"
 import { ReqForLabMain } from "./Main/ReqForLabMain"
 import { useSocketContext } from "../../../../../context/SocketProvider"
 import { Loader } from "../../../../FormComponents/Loader/Loader"
@@ -19,11 +16,9 @@ export const LabRequestForAvailability = () => {
   const [modalOpen, setModalOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
-  const [data, setData] = useState(null) // Инициализация состояния
+  const [data, setData] = useState(null)
   const [addNewRequest, setAddNewRequest] = useState(null)
-  console.log('addNewRequest', addNewRequest)
   const [approvedRequest, setApprovedRequest] = useState(null)
-  console.log('LabRequestForAvailability', data)
 
   const filterRequests = async requests => {
     return requests.filter(data => {
@@ -43,8 +38,8 @@ export const LabRequestForAvailability = () => {
   }
 
   const handleReRender = () => {
-    setFormKey(prevKey => prevKey + 1);
-  };
+    setFormKey(prevKey => prevKey + 1)
+  }
 
   const fetchData = async () => {
     const endpoint = `/lab/getAllRequestsWithApprovals`
@@ -70,12 +65,15 @@ export const LabRequestForAvailability = () => {
   }, [currentUser, formKey])
 
   useEffect(() => {
+    console.log("handleSocketEvent")
     const handleSocketEvent = taskData => {
       // При получении события от сокета обновляем данные
       fetchData()
       setApprovedRequest({
-        m1: '4',
-        m2: "1"
+        newReq: "1",
+        toApprove: "2",
+        approved: "3",
+        // inWork: "4",
       })
     }
     // Подписка на событие сокета
@@ -87,14 +85,29 @@ export const LabRequestForAvailability = () => {
     }
   }, [socket])
 
+  const resetApprovedRequest = () => {
+    setApprovedRequest(null)
+  }
+  const resetAddNewRequest = () => {
+    setAddNewRequest(null)
+  }
+
   return (
     <>
       <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText="Запрос на партию:">
-        <TestForm onClose={closeModal} currentUser={currentUser} setAddNewRequest={setAddNewRequest}/>
+        <TestForm onClose={closeModal} currentUser={currentUser} setAddNewRequest={setAddNewRequest} />
       </FullScreenDialog>
       <Loader reqStatus={reqStatus}>
         <AppBarForPage title="Запрос в лабораторию: " openModal={currentUser.subDep.toString() === SALES_SUBDEB_G ? openModal : null} />
-        <ReqForLabMain requests={data} currentUser={currentUser} reRender={handleReRender} addNewRequest={addNewRequest} approvedRequest={approvedRequest}/>
+        <ReqForLabMain
+          requests={data}
+          currentUser={currentUser}
+          reRender={handleReRender}
+          addNewRequest={addNewRequest}
+          approvedRequest={approvedRequest}
+          resetApprovedRequest={resetApprovedRequest}
+          resetAddNewRequest={resetAddNewRequest}
+        />
       </Loader>
     </>
   )
