@@ -22,8 +22,6 @@ export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRen
       read_status: "readed",
     }
 
-    console.log('....', data)
-
     try {
       setCurrentFullScreenView("view")
       setFullScreenOpen(true)
