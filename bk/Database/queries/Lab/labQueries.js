@@ -16,8 +16,9 @@ const createNewReqForAvailableQ = async data => {
       creator_role,
       approved,
       gost,
+      commentsThenCreate,
       indicators
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `
   const params = [
     data.reqForAvail_id,
@@ -32,6 +33,7 @@ const createNewReqForAvailableQ = async data => {
     data.creator_role,
     data.approved,
     data.gost,
+    data.comment,
     JSON.stringify(data.indicators), // Сохраняем индикаторы как JSON
   ]
 
