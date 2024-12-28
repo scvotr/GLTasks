@@ -69,7 +69,7 @@ const createTableReqForLabComments = async (allowDrop = false) => {
       user_id INTEGER,
       comment VARCHAR(255),
       created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(task_id) REFERENCES tasks(id),
+      FOREIGN KEY(req_id) REFERENCES reqForAvailableTable(reqForAvail_id),
       FOREIGN KEY(user_id) REFERENCES users(id)
     )  
   `
