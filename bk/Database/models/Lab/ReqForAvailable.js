@@ -61,11 +61,19 @@ const createLabReqReadStatus = async (allowDrop = false) => {
   await executeTableCreation('lab_req_readStatus', createTableQuery, allowDrop)
 }
 
+const createTableReqForLabComments = async(allowDrop = false) => {
+  const createTableQuery = `
+
+  `
+  await executeTableCreation('lab_req_comments', createTableQuery, allowDrop)
+}
+
 const createAllReqForAvailable = async (allowDrop = true) => {
   try {
     await createReqForAvailableTable(allowDrop)
     await createRequestApprovalsTable(allowDrop)
     await createLabReqReadStatus(allowDrop)
+    await createTableReqForLabComments(allowDrop)
   } catch (error) {
     console.log('Error creating tables: ', error)
     throw new Error('Failed to create all tables')
