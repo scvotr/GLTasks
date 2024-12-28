@@ -6,7 +6,7 @@ import { formatDateV2 } from "../../../../../../utils/formatDate"
 import { ReqForLabMenu } from "../Menu/ReqForLabMenu"
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
 
-export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount = () => {} }) => {
+export const ReqForLabTable = ({ requests, currentUser, reRender }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [currentRequest, setCurrentRequest] = useState([])
   const [anchorEl, setAnchorEl] = useState(null)
@@ -91,8 +91,9 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedRequests && sortedRequests
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) // Срез для текущей страницы
+              {sortedRequests &&
+                sortedRequests
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) // Срез для текущей страницы
                   .map((req, id) => {
                     if (!currentUser || !currentUser.id) {
                       console.error("Текущий пользователь не определен")
@@ -116,11 +117,11 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount
 
                     return (
                       <TableRow
-                        key={req.id}
+                        key={id}
                         sx={{
                           backgroundColor: unread ? "lightgreen" : "inherit", // Выделяем строку, если есть непрочитанные
-                          '&:hover': {
-                            backgroundColor: 'lightblue', // Цвет фона при наведении
+                          "&:hover": {
+                            backgroundColor: "lightblue", // Цвет фона при наведении
                           },
                         }}
                         // hover
@@ -138,8 +139,12 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount
                           ))} */}
                         </TableCell>
                         {/* ----------------------- */}
-                        <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>{req.approved ? <CheckBoxOutlinedIcon /> : <CheckBoxOutlineBlankOutlinedIcon />}</TableCell>
-                        <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>{req.req_number}</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
+                          {req.approved ? <CheckBoxOutlinedIcon /> : <CheckBoxOutlineBlankOutlinedIcon />}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
+                          {req.req_number}
+                        </TableCell>
                         <TableCell align="center">{formatDateV2(req.created_at, true)}</TableCell>
                         <TableCell align="center">{req.department_name}</TableCell>
                         <TableCell align="center">
@@ -150,7 +155,11 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount
                           {/* <br /> */} {req.classType ? `Класс: ${req.classType}` : <></>}
                         </TableCell>
                         <TableCell align="center">{req.tonnage}</TableCell>
-                        <TableCell align="center">{renderIndicators(req.indicators)}</TableCell>
+                        <TableCell align="center">
+                          {renderIndicators(req.indicators)}
+                          {/* {renderIndicators(req.indicators || '')} */}
+                          {/* {renderIndicators(req.indicators ? req.indicators : null)} */}
+                        </TableCell>
                         <TableCell align="center">{req.contractor}</TableCell>
                       </TableRow>
                     )
@@ -171,8 +180,6 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, handleGetCount
     </Loader>
   )
 }
-
-
 
 // {requests &&
 //   requests
