@@ -9,7 +9,16 @@ export const ReqForLabMain = ({ requests = [], currentUser, reRender, addNewRequ
 
   return (
     <>
-      {isElevator && <ElevatorTabs requests={requests} currentUser={currentUser} reRender={reRender} resetApprovedRequest={resetApprovedRequest} resetAddNewRequest={resetAddNewRequest}/>}
+      {isElevator && (
+        <ElevatorTabs
+          requests={requests}
+          currentUser={currentUser}
+          reRender={reRender}
+          approvedRequest={approvedRequest}
+          resetApprovedRequest={resetApprovedRequest}
+          resetAddNewRequest={resetAddNewRequest}
+        />
+      )}
       {!isElevator && (
         <OwnersTabs
           requests={requests}
