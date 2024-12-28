@@ -25,7 +25,6 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       FOREIGN KEY (creator) REFERENCES users(id)
     );
   `
-
   await executeTableCreation('reqForAvailableTable', createTableQuery, allowDrop)
 }
 
@@ -76,7 +75,7 @@ const createTableReqForLabComments = async (allowDrop = false) => {
   await executeTableCreation('lab_req_comments', createTableQuery, allowDrop)
 }
 
-const createTableReqForLabFiles = async(allowDrop = false) => {
+const createTableReqForLabFiles = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_req_files (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,7 +88,6 @@ const createTableReqForLabFiles = async(allowDrop = false) => {
       FOREIGN KEY(user_id) REFERENCES users(id)
     )
   `
-
   await executeTableCreation('lab_req_files', createTableQuery, allowDrop)
 }
 
