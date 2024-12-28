@@ -18,6 +18,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       creator_role TEXT NOT NULL,
       approved BOOLEAN NOT NULL DEFAULT FALSE,
       gost TEXT,  -- Добавлено поле для хранения ГОСТа
+      commentsThenCreate TEXT,
       indicators JSON,  -- Добавлено поле для хранения индикаторов в формате JSON
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME,
