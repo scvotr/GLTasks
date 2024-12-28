@@ -78,7 +78,16 @@ const createTableReqForLabComments = async (allowDrop = false) => {
 
 const createTableReqForLabFiles = async(allowDrop = false) => {
   const createTableQuery = `
-
+    CREATE TABLE IF NOT EXISTS lab_req_files (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      req_id INTEGER,
+      user_id INTEGER,
+      file_name TEXT,
+      file_path TEXT,
+      uploaded_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(req_id) REFERENCES reqForAvailableTable(reqForAvail_id),
+      FOREIGN KEY(user_id) REFERENCES users(id)
+    )
   `
 
   await executeTableCreation('lab_req_files', createTableQuery, allowDrop)
