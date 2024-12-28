@@ -38,7 +38,7 @@ const createRequestApprovalsTable = async (allowDrop = false) => {
       status TEXT NOT NULL,
       approved_at DATETIME,
       FOREIGN KEY (reqForAvail_id) REFERENCES reqForAvailableTable(reqForAvail_id),
-      FOREIGN KEY (user_id) REFERENCES users(id)
+      FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (position_id) REFERENCES positions(id)
     );
   `
@@ -49,7 +49,7 @@ const createLabReqReadStatus = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_req_readStatus (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      req_id INTEGER NOT NULL,
+      req_id TEXT NOT NULL,
       user_id INTEGER NOT NULL,
       read_status TEXT NOT NULL,
       readd_date DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -64,8 +64,8 @@ const createTableReqForLabComments = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_req_comments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      req_id INTEGER,
-      user_id INTEGER,
+      req_id TEXT NOT NULL,
+      user_id INTEGER NOT NULL,
       comment VARCHAR(255),
       created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY(req_id) REFERENCES reqForAvailableTable(reqForAvail_id),
@@ -79,8 +79,8 @@ const createTableReqForLabFiles = async (allowDrop = false) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_req_files (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      req_id INTEGER,
-      user_id INTEGER,
+      req_id TEXT NOT NULL,
+      user_id INTEGER NOT NULL,
       file_name TEXT,
       file_path TEXT,
       uploaded_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -88,6 +88,13 @@ const createTableReqForLabFiles = async (allowDrop = false) => {
       FOREIGN KEY(user_id) REFERENCES users(id)
     )
   `
+  //  FROM tasks t
+  //   --GROUP_CONCAT(f.file_name, '|') AS file_names,
+  //   --GROUP_CONCAT(DISTINCT f.file_name) AS file_names,
+  //   REPLACE(GROUP_CONCAT(DISTINCT f.file_name), ',', '|') AS file_names,
+
+  //   LEFT JOIN task_files f ON t.task_id = f.task_id
+
   await executeTableCreation('lab_req_files', createTableQuery, allowDrop)
 }
 
