@@ -61,9 +61,17 @@ const createLabReqReadStatus = async (allowDrop = false) => {
   await executeTableCreation('lab_req_readStatus', createTableQuery, allowDrop)
 }
 
-const createTableReqForLabComments = async(allowDrop = false) => {
+const createTableReqForLabComments = async (allowDrop = false) => {
   const createTableQuery = `
-
+    CREATE TABLE IF NOT EXISTS lab_req_comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      req_id INTEGER,
+      user_id INTEGER,
+      comment VARCHAR(255),
+      created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(task_id) REFERENCES tasks(id),
+      FOREIGN KEY(user_id) REFERENCES users(id)
+    )  
   `
   await executeTableCreation('lab_req_comments', createTableQuery, allowDrop)
 }
