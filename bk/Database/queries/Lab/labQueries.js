@@ -248,6 +248,7 @@ const getAllRequestsQ = async () => {
       creator_subDep,
       creator_role,
       approved,
+      commentsThenCreate,
       gost,  -- Добавлено поле gost
       indicators,  -- Добавлено поле indicators
       dp.name AS department_name,
