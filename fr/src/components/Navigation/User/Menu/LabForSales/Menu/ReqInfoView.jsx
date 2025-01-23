@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Box, Typography, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, IconButton } from "@mui/material"
+import { Box, Typography, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, IconButton, Stack } from "@mui/material"
 import PrintIcon from "@mui/icons-material/Print"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
@@ -23,14 +23,20 @@ const renderIndicators = indicatorsString => {
 
 export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalUnreadCount }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
+  const [statusReq, setStatusReq] = useState("new")
   const isCreator = request.creator.toString() === currentUser.id.toString()
 
   const handleApprove = async (user, request) => {
-    let statusReq
+    // let statusReq
+    // if (isCreator) {
+    //   statusReq = "new"
+    // } else {
+    //   statusReq = "approved"
+    // }
     if (isCreator) {
-      statusReq = "new"
+      setStatusReq("new")
     } else {
-      statusReq = "approved"
+      setStatusReq("approved")
     }
 
     const endpoint = `/lab/getUserConfirmation`
@@ -41,6 +47,25 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
         endpoint,
         "POST",
         { reqForAvail_id: request.reqForAvail_id, user_id: currentUser.id, position_id: currentUser.position, status: statusReq },
+        setReqStatus
+      )
+      closeModal()
+      reRender()
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+    }
+  }
+
+  const handleDelete = async request => {
+    const endpoint = `/lab/removeReqForLab`
+    try {
+      setReqStatus({ loading: true, error: null })
+      await getDataFromEndpoint(
+        currentUser.token,
+        endpoint,
+        "POST",
+        { reqForAvail_id: request.reqForAvail_id, user_id: currentUser.id, position_id: currentUser.position },
         setReqStatus
       )
       closeModal()
@@ -144,12 +169,12 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                 </IconButton>
               </Box>
               <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-                <Table>
+                <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Имя пользователя</TableCell>
+                      <TableCell >Имя пользователя</TableCell>
                       <TableCell>Должность</TableCell>
-                      <TableCell>Статус одобрения</TableCell>
+                      {/* <TableCell>Статус одобрения</TableCell> */}
                       <TableCell>Подразделение</TableCell>
                       <TableCell>Отдел</TableCell>
                       <TableCell>Действия</TableCell>
@@ -161,14 +186,21 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                         <TableRow key={user.position_id} sx={{ backgroundColor: user.approval_status === "approved" ? "lightgreen" : "inherit" }}>
                           <TableCell>{user.user_name}</TableCell>
                           <TableCell>{user.position_name}</TableCell>
-                          <TableCell>{user.approval_status}</TableCell>
+                          {/* <TableCell>{user.approval_status}</TableCell> */}
                           <TableCell>{user.subdepartment_name}</TableCell>
                           <TableCell>{user.department_name}</TableCell>
                           <TableCell>
                             {currentUser.position.toString() === user.position_id.toString() && user.approval_status === "pending" && (
-                              <Button variant="contained" color="primary" onClick={() => handleApprove(user, request)}>
-                                {isCreator ? "Запросить" : "Подтвердить"}
-                              </Button>
+                              <Stack direction="row" spacing={0.5}>
+                                <Button variant="contained" color="primary" onClick={() => handleApprove(user, request)}>
+                                  {isCreator ? "Запросить" : "Подтвердить"}
+                                </Button>
+                                {isCreator && statusReq === "new" && (
+                                  <Button variant="contained" color="secondary" onClick={() => handleDelete(request)}>
+                                    Удалить
+                                  </Button>
+                                )}
+                              </Stack>
                             )}
                           </TableCell>
                         </TableRow>
