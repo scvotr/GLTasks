@@ -137,7 +137,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
     <Loader reqStatus={reqStatus}>
       <Box sx={{ padding: 2 }}>
         <Typography variant="h6" gutterBottom>
-          {request.reqForAvail_id}
+          {request.commentsThenCreate}
         </Typography>
 
         <Grid container spacing={2}>
