@@ -9,6 +9,7 @@ const {
   appendUserForApprovalQ,
   updateLabReqReadStatusQ,
   updateAppendApprovalsUsersQ,
+  deleteReqForLabQ,
 } = require('../../Database/queries/Lab/labQueries')
 const { saveAndConvert } = require('../../utils/files/saveAndConvert')
 const { handleError, sendResponseWithData } = require('../../utils/response/responseUtils')
@@ -124,6 +125,17 @@ class LabController {
     } catch (error) {
       console.error('Ошибка при addFilesForRequest:', error)
       handleError(res, 'addFilesForRequest')
+    }
+  }
+  async deleteReqForLab(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const payLoad = JSON.parse(authDecodeUserData.payLoad)
+      await deleteReqForLabQ(payLoad)
+      sendResponseWithData(res, 'deleteReqForLab-ok')
+    } catch (error) {
+      console.error('Ошибка при deleteReqForLab:', error)
+      handleError(res, 'deleteReqForLab')
     }
   }
 }
