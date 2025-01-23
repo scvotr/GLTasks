@@ -47,7 +47,8 @@ const createNewReqForAvailableQ = async data => {
 
 const appendUserForApprovalQ = async data => {
   const of = [2, 33, 47]
-  const ae = [15, 16]
+  // const ae = [15, 16]
+  const ae = []
   const pe = [27, 28]
 
   const insertApprovalQuery = `
@@ -364,6 +365,18 @@ const updateLabReqReadStatusQ = async data => {
   }
 }
 
+const deleteReqForLabQ = async data => {
+  const {reqForAvail_id} = data
+  const command = `DELETE FROM reqForAvailableTable where reqForAvail_id = ?`
+  try {
+    await executeDatabaseQueryAsync(command, [reqForAvail_id])
+    console.log(`Successfully deleted record with reqForAvail_id: ${reqForAvail_id}`)
+  } catch (error) {
+    console.error('Error - deleteReqForLabQ:', error)
+    throw error
+  }
+}
+
 module.exports = {
   createNewReqForAvailableQ,
   appendUserForApprovalQ,
@@ -375,4 +388,5 @@ module.exports = {
   getAllRequestsQ,
   addLabReqReadStatusQ,
   updateLabReqReadStatusQ,
+  deleteReqForLabQ,
 }
