@@ -58,7 +58,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   }
 
   const handleDelete = async request => {
-    const endpoint = `/lab/removeReqForLab`
+    const endpoint = `/lab/deleteReqForLab`
     try {
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(
