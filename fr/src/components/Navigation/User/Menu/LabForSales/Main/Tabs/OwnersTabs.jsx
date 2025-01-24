@@ -17,7 +17,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }))
 
-export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest, approvedRequest, resetApprovedRequest, resetAddNewRequest }) => {
+export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest, approvedRequest, resetApprovedRequest, resetAddNewRequest, setCheckFullScreenOpen, checkFullScreenOpen }) => {
   const [value, setValue] = useState(() => localStorage.getItem("activeTab") || "2")
   const [newReqForLab, setNewReqForLab] = useState([])
 
@@ -133,19 +133,43 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
           </TabList>
         </Box>
         <TabPanel value="1">
-          <ReqForLabTable requests={newReqForLab} currentUser={currentUser} reRender={reRender} />
+          <ReqForLabTable
+            requests={newReqForLab}
+            currentUser={currentUser}
+            reRender={reRender}
+            setCheckFullScreenOpen={setCheckFullScreenOpen}
+            checkFullScreenOpen={checkFullScreenOpen}
+          />
         </TabPanel>
         {/* ------------------------на согласовании------------------------------ */}
         <TabPanel value="2">
-          <ReqForLabTable requests={pendingCurrentUser} currentUser={currentUser} reRender={reRender} />
+          <ReqForLabTable
+            requests={pendingCurrentUser}
+            currentUser={currentUser}
+            reRender={reRender}
+            setCheckFullScreenOpen={setCheckFullScreenOpen}
+            checkFullScreenOpen={checkFullScreenOpen}
+          />
         </TabPanel>
         {/* ------------------------согласованы------------------------------ */}
         <TabPanel value="3">
-          <ReqForLabTable requests={approvedCurrentUser} currentUser={currentUser} reRender={reRender} />
+          <ReqForLabTable
+            requests={approvedCurrentUser}
+            currentUser={currentUser}
+            reRender={reRender}
+            setCheckFullScreenOpen={setCheckFullScreenOpen}
+            checkFullScreenOpen={checkFullScreenOpen}
+          />
         </TabPanel>
         {/* ------------------------Подтвержденные------------------------------ */}
         <TabPanel value="4">
-          <ReqForLabTable requests={allUsersApprovedReq} currentUser={currentUser} reRender={reRender} />
+          <ReqForLabTable
+            requests={allUsersApprovedReq}
+            currentUser={currentUser}
+            reRender={reRender}
+            setCheckFullScreenOpen={setCheckFullScreenOpen}
+            checkFullScreenOpen={checkFullScreenOpen}
+          />
         </TabPanel>
       </TabContext>
     </>
