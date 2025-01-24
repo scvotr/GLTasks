@@ -19,6 +19,7 @@ export const LabRequestForAvailability = () => {
   const [data, setData] = useState(null)
   const [addNewRequest, setAddNewRequest] = useState(null)
   const [approvedRequest, setApprovedRequest] = useState(null)
+  const [checkFullScreenOpen, setCheckFullScreenOpen] = useState(false)
 
   const filterRequests = async requests => {
     return requests.filter(data => {
@@ -65,7 +66,6 @@ export const LabRequestForAvailability = () => {
   }, [currentUser, formKey])
 
   useEffect(() => {
-    console.log("handleSocketEvent")
     const handleSocketEvent = taskData => {
       // При получении события от сокета обновляем данные
       fetchData()
@@ -84,6 +84,23 @@ export const LabRequestForAvailability = () => {
       socket.off("reqForLab", handleSocketEvent)
     }
   }, [socket])
+
+  // !----------------------------------
+  useEffect(() => {
+    const handleNewComment = () => {
+      console.log('checkFullScreenOpen:', checkFullScreenOpen);
+      if (checkFullScreenOpen === false) {
+        console.log('Updating formKey');
+        setFormKey(prevKey => prevKey + 1);
+      }
+    }
+    socket.on("reqForLabNewComment", handleNewComment)
+
+    return () => {
+      socket.off("reqForLabNewComment", handleNewComment)
+    }
+  }, [socket, checkFullScreenOpen])
+  // !----------------------------------
 
   const resetApprovedRequest = () => {
     setApprovedRequest(null)
@@ -107,6 +124,8 @@ export const LabRequestForAvailability = () => {
           approvedRequest={approvedRequest}
           resetApprovedRequest={resetApprovedRequest}
           resetAddNewRequest={resetAddNewRequest}
+          setCheckFullScreenOpen={setCheckFullScreenOpen} // Передаем функцию управления состоянием setCheckFullScreenOpen checkFullScreenOpen
+          checkFullScreenOpen={checkFullScreenOpen} // Передаем текущее состояние
         />
       </Loader>
     </>
