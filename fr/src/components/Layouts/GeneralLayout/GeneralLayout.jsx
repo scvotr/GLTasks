@@ -58,12 +58,21 @@ export const GeneralLayout = () => {
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })
+    // Для уведомлений !!
+    socket.on("reqForLabNewComment", taskData => {
+      // notifyEvent("need-all-Tasks")
+      setSnackbarMessage(taskData.message)
+      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setLogSnackbarMessage(prev => [...prev, taskData])
+      setOpen(true)
+    })
 
     return () => {
       socket.off("yourRooms")
       socket.off("taskCreated")
       socket.off("taskApproved")
       socket.off("reqForLab")
+      socket.off("reqForLabNewComment")
       socket.disconnect()
       window.removeEventListener("beforeunload", () => socket.disconnect())
     }
