@@ -99,7 +99,7 @@ const createTableReqForLabFiles = async (allowDrop = false) => {
   await executeTableCreation('lab_req_files', createTableQuery, allowDrop)
 }
 
-const createAllReqForAvailable = async (allowDrop = true) => {
+const createAllReqForAvailable = async (allowDrop = false) => {
   try {
     await createReqForAvailableTable(allowDrop)
     await createRequestApprovalsTable(allowDrop)
