@@ -6,7 +6,7 @@ import { formatDateV2 } from "../../../../../../utils/formatDate"
 import { ReqForLabMenu } from "../Menu/ReqForLabMenu"
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
 
-export const ReqForLabTable = ({ requests, currentUser, reRender }) => {
+export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [currentRequest, setCurrentRequest] = useState([])
   const [anchorEl, setAnchorEl] = useState(null)
@@ -73,7 +73,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender }) => {
     <Loader reqStatus={reqStatus}>
       <Box>
         {/* -------------------------------- */}
-        <ReqForLabMenu anchorEl={anchorEl} open={open} closeMenu={closeMenu} currentRequest={currentRequest} reRender={reRender} currentUser={currentUser} />
+        <ReqForLabMenu anchorEl={anchorEl} open={open} closeMenu={closeMenu} currentRequest={currentRequest} reRender={reRender} currentUser={currentUser} checkFullScreenOpen={checkFullScreenOpen} setCheckFullScreenOpen={setCheckFullScreenOpen}/>
         {/* -------------------------------- */}
         <TableContainer>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
