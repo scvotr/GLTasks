@@ -47,8 +47,8 @@ const createNewReqForAvailableQ = async data => {
 
 const appendUserForApprovalQ = async data => {
   const of = [2, 33, 47]
-  // const ae = [15, 16]
-  const ae = []
+  const ae = [15, 16]
+  // const ae = []
   const pe = [27, 28]
 
   const insertApprovalQuery = `
