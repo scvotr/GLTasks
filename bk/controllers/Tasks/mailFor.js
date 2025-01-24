@@ -41,8 +41,8 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   const email = await getLeadEmailQ(subdepartment_id)
   if (email && email[0] && email[0].email_for_notify) {
     console.log('sendEmailToLead', email, text, fields.task_descript ? fields.task_descript : fields.comment)
-    // await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment );
-    await delay(3000); // Задержка 3 секунды
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment )
+    // await delay(3000); // Задержка 3 секунды
   } else {
     console.log('Адрес электронной почты не найден')
     throw new Error('Адрес электронной почты не найден')
@@ -53,11 +53,11 @@ const sendEmailToGeneral = async (department_id, text, fields = {}) => {
   const email = await getGeneralEmailQ(department_id)
   if (email && email[0] && email[0].email_for_notify) {
     console.log('sendEmailToGeneral', email, text, fields.task_descript ? fields.task_descript : fields.comment)
-    // await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
-    await delay(3000); // Задержка 3 секунды
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment)
+    // await delay(3000); // Задержка 3 секунды
   } else {
     console.log('Адрес электронной почты не найден')
-    // throw new Error('Адрес электронной почты не найден');
+    throw new Error('Адрес электронной почты не найден')
   }
 }
 
@@ -65,8 +65,8 @@ const sendEmailToUser = async (user_id, text, fields = {}) => {
   const email = await getUserEmailQ(user_id)
   if (email && email[0] && email[0].email_for_notify) {
     console.log('sendEmailToUser', email, text, fields.task_descript ? fields.task_descript : fields.comment)
-    // await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
-    await delay(3000); // Задержка 3 секунды
+    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment)
+    // await delay(3000); // Задержка 3 секунды
   } else {
     console.log('Адрес электронной почты не найден')
     throw new Error('Адрес электронной почты не найден')
