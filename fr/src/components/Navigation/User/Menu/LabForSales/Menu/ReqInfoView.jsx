@@ -4,6 +4,7 @@ import PrintIcon from "@mui/icons-material/Print"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
 import { UploadButton } from "../uploads/button/UploadButton"
+import { LabComments } from "../LabComments/LabComments"
 
 const renderIndicators = indicatorsString => {
   try {
@@ -21,18 +22,12 @@ const renderIndicators = indicatorsString => {
   }
 }
 
-export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalUnreadCount }) => {
+export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalUnreadCount, checkFullScreenOpen }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [statusReq, setStatusReq] = useState("new")
   const isCreator = request.creator.toString() === currentUser.id.toString()
 
   const handleApprove = async (user, request) => {
-    // let statusReq
-    // if (isCreator) {
-    //   statusReq = "new"
-    // } else {
-    //   statusReq = "approved"
-    // }
     if (isCreator) {
       setStatusReq("new")
     } else {
@@ -141,7 +136,8 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
         </Typography>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={4} md={6}> */}
+          <Grid item xs={2} >
             <Paper sx={{ padding: 2 }}>
               <Typography variant="h6">Информация о заявке</Typography>
               <Typography variant="body1">Культура: {request.culture}</Typography>
@@ -160,7 +156,12 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={4}>
+            <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen}/>
+          </Grid>
+
+          {/* <Grid item xs={12} md={6}> */}
+          <Grid item xs={6}>
             <Paper sx={{ padding: 2 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography variant="h6">Лист согласования</Typography>
@@ -172,7 +173,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell >Имя пользователя</TableCell>
+                      <TableCell>Имя пользователя</TableCell>
                       <TableCell>Должность</TableCell>
                       {/* <TableCell>Статус одобрения</TableCell> */}
                       <TableCell>Подразделение</TableCell>
