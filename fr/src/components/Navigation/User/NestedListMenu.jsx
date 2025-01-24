@@ -32,6 +32,7 @@ import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { Divider } from "@mui/material"
 import { getAllPowerEngineers } from "./Menu/Users/PowerEngineer/Chifes/getAllPowerEngineers"
+import { getAllSalesChife } from "./Menu/Users/SalesDepartment/Chife/getAllSalesChife"
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   textDecoration: "none",
@@ -213,6 +214,11 @@ export const NestedListMenu = ({ isOpen }) => {
   const PowerEngineers = getAllPowerEngineers(currentUser)
   if(PowerEngineers){
     sectionsData.push(PowerEngineers);
+  }
+  
+  const SalesDepartment = getAllSalesChife(currentUser)
+  if(SalesDepartment){
+    sectionsData.push(SalesDepartment);
   }
   
 

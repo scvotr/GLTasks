@@ -1,4 +1,4 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Outlet, useLocation, useNavigate, Link } from "react-router-dom"
 import { useAuthContext } from "../../../context/AuthProvider"
 import { useEffect, useState } from "react"
 import { useSocketContext } from "../../../context/SocketProvider"
@@ -10,6 +10,10 @@ import { useTaskContext } from "../../../context/Tasks/TasksProvider"
 export const LeadLayout = () => {
   const currentUser = useAuthContext()
   const { notifyEvent } = useTaskContext()
+  const [snackbarLink, setSnackbarLink] = useState("") // Состояние для ссылки
+  const location = useLocation() // Получаем текущий путь
+  // Проверяем, находится ли пользователь уже по этому адресу
+  const isCurrentPath = location.pathname === snackbarLink
 
   useEffect(() => {
     if (currentUser.login) {
@@ -21,7 +25,6 @@ export const LeadLayout = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("")
 
   //!------------------------
-  const location = useLocation()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -39,6 +42,10 @@ export const LeadLayout = () => {
     setOpen(false)
   }
 
+  const handleLinkClick = () => {
+    setOpen(false) // Закрываем Snackbar при клике на ссылку
+  }
+
   const socket = useSocketContext()
   useEffect(() => {
     socket.on("taskCreated", messageData => {
@@ -53,11 +60,28 @@ export const LeadLayout = () => {
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })
+    socket.on("reqForLab", taskData => {
+      // notifyEvent("need-all-Tasks")
+      setSnackbarMessage(taskData.message)
+      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setLogSnackbarMessage(prev => [...prev, taskData])
+      setOpen(true)
+    })
+    // Для уведомлений !!
+    socket.on("reqForLabNewComment", taskData => {
+      // notifyEvent("need-all-Tasks")
+      setSnackbarMessage(taskData.message)
+      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setLogSnackbarMessage(prev => [...prev, taskData])
+      setOpen(true)
+    })
 
     return () => {
       socket.off("yourRooms")
       socket.off("taskCreated")
       socket.off("taskApproved")
+      socket.off("reqForLab")
+      socket.off("reqForLabNewComment")
       socket.disconnect()
       window.removeEventListener("beforeunload", () => socket.disconnect())
     }
@@ -79,7 +103,12 @@ export const LeadLayout = () => {
       <Box>
         <Snackbar open={open} autoHideDuration={16000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
           <MuiAlert onClose={handleClose} severity="success" variant="filled" sx={{ width: "100%" }}>
-            {snackbarMessage}
+          {snackbarMessage}{" "}
+            {!isCurrentPath && snackbarLink && (
+              <Link to={snackbarLink} style={{ color: 'inherit', textDecoration: 'underline' }} onClick={handleLinkClick}>
+                Перейти
+              </Link>
+            )}
           </MuiAlert>
         </Snackbar>
       </Box>

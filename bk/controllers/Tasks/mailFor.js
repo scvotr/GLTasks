@@ -1,9 +1,7 @@
-const nodemailer = require('nodemailer');
-const {
-  getLeadEmailQ, getUserEmailQ, getGeneralEmailQ
-} = require('../../Database/queries/User/userQuery');
+const nodemailer = require('nodemailer')
+const { getLeadEmailQ, getUserEmailQ, getGeneralEmailQ } = require('../../Database/queries/User/userQuery')
 
-require("dotenv").config()
+require('dotenv').config()
 const MAIL_USER = process.env.MAIL_USER
 const MAIL_PASS = process.env.MAIL_PASS
 
@@ -21,52 +19,57 @@ const sendEmail = async (recipientEmail, text, descript) => {
       tls: {
         rejectUnauthorized: true,
       },
-    });
+    })
 
     const mailOptions = {
       from: `"${text}" <${MAIL_USER}>`,
       to: recipientEmail,
       subject: text,
       text: descript ? descript : text,
-    };
+    }
 
     // const info = await transporter.sendMail(mailOptions);
     // console.log('Email sent:', info.response);
   } catch (error) {
-    console.error('Error occurred while sending email:', error);
+    console.error('Error occurred while sending email:', error)
   }
 }
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));  
+
 const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
-  const email = await getLeadEmailQ(subdepartment_id);
+  const email = await getLeadEmailQ(subdepartment_id)
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToLead', email, text, fields.task_descript ? fields.task_descript : fields.comment);
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment );
+    console.log('sendEmailToLead', email, text, fields.task_descript ? fields.task_descript : fields.comment)
+    // await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment );
+    await delay(3000); // Задержка 3 секунды
   } else {
-    console.log('Àäðåñ ýëåêòðîííîé ïî÷òû ðóêîâîäèòåëÿ íå íàéäåí');
-    throw new Error('Àäðåñ ýëåêòðîííîé ïî÷òû ðóêîâîäèòåëÿ íå íàéäåí');
+    console.log('Адрес электронной почты не найден')
+    throw new Error('Адрес электронной почты не найден')
   }
 }
 
 const sendEmailToGeneral = async (department_id, text, fields = {}) => {
-  const email = await getGeneralEmailQ(department_id);
+  const email = await getGeneralEmailQ(department_id)
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToGeneral', email, text, fields.task_descript ? fields.task_descript : fields.comment);
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
+    console.log('sendEmailToGeneral', email, text, fields.task_descript ? fields.task_descript : fields.comment)
+    // await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
+    await delay(3000); // Задержка 3 секунды
   } else {
-    console.log('Àäðåñ ýëåêòðîííîé ïî÷òû äèðåêòîðà íå íàéäåí');
-    // throw new Error('Àäðåñ ýëåêòðîííîé ïî÷òû äèðåêòîðà íå íàéäåí');
+    console.log('Адрес электронной почты не найден')
+    // throw new Error('Адрес электронной почты не найден');
   }
 }
 
 const sendEmailToUser = async (user_id, text, fields = {}) => {
-  const email = await getUserEmailQ(user_id);
+  const email = await getUserEmailQ(user_id)
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToUser', email, text, fields.task_descript ? fields.task_descript : fields.comment);
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
+    console.log('sendEmailToUser', email, text, fields.task_descript ? fields.task_descript : fields.comment)
+    // await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment);
+    await delay(3000); // Задержка 3 секунды
   } else {
-    console.log('Àäðåñ ýëåêòðîííîé ïî÷òû ïîëüçîâàòåëÿ íå íàéäåí');
-    throw new Error('Àäðåñ ýëåêòðîííîé ïî÷òû ïîëüçîâàòåëÿ íå íàéäåí');
+    console.log('Адрес электронной почты не найден')
+    throw new Error('Адрес электронной почты не найден')
   }
 }
 
