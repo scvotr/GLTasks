@@ -10,6 +10,9 @@ const {
   updateLabReqReadStatusQ,
   updateAppendApprovalsUsersQ,
   deleteReqForLabQ,
+  sendNotifyThenNewCommentQ,
+  getAllLabReqCommentQ,
+  addNewLabReqCommentQ,
 } = require('../../Database/queries/Lab/labQueries')
 const { saveAndConvert } = require('../../utils/files/saveAndConvert')
 const { handleError, sendResponseWithData } = require('../../utils/response/responseUtils')
@@ -136,6 +139,30 @@ class LabController {
     } catch (error) {
       console.error('Ошибка при deleteReqForLab:', error)
       handleError(res, 'deleteReqForLab')
+    }
+  }
+  async addNewLabReqComment(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const payLoad = JSON.parse(authDecodeUserData.payLoad)
+      await addNewLabReqCommentQ(payLoad)
+      // Отправка уведомления
+      await sendNotifyThenNewCommentQ(payLoad)
+      sendResponseWithData(res, 'addNewLabReqComment-ok')
+    } catch (error) {
+      console.error('Ошибка при addNewLabReqComment:', error)
+      handleError(res, 'addNewLabReqComment')
+    }
+  }
+  async getAllLabReqComment(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const payLoad = JSON.parse(authDecodeUserData.payLoad)
+      const allComments = await getAllLabReqCommentQ(payLoad)
+      sendResponseWithData(res, allComments)
+    } catch (error) {
+      console.error('Ошибка при getAllLabReqCommentQ:', error)
+      handleError(res, 'getAllLabReqCommentQ')
     }
   }
 }
