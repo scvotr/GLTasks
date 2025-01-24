@@ -4,7 +4,7 @@ import { OwnersTabs } from "./Tabs/OwnersTabs"
 const ELEVATOR_AE = "3"
 const ELEVATOR_PE = "4"
 
-export const ReqForLabMain = ({ requests = [], currentUser, reRender, addNewRequest, approvedRequest, resetApprovedRequest, resetAddNewRequest }) => {
+export const ReqForLabMain = ({ requests = [], currentUser, reRender, addNewRequest, approvedRequest, resetApprovedRequest, resetAddNewRequest, setCheckFullScreenOpen, checkFullScreenOpen }) => {
   const isElevator = currentUser.dep.toString() === ELEVATOR_AE || currentUser.dep.toString() === ELEVATOR_PE
 
   return (
@@ -17,6 +17,9 @@ export const ReqForLabMain = ({ requests = [], currentUser, reRender, addNewRequ
           approvedRequest={approvedRequest}
           resetApprovedRequest={resetApprovedRequest}
           resetAddNewRequest={resetAddNewRequest}
+
+          setCheckFullScreenOpen={setCheckFullScreenOpen}
+          checkFullScreenOpen={checkFullScreenOpen}
         />
       )}
       {!isElevator && (
@@ -28,6 +31,9 @@ export const ReqForLabMain = ({ requests = [], currentUser, reRender, addNewRequ
           approvedRequest={approvedRequest}
           resetApprovedRequest={resetApprovedRequest}
           resetAddNewRequest={resetAddNewRequest}
+
+          setCheckFullScreenOpen={setCheckFullScreenOpen}
+          checkFullScreenOpen={checkFullScreenOpen}
         />
       )}
     </>
