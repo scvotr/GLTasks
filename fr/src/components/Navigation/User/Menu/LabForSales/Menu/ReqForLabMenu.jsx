@@ -7,15 +7,12 @@ import { FullScreenDialog } from "../../../../../FullScreenDialog/FullScreenDial
 import { ReqInfoView } from "./ReqInfoView"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
 
-export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRender, currentUser }) => {
+export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRender, currentUser, checkFullScreenOpen, setCheckFullScreenOpen }) => {
   const [fullScreenOpen, setFullScreenOpen] = useState(false)
   const [currentFullScreenView, setCurrentFullScreenView] = useState(null)
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
   const handleInfoView = async () => {
-    setCurrentFullScreenView("view")
-    setFullScreenOpen(true)
-
     const data = {
       req_id: currentRequest.reqForAvail_id,
       user_id: currentUser.id,
@@ -24,8 +21,8 @@ export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRen
 
     try {
       setCurrentFullScreenView("view")
+      setCheckFullScreenOpen(true)
       setFullScreenOpen(true)
-      // reRender()
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, `/lab/updateReadStatus`, "POST", data, setReqStatus)
       setReqStatus({ loading: false, error: null })
@@ -36,12 +33,13 @@ export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRen
 
   const closeModal = () => {
     setFullScreenOpen(false)
+    setCheckFullScreenOpen(false)
     closeMenu()
     reRender()
   }
 
   const fullScreenViews = {
-    view: <ReqInfoView request={currentRequest} currentUser={currentUser} reRender={reRender} closeModal={closeModal}/>,
+    view: <ReqInfoView request={currentRequest} currentUser={currentUser} reRender={reRender} closeModal={closeModal} checkFullScreenOpen={checkFullScreenOpen}/>,
   }
 
   return (
