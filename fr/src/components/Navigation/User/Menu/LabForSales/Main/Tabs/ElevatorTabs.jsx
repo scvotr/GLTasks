@@ -18,7 +18,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }))
 
-export const ElevatorTabs = ({ requests, currentUser, reRender, approvedRequest, resetApprovedRequest, resetAddNewRequest }) => {
+export const ElevatorTabs = ({ requests, currentUser, reRender, approvedRequest, resetApprovedRequest, resetAddNewRequest, setCheckFullScreenOpen, checkFullScreenOpen }) => {
   const [value, setValue] = useState(() => localStorage.getItem("activeTab") || "1")
   console.log("value", value)
 
@@ -214,6 +214,8 @@ export const ElevatorTabs = ({ requests, currentUser, reRender, approvedRequest,
               requests={isAeElevator ? pendingCurrentUserAE : isPeElevator ? pendingCurrentUserPE : []}
               currentUser={currentUser}
               reRender={reRender}
+              setCheckFullScreenOpen={setCheckFullScreenOpen}
+              checkFullScreenOpen={checkFullScreenOpen}
             />
           </TabPanel>
           <TabPanel value="2">
@@ -221,6 +223,8 @@ export const ElevatorTabs = ({ requests, currentUser, reRender, approvedRequest,
               requests={isAeElevator ? approvedCurrentUserAE : isPeElevator ? approvedCurrentUserPE : []}
               currentUser={currentUser}
               reRender={reRender}
+              setCheckFullScreenOpen={setCheckFullScreenOpen}
+              checkFullScreenOpen={checkFullScreenOpen}
             />
           </TabPanel>
           <TabPanel value="3">
@@ -228,6 +232,8 @@ export const ElevatorTabs = ({ requests, currentUser, reRender, approvedRequest,
               requests={isAeElevator ? allUsersApprovedReqAE : isPeElevator ? allUsersApprovedReqPE : []}
               currentUser={currentUser}
               reRender={reRender}
+              setCheckFullScreenOpen={setCheckFullScreenOpen}
+              checkFullScreenOpen={checkFullScreenOpen}
             />
           </TabPanel>
         </Box>
