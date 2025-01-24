@@ -1,4 +1,4 @@
-const { noticeForLabSystemUsersT } = require('../../../controllers/Lab/LabNoticeFor')
+const { noticeForLabSystemUsersT, noticeForLabSystemUsersT2, noticeForLabSystemUsersTNewCommentT } = require('../../../controllers/Lab/LabNoticeFor')
 const { executeDatabaseQueryAsync } = require('../../utils/executeDatabaseQuery/executeDatabaseQuery')
 
 const createNewReqForAvailableQ = async data => {
@@ -71,7 +71,6 @@ const appendUserForApprovalQ = async data => {
       const user_id = userResult.length > 0 ? userResult[0].user_id : null
       if (user_id) {
         const readStatus = user_id.toString() === data.creator.toString() ? 'readed' : 'unread'
-        console.log(readStatus)
         // Устанавливаем статус чтения
         await addLabReqReadStatusQ({ req_id: data.reqForAvail_id, user_id, read_status: readStatus })
         // Вставка в request_approvals
@@ -126,8 +125,6 @@ const updateAppendApprovalsUsersQ = async data => {
 
   try {
     const allUsersForLabReq = await executeDatabaseQueryAsync(getAllReqUsers, [data.reqForAvail_id])
-
-    console.log('allUsersForLabReq', allUsersForLabReq)
 
     const promises = allUsersForLabReq.map(async user => {
       if (!user) {
@@ -312,7 +309,6 @@ const getUsersForApprovalQ = async reqForAvail_id => {
 }
 
 const updateApprovalsUserQ = async data => {
-  console.log(data)
   const updateApprovalQuery = `
     UPDATE request_approvals
     SET status = ?, approved_at = CURRENT_TIMESTAMP
@@ -347,7 +343,6 @@ const addLabReqReadStatusQ = async data => {
   }
 }
 const updateLabReqReadStatusQ = async data => {
-  console.log('updateLabReqReadStatusQ', data)
   const { req_id, user_id, read_status } = data
   const command = `UPDATE lab_req_readStatus SET read_status = ? WHERE req_id = ? AND user_id = ?`
 
@@ -367,13 +362,105 @@ const updateLabReqReadStatusQ = async data => {
 }
 
 const deleteReqForLabQ = async data => {
-  const {reqForAvail_id} = data
+  const { reqForAvail_id } = data
   const command = `DELETE FROM reqForAvailableTable where reqForAvail_id = ?`
   try {
     await executeDatabaseQueryAsync(command, [reqForAvail_id])
     console.log(`Successfully deleted record with reqForAvail_id: ${reqForAvail_id}`)
   } catch (error) {
     console.error('Error - deleteReqForLabQ:', error)
+    throw error
+  }
+}
+
+const addNewLabReqCommentQ = async data => {
+  const { reqForAvail_id, user_id, comment } = data
+  const command = `
+    INSERT INTO lab_req_comments (req_id, user_id, comment) VALUES (?, ?, ?)
+  `
+  try {
+    await executeDatabaseQueryAsync(command, [reqForAvail_id, user_id, comment])
+  } catch (error) {
+    console.error('Error - addNewLabReqCommentQ:', error)
+    throw error
+  }
+}
+
+// const sendNotifyThenNewCommentQ = async data => {
+//   const getAllReqUsers = `
+//     SELECT user_id FROM request_approvals WHERE reqForAvail_id = ?
+//   `
+//   try {
+//     const allUsersForLabReq = await executeDatabaseQueryAsync(getAllReqUsers, [data.reqForAvail_id])
+
+//     const promises = allUsersForLabReq.map(async user => {
+//       const readStatus = user.user_id.toString() === data.user_id.toString() ? 'readed' : 'unread'
+//       // Логируем информацию о пользователе и статусе
+//       console.log(`Updating read status for user: ${user.user_id}, status: ${readStatus}`)
+//       // Устанавливаем статус чтения
+//       if (data.user_id.toString() !== user.user_id.toString()) {
+//         await updateLabReqReadStatusQ({ req_id: data.reqForAvail_id, user_id: user.user_id, read_status: readStatus })
+//         await noticeForLabSystemUsersTNewCommentT(user.user_id, 'Новый комментарий')
+//       }
+//     })
+//     await Promise.all(promises)
+//   } catch (error) {
+//     console.error('Error - sendNotifyThenNewCommentQ:', error)
+//     throw error
+//   }
+// }
+
+const sendNotifyThenNewCommentQ = async data => {
+  console.log(data)
+  const getAllReqUsers = `
+    SELECT user_id FROM request_approvals WHERE reqForAvail_id = ?
+  `
+
+  try {
+    const allUsersForLabReq = await executeDatabaseQueryAsync(getAllReqUsers, [data.reqForAvail_id])
+
+    for (const user of allUsersForLabReq) {
+      const readStatus = user.user_id.toString() === data.user_id.toString() ? 'readed' : 'unread'
+      // Логируем информацию о пользователе и статусе
+      console.log(`Updating read status for user: ${user.user_id}, status: ${readStatus}`)
+      // Устанавливаем статус чтения
+      if (data.user_id.toString() !== user.user_id.toString()) {
+        await updateLabReqReadStatusQ({ req_id: data.reqForAvail_id, user_id: user.user_id, read_status: readStatus })
+        await noticeForLabSystemUsersTNewCommentT(user.user_id, 'Новый комментарий')
+      }
+      // if (data.user_id.toString() !== user.user_id.toString()) {
+      //   if (data.modal_isOpen === false) {
+      //     await updateLabReqReadStatusQ({ req_id: data.reqForAvail_id, user_id: user.user_id, read_status: readStatus })
+      //     await noticeForLabSystemUsersTNewCommentT(user.user_id, 'Новый комментарий')
+      //   } else if (data.modal_isOpen === true) {
+      //     await noticeForLabSystemUsersTNewCommentT(user.user_id, 'Новый комментарий222')
+      //   }
+      // }
+    }
+
+    // Все промисы выполнены последовательно
+  } catch (error) {
+    console.error('Error - sendNotifyThenNewCommentQ:', error)
+    throw error
+  }
+}
+
+const getAllLabReqCommentQ = async req_id => {
+  const command = `
+    SELECT 
+      lrc.comment,
+      lrc.created_on,
+      u.last_name
+    FROM lab_req_comments lrc
+    LEFT JOIN users u ON lrc.user_id = u.id
+    WHERE req_id = ?  
+    ORDER BY lrc.created_on DESC
+  `
+  try {
+    const result = await executeDatabaseQueryAsync(command, [req_id])
+    return result
+  } catch (error) {
+    console.error('Error - getAllLabReqCommentQ:', error)
     throw error
   }
 }
@@ -390,4 +477,7 @@ module.exports = {
   addLabReqReadStatusQ,
   updateLabReqReadStatusQ,
   deleteReqForLabQ,
+  sendNotifyThenNewCommentQ,
+  getAllLabReqCommentQ,
+  addNewLabReqCommentQ,
 }
