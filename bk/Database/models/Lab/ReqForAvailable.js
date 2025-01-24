@@ -81,7 +81,7 @@ const createTableReqForLabFiles = async (allowDrop = false) => {
     CREATE TABLE IF NOT EXISTS lab_req_files (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       req_id TEXT NOT NULL,
-      user_id INTEGER NOT NULL,
+      user_id INTEGER,
       file_name TEXT,
       file_path TEXT,
       uploaded_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
