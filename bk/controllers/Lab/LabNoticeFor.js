@@ -11,9 +11,9 @@ const noticeForLabSystemUsersT = async (user_id, text) => {
   try {
     // Отправка email пользователю
     //! can remove await
-    //! await sendEmailToUser(user_id, text)
+    await sendEmailToUser(user_id, text)
     // Отправка email пользователю без ожидания 
-    sendEmailToUser(user_id, text)
+    // sendEmailToUser(user_id, text)
       .then(() => {
         // console.log('Email успешно отправлен пользователю', user_id)
       })
@@ -36,9 +36,9 @@ const noticeForLabSystemUsersTNewCommentT = async (user_id, text) => {
   try {
     // Отправка email пользователю
     //! can remove await
-    //! await sendEmailToUser(user_id, text)
+    await sendEmailToUser(user_id, text)
     // Отправка email пользователю без ожидания 
-    sendEmailToUser(user_id, text)
+    // sendEmailToUser(user_id, text)
       .then(() => {
         // console.log('Email успешно отправлен пользователю', user_id)
       })
