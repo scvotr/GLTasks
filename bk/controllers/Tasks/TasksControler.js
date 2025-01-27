@@ -648,7 +648,7 @@ class TasksControler {
       await handleTaskComment(postPayload, 'Новый комментарий')
       sendResponseWithData(res, 'addTaskComment')
     } catch (error) {
-      handleError(res, 'addTaskCommet')
+      handleError(res, 'addTaskComment-error')
     }
   }
   async getAllTaskComments(req, res) {
@@ -664,7 +664,6 @@ class TasksControler {
 }
 
 const handleTaskComment = async (postPayload, message) => {
-  console.log(message)
   const {
     user_role,
     task_status,
