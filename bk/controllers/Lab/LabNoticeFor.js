@@ -15,10 +15,10 @@ const noticeForLabSystemUsersT = async (user_id, text) => {
     // Отправка email пользователю без ожидания 
     // sendEmailToUser(user_id, text)
       .then(() => {
-        // console.log('Email успешно отправлен пользователю', user_id)
+        console.log('Email успешно отправлен пользователю', user_id)
       })
       .catch(error => {
-        // console.error('Ошибка при отправке email:', error)
+        console.error('Ошибка при отправке email:', error)
         // Дополнительные действия по обработке ошибки, если необходимо
       })
   } catch (error) {
@@ -36,14 +36,14 @@ const noticeForLabSystemUsersTNewCommentT = async (user_id, text) => {
   try {
     // Отправка email пользователю
     //! can remove await
-    await sendEmailToUser(user_id, text)
+    // await sendEmailToUser(user_id, text)
     // Отправка email пользователю без ожидания 
-    // sendEmailToUser(user_id, text)
+    sendEmailToUser(user_id, text)
       .then(() => {
-        // console.log('Email успешно отправлен пользователю', user_id)
+        console.log('Email успешно отправлен пользователю', user_id)
       })
       .catch(error => {
-        // console.error('Ошибка при отправке email:', error)
+        console.error('Ошибка при отправке email:', error)
         // Дополнительные действия по обработке ошибки, если необходимо
       })
   } catch (error) {
