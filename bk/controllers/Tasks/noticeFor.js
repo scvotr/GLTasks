@@ -12,8 +12,8 @@ const noticeToAppointUserT = async (text, data) => {
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_user_id, read_status: 'unread' });
       //! can remove await
-      // await sendEmailToUser(data.appoint_user_id, text, data)
-      sendEmailToUser(data.appoint_user_id, text, data)
+      await sendEmailToUser(data.appoint_user_id, text, data)
+      // sendEmailToUser(data.appoint_user_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
@@ -28,8 +28,8 @@ const noticeToAppointLeadT = async (text, data) => {
       // !----------------
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_subdepartment_id, read_status: 'readed' });
       //! can remove await
-      // await sendEmailToLead(data.appoint_subdepartment_id, text, data)
-      sendEmailToLead(data.appoint_subdepartment_id, text, data)
+      await sendEmailToLead(data.appoint_subdepartment_id, text, data)
+      // sendEmailToLead(data.appoint_subdepartment_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
@@ -41,8 +41,8 @@ const noticeToGeneralT = async (text, data) => {
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_department_id, read_status: 'unread' });
       //! can remove await
-      // await sendEmailToGeneral(data.appoint_department_id, text, data)
-      sendEmailToGeneral(data.appoint_department_id, text, data)
+      await sendEmailToGeneral(data.appoint_department_id, text, data)
+      // sendEmailToGeneral(data.appoint_department_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
@@ -54,8 +54,8 @@ const noticeAppoinToGeneralT = async (text, data) => {
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_department_id, read_status: 'unread' });
       //! can remove await
-      // await sendEmailToGeneral(data.appoint_department_id, text, data)
-      sendEmailToGeneral(data.appoint_department_id, text, data)
+      await sendEmailToGeneral(data.appoint_department_id, text, data)
+      // sendEmailToGeneral(data.appoint_department_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
@@ -67,8 +67,8 @@ const noticeResponceToGeneralT = async (text, data) => {
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_department_id, read_status: 'unread' });
       //! can remove await
-      // await sendEmailToGeneral(data.responsible_department_id, text, data)
-      sendEmailToGeneral(data.responsible_department_id, text, data)
+      await sendEmailToGeneral(data.responsible_department_id, text, data)
+      // sendEmailToGeneral(data.responsible_department_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
@@ -81,8 +81,8 @@ const noticeToResponceUserT = async (text, data) => {
     try {
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.responsible_user_id, read_status: 'unread' });
       //! can remove await
-      // await sendEmailToUser(data.responsible_user_id, text, data)
-      sendEmailToUser(data.responsible_user_id, text, data)
+      await sendEmailToUser(data.responsible_user_id, text, data)
+      // sendEmailToUser(data.responsible_user_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
@@ -97,8 +97,8 @@ const noticeToResponceLeadT = async (text, data) => {
       // !----------------
       await updateReadStatusQ({ task_id: data.task_id, user_id: data.appoint_subdepartment_id, read_status: 'readed' });
       //! can remove await
-      // await sendEmailToLead(data.responsible_subdepartment_id, text, data)
-      sendEmailToLead(data.responsible_subdepartment_id, text, data)
+      await sendEmailToLead(data.responsible_subdepartment_id, text, data)
+      // sendEmailToLead(data.responsible_subdepartment_id, text, data)
     } catch (error) {
       throw new Error('Ошибка запроса к базе данных', error)
     }
