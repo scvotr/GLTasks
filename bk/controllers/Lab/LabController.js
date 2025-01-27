@@ -14,6 +14,7 @@ const {
   getAllLabReqCommentQ,
   addNewLabReqCommentQ,
 } = require('../../Database/queries/Lab/labQueries')
+const { executeDatabaseQueryAsync } = require('../../Database/utils/executeDatabaseQuery/executeDatabaseQuery')
 const { saveAndConvert } = require('../../utils/files/saveAndConvert')
 const { handleError, sendResponseWithData } = require('../../utils/response/responseUtils')
 const { update } = require('../Admin/Devices/Motors/MotorController')
@@ -121,7 +122,30 @@ class LabController {
         fileNames,
       }
 
-      console.log(data)
+      console.log(data.fields.reqForAvail_id)
+      console.log(data.fields.filesToRemove)
+      console.log(data.fields.new_files)
+      console.log(data.fileNames)
+
+      // !--------------------------------------------
+      // Добавляем файлы к задаче (опционально)
+      for (let i = 0; i < data.fileNames.length; i++) {
+        const file_name = data.fileNames[i]
+        if (!file_name) {
+          //.file_name || !file.file_path
+          continue
+        }
+
+        const command3 = `INSERT INTO lab_req_files (req_id, file_name, file_path) VALUES (?, ?, ?);`
+        try {
+          await executeDatabaseQueryAsync(command3, [data.fields.reqForAvail_id, file_name])
+          console.log(`File ${file_name} added successfully to the lab request`);
+        } catch (error) {
+          console.error(`Error adding file ${file_name} to the lab request: `, error)
+          throw new Error('Ошибка запроса к базе данных')
+        }
+      }
+      // !--------------------------------------------
 
       // await updateLabReqReadStatusQ(payLoad)
       sendResponseWithData(res, 'addFilesForRequest-ok')
