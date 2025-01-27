@@ -6,7 +6,6 @@ const MAIL_USER = process.env.MAIL_USER
 const MAIL_PASS = process.env.MAIL_PASS
 
 const sendEmail = async (recipientEmail, text, descript) => {
-  console.log('sendEmail', descript)
   try {
     const transporter = nodemailer.createTransport({
       host: 'mail.nic.ru',
@@ -28,48 +27,49 @@ const sendEmail = async (recipientEmail, text, descript) => {
       text: descript ? descript : text,
     }
 
-    // const info = await transporter.sendMail(mailOptions);
-    // console.log('Email sent:', info.response);
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.response);
   } catch (error) {
     console.error('Error occurred while sending email:', error)
   }
 }
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));  
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   const email = await getLeadEmailQ(subdepartment_id)
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToLead', email, text, fields.task_descript ? fields.task_descript : fields.comment)
+    console.log('sendEmailToLead1', email, text, fields.task_descript ? fields.task_descript : fields.comment)
     await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment )
-    // await delay(3000); // Задержка 3 секунды
+    // await delay(3000) // Задержка 3 секунды
   } else {
-    console.log('Адрес электронной почты не найден')
-    throw new Error('Адрес электронной почты не найден')
+    console.log('Адрес электронной почты не найден Lead')
+    throw new Error('Адрес электронной почты не найден Lead')
   }
 }
 
 const sendEmailToGeneral = async (department_id, text, fields = {}) => {
   const email = await getGeneralEmailQ(department_id)
-  if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToGeneral', email, text, fields.task_descript ? fields.task_descript : fields.comment)
+  // Проверка, что email - это массив и он не пустой
+  if (Array.isArray(email) && email.length > 0 && email[0] && email[0].email_for_notify) {
+    console.log('sendEmailToGeneral1', email, text, fields.task_descript ? fields.task_descript : fields.comment)
     await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment)
-    // await delay(3000); // Задержка 3 секунды
+    // await delay(3000) // Задержка 3 секунды
   } else {
-    console.log('Адрес электронной почты не найден')
-    throw new Error('Адрес электронной почты не найден')
+    console.log('Адрес электронной почты не найден General')
+    // throw new Error('Адрес электронной почты не найден General')
   }
 }
 
 const sendEmailToUser = async (user_id, text, fields = {}) => {
   const email = await getUserEmailQ(user_id)
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToUser', email, text, fields.task_descript ? fields.task_descript : fields.comment)
+    console.log('sendEmailToUser1', email, text, fields.task_descript ? fields.task_descript : fields.comment)
     await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment)
-    // await delay(3000); // Задержка 3 секунды
+    // await delay(3000) // Задержка 3 секунды
   } else {
-    console.log('Адрес электронной почты не найден')
-    throw new Error('Адрес электронной почты не найден')
+    console.log('Адрес электронной почты не найден User')
+    // throw new Error('Адрес электронной почты не найден User')
   }
 }
 
