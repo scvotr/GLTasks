@@ -79,7 +79,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
-                <TableCell align="center">Статус</TableCell>
+                {/* <TableCell align="center">Статус</TableCell> */}
                 <TableCell align="center"></TableCell>
                 <TableCell align="center">№</TableCell>
                 <TableCell align="center">от</TableCell>
@@ -139,9 +139,9 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                           ))} */}
                         </TableCell>
                         {/* ----------------------- */}
-                        <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
+                        {/* <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
                           {req.approved ? <CheckBoxOutlinedIcon /> : <CheckBoxOutlineBlankOutlinedIcon />}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
                           {req.req_number}
                         </TableCell>
