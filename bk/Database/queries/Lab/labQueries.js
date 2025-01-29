@@ -453,7 +453,7 @@ const getAllLabReqCommentQ = async req_id => {
   const command = `
     SELECT 
       lrc.comment,
-      lrc.created_on,
+      DATETIME(lrc.created_on, 'localtime') AS created_on,
       u.last_name
     FROM lab_req_comments lrc
     LEFT JOIN users u ON lrc.user_id = u.id
