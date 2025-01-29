@@ -27,9 +27,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [statusReq, setStatusReq] = useState("new")
   const isCreator = request.creator.toString() === currentUser.id.toString()
-
-  console.log("request", request)
-
+  
   const handleApprove = async (user, request) => {
     if (isCreator) {
       setStatusReq("new")
@@ -75,60 +73,118 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   }
 
   const handlePrintSelectedTasks = (user, request) => {
-    const printContent = `
-      <div>
-        <h1>Запрос</h1>
-        <p>Культура: ${request.culture}</p>
-        <p>Тоннаж: ${request.tonnage}</p>
-        <p>Качество: ${request.quality}</p>
-        <p>Подрядчик: ${request.contractor}</p>
-        <p>Одобрено: ${request.approved ? "Да" : "Нет"}</p>
-        <p>Дата создания: ${request.created_at}</p>
-        <h2>Лист согласования:</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Имя пользователя</th>
-              <th>Должность</th>
-              <th>Статус одобрения</th>
-              <th>Подразделение</th>
-              <th>Отдел</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${request.users
-              .map(
-                user => `
-              <tr>
-                <td>${user.user_name}</td>
-                <td>${user.position_name}</td>
-                <td>${user.approval_status}</td>
-                <td>${user.subdepartment_name}</td>
-                <td>${user.department_name}</td>
-              </tr>
-            `
-              )
-              .join("")}
-          </tbody>
-        </table>
+    const indicatorsContent = JSON.parse(request.indicators)
+      .filter(indicator => indicator.value)
+      .map(
+        (indicator, index) => `
+      <div class="indicator-item" key="${index}">
+        <strong> - ${indicator.name}:</strong> ${indicator.value}
       </div>
     `
+      )
+      .join("")
+
+    const usersContent = request.users
+      .map(
+        user => `
+          <div class="user-item">
+            <div class="subdepartment-name">${user.subdepartment_name}<br>${user.position_name}</div>
+            <div class="user-name">________________ ${user.user_name}</div>
+          </div>
+        `
+      )
+      .join("")
+
+    const printContent = `
+      <div class="print-content">
+        <h2>Культура: ${request.culture}</h2>
+        <h3>Масса: ${request.tonnage} | Покупатель: ${request.contractor}</h3>
+        <h4>Индикаторы:</h4>
+        <div class="indicators-container">
+          ${indicatorsContent}
+        </div>
+        <p><strong>Лист согласования:</strong></p>
+        <div class="user-list">${usersContent}</div>
+      </div>
+    `
+    // Ваша функция для открытия окна печати
     const printWindow = window.open("", "_blank")
     printWindow.document.write(`
-      <html>
-        <head>
-          <title>Печать выбранных задач</title>
-          <style>
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid black; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; }
-          </style>
-        </head>
-        <body>${printContent}</body>
-      </html>
-    `)
+  <html>
+    <head>
+      <style>
+        body {
+          margin: 0;
+          padding: 20px;
+          font-family: Arial, sans-serif;
+          background-color: #f9f9f9;
+          color: #333;
+        }
+        h2, h3, h4 {
+          text-align: center;
+          color: #2c3e50;
+        }
+        .print-content {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 20px;
+          background-color: #fff;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .indicators-container {
+          display: flex;
+          flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
+          justify-content: center; /* Центрирует элементы по горизонтали */
+          margin: 20px 0;
+        }
+        .indicator-item {
+          flex: 0 0 45%; /* Задает ширину элемента 45% */
+          margin: 5px; /* Отступ между элементами */
+          text-align: left; /* Выравнивание текста влево */
+        }
+        .user-list {
+          margin: 20px 0;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          background-color: #f1f1f1;
+        }
+        .user-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          padding: 5px;
+          border-bottom: 1px solid #ccc;
+        }
+        .subdepartment-name, .user-name {
+          flex: 1;
+        }
+        @media print {
+          @page {
+            margin-top: 0;
+            margin-bottom: 0;
+          }
+          body {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="lef-top-data-number">
+        <strong>№: ${request.req_number} от ${formatDateV2(request.approved_at)}</strong>
+      </div>
+      <h2>В лабораторию ${request.department_name} для заключения договора с "${request.contractor}"</h2>
+      ${printContent}
+    </body>
+  </html>
+`)
+
     printWindow.document.close()
+    printWindow.focus()
     printWindow.print()
+    printWindow.close()
   }
 
   return (
@@ -224,3 +280,111 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
     </Loader>
   )
 }
+
+// ! --------------------------------------------------------
+// const handlePrintSelectedTasks = (user, request) => {
+//   const indicatorsContent = JSON.parse(request.indicators)
+//     .filter(indicator => indicator.value)
+//     .map(
+//       (indicator, index) => `
+//         <div class="indicator-item" key="${index}">
+//           <strong> - ${indicator.name}:</strong> ${indicator.value}
+//         </div>
+//       `
+//     )
+//     .join("");
+
+//   const usersContent = request.users
+//     .map(
+//       user => `
+//         <div class="user-item">
+//           <div class="subdepartment-name">${user.subdepartment_name}<br>${user.position_name}</div>
+//           <div class="user-name">________________ ${user.user_name}</div>
+//         </div>
+//       `
+//     )
+//     .join("");
+
+//   const printContent = `
+//     <div>
+//       <h2>Культура: ${request.culture}. Масса: ${request.tonnage}. Покупатель: ${request.contractor}</h2>
+//       <div class="list-indicators-content">${indicatorsContent}</div>
+//       <p><strong>Лист согласования:</strong></p>
+//       <div class="user-list">${usersContent}</div>
+//     </div>
+//   `;
+
+//   const printWindow = window.open("", "_blank");
+//   printWindow.document.write(`
+//     <html>
+//       <head>
+//         <style>
+//           body {
+//             margin: 0;
+//             padding: 10px;
+//           }
+//           h2 {
+//             margin-top: 25px;
+//             text-align: center;
+//           }
+//           .list-indicators-content, .user-list {
+//             margin: 20px 0;
+//           }
+//           .user-item {
+//             display: flex;
+//             align-items: center;
+//             margin-bottom: 10px;
+//           }
+//           .subdepartment-name, .user-name {
+//             flex: 1;
+//           }
+//           @media print {
+//             @page {
+//               margin: 0;
+//             }
+//             body {
+//               padding: 5rem 0;
+//             }
+//           }
+//         </style>
+//       </head>
+//       <body>
+//         <div class="lef-top-data-number">
+//           <strong>№: ${request.req_number} от ${formatDateV2(request.approved_at)}</strong>
+//         </div>
+//         <h2>В лабораторию ${request.department_name} для заключения договора с "${request.contractor}"</h2>
+//         ${printContent}
+//       </body>
+//     </html>
+//   `);
+
+//   printWindow.document.close();
+//   printWindow.focus();
+//   printWindow.print();
+//   printWindow.close();
+// };
+
+// ! --------------------------------------------------------
+
+// <table>
+// <thead>
+//   <tr>
+//     <th>Должность</th>
+//     <th>Отдел</th>
+//     <th>Имя пользователя</th>
+//   </tr>
+// </thead>
+// <tbody>
+//   ${request.users
+//     .map(
+//       user => `
+//     <tr>
+//       <td>${user.position_name}</td>
+//       <td>${user.subdepartment_name}</td>
+//       <td>${user.user_name}</td>
+//      </tr>
+//   `
+//     )
+//     .join("")}
+// </tbody>
+// </table>
