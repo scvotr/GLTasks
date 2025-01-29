@@ -25,21 +25,28 @@ export const TasksTable = ({ tasks, reRender }) => {
   // const isMediumScreen = useMediaQuery("(min-width:601px) and (max-width:900px)")
   // // Устанавливаем ширину столбцов в зависимости от разрешения экрана
   // const taskColumnWidth = isSmallScreen ? 300 : isMediumScreen ? 400 : 720
-  
+
   // Используем useMediaQuery для определения ширины экрана
-  const isExtraSmallScreen = useMediaQuery("(max-width:600px)"); // XS
-  const isSmallScreen = useMediaQuery("(min-width:601px) and (max-width:900px)"); // SM
-  const isMediumScreen = useMediaQuery("(min-width:901px) and (max-width:1200px)"); // MD
-  const isLargeScreen = useMediaQuery("(min-width:1201px) and (max-width:1600px)"); // LG
-  const isExtraLargeScreen = useMediaQuery("(min-width:1601px)"); // XL
+  const isExtraSmallScreen = useMediaQuery("(max-width:600px)") // XS
+  const isSmallScreen = useMediaQuery("(min-width:601px) and (max-width:900px)") // SM
+  const isMediumScreen = useMediaQuery("(min-width:901px) and (max-width:1200px)") // MD
+  const isLargeScreen = useMediaQuery("(min-width:1201px) and (max-width:1600px)") // LG
+  const isExtraLargeScreen = useMediaQuery("(min-width:1601px)") // XL
+
+  console.log('isExtraSmallScreen', isExtraSmallScreen,'isSmallScreen' ,isSmallScreen, 'isMediumScreen', isMediumScreen,'isLargeScreen' ,isLargeScreen, 'isExtraLargeScreen',isExtraLargeScreen)
 
   // Устанавливаем ширину столбцов в зависимости от разрешения экрана
-  const taskColumnWidth = isExtraSmallScreen ? 250 
-                        : isSmallScreen ? 300 
-                        : isMediumScreen ? 400 
-                        : isLargeScreen ? 500 
-                        : isExtraLargeScreen ? 600// Используем для очень больших экранов
-                        : 720; // Значение по умолчанию
+  const taskColumnWidth = isExtraSmallScreen
+    ? 250
+    : isSmallScreen
+    ? 300
+    : isMediumScreen
+    ? 400
+    : isLargeScreen
+    ? 500
+    : isExtraLargeScreen
+    ? 600 // Используем для очень больших экранов
+    : 720 // Значение по умолчанию
 
   const currentUser = useAuthContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -202,7 +209,7 @@ export const TasksTable = ({ tasks, reRender }) => {
       },
     },
   ]
-
+  
   const handleCellClick = (params, event) => {
     // console.log("Кликнута ячейка:", params.field, params.row.id, params.row, params.row.read_status)
 
@@ -321,16 +328,16 @@ export const TasksTable = ({ tasks, reRender }) => {
         )}
       </>
       <Loader reqStatus={reqStatus}>
-        <Box
+        {/* <Box
           sx={{
             height: "80vh",
             display: "flex",
             overflow: "auto",
-            mt: "5px",
+            // mt: "5px",
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
             border: "1px solid #e0e0e0",
             borderRadius: "5px",
-          }}>
+          }}> */}
           <div style={containerStyle}>
             <DataGrid
               sx={{
@@ -363,7 +370,7 @@ export const TasksTable = ({ tasks, reRender }) => {
                 },
               }}
               // autoHeight
-              autoWidght
+              // autoWight
               rowHeight={25}
               rows={sortedTasks.map(task => ({
                 ...task,
@@ -384,10 +391,10 @@ export const TasksTable = ({ tasks, reRender }) => {
                   paginationModel: { page: 0, pageSize: 20 },
                 },
               }}
-              pageSizeOptions={[10, 15, 20]}
+              pageSizeOptions={[20, 25, 30]}
             />
           </div>
-        </Box>
+        {/* </Box> */}
       </Loader>
     </>
   )

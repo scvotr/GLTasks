@@ -123,7 +123,7 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
                 <MailIcon color="action" />
               </StyledBadge>
             )}
-            <Tab label={`подтвержденные ${allUsersApprovedCountRead ? `(${allUsersApprovedCountRead})` : ""} `} value="4" />
+            <Tab label={`в работе ${allUsersApprovedCountRead ? `(${allUsersApprovedCountRead})` : ""} `} value="4" />
             {allUsersApprovedCount && (
               <StyledBadge badgeContent={allUsersApprovedCount} color="secondary">
                 <MailIcon color="action" />
@@ -161,7 +161,7 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
             checkFullScreenOpen={checkFullScreenOpen}
           />
         </TabPanel>
-        {/* ------------------------Подтвержденные------------------------------ */}
+        {/* ------------------------в работе------------------------------ */}
         <TabPanel value="4">
           <ReqForLabTable
             requests={allUsersApprovedReq}
