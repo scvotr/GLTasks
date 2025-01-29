@@ -278,7 +278,8 @@ const getUsersForApprovalQ = async reqForAvail_id => {
         ra.status AS approval_status,
         sb.name AS subdepartment_name,
         dp.name AS department_name,
-        lrs.read_status AS read_status
+        lrs.read_status AS read_status,
+        DATETIME(ra.approved_at, 'localtime') AS approved_at
     FROM 
         reqForAvailableTable r
     LEFT JOIN 
