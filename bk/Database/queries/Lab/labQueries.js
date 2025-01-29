@@ -275,6 +275,9 @@ const getUsersForApprovalQ = async reqForAvail_id => {
         p.name AS position_name,
         u.id AS user_id,
         u.last_name || ' ' || u.first_name AS user_name, -- Объединяем имя и фамилию
+        u.last_name as last_name_only,
+        u.middle_name as middle_name_only,
+        u.first_name as first_name_only,
         ra.status AS approval_status,
         sb.name AS subdepartment_name,
         dp.name AS department_name,
