@@ -99,7 +99,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
 
     const printContent = `
       <div class="print-content">
-        <h2>Культура: ${request.culture} ${request.classType ? `${request.type.toLowerCase()} класс: ${request.classType}` : null}</h2>
+        <h2>Культура: ${request.culture} ${request.classType ? `${request.type.toLowerCase()} класс: ${request.classType}` : ''}</h2>
         <h3>Масса: ${request.tonnage} | Покупатель: ${request.contractor}</h3>
         <h4>Качественные показатели(${request.gost}):</h4>
         <div class="indicators-container">
