@@ -184,14 +184,14 @@ export const ElevatorTabs = ({ requests, currentUser, reRender, approvedRequest,
                 <MailIcon color="action" />
               </StyledBadge>
             )}
-            {/* ----------------------------подтвержденные---------- */}
+            {/* ----------------------------в работе---------- */}
             <Tab
-              // label={isAeElevator ? `подтвержденные ${allUsersApprovedCountReadAE}` : isPeElevator ? `подтвержденные ${allUsersApprovedCountReadPE}` : ""}
+              // label={isAeElevator ? `в работе ${allUsersApprovedCountReadAE}` : isPeElevator ? `в работе ${allUsersApprovedCountReadPE}` : ""}
               label={
                 isAeElevator
-                  ? `подтвержденные ${allUsersApprovedCountReadAE ? `${allUsersApprovedCountReadAE}` : ""}`
+                  ? `в работе ${allUsersApprovedCountReadAE ? `${allUsersApprovedCountReadAE}` : ""}`
                   : isPeElevator
-                  ? `подтвержденные ${allUsersApprovedCountReadPE ? `${allUsersApprovedCountReadPE}` : ""}`
+                  ? `в работе ${allUsersApprovedCountReadPE ? `${allUsersApprovedCountReadPE}` : ""}`
                   : ""
               }
               value="3"
