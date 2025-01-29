@@ -5,6 +5,7 @@ import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
 import { UploadButton } from "../uploads/button/UploadButton"
 import { LabComments } from "../LabComments/LabComments"
+import { formatDateV2 } from "../../../../../../utils/formatDate"
 
 const renderIndicators = indicatorsString => {
   try {
@@ -26,6 +27,8 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [statusReq, setStatusReq] = useState("new")
   const isCreator = request.creator.toString() === currentUser.id.toString()
+
+  console.log("request", request)
 
   const handleApprove = async (user, request) => {
     if (isCreator) {
@@ -137,17 +140,17 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
 
         <Grid container spacing={2}>
           {/* <Grid item xs={4} md={6}> */}
-          <Grid item xs={2} >
+          <Grid item xs={2}>
             <Paper sx={{ padding: 2 }}>
-              <Typography variant="h6">Информация о заявке</Typography>
+              <Typography variant="h6">Информация о заявке №: {request.req_number}</Typography>
               <Typography variant="body1">Культура: {request.culture}</Typography>
               {request.type && <Typography variant="body1">Тип: {request.type}</Typography>}
               {request.classType && <Typography variant="body1">Класс: {request.classType}</Typography>}
-              <Typography variant="body1">Тоннаж: {request.tonnage}</Typography>
-              <Typography variant="body1">Качество: {request.quality}</Typography>
-              <Typography variant="body1">Подрядчик: {request.contractor}</Typography>
-              <Typography variant="body1">Одобрено: {request.approved === 1 ? "Да" : "Нет"}</Typography>
-              <Typography variant="body1">Дата создания: {request.created_at}</Typography>
+              <Typography variant="body1">Масса: {request.tonnage} тонн +/- 5%</Typography>
+              {/* <Typography variant="body1">Качество: {request.quality}</Typography> */}
+              <Typography variant="body1">Покупатель: {request.contractor}</Typography>
+              {/* <Typography variant="body1">Одобрено: {request.approved === 1 ? "Да" : "Нет"}</Typography> */}
+              {/* <Typography variant="body1">Дата создания: {request.created_at}</Typography> */}
               <Typography variant="body1">ГОСТ: {request.gost}</Typography>
               <Box sx={{ marginTop: 2 }}>
                 <Typography variant="h6">Качество по контракту</Typography>
@@ -157,7 +160,9 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
           </Grid>
 
           <Grid item xs={4}>
-            <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen}/>
+            <Box component={Paper} sx={{ p: 2 }}>
+              <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen} />
+            </Box>
           </Grid>
 
           {/* <Grid item xs={12} md={6}> */}
@@ -173,11 +178,12 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Имя пользователя</TableCell>
                       <TableCell>Должность</TableCell>
                       {/* <TableCell>Статус одобрения</TableCell> */}
-                      <TableCell>Подразделение</TableCell>
+                      {/* <TableCell>Подразделение</TableCell> */}
                       <TableCell>Отдел</TableCell>
+                      <TableCell>Имя пользователя</TableCell>
+                      <TableCell>Дата</TableCell>
                       <TableCell>Действия</TableCell>
                     </TableRow>
                   </TableHead>
@@ -185,19 +191,20 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                     {request.users &&
                       request.users.map(user => (
                         <TableRow key={user.position_id} sx={{ backgroundColor: user.approval_status === "approved" ? "lightgreen" : "inherit" }}>
-                          <TableCell>{user.user_name}</TableCell>
                           <TableCell>{user.position_name}</TableCell>
                           {/* <TableCell>{user.approval_status}</TableCell> */}
-                          <TableCell>{user.subdepartment_name}</TableCell>
+                          {/* <TableCell>{user.subdepartment_name}</TableCell> */}
                           <TableCell>{user.department_name}</TableCell>
+                          <TableCell>{user.user_name}</TableCell>
+                          <TableCell>{user.approved_at ? formatDateV2(user.approved_at, true) : null}</TableCell>
                           <TableCell>
                             {currentUser.position.toString() === user.position_id.toString() && user.approval_status === "pending" && (
                               <Stack direction="row" spacing={0.5}>
-                                <Button variant="contained" color="primary" onClick={() => handleApprove(user, request)}>
+                                <Button variant="contained" color="primary" size="small" onClick={() => handleApprove(user, request)}>
                                   {isCreator ? "Запросить" : "Подтвердить"}
                                 </Button>
                                 {isCreator && statusReq === "new" && (
-                                  <Button variant="contained" color="secondary" onClick={() => handleDelete(request)}>
+                                  <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(request)}>
                                     Удалить
                                   </Button>
                                 )}
