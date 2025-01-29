@@ -27,7 +27,9 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [statusReq, setStatusReq] = useState("new")
   const isCreator = request.creator.toString() === currentUser.id.toString()
-  
+
+  console.log("request", request)
+
   const handleApprove = async (user, request) => {
     if (isCreator) {
       setStatusReq("new")
@@ -89,7 +91,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
         user => `
           <div class="user-item">
             <div class="subdepartment-name">${user.subdepartment_name}<br>${user.position_name}</div>
-            <div class="user-name">________________ ${user.user_name}</div>
+            <div class="user-name">${user.approval_status === "approved" ? `Согласована ${formatDateV2(user.approved_at, true)}` : '________________'} ${user.last_name_only} ${user.first_name_only.charAt(0)}.${user.middle_name_only.charAt(0)}.</div>
           </div>
         `
       )
@@ -97,12 +99,22 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
 
     const printContent = `
       <div class="print-content">
-        <h2>Культура: ${request.culture}</h2>
+        <h2>Культура: ${request.culture} ${request.classType ? `${request.type.toLowerCase()} класс: ${request.classType}` : null}</h2>
         <h3>Масса: ${request.tonnage} | Покупатель: ${request.contractor}</h3>
-        <h4>Индикаторы:</h4>
+        <h4>Качественные показатели(${request.gost}):</h4>
         <div class="indicators-container">
           ${indicatorsContent}
         </div>
+        ${
+          request.commentsThenCreate
+            ? `
+          <p><strong>Комментарий:</strong></p>
+          <div>
+            ${request.commentsThenCreate}
+          </div>
+        `
+            : ''
+        }
         <p><strong>Лист согласования:</strong></p>
         <div class="user-list">${usersContent}</div>
       </div>
