@@ -12,8 +12,6 @@ export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRen
   const [currentFullScreenView, setCurrentFullScreenView] = useState(null)
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
-  console.log(currentRequest)
-
   const labReqTitle = `В лабораторию АО "${currentRequest.department_name}" от ${currentRequest.created_at} культура: ${currentRequest.culture}, масса: ${currentRequest.tonnage}`
 
   const handleInfoView = async () => {

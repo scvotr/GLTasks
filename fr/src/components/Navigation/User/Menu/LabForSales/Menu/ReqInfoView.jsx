@@ -26,6 +26,7 @@ const renderIndicators = indicatorsString => {
 export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalUnreadCount, checkFullScreenOpen }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [statusReq, setStatusReq] = useState("new")
+  const [getReqLabComments, setGetReqLabComments] = useState([])
   const isCreator = request.creator.toString() === currentUser.id.toString()
 
   console.log("request", request)
@@ -75,6 +76,16 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   }
 
   const handlePrintSelectedTasks = (user, request) => {
+    const comments = getReqLabComments?.map(
+      (comment, index) => `
+      <div class="comments-item" key="${index}">
+        <div>${comment.comment} | </div>
+        <div>${comment.last_name} ${comment.first_name.charAt(0)}.${comment.middle_name.charAt(0)}. | </div>
+        <div>${formatDateV2(comment.created_on, true)}</div>
+      </div>
+    `
+    )
+
     const indicatorsContent = JSON.parse(request.indicators)
       .filter(indicator => indicator.value)
       .map(
@@ -91,7 +102,9 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
         user => `
           <div class="user-item">
             <div class="subdepartment-name">${user.subdepartment_name}<br>${user.position_name}</div>
-            <div class="user-name">${user.approval_status === "approved" ? `Согласована ${formatDateV2(user.approved_at, true)}` : '________________'} ${user.last_name_only} ${user.first_name_only.charAt(0)}.${user.middle_name_only.charAt(0)}.</div>
+            <div class="user-name">${user.approval_status === "approved" ? `Согласована ${formatDateV2(user.approved_at, true)}` : "________________"} ${
+          user.last_name_only
+        } ${user.first_name_only.charAt(0)}.${user.middle_name_only.charAt(0)}.</div>
           </div>
         `
       )
@@ -99,12 +112,15 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
 
     const printContent = `
       <div class="print-content">
-        <h2>Культура: ${request.culture} ${request.classType ? `${request.type.toLowerCase()} класс: ${request.classType}` : ''}</h2>
-        <h3>Масса: ${request.tonnage} | Покупатель: ${request.contractor}</h3>
+        <h2>Культура: ${request.culture}. Урожай: ${request.yearOfHarvest}г. ${request.classType ? `${request.type.toLowerCase()} класс: ${request.classType}` : ""}</h2>
+        <h3>Масса: ${request.tonnage} т. (+/- 5%) | Покупатель: ${request.contractor}</h3>
         <h4>Качественные показатели(${request.gost}):</h4>
+
+
         <div class="indicators-container">
           ${indicatorsContent}
         </div>
+ 
         ${
           request.commentsThenCreate
             ? `
@@ -113,10 +129,14 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
             ${request.commentsThenCreate}
           </div>
         `
-            : ''
+            : ""
         }
         <p><strong>Лист согласования:</strong></p>
         <div class="user-list">${usersContent}</div>
+      </div>
+      <p><strong>Протокол:</strong></p>
+      <div class="comments-list">
+        ${comments}
       </div>
     `
     // Ваша функция для открытия окна печати
@@ -168,6 +188,20 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
           padding: 5px;
           border-bottom: 1px solid #ccc;
         }
+        .comments-list {
+          margin: 20px 0;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          background-color: #f1f1f1;
+        }
+        .comments-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          padding: 5px;
+          border-bottom: 1px solid #ccc;
+        }
         .subdepartment-name, .user-name {
           flex: 1;
         }
@@ -187,7 +221,9 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
       <div class="lef-top-data-number">
         <strong>№: ${request.req_number} от ${formatDateV2(request.approved_at)}</strong>
       </div>
-      <h2>В лабораторию ${request.department_name} для заключения договора с "${request.contractor}"</h2>
+      <h2>Запрос <br> №: ${request.req_number} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
+      request.department_name
+    } <br> для заключения договора с "${request.contractor}"</h2>
       ${printContent}
     </body>
   </html>
@@ -212,6 +248,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
             <Paper sx={{ padding: 2 }}>
               <Typography variant="h6">Информация о заявке №: {request.req_number}</Typography>
               <Typography variant="body1">Культура: {request.culture}</Typography>
+              <Typography variant="body1">Урожай: {request.yearOfHarvest} года</Typography>
               {request.type && <Typography variant="body1">Тип: {request.type}</Typography>}
               {request.classType && <Typography variant="body1">Класс: {request.classType}</Typography>}
               <Typography variant="body1">Масса: {request.tonnage} тонн +/- 5%</Typography>
@@ -229,7 +266,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
 
           <Grid item xs={4}>
             <Box component={Paper} sx={{ p: 2 }}>
-              <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen} />
+              <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen} setGetReqLabComments={setGetReqLabComments} />
             </Box>
           </Grid>
 

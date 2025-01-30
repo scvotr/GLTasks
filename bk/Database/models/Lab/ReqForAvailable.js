@@ -1,5 +1,6 @@
 'use strict'
 
+const { appendField } = require('../../utils/appendField/appendField')
 const { executeTableCreation } = require('../../utils/executeTableCreation/executeTableCreation')
 
 const createReqForAvailableTable = async (allowDrop = false) => {
@@ -18,6 +19,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       creator_role TEXT NOT NULL,
       approved BOOLEAN NOT NULL DEFAULT FALSE,
       gost TEXT,  -- Добавлено поле для хранения ГОСТа
+      yearOfHarvest TEXT,  -- Добавлено поле для хранения ГОСТа
       commentsThenCreate TEXT,
       indicators JSON,  -- Добавлено поле для хранения индикаторов в формате JSON
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -101,6 +103,9 @@ const createTableReqForLabFiles = async (allowDrop = false) => {
 
 const createAllReqForAvailable = async (allowDrop = false) => {
   try {
+    // -----new fields-----------------
+    await appendField('reqForAvailableTable', 'yearOfHarvest', 'TEXT')
+    // -----new fields-----------------
     await createReqForAvailableTable(allowDrop)
     await createRequestApprovalsTable(allowDrop)
     await createLabReqReadStatus(allowDrop)

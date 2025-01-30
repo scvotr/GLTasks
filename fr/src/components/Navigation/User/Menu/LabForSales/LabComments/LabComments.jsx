@@ -6,16 +6,13 @@ import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint
 
 const ScrollableList = styled(List)({})
 
-export const LabComments = ({ comments, onSubmit, request, checkFullScreenOpen, reRender }) => {
+export const LabComments = ({ comments, onSubmit, request, checkFullScreenOpen, setGetReqLabComments,reRender }) => {
   const socket = useSocketContext()
   const currentUser = useAuthContext()
   const [comment, setComment] = useState("")
   const [commentList, setCommentList] = useState([])
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [formKey, setFormKey] = useState(0)
-
-
-  console.log('LabComments- checkFullScreenOpen',checkFullScreenOpen)
 
   const handleChange = event => {
     setComment(event.target.value)
@@ -28,6 +25,7 @@ export const LabComments = ({ comments, onSubmit, request, checkFullScreenOpen, 
   useEffect(() => {
     getDataFromEndpoint(currentUser.token, "/lab/getAllLabReqComment", "POST", request.reqForAvail_id, setReqStatus).then(data => {
       setCommentList(data)
+      setGetReqLabComments(data)
     })
   }, [formKey])
 

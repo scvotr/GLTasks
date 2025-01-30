@@ -69,7 +69,7 @@ const data = {
     Кукуруза: {
       gost: "ГОСТ 13634-90",
       indicators: [
-        "Влажность, %",
+        "Влажность не более %",
         "Сорная примесь, %",
         "Зерновая примесь, %",
         "Другие культуры, %",
@@ -87,7 +87,7 @@ const data = {
         Твердая: {
           classes: ["3", "4", "5", "Безенчукская"],
           indicators: [
-            "Влажность, %",
+            "Влажность, не более %",
             "Сорная примесь, %",
             "Зерновая примесь, %",
             "Протеин, %",
@@ -96,7 +96,7 @@ const data = {
             "Натура, г/л",
             "Число падения,с",
             "Стекловидность, %",
-            "Проросшие, %",
+            "Проросшие, не более %",
             "Черный зародыш, %",
             "Минеральная примесь, %",
             "Мелкое зерно, %",
@@ -163,6 +163,7 @@ const TestForm = ({ onClose, currentUser, setAddNewRequest }) => {
   const [tonnage, setTonnage] = useState("")
   const [contractor, setContractor] = useState("")
   const [comment, setComment] = useState("")
+  const [yearOfHarvest, setYearOfHarvest] = useState("")
   const [indicatorValues, setIndicatorValues] = useState({})
 
   const handleClassificationChange = event => {
@@ -208,6 +209,7 @@ const TestForm = ({ onClose, currentUser, setAddNewRequest }) => {
     event.preventDefault() // Предотвращаем перезагрузку страницы
     const formData = {
       reqForAvail_id: uuidv4(),
+      yearOfHarvest,
       tonnage,
       contractor,
       selectedDepartment: selectedDepartment.id,
@@ -318,7 +320,19 @@ const TestForm = ({ onClose, currentUser, setAddNewRequest }) => {
             </Grid>
           ))}
           <Grid container spacing={1} sx={{ m: 0 }}>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
+              <TextField
+                label="Год урожая"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                type="number"
+                value={yearOfHarvest}
+                onChange={e => setYearOfHarvest(e.target.value)}
+                required // Обязательное поле
+              />
+            </Grid>
+            <Grid item xs={4}>
               <TextField
                 label="Тоннаж"
                 variant="outlined"
@@ -330,7 +344,7 @@ const TestForm = ({ onClose, currentUser, setAddNewRequest }) => {
                 required // Обязательное поле
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <TextField
                 label="Контрагент"
                 variant="outlined"

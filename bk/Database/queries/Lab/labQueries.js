@@ -17,8 +17,9 @@ const createNewReqForAvailableQ = async data => {
       approved,
       gost,
       commentsThenCreate,
+      yearOfHarvest,
       indicators
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `
   const params = [
     data.reqForAvail_id,
@@ -34,6 +35,7 @@ const createNewReqForAvailableQ = async data => {
     data.approved,
     data.gost,
     data.comment,
+    data.yearOfHarvest,
     JSON.stringify(data.indicators), // Сохраняем индикаторы как JSON
   ]
 
@@ -246,6 +248,7 @@ const getAllRequestsQ = async () => {
       creator_role,
       approved,
       commentsThenCreate,
+      yearOfHarvest,
       gost,  -- Добавлено поле gost
       indicators,  -- Добавлено поле indicators
       dp.name AS department_name,
@@ -454,7 +457,9 @@ const getAllLabReqCommentQ = async req_id => {
     SELECT 
       lrc.comment,
       DATETIME(lrc.created_on, 'localtime') AS created_on,
-      u.last_name
+      u.last_name,
+      u.first_name,
+      u.middle_name
     FROM lab_req_comments lrc
     LEFT JOIN users u ON lrc.user_id = u.id
     WHERE req_id = ?  
