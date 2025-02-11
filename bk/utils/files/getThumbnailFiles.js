@@ -70,9 +70,5 @@ const getThumbnailFiles = async (files, folderName) => {
 }
 
 module.exports = {
-    /**
-   * @function getThumbnailFiles
-   * @see {@link getThumbnailFiles}
-   */
   getThumbnailFiles,
 }
