@@ -384,106 +384,166 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
           </Typography>
 
           <Grid container spacing={2}>
-            {/* <Grid item xs={4} md={6} sx={{ border: "1px solid black", padding: "8px" }} > */}
-            <Grid item xs={2}>
-              <Paper sx={{ padding: 2 }}>
-                <Typography variant="h6">Информация о заявке №: {request.req_number}</Typography>
-                <Typography variant="body1">Культура: {request.culture}</Typography>
-                <Typography variant="body1">Урожай: {request.yearOfHarvest} года</Typography>
-                {request.type && <Typography variant="body1">Тип: {request.type}</Typography>}
-                {request.classType && <Typography variant="body1">Класс: {request.classType}</Typography>}
-                <Typography variant="body1">Масса: {request.tonnage} тонн +/- 5%</Typography>
-                <Typography variant="body1">Покупатель: {request.contractor}</Typography>
-                <Typography variant="body1">ГОСТ: {request.gost}</Typography>
-                <Box sx={{ marginTop: 2 }}>
-                  <Typography variant="h6">Качество по контракту</Typography>
-                  {renderIndicators(request.indicators)}
+            <Loader reqStatus={reqStatus}>
+              {/* <Grid item xs={4} md={6} sx={{ border: "1px solid black", padding: "8px" }} > */}
+              <Grid item xs={2}>
+                <Paper sx={{ padding: 2 }}>
+                  <Typography variant="h6">Информация о заявке №: {request.req_number}</Typography>
+                  <Typography variant="body1">Культура: {request.culture}</Typography>
+                  <Typography variant="body1">Урожай: {request.yearOfHarvest} года</Typography>
+                  {request.type && <Typography variant="body1">Тип: {request.type}</Typography>}
+                  {request.classType && <Typography variant="body1">Класс: {request.classType}</Typography>}
+                  <Typography variant="body1">Масса: {request.tonnage} тонн +/- 5%</Typography>
+                  <Typography variant="body1">Покупатель: {request.contractor}</Typography>
+                  <Typography variant="body1">ГОСТ: {request.gost}</Typography>
+                  <Box sx={{ marginTop: 2 }}>
+                    <Typography variant="h6">Качество по контракту</Typography>
+                    {renderIndicators(request.indicators)}
+                  </Box>
+                </Paper>
+              </Grid>
+              <Grid item xs={4}>
+                <Box component={Paper} sx={{ p: 2 }}>
+                  <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen} setGetReqLabComments={setGetReqLabComments} />
                 </Box>
-              </Paper>
-            </Grid>
+              </Grid>
 
-            <Grid item xs={4}>
-              <Box component={Paper} sx={{ p: 2 }}>
-                <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen} setGetReqLabComments={setGetReqLabComments} />
-              </Box>
-            </Grid>
-
-            {/* <Grid item xs={12} md={6}> */}
-            <Grid item xs={6}>
-              <Paper sx={{ padding: 2 }}>
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Typography variant="h6">Лист согласования</Typography>
-                  <IconButton color="primary" onClick={() => handlePrintSelectedTasks(null, request)}>
-                    <PrintIcon />
-                  </IconButton>
-                </Box>
-                <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Должность</TableCell>
-                        <TableCell>Отдел</TableCell>
-                        <TableCell>Имя пользователя</TableCell>
-                        <TableCell>Дата</TableCell>
-                        <TableCell>Действия</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {request.users &&
-                        request.users.map(user => (
-                          <TableRow key={user.position_id} sx={{ backgroundColor: user.approval_status === "approved" ? "lightgreen" : "inherit" }}>
-                            <TableCell>{user.position_name}</TableCell>
-                            <TableCell>{user.department_name}</TableCell>
-                            <TableCell>{user.user_name}</TableCell>
-                            <TableCell>{user.approved_at ? formatDateV2(user.approved_at, true) : null}</TableCell>
-                            <TableCell>
-                              {currentUser.position.toString() === user.position_id.toString() && user.approval_status === "pending" && (
-                                <Stack direction="row" spacing={0.5}>
-                                  <Button variant="contained" color="primary" size="small" onClick={() => handleApprove(user, request)}>
-                                    {isCreator ? "Запросить" : "Подтвердить"}
-                                  </Button>
-                                  {isCreator && statusReq === "new" && (
-                                    <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(request)}>
-                                      Удалить
+              {/* <Grid item xs={12} md={6}> */}
+              <Grid item xs={6}>
+                <Paper sx={{ padding: 2 }}>
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Typography variant="h6">Лист согласования</Typography>
+                    <IconButton color="primary" onClick={() => handlePrintSelectedTasks(null, request)}>
+                      <PrintIcon />
+                    </IconButton>
+                  </Box>
+                  <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Должность</TableCell>
+                          <TableCell>Отдел</TableCell>
+                          <TableCell>Имя пользователя</TableCell>
+                          <TableCell>Дата</TableCell>
+                          <TableCell>Действия</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {request.users &&
+                          request.users.map(user => (
+                            <TableRow key={user.position_id} sx={{ backgroundColor: user.approval_status === "approved" ? "lightgreen" : "inherit" }}>
+                              <TableCell>{user.position_name}</TableCell>
+                              <TableCell>{user.department_name}</TableCell>
+                              <TableCell>{user.user_name}</TableCell>
+                              <TableCell>{user.approved_at ? formatDateV2(user.approved_at, true) : null}</TableCell>
+                              <TableCell>
+                                {currentUser.position.toString() === user.position_id.toString() && user.approval_status === "pending" && (
+                                  <Stack direction="row" spacing={0.5}>
+                                    <Button variant="contained" color="primary" size="small" onClick={() => handleApprove(user, request)}>
+                                      {isCreator ? "Запросить" : "Подтвердить"}
                                     </Button>
-                                  )}
-                                </Stack>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                {/* {isCreator && <UploadButton data={request} reRender={setFormKey} />} */}
-                <UploadButton data={request} reRender={setFormKey} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Paper sx={{ padding: 2 }}>
-                    {isDocFile && isDocFile.length > 0 && (
-                      <ImageList sx={{ width: "100%", height: "auto" }} cols={3} rowHeight={80}>
-                        {isDocFile &&
-                          isDocFile.map((file, index) => (
-                            <ImageListItem key={index} sx={{ display: "flex", flexDirection: "row" }}>
-                              <Tooltip title="Нажмите, чтобы скачать" onClick={() => handleDownload(file)}>
-                                <Stack direction="column" justifyContent="center" alignItems="center" spacing={1} sx={{ cursor: "pointer" }}>
-                                  <Paper elevation={3} sx={{ p: "2%", display: "flex", flexDirection: "row" }}>
-                                    {/* переделать на разные форматы */}
-                                    <PictureAsPdfOutlinedIcon fontSize="large" />
-                                    {file && (
-                                      <Typography variant="body2" sx={{ ml: 1, wordBreak: "break-word" }}>
-                                        {file.name}
-                                      </Typography>
+                                    {isCreator && statusReq === "new" && (
+                                      <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(request)}>
+                                        Удалить
+                                      </Button>
                                     )}
-                                  </Paper>
-                                </Stack>
+                                  </Stack>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  {/* {isCreator && <UploadButton data={request} reRender={setFormKey} />} */}
+                  <UploadButton data={request} reRender={setFormKey} />
+                </Paper>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Paper sx={{ padding: 2 }}>
+                      {isDocFile && isDocFile.length > 0 && (
+                        <ImageList sx={{ width: "100%", height: "auto" }} cols={3} rowHeight={80}>
+                          {isDocFile &&
+                            isDocFile.map((file, index) => (
+                              <ImageListItem key={index} sx={{ display: "flex", flexDirection: "row" }}>
+                                <Tooltip title="Нажмите, чтобы скачать" onClick={() => handleDownload(file)}>
+                                  <Stack direction="column" justifyContent="center" alignItems="center" spacing={1} sx={{ cursor: "pointer" }}>
+                                    <Paper elevation={3} sx={{ p: "2%", display: "flex", flexDirection: "row" }}>
+                                      {/* переделать на разные форматы */}
+                                      <PictureAsPdfOutlinedIcon fontSize="large" />
+                                      {file && (
+                                        <Typography variant="body2" sx={{ ml: 1, wordBreak: "break-word" }}>
+                                          {file.name}
+                                        </Typography>
+                                      )}
+                                    </Paper>
+                                  </Stack>
+                                </Tooltip>
+                                {isCreator && (
+                                  <Tooltip
+                                    title="Нажмите, чтобы удалить"
+                                    sx={{
+                                      position: "absolute",
+                                      top: 8,
+                                      right: 8,
+                                      backgroundColor: "background.paper",
+                                      borderRadius: "50%",
+                                      boxShadow: 1,
+                                    }}>
+                                    <IconButton
+                                      aria-label="delete"
+                                      onClick={() => {
+                                        // Обработчик для удаления файла
+                                        // console.log("Удалить файл:", file)
+                                        // deleteFile({ file: file, req_id: request.reqForAvail_id })
+                                        setToDelete({ file: file, req_id: request.reqForAvail_id })
+                                        setDialogText({
+                                          title: "Подтверждение удаления",
+                                          message: "Вы уверены, что хотите удалить этот фаил?",
+                                        })
+                                        setOpenDialog(true)
+                                      }}
+                                      size="small"
+                                      sx={{
+                                        color: "error.main",
+                                        "&:hover": { backgroundColor: "rgba(255, 0, 0, 0.1)" }, // Красный фон при наведении
+                                      }}>
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                )}
+                              </ImageListItem>
+                            ))}
+                        </ImageList>
+                      )}
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Paper sx={{ padding: 2 }}>
+                      {isImageFile && isImageFile.length > 0 && (
+                        <ImageList sx={{ width: "100%", height: "auto" }} cols={3} rowHeight={82}>
+                          {isImageFile.map((file, index) => (
+                            <ImageListItem key={index} sx={{ display: "flex", justifyContent: "center" }}>
+                              <Tooltip title="Нажмите, чтобы увеличить" onClick={() => handleImageClick(file)}>
+                                <img
+                                  key={index}
+                                  src={`data:${file.type};base64,${file.content}`}
+                                  alt="File Preview"
+                                  loading="lazy"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ddd",
+                                    cursor: "pointer",
+                                  }}
+                                />
                               </Tooltip>
                               {isCreator && (
-                                <Tooltip
-                                  title="Нажмите, чтобы удалить"
+                                <Box
                                   sx={{
                                     position: "absolute",
                                     top: 8,
@@ -495,8 +555,6 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                                   <IconButton
                                     aria-label="delete"
                                     onClick={() => {
-                                      // Обработчик для удаления файла
-                                      // console.log("Удалить файл:", file)
                                       // deleteFile({ file: file, req_id: request.reqForAvail_id })
                                       setToDelete({ file: file, req_id: request.reqForAvail_id })
                                       setDialogText({
@@ -505,77 +563,20 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                                       })
                                       setOpenDialog(true)
                                     }}
-                                    size="small"
-                                    sx={{
-                                      color: "error.main",
-                                      "&:hover": { backgroundColor: "rgba(255, 0, 0, 0.1)" }, // Красный фон при наведении
-                                    }}>
+                                    size="small">
                                     <DeleteIcon fontSize="small" />
                                   </IconButton>
-                                </Tooltip>
+                                </Box>
                               )}
                             </ImageListItem>
                           ))}
-                      </ImageList>
-                    )}
-                  </Paper>
-                </Grid>
-                <Grid item xs={6}>
-                  <Paper sx={{ padding: 2 }}>
-                    {isImageFile && isImageFile.length > 0 && (
-                      <ImageList sx={{ width: "100%", height: "auto" }} cols={3} rowHeight={82}>
-                        {isImageFile.map((file, index) => (
-                          <ImageListItem key={index} sx={{ display: "flex", justifyContent: "center" }}>
-                            <Tooltip title="Нажмите, чтобы увеличить" onClick={() => handleImageClick(file)}>
-                              <img
-                                key={index}
-                                src={`data:${file.type};base64,${file.content}`}
-                                alt="File Preview"
-                                loading="lazy"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
-                                  borderRadius: "4px",
-                                  border: "1px solid #ddd",
-                                  cursor: "pointer",
-                                }}
-                              />
-                            </Tooltip>
-                            {isCreator && (
-                              <Box
-                                sx={{
-                                  position: "absolute",
-                                  top: 8,
-                                  right: 8,
-                                  backgroundColor: "background.paper",
-                                  borderRadius: "50%",
-                                  boxShadow: 1,
-                                }}>
-                                <IconButton
-                                  aria-label="delete"
-                                  onClick={() => {
-                                    // deleteFile({ file: file, req_id: request.reqForAvail_id })
-                                    setToDelete({ file: file, req_id: request.reqForAvail_id })
-                                    setDialogText({
-                                      title: "Подтверждение удаления",
-                                      message: "Вы уверены, что хотите удалить этот фаил?",
-                                    })
-                                    setOpenDialog(true)
-                                  }}
-                                  size="small">
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </Box>
-                            )}
-                          </ImageListItem>
-                        ))}
-                      </ImageList>
-                    )}
-                  </Paper>
+                        </ImageList>
+                      )}
+                    </Paper>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+            </Loader>
           </Grid>
           <ModalCustom isOpen={modalOpen} onClose={closeImagePreview} infoText={selectedImage.name}>
             <ImageList sx={{ width: "100%", height: "100%" }} cols={1}>
