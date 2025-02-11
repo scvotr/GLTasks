@@ -1,3 +1,4 @@
+const { getLabsPreviewFiles, getFullFile } = require('../../Database/queries/Lab/labFilesUtils/labFilesUtils')
 const {
   createNewReqForAvailableQ,
   appendApprovalsUsersQ,
@@ -13,6 +14,8 @@ const {
   sendNotifyThenNewCommentQ,
   getAllLabReqCommentQ,
   addNewLabReqCommentQ,
+  getAllLabReqFilesNameQ,
+  deleteFileQ,
 } = require('../../Database/queries/Lab/labQueries')
 const { executeDatabaseQueryAsync } = require('../../Database/utils/executeDatabaseQuery/executeDatabaseQuery')
 const { saveAndConvert } = require('../../utils/files/saveAndConvert')
@@ -102,12 +105,12 @@ class LabController {
   async addFilesForRequest(req, res) {
     try {
       const authDecodeUserData = req.user
+      const user_id = authDecodeUserData.id
       const postPayload = authDecodeUserData.payLoad
       const fields = postPayload.fields
       const files = postPayload.files
       const taskFolderName = fields.reqForAvail_id
       const fileNames = []
-
       for (const [key, file] of Object.entries(files)) {
         try {
           const fileName = await saveAndConvert(file, 'labRequests', taskFolderName)
@@ -116,19 +119,12 @@ class LabController {
           console.error('Error saving file:', error)
         }
       }
-
       const data = {
         fields,
         fileNames,
+        user_id,
       }
 
-      console.log(data.fields.reqForAvail_id)
-      console.log(data.fields.filesToRemove)
-      console.log(data.fields.new_files)
-      console.log(data.fileNames)
-
-      // !--------------------------------------------
-      // Добавляем файлы к задаче (опционально)
       for (let i = 0; i < data.fileNames.length; i++) {
         const file_name = data.fileNames[i]
         if (!file_name) {
@@ -136,17 +132,15 @@ class LabController {
           continue
         }
 
-        const command3 = `INSERT INTO lab_req_files (req_id, file_name, file_path) VALUES (?, ?, ?);`
+        const command3 = `INSERT INTO lab_req_files (req_id, user_id, file_name) VALUES (?, ?, ?);`
         try {
-          await executeDatabaseQueryAsync(command3, [data.fields.reqForAvail_id, file_name])
-          console.log(`File ${file_name} added successfully to the lab request`);
+          await executeDatabaseQueryAsync(command3, [data.fields.reqForAvail_id, data.user_id, file_name])
+          console.log(`File ${file_name} added successfully to the lab request`)
         } catch (error) {
           console.error(`Error adding file ${file_name} to the lab request: `, error)
           throw new Error('Ошибка запроса к базе данных')
         }
       }
-      // !--------------------------------------------
-
       // await updateLabReqReadStatusQ(payLoad)
       sendResponseWithData(res, 'addFilesForRequest-ok')
     } catch (error) {
@@ -154,7 +148,78 @@ class LabController {
       handleError(res, 'addFilesForRequest')
     }
   }
+
+  async getAllLabReqFiles(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const req_id = JSON.parse(authDecodeUserData.payLoad)
+      const allFilesName = await getAllLabReqFilesNameQ(req_id)
+      sendResponseWithData(res, allFilesName)
+    } catch (error) {
+      handleError(res, 'getAllLabReqFiles-error', error)
+    }
+  }
+
+  async getPreviewLabReqFileContent(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const files = JSON.parse(authDecodeUserData.payLoad)
+      if (!files.files || !files.files.length) {
+        console.error('Файлы не предоставлены или массив пуст')
+        sendResponseWithData(res, 'files не содержит req_id или files')
+      } else {
+        const filesLabsPreview = await getLabsPreviewFiles(files.req_id, 'labRequests', files.files)
+        sendResponseWithData(res, filesLabsPreview)
+      }
+    } catch (error) {
+      console.log(error)
+      handleError(res, 'getPreviewLabReqFileContent-error')
+    }
+  }
+
+  async getFullFileContent(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      const fulFile = await getFullFile(postPayload, 'labRequests')
+      sendResponseWithData(res, fulFile)
+    } catch (error) {
+      handleError(res, 'getFullFileContent')
+    }
+  }
+  /**
+   * Удаляет файл на основе данных из запроса.
+   *
+   * @param {Object} req - Объект HTTP-запроса.
+   * @param {Object} req.user - Данные пользователя, извлеченные из токена аутентификации.
+   * @param {string} req.user.payLoad - Строка JSON, содержащая данные для удаления файла.
+   * @param {Object} res - Объект HTTP-ответа.
+   *
+   * @returns {Promise<void>} - Возвращает Promise, который разрешается после завершения операции.
+   *
+   * @throws {Error} - Выбрасывает ошибку, если произошла проблема при обработке запроса,
+   * декодировании данных или выполнении операции удаления.
+   *
+   * @description
+   * Метод выполняет следующие действия:
+   * 1. Извлекает данные пользователя из объекта запроса (`req.user`).
+   * 2. Декодирует полезную нагрузку (`payLoad`) из строки JSON.
+   * 3. Вызывает функцию `deleteFileQ` для удаления файла из базы данных и сервера.
+   * 4. Возвращает успешный ответ клиенту через функцию `sendResponseWithData`.
+   * 5. В случае ошибки вызывает функцию `handleError` для обработки и отправки ошибки клиенту.
+   */
+  async deleteFile(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const postPayload = JSON.parse(authDecodeUserData.payLoad)
+      await deleteFileQ(postPayload)
+      sendResponseWithData(res, 'deleteFile-ok')
+    } catch (error) {
+      handleError(res, 'deleteFile')
+    }
+  }
   async deleteReqForLab(req, res) {
+    // ! добавить удаление файлов к запросу!!
     try {
       const authDecodeUserData = req.user
       const payLoad = JSON.parse(authDecodeUserData.payLoad)
