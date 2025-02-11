@@ -132,6 +132,7 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
             {/* <Tab label={`все (${pendingReqCount})`} value="5" /> */}
           </TabList>
         </Box>
+        {/*------------------------ Новые не опубликованные запросы -------------------*/}
         <TabPanel value="1">
           <ReqForLabTable
             requests={newReqForLab}

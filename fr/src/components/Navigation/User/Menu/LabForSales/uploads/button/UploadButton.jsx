@@ -20,7 +20,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 })
 
-export const UploadButton = ({ data }) => {
+export const UploadButton = ({ data, reRender }) => {
   const currentUser = useAuthContext()
   const acceptedTypes = Object.values(fileTypes).join(", ") // Создаем строку с допустимыми типами файлов
   const { popupSnackbar } = useSnackbar()
@@ -94,7 +94,6 @@ export const UploadButton = ({ data }) => {
         })
       })
     )
-
     setFormData(prev => ({
       ...prev,
       files: [...prev.files, ...data],
@@ -121,6 +120,8 @@ export const UploadButton = ({ data }) => {
       setReqStatus({ loading: true, error: null })
       await sendNewTaskData(currentUser.token, formData, '/lab/addFilesForRequest', setOk)
       setReqStatus({ loading: false, error: null })
+      setFormData(initValue)
+      reRender(prev => prev + 1)
       popupSnackbar(`Файлы загружёны успешно`, "success")
     } catch (error) {
       setReqStatus({ loading: false, error: error.message })
@@ -136,7 +137,7 @@ export const UploadButton = ({ data }) => {
         <Paper>
           <Stack spacing={2} padding={2}>
             <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-              Добавить файлы
+              {formData.files.length > 0 ? 'Добавить еще' : 'Добавить файлы'}
               <input type="file" accept={acceptedTypes} multiple onChange={handleFileInput} style={{ display: "none" }} />
             </Button>
             {formData.files.length > 0 && (

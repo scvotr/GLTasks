@@ -12,6 +12,10 @@ const routeHandlers = {
   "/lab/deleteReqForLab": LabController.deleteReqForLab,
   "/lab/addNewLabReqComment": LabController.addNewLabReqComment,
   "/lab/getAllLabReqComment": LabController.getAllLabReqComment,
+  "/lab/getAllLabReqFiles": LabController.getAllLabReqFiles,
+  "/lab/getPreviewFileContent": LabController.getPreviewLabReqFileContent,
+  "/lab/getFullFileContent": LabController.getFullFileContent,
+  "/lab/deleteFile": LabController.deleteFile,
 }
 
 const handelLabRoutes = async(req, res) => {
