@@ -6,13 +6,14 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined"
 import { FullScreenDialog } from "../../../../../FullScreenDialog/FullScreenDialog"
 import { ReqInfoView } from "./ReqInfoView"
 import { getDataFromEndpoint } from "../../../../../../utils/getDataFromEndpoint"
+import { formatDateV2 } from "../../../../../../utils/formatDate"
 
 export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRender, currentUser, checkFullScreenOpen, setCheckFullScreenOpen }) => {
   const [fullScreenOpen, setFullScreenOpen] = useState(false)
   const [currentFullScreenView, setCurrentFullScreenView] = useState(null)
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
 
-  const labReqTitle = `В лабораторию АО "${currentRequest.department_name}" от ${currentRequest.created_at} культура: ${currentRequest.culture}, масса: ${currentRequest.tonnage}`
+  const labReqTitle = `В лабораторию АО "${currentRequest.department_name}" от ${formatDateV2( currentRequest.created_at)} культура: ${currentRequest.culture}, масса: ${currentRequest.tonnage}`
 
   const handleInfoView = async () => {
     const data = {
@@ -41,7 +42,9 @@ export const ReqForLabMenu = ({ anchorEl, open, closeMenu, currentRequest, reRen
   }
 
   const fullScreenViews = {
-    view: <ReqInfoView request={currentRequest} currentUser={currentUser} reRender={reRender} closeModal={closeModal} checkFullScreenOpen={checkFullScreenOpen}/>,
+    view: (
+      <ReqInfoView request={currentRequest} currentUser={currentUser} reRender={reRender} closeModal={closeModal} checkFullScreenOpen={checkFullScreenOpen} />
+    ),
   }
 
   return (
