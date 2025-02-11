@@ -212,7 +212,7 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   }
 
   const closeImagePreview = () => {
-    setSelectedImage(null)
+    setSelectedImage({})
     setModalOpen(false)
   }
 
@@ -455,7 +455,8 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                     </TableBody>
                   </Table>
                 </TableContainer>
-                {isCreator && <UploadButton data={request} reRender={setFormKey} />}
+                {/* {isCreator && <UploadButton data={request} reRender={setFormKey} />} */}
+                <UploadButton data={request} reRender={setFormKey} />
               </Paper>
             </Grid>
             <Grid item xs={12}>
