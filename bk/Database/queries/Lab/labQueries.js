@@ -1,4 +1,6 @@
 const { noticeForLabSystemUsersT, noticeForLabSystemUsersT2, noticeForLabSystemUsersTNewCommentT } = require('../../../controllers/Lab/LabNoticeFor')
+const { getThumbnailFiles } = require('../../../utils/files/getThumbnailFiles')
+const { removeFolder, removeFileAndAssociatedFiles } = require('../../../utils/files/removeFolder')
 const { executeDatabaseQueryAsync } = require('../../utils/executeDatabaseQuery/executeDatabaseQuery')
 
 const createNewReqForAvailableQ = async data => {
@@ -371,11 +373,53 @@ const updateLabReqReadStatusQ = async data => {
 const deleteReqForLabQ = async data => {
   const { reqForAvail_id } = data
   const command = `DELETE FROM reqForAvailableTable where reqForAvail_id = ?`
+  const command2 = `DELETE FROM lab_req_files where req_id = ?`
+  const command3 = `DELETE FROM lab_req_readStatus where req_id = ?`
+  const command4 = `DELETE FROM lab_req_comments where req_id = ?`
+  const command5 = `DELETE FROM request_approvals where reqForAvail_id = ?`
   try {
     await executeDatabaseQueryAsync(command, [reqForAvail_id])
-    console.log(`Successfully deleted record with reqForAvail_id: ${reqForAvail_id}`)
+    await executeDatabaseQueryAsync(command2, [reqForAvail_id])
+    await executeDatabaseQueryAsync(command3, [reqForAvail_id])
+    await executeDatabaseQueryAsync(command4, [reqForAvail_id])
+    await executeDatabaseQueryAsync(command5, [reqForAvail_id])
+    console.log(`Successfully deleted record from reqForAvailableTable with reqForAvail_id: ${reqForAvail_id}`)
+    console.log(`Successfully deleted record from lab_req_files with reqForAvail_id: ${reqForAvail_id}`)
+    console.log(`Successfully deleted record from lab_req_readStatus with reqForAvail_id: ${reqForAvail_id}`)
+    console.log(`Successfully deleted record from lab_req_comments with reqForAvail_id: ${reqForAvail_id}`)
+    console.log(`Successfully deleted record from request_approvals with reqForAvail_id: ${reqForAvail_id}`)
+    await removeFolder(reqForAvail_id, 'labRequests')
   } catch (error) {
     console.error('Error - deleteReqForLabQ:', error)
+    throw error
+  }
+}
+/**
+ * Удаляет файл из базы данных и связанные файлы на сервере.
+ *
+ * @param {Object} data - Объект, содержащий данные для удаления файла.
+ * @param {number|string} data.req_id - Идентификатор запроса (req_id) в базе данных.
+ * @param {Object} data.file - Объект, представляющий файл.
+ * @param {string} data.file.name - Имя файла, который нужно удалить.
+ *
+ * @returns {Promise<void>} - Возвращает Promise, который разрешается после завершения операции.
+ *
+ * @throws {Error} - Выбрасывает ошибку, если произошла проблема при выполнении SQL-запроса
+ * или удалении файлов на сервере.
+ *
+ * @description
+ * Функция выполняет следующие действия:
+ * 1. Удаляет запись о файле из таблицы `lab_req_files` базы данных.
+ * 2. Удаляет файл и связанные с ним файлы (например, миниатюры или компрессированные версии)
+ *    из папки на сервере.
+ */
+const deleteFileQ = async data => {
+  try {
+    const command = `DELETE FROM lab_req_files where req_id = ? AND file_name = ?`
+    await executeDatabaseQueryAsync(command, [data.req_id, data.file.name])
+    await removeFileAndAssociatedFiles(data.req_id, 'labRequests', data.file.name)
+  } catch (error) {
+    console.error('Error - deleteFileQ:', error)
     throw error
   }
 }
@@ -474,6 +518,27 @@ const getAllLabReqCommentQ = async req_id => {
   }
 }
 
+const getAllLabReqFilesNameQ = async req_id => {
+  const command = `
+    SELECT
+      REPLACE(GROUP_CONCAT(DISTINCT file_name), ',', '|') AS file_names
+    FROM 
+      lab_req_files 
+    WHERE 
+      req_id = ?
+  `
+  try {
+    // получаю название файлов из таблицы
+    const allFiles = await executeDatabaseQueryAsync(command, [req_id])
+    // получаем имена и типы файлов делим на новые и старые
+    const getFiles = await getThumbnailFiles(allFiles, 'labRequests')
+    return getFiles
+  } catch (error) {
+    console.error('Error - getAllLabReqFilesNameQ:', error)
+    throw error
+  }
+}
+
 module.exports = {
   createNewReqForAvailableQ,
   appendUserForApprovalQ,
@@ -489,4 +554,6 @@ module.exports = {
   sendNotifyThenNewCommentQ,
   getAllLabReqCommentQ,
   addNewLabReqCommentQ,
+  getAllLabReqFilesNameQ,
+  deleteFileQ,
 }
