@@ -5,6 +5,7 @@ import CheckBoxOutlinedIcon from "@mui/icons-material/CheckBoxOutlined"
 import { formatDateV2 } from "../../../../../../utils/formatDate"
 import { ReqForLabMenu } from "../Menu/ReqForLabMenu"
 import { Loader } from "../../../../../FormComponents/Loader/Loader"
+import { ReqForLabRowClick } from "../Menu/ReqForLabRowClick"
 
 export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -13,8 +14,9 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
   const open = Boolean(anchorEl)
   const [page, setPage] = useState(0) // Текущая страница
   const [rowsPerPage, setRowsPerPage] = useState(5) // Количество записей на страницу
+  const [fullScreenOpen, setFullScreenOpen] = useState(false)
 
-  const handleRowClick = (event, req) => {
+  const handleRowClickByMenu = (event, req) => {
     setCurrentRequest(req)
     const { clientX, clientY } = event
     setAnchorEl({ top: clientY, left: clientX })
@@ -22,6 +24,16 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
 
   const closeMenu = () => {
     setAnchorEl(null)
+    reRender()
+  }
+
+  const handleRowClick = (event, req) => {
+    setCurrentRequest(req)
+    setFullScreenOpen(true)
+  }
+  const closeModal = () => {
+    setFullScreenOpen(false)
+    setCheckFullScreenOpen(false)
     reRender()
   }
 
@@ -73,7 +85,18 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
     <Loader reqStatus={reqStatus}>
       <Box>
         {/* -------------------------------- */}
-        <ReqForLabMenu anchorEl={anchorEl} open={open} closeMenu={closeMenu} currentRequest={currentRequest} reRender={reRender} currentUser={currentUser} checkFullScreenOpen={checkFullScreenOpen} setCheckFullScreenOpen={setCheckFullScreenOpen}/>
+        {/* <ReqForLabMenu anchorEl={anchorEl} open={open} closeMenu={closeMenu} currentRequest={currentRequest} reRender={reRender} currentUser={currentUser} checkFullScreenOpen={checkFullScreenOpen} setCheckFullScreenOpen={setCheckFullScreenOpen}/> */}
+        {/* -------------------------------- */}
+        {/* -------------------------------- */}
+        <ReqForLabRowClick
+          isOpen={fullScreenOpen}
+          onClose={closeModal}
+          currentRequest={currentRequest}
+          reRender={reRender}
+          currentUser={currentUser}
+          checkFullScreenOpen={checkFullScreenOpen}
+          setCheckFullScreenOpen={setCheckFullScreenOpen}
+        />
         {/* -------------------------------- */}
         <TableContainer>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -125,6 +148,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                           },
                         }}
                         // hover
+                        // onClick={event => handleRowClickByMenu(event, req)}>
                         onClick={event => handleRowClick(event, req)}>
                         <TableCell align="center">
                           {/* {req.users.map(user => (
