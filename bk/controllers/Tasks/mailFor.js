@@ -5,7 +5,7 @@ require('dotenv').config()
 const MAIL_USER = process.env.MAIL_USER
 const MAIL_PASS = process.env.MAIL_PASS
 
-const sendEmail = async (recipientEmail, text, descript) => {
+const sendEmail = async (recipientEmail, subject_text, body_text) => {
   try {
     const transporter = nodemailer.createTransport({
       host: 'mail.nic.ru',
@@ -21,14 +21,14 @@ const sendEmail = async (recipientEmail, text, descript) => {
     })
 
     const mailOptions = {
-      from: `"${text}" <${MAIL_USER}>`,
+      from: `"${subject_text}" <${MAIL_USER}>`,
       to: recipientEmail,
-      subject: text,
-      text: descript ? descript : text,
+      subject: subject_text,
+      text: body_text ? body_text : body_text,
     }
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', info.response);
+    const info = await transporter.sendMail(mailOptions)
+    // console.log('Email sent:', info.response)
   } catch (error) {
     console.error('Error occurred while sending email:', error)
   }
@@ -36,11 +36,11 @@ const sendEmail = async (recipientEmail, text, descript) => {
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
+const sendEmailToLead = async (subdepartment_id, subject_text, email_body = {}) => {
   const email = await getLeadEmailQ(subdepartment_id)
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToLead1', email, text, fields.task_descript ? fields.task_descript : fields.comment)
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment )
+    // console.log('sendEmailToLead1', email, subject_text, email_body.task_descript ? email_body.task_descript : email_body.comment)
+    await sendEmail(email[0].email_for_notify, subject_text, email_body.task_descript ? email_body.task_descript : email_body.comment)
     // await delay(3000) // Задержка 3 секунды
   } else {
     console.log('Адрес электронной почты не найден Lead')
@@ -48,12 +48,12 @@ const sendEmailToLead = async (subdepartment_id, text, fields = {}) => {
   }
 }
 
-const sendEmailToGeneral = async (department_id, text, fields = {}) => {
+const sendEmailToGeneral = async (department_id, subject_text, email_body = {}) => {
   const email = await getGeneralEmailQ(department_id)
   // Проверка, что email - это массив и он не пустой
   if (Array.isArray(email) && email.length > 0 && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToGeneral1', email, text, fields.task_descript ? fields.task_descript : fields.comment)
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment)
+    // console.log('sendEmailToGeneral1', email, subject_text, email_body.task_descript ? email_body.task_descript : email_body.comment)
+    await sendEmail(email[0].email_for_notify, subject_text, email_body.task_descript ? email_body.task_descript : email_body.comment)
     // await delay(3000) // Задержка 3 секунды
   } else {
     console.log('Адрес электронной почты не найден General')
@@ -61,11 +61,11 @@ const sendEmailToGeneral = async (department_id, text, fields = {}) => {
   }
 }
 
-const sendEmailToUser = async (user_id, text, fields = {}) => {
+const sendEmailToUser = async (user_id, subject_text, email_body = {}) => {
   const email = await getUserEmailQ(user_id)
   if (email && email[0] && email[0].email_for_notify) {
-    console.log('sendEmailToUser1', email, text, fields.task_descript ? fields.task_descript : fields.comment)
-    await sendEmail(email[0].email_for_notify, text, fields.task_descript ? fields.task_descript : fields.comment)
+    // console.log('sendEmailToUser', email, subject_text, email_body.task_descript ? email_body.task_descript : email_body.comment)
+    await sendEmail(email[0].email_for_notify, subject_text, email_body.task_descript ? email_body.task_descript : email_body.comment)
     // await delay(3000) // Задержка 3 секунды
   } else {
     console.log('Адрес электронной почты не найден User')
