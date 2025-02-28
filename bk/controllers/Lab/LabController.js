@@ -16,6 +16,8 @@ const {
   addNewLabReqCommentQ,
   getAllLabReqFilesNameQ,
   deleteFileQ,
+  updateReqStatusQ,
+  addReportQ,
 } = require('../../Database/queries/Lab/labQueries')
 const { executeDatabaseQueryAsync } = require('../../Database/utils/executeDatabaseQuery/executeDatabaseQuery')
 const { saveAndConvert } = require('../../utils/files/saveAndConvert')
@@ -29,6 +31,11 @@ class LabController {
       const payLoad = JSON.parse(authDecodeUserData.payLoad)
       await createNewReqForAvailableQ(payLoad)
       await appendUserForApprovalQ(payLoad)
+      // Если статус запрос не драфт а новый то сразу рассылаем уведомления
+      if (payLoad.req_status === 'new') {
+        await updateApprovalsUserQ(payLoad)
+        await updateAppendApprovalsUsersQ(payLoad)
+      }
       sendResponseWithData(res, 'addNewLabsReqForAvailability-ok')
     } catch (error) {
       handleError(res, 'addNewLabsReqForAvailability')
@@ -45,6 +52,7 @@ class LabController {
     try {
       // Получаем все запросы
       const requests = await getAllRequestsQ()
+      // console.log(requests)
       // Проверяем, есть ли запросы
       if (!requests || requests.length === 0) {
         return sendResponseWithData(res, []) // Возвращаем пустой массив, если запросов нет
@@ -84,13 +92,16 @@ class LabController {
       await updateApprovalsUserQ(payLoad)
       // обновляем статус прочтено
       // await appendApprovalsUsersQ(payLoad)
-      await updateAppendApprovalsUsersQ(payLoad)
+      
+      // !Что бы не уведомлять при согласовании конкретным пользователем
+      //! await updateAppendApprovalsUsersQ(payLoad)
       sendResponseWithData(res, 'getUserConfirmation-ok')
     } catch (error) {
       console.error('Ошибка при получении запросов с одобрениями:', error)
       handleError(res, 'getUserConfirmation')
     }
   }
+
   async updateReadStatus(req, res) {
     try {
       const authDecodeUserData = req.user
@@ -165,7 +176,7 @@ class LabController {
       const authDecodeUserData = req.user
       const files = JSON.parse(authDecodeUserData.payLoad)
       if (!files.files || !files.files.length) {
-        console.error('Файлы не предоставлены или массив пуст')
+        // console.error('Файлы не предоставлены или массив пуст')
         sendResponseWithData(res, 'files не содержит req_id или files')
       } else {
         const filesLabsPreview = await getLabsPreviewFiles(files.req_id, 'labRequests', files.files)
@@ -252,6 +263,34 @@ class LabController {
     } catch (error) {
       console.error('Ошибка при getAllLabReqCommentQ:', error)
       handleError(res, 'getAllLabReqCommentQ')
+    }
+  }
+  async updateReqStatus(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const payLoad = JSON.parse(authDecodeUserData.payLoad)
+      // Обновление статуса у запроса
+      await updateReqStatusQ(payLoad)
+      // Уведомление пользователей
+      await updateAppendApprovalsUsersQ(payLoad)
+      sendResponseWithData(res, 'updateReqStatus-ok')
+    } catch (error) {
+      console.error('Ошибка при getAllLabReqCommentQ:', error)
+      handleError(res, 'getAllLabReqCommentQ')
+    }
+  }
+  async addReport(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const payLoad = JSON.parse(authDecodeUserData.payLoad)
+      // console.log("🚀 ~ LabController ~ addReport ~ payLoad:", payLoad)
+      
+      await addReportQ(payLoad)
+
+      sendResponseWithData(res, 'addReport-ok')
+    } catch (error) {
+      console.error('Ошибка при addReport:', error)
+      handleError(res, 'addReport')
     }
   }
 }
