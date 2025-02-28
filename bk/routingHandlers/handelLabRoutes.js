@@ -16,6 +16,8 @@ const routeHandlers = {
   "/lab/getPreviewFileContent": LabController.getPreviewLabReqFileContent,
   "/lab/getFullFileContent": LabController.getFullFileContent,
   "/lab/deleteFile": LabController.deleteFile,
+  "/lab/updateReqStatus": LabController.updateReqStatus,
+  "/lab/addReport": LabController.addReport,
 }
 
 const handelLabRoutes = async(req, res) => {
