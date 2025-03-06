@@ -48,7 +48,8 @@ export const UserLayout = () => {
     })
     socket.on("reqForLab", messageData => {
       setSnackbarMessage(messageData.message)
-      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      setSnackbarLink("/labForSales") // Устанавливаем ссылку
       // notifyEvent("need-all-Tasks")
       setOpen(true)
     })
@@ -56,7 +57,8 @@ export const UserLayout = () => {
     socket.on("reqForLabNewComment", taskData => {
       // notifyEvent("need-all-Tasks")
       setSnackbarMessage(taskData.message)
-      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      setSnackbarLink("/labForSales") // Устанавливаем ссылку
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })
@@ -85,7 +87,7 @@ export const UserLayout = () => {
   return (
     <>
       <Box>
-        <Snackbar open={open} autoHideDuration={16000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Snackbar open={open} autoHideDuration={10000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
           <MuiAlert onClose={handleClose} severity="success" variant="filled" sx={{ width: "100%" }}>
             {snackbarMessage}{" "}
             {!isCurrentPath && snackbarLink && (
