@@ -14,15 +14,15 @@ export const getAllSalesChife = (currentUser) => {
       tasksCount: 0,
       subItems: [
         {
-          name: "Запрос на наличие",
-          icon: <ProductionQuantityLimitsOutlinedIcon fontSize="large" />,
-          path: "/labForSales/requestForAvailability",
-          btn: true,
-        },
-        {
           name: "Архив",
           icon: <Inventory2OutlinedIcon fontSize="large" />,
           path: "/labForSales/archive",
+          btn: true,
+        },
+        {
+          name: "",
+          // icon: <ProductionQuantityLimitsOutlinedIcon fontSize="large" />,
+          path: "/labForSales/requestForAvailability",
           btn: true,
         },
       ],
