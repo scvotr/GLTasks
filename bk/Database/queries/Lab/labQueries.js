@@ -17,11 +17,12 @@ const createNewReqForAvailableQ = async data => {
       creator_subDep,
       creator_role,
       approved,
+      req_status,
       gost,
       commentsThenCreate,
       yearOfHarvest,
       indicators
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `
   const params = [
     data.reqForAvail_id,
@@ -35,6 +36,7 @@ const createNewReqForAvailableQ = async data => {
     data.creator_subDep,
     data.creator_role,
     data.approved,
+    data.req_status,
     data.gost,
     data.comment,
     data.yearOfHarvest,
@@ -117,36 +119,92 @@ const appendApprovalsUsersQ = async data => {
 }
 
 const updateAppendApprovalsUsersQ = async data => {
-  // Проверяем, что data и его свойства определены
   if (!data || !data.reqForAvail_id || !data.user_id) {
     console.warn('Invalid data provided:', data)
     return
   }
 
+  // const statusTranslations = {
+  //   new: 'Новый запрос',
+  //   approved: 'Запрос одобрен',
+  //   discard: 'Запрос отклонен',
+  //   in_progress: 'Открыт контракт',
+  //   on_confirm: 'Требуется отчет',
+  //   closed: 'Сформирован отчет',
+  //   canceled: 'Запрос аннулирован',
+  // }
+  // Объект переводов статусов
+
+  const statusTranslations = {
+    new: {
+      title: 'Новый запрос',
+      description: data =>
+        `Запрос: ${data.culture ? data.culture : data.currentRequest.culture} ${data.gost ? data.gost : data.currentRequest.gost} тоннаж: ${data.tonnage ? data.tonnage : data.currentRequest.tonnage} покупатель: ${data.contractor ? data.contractor : data.currentRequest.contractor}`,
+    },
+    approved: {
+      title: 'Запрос одобрен',
+      description: data =>
+        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+    },
+    discard: {
+      title: 'Запрос отклонен',
+      description: data =>
+        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+    },
+    in_progress: {
+      title: 'Открыт контракт',
+      description: data =>
+        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+    },
+    on_confirm: {
+      title: 'Требуется отчет',
+      description: data =>
+        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+    },
+    closed: {
+      title: 'Сформирован отчет',
+      description: data =>
+        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+    },
+    canceled: {
+      title: 'Запрос аннулирован',
+      description: data =>
+        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+    },
+  }
+
+  // const translatedStatus = statusTranslations[data.req_status] || data.req_status // Получаем русский статус
+
+  // Получаем русский статус и описание
+  const translatedStatus = statusTranslations[data.req_status]
+  if (!translatedStatus) {
+    console.warn(`Unknown status: ${data.req_status}`)
+    return
+  }
+
+  const { title, description } = translatedStatus
+  const text = description(data) // Генерируем описание
+  console.log('🚀 ~ text:', text)
+
+  const email_body = {
+    task_descript: text,
+  }
+
   const getAllReqUsers = `
     SELECT user_id FROM request_approvals WHERE reqForAvail_id = ?
   `
-
   try {
     const allUsersForLabReq = await executeDatabaseQueryAsync(getAllReqUsers, [data.reqForAvail_id])
-
     const promises = allUsersForLabReq.map(async user => {
       if (!user) {
         console.warn(`User not found for reqForAvail_id: ${data.reqForAvail_id}`)
         return // Игнорируем пользователя, если он не найден
       }
-
       const readStatus = user.user_id.toString() === data.user_id.toString() ? 'readed' : 'unread'
-
-      // Логируем информацию о пользователе и статусе
-      console.log(`Updating read status for user: ${user.user_id}, status: ${readStatus}`)
-
-      // Устанавливаем статус чтения
       await updateLabReqReadStatusQ({ req_id: data.reqForAvail_id, user_id: user.user_id, read_status: readStatus })
-
-      // Отправляем уведомление, если пользователь не является текущим
       if (readStatus === 'unread') {
-        await noticeForLabSystemUsersT(user.user_id, 'Новый запрос')
+        // await noticeForLabSystemUsersT(user.user_id, 'Новый запрос', {task_descript : email_body})
+        await noticeForLabSystemUsersT(user.user_id, title, email_body)
       }
     })
 
@@ -251,8 +309,31 @@ const getAllRequestsQ = async () => {
       approved,
       commentsThenCreate,
       yearOfHarvest,
-      gost,  -- Добавлено поле gost
-      indicators,  -- Добавлено поле indicators
+      req_status, -- WTF
+      gost,               -- Добавлено поле gost
+      indicators,         -- Добавлено поле indicators
+      --
+      total_tonnage, -- всего отгружено
+      commentsThenClosed, -- комментарий к отчету
+      aspiration_dust, -- аспирационные потери
+      natural_loss, --естественная убыль
+      destination_point, -- цель\получатель
+      sub_sorting, -- подсортировка
+      actual_indicators, -- Фактически отгружено
+      shipped, -- отгружено тип
+      --
+      -- test
+      JSON_OBJECT(
+        'total_tonnage', total_tonnage, 
+        'commentsThenClosed', commentsThenClosed, 
+        'aspiration_dust', aspiration_dust, 
+        'natural_loss', natural_loss, 
+        'destination_point', destination_point, 
+        'sub_sorting', sub_sorting, 
+        'shipped', shipped, 
+        'actual_indicators', actual_indicators
+      ) AS report_data, -- Группируем поля в объект
+      --
       dp.name AS department_name,
       DATETIME(created_at, 'localtime') AS created_at,
       DATETIME(updated_at, 'localtime') AS updated_at,  
@@ -262,7 +343,6 @@ const getAllRequestsQ = async () => {
     LEFT JOIN 
       departments dp ON reqForAvailableTable.selectedDepartment = dp.id;
   `
-
   try {
     const result = await executeDatabaseQueryAsync(query)
     return result // Вернёт массив объектов с заявками и пользователями
@@ -288,24 +368,24 @@ const getUsersForApprovalQ = async reqForAvail_id => {
         dp.name AS department_name,
         lrs.read_status AS read_status,
         DATETIME(ra.approved_at, 'localtime') AS approved_at
-    FROM 
-        reqForAvailableTable r
-    LEFT JOIN 
-        request_approvals ra ON r.reqForAvail_id = ra.reqForAvail_id
-    LEFT JOIN 
-      positions p ON ra.position_id = p.id
-    LEFT JOIN 
-      users u ON ra.position_id = u.position_id
-    LEFT JOIN 
-      subdepartments sb ON p.subdepartment_id = sb.id
-    LEFT JOIN 
-      departments dp ON sb.department_id = dp.id
-    LEFT JOIN 
-      lab_req_readStatus lrs ON u.id = lrs.user_id AND ra.reqForAvail_id = lrs.req_id --wtf!!! 
-    WHERE 
-      ra.reqForAvail_id = ?
-    GROUP BY 
-      r.reqForAvail_id, p.id, p.name, u.id, u.last_name, u.first_name, ra.status, sb.name, dp.name, lrs.read_status;  
+        FROM 
+            reqForAvailableTable r
+        LEFT JOIN 
+            request_approvals ra ON r.reqForAvail_id = ra.reqForAvail_id
+        LEFT JOIN 
+          positions p ON ra.position_id = p.id
+        LEFT JOIN 
+          users u ON ra.position_id = u.position_id
+        LEFT JOIN 
+          subdepartments sb ON p.subdepartment_id = sb.id
+        LEFT JOIN 
+          departments dp ON sb.department_id = dp.id
+        LEFT JOIN 
+          lab_req_readStatus lrs ON u.id = lrs.user_id AND ra.reqForAvail_id = lrs.req_id --wtf!!! 
+        WHERE 
+          ra.reqForAvail_id = ?
+        GROUP BY 
+          r.reqForAvail_id, p.id, p.name, u.id, u.last_name, u.first_name, ra.status, sb.name, dp.name, lrs.read_status;  
   `
 
   try {
@@ -325,14 +405,14 @@ const updateApprovalsUserQ = async data => {
   `
   const approveReq = `
     UPDATE reqForAvailableTable
-    SET approved = TRUE, approved_at = CURRENT_TIMESTAMP
+    SET approved = TRUE, req_status = ? , approved_at = CURRENT_TIMESTAMP
     WHERE reqForAvail_id = ?;
   `
   try {
     const { reqForAvail_id, position_id, status } = data
 
     if (data.status === 'new') {
-      await executeDatabaseQueryAsync(approveReq, [reqForAvail_id])
+      await executeDatabaseQueryAsync(approveReq, [status, reqForAvail_id])
     }
     await executeDatabaseQueryAsync(updateApprovalQuery, [status === 'new' ? 'approved' : 'approved', reqForAvail_id, position_id])
   } catch (error) {
@@ -462,7 +542,6 @@ const addNewLabReqCommentQ = async data => {
 // }
 
 const sendNotifyThenNewCommentQ = async data => {
-  console.log(data)
   const getAllReqUsers = `
     SELECT user_id FROM request_approvals WHERE reqForAvail_id = ?
   `
@@ -473,11 +552,11 @@ const sendNotifyThenNewCommentQ = async data => {
     for (const user of allUsersForLabReq) {
       const readStatus = user.user_id.toString() === data.user_id.toString() ? 'readed' : 'unread'
       // Логируем информацию о пользователе и статусе
-      console.log(`Updating read status for user: ${user.user_id}, status: ${readStatus}`)
+      // console.log(`Updating read status for user: ${user.user_id}, status: ${readStatus}`)
       // Устанавливаем статус чтения
       if (data.user_id.toString() !== user.user_id.toString()) {
         await updateLabReqReadStatusQ({ req_id: data.reqForAvail_id, user_id: user.user_id, read_status: readStatus })
-        await noticeForLabSystemUsersTNewCommentT(user.user_id, 'Новый комментарий')
+        await noticeForLabSystemUsersTNewCommentT(user.user_id, 'Новый комментарий', { task_descript: data.comment })
       }
       // if (data.user_id.toString() !== user.user_id.toString()) {
       //   if (data.modal_isOpen === false) {
@@ -488,8 +567,6 @@ const sendNotifyThenNewCommentQ = async data => {
       //   }
       // }
     }
-
-    // Все промисы выполнены последовательно
   } catch (error) {
     console.error('Error - sendNotifyThenNewCommentQ:', error)
     throw error
@@ -539,6 +616,54 @@ const getAllLabReqFilesNameQ = async req_id => {
   }
 }
 
+const updateReqStatusQ = async data => {
+  const { reqForAvail_id, req_status } = data
+  const query = `
+    UPDATE reqForAvailableTable 
+    SET req_status = ? 
+    WHERE reqForAvail_id = ?
+  `
+  try {
+    const result = await executeDatabaseQueryAsync(query, [req_status, reqForAvail_id])
+  } catch (error) {
+    console.error('Error - getAllLabReqFilesNameQ:', error)
+    throw error
+  }
+}
+
+const addReportQ = async data => {
+  const query = `
+    UPDATE reqForAvailableTable 
+    SET 
+      commentsThenClosed = ?,
+      sub_sorting = ?,
+      total_tonnage = ?,
+      aspiration_dust = ?,
+      natural_loss = ?,
+      destination_point = ?,
+      shipped = ?,
+      actual_indicators = ?
+    WHERE reqForAvail_id = ?
+  `
+  try {
+    const params = [
+      data.comment,
+      data.subSorting,
+      data.totalTonnage,
+      data.aspirationDust,
+      data.naturalLoss,
+      data.destinationPoint,
+      data.transportType,
+      JSON.stringify(data.indicators), // Сохраняем индикаторы как JSON
+      data.reqForAvail_id,
+    ]
+    await executeDatabaseQueryAsync(query, params)
+  } catch (error) {
+    console.error('Error - getAllLabReqFilesNameQ:', error)
+    throw error
+  }
+}
+
 module.exports = {
   createNewReqForAvailableQ,
   appendUserForApprovalQ,
@@ -556,4 +681,6 @@ module.exports = {
   addNewLabReqCommentQ,
   getAllLabReqFilesNameQ,
   deleteFileQ,
+  updateReqStatusQ,
+  addReportQ,
 }
