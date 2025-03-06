@@ -93,9 +93,9 @@ const createTask = async (data) => {
       continue;
     }
 
-    const command3 = `INSERT INTO task_files (task_id, file_name, file_path) VALUES (?, ?, ?);`;
+    const command3 = `INSERT INTO task_files (task_id, file_name, file_path, user_id) VALUES (?, ?, ?, ?);`;
     try {
-      await executeDatabaseQueryAsync(command3, [taskID, file_name], "run");
+      await executeDatabaseQueryAsync(command3, [taskID, file_name, data.user_id], "run");
       // console.log(`File ${file_name} added successfully to the task`);
     } catch (error) {
       console.error(`Error adding file ${file_name} to the task: `, error);
