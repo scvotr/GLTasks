@@ -1,4 +1,4 @@
-const { executeDatabaseQueryAsync } = require("../executeDatabaseQuery/executeDatabaseQuery")
+const { executeDatabaseQueryAsync } = require('../executeDatabaseQuery/executeDatabaseQuery')
 
 const escapeIdentifier = identifier => `"${identifier.replace(/"/g, '""')}"`
 
@@ -8,7 +8,7 @@ const appendField = async (tableName, fieldName, fieldType, options = {}) => {
     if (typeof tableName !== 'string' || typeof fieldName !== 'string' || typeof fieldType !== 'string') {
       throw new Error('Некорректные входные данные: tableName, fieldName и fieldType должны быть строками.')
     }
-    const validTypes = ['TEXT', 'INTEGER', 'REAL', 'BLOB', 'NUMERIC', 'BOOLEAN', 'DATE']
+    const validTypes = ['TEXT', 'INTEGER', 'REAL', 'BLOB', 'NUMERIC', 'BOOLEAN', 'DATE', 'JSON', 'DATETIME']
     if (!validTypes.includes(fieldType.toUpperCase())) {
       throw new Error(`Некорректный тип данных: ${fieldType}. Допустимые типы: ${validTypes.join(', ')}`)
     }
@@ -47,8 +47,6 @@ module.exports = {
 // ? USE
 // await appendFields('reqForAvailableTable', 'yearOfHarvest', 'TEXT');
 // await appendFields('reqForAvailableTable', 'yearOfHarvest', 'TEXT', { defaultValue: '2023', notNull: true });
-
-
 
 // const appendFields = async (tableName, fieldName, fieldType) => {
 //   try {

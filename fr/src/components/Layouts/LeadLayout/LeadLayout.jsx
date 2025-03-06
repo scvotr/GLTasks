@@ -63,7 +63,8 @@ export const LeadLayout = () => {
     socket.on("reqForLab", taskData => {
       // notifyEvent("need-all-Tasks")
       setSnackbarMessage(taskData.message)
-      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      setSnackbarLink("/labForSales") // Устанавливаем ссылку
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })
@@ -71,7 +72,8 @@ export const LeadLayout = () => {
     socket.on("reqForLabNewComment", taskData => {
       // notifyEvent("need-all-Tasks")
       setSnackbarMessage(taskData.message)
-      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      setSnackbarLink("/labForSales") // Устанавливаем ссылку
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })

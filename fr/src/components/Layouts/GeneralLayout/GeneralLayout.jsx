@@ -54,7 +54,8 @@ export const GeneralLayout = () => {
     socket.on("reqForLab", taskData => {
       // notifyEvent("need-all-dep-Tasks")
       setSnackbarMessage(taskData.message)
-      setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      setSnackbarLink("/labForSales") // Устанавливаем ссылку
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })
@@ -63,6 +64,7 @@ export const GeneralLayout = () => {
       // notifyEvent("need-all-Tasks")
       setSnackbarMessage(taskData.message)
       setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+      setSnackbarLink("/labForSales") // Устанавливаем ссылку
       // setLogSnackbarMessage(prev => [...prev, taskData])
       setOpen(true)
     })

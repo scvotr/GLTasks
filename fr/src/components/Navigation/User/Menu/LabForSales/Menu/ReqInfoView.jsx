@@ -58,54 +58,93 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogText, setDialogText] = useState({ title: "", message: "" })
   const [toDelete, setToDelete] = useState(null)
+  const [toDeleteRequest, setToDeleteRequest] = useState(null)
   // !----------------------------------
   useEffect(() => {
-    const endpoint = `/lab/getAllLabReqFiles`
-    try {
-      setReqStatus({ loading: true, error: null })
-
-      getDataFromEndpoint(currentUser.token, endpoint, "POST", request.reqForAvail_id, setReqStatus)
-        .then(data => {
-          setFiles(...data) //!WTF!!!
-        })
-        .catch(error => {
-          console.log(error)
-        })
-
-      setReqStatus({ loading: false, error: null })
-    } catch (error) {
-      setReqStatus({ loading: false, error: error.message })
-    }
-  }, [currentUser.token, request, formKey])
-
-  useEffect(() => {
-    const endpoint = `/lab/getPreviewFileContent`
-    setReqStatus({ loading: true, error: null })
-
-    getDataFromEndpoint(currentUser.token, endpoint, "POST", { files: files.old_files, req_id: request.reqForAvail_id }, setReqStatus)
-      .then(data => {
-        // Очищаем массивы перед добавлением новых данных
-        setIsImageFile([])
-        setIsDocFile([])
-        // Проверяем, что data существует и является массивом
-        if (Array.isArray(data)) {
-          data.forEach(file => {
-            if (file.type === ".jpg" || file.type === ".png") {
-              setIsImageFile(prev => [...prev, file])
-            } else {
-              setIsDocFile(prev => [...prev, file])
-            }
-          })
-        } else {
-          // console.error("Ожидался массив, но получено:", data)
+    const fetchData = async () => {
+      console.log("rerernedr")
+      try {
+        setReqStatus({ loading: true, error: null })
+        // Первый запрос - получаем файлы
+        const filesData = await getDataFromEndpoint(currentUser.token, "/lab/getAllLabReqFiles", "POST", request.reqForAvail_id, setReqStatus)
+        setFiles(filesData[0])
+        // Второй запрос - получаем превью (зависит от первого запроса)
+        if (files) {
+          const previewData = await getDataFromEndpoint(
+            currentUser.token,
+            "/lab/getPreviewFileContent",
+            "POST",
+            {
+              // files: files.old_files, // Используем данные из первого запроса
+              files: filesData[0].old_files, // Используем данные из первого запроса
+              req_id: request.reqForAvail_id,
+            },
+            setReqStatus
+          )
+          // Обработка превью
+          setIsImageFile([])
+          setIsDocFile([])
+          if (Array.isArray(previewData)) {
+            previewData.forEach(file => {
+              file.type === ".jpg" || file.type === ".png" ? setIsImageFile(prev => [...prev, file]) : setIsDocFile(prev => [...prev, file])
+            })
+          }
         }
         setReqStatus({ loading: false, error: null })
-      })
-      .catch(error => {
-        console.log(error)
+      } catch (error) {
         setReqStatus({ loading: false, error: error.message })
-      })
-  }, [currentUser.token, files, request.reqForAvail_id])
+      }
+    }
+    fetchData()
+  }, [currentUser.token, request, formKey])
+
+  // useEffect(() => {
+  //   const endpoint = `/lab/getAllLabReqFiles`
+  //   try {
+  //     setReqStatus({ loading: true, error: null })
+
+  //     getDataFromEndpoint(currentUser.token, endpoint, "POST", request.reqForAvail_id, setReqStatus)
+  //       .then(data => {
+  //         setFiles(data[0]) //!WTF!!!
+  //       })
+  //       .catch(error => {
+  //         console.log(error)
+  //       })
+
+  //     setReqStatus({ loading: false, error: null })
+  //   } catch (error) {
+  //     setReqStatus({ loading: false, error: error.message })
+  //   }
+  // }, [currentUser.token, request, formKey])
+
+  // useEffect(() => {
+  //   const endpoint = `/lab/getPreviewFileContent`
+  //   setReqStatus({ loading: true, error: null })
+
+  //   getDataFromEndpoint(currentUser.token, endpoint, "POST", { files: files.old_files, req_id: request.reqForAvail_id }, setReqStatus)
+  //     .then(data => {
+  //       // Очищаем массивы перед добавлением новых данных
+  //       setIsImageFile([])
+  //       setIsDocFile([])
+  //       // Проверяем, что data существует и является массивом
+  //       if (Array.isArray(data)) {
+  //         data.forEach(file => {
+  //           if (file.type === ".jpg" || file.type === ".png") {
+  //             setIsImageFile(prev => [...prev, file])
+  //           } else {
+  //             setIsDocFile(prev => [...prev, file])
+  //           }
+  //         })
+  //       } else {
+  //         // console.error("Ожидался массив, но получено:", data)
+  //       }
+  //       setReqStatus({ loading: false, error: null })
+  //     })
+  //     .catch(error => {
+  //       console.log(error)
+  //       setReqStatus({ loading: false, error: error.message })
+  //     })
+  // }, [currentUser.token, files, request.reqForAvail_id])
 
   // !----------------------------------
   const handleApprove = async (user, request) => {
@@ -449,6 +488,33 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
                                     )}
                                   </Stack>
                                 )}
+                                {/* Если уже отправлена в работу и на ходится на согласовании другими учсастниками */}
+                                {currentUser.position.toString() === user.position_id.toString() && user.approval_status === "approved" && (
+                                  <Stack direction="row" spacing={0.5}>
+                                    {isCreator && (
+                                      <Button variant="contained" color="primary" size="small" onClick={() => handleApprove(user, request)}>
+                                        В работу
+                                      </Button>
+                                    )}
+                                    {isCreator && (
+                                      <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        size="small"
+                                        //  onClick={() => handleDelete(request)}
+                                        onClick={() => {
+                                          setToDeleteRequest(request)
+                                          setDialogText({
+                                            title: "Подтверждение удаления запроса",
+                                            message: "Вы уверены, что хотите удалить этот запрос?",
+                                          })
+                                          setOpenDialog(true)
+                                        }}>
+                                        Удалить
+                                      </Button>
+                                    )}
+                                  </Stack>
+                                )}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -594,9 +660,13 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
           setOpenDialog(false)
         }}
         onConfirm={async () => {
-          setOpenDialog(false) // Закрываем диалог перед выполнением действия
           try {
-            await deleteFile(toDelete)
+            setOpenDialog(false) // Закрываем диалог перед выполнением действия
+            if (toDelete) {
+              await deleteFile(toDelete)
+            } else if (toDeleteRequest) {
+              await handleDelete(toDeleteRequest)
+            }
           } catch (error) {
             console.error("Ошибка при удалении файла:", error.message)
           }
