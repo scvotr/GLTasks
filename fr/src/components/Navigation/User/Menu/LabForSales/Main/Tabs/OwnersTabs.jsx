@@ -17,7 +17,17 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }))
 
-export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest, approvedRequest, resetApprovedRequest, resetAddNewRequest, setCheckFullScreenOpen, checkFullScreenOpen }) => {
+export const OwnersTabs = ({
+  requests = [],
+  currentUser,
+  reRender,
+  addNewRequest,
+  approvedRequest,
+  resetApprovedRequest,
+  resetAddNewRequest,
+  setCheckFullScreenOpen,
+  checkFullScreenOpen,
+}) => {
   const [value, setValue] = useState(() => localStorage.getItem("activeTab") || "2")
   const [newReqForLab, setNewReqForLab] = useState([])
 
@@ -51,12 +61,13 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
 
   useEffect(() => {
     if (Array.isArray(requests)) {
+      // Получаем все запросы где статус request.approved === 0 То есть не опубликованные
       const newReqForLab = requests.filter(request => request.approved === 0)
       setNewReqForLab(newReqForLab)
-
+      // Получаем все запросы где статус request.approved === 1 То есть опубликованные и доступные в системе
       const allConfirmRequests = requests.filter(request => request.approved === 1)
 
-      // Подсчет запросов для текущего пользователя
+      // Подсчет количества запросов для текущего пользователя
       const pendingCurrentUser = allConfirmRequests.filter(request =>
         request.users.some(user => user.user_id.toString() === currentUser.id.toString() && user.approval_status === "pending")
       )
@@ -65,6 +76,7 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
       setPendingReqCountRead(countRequests(pendingCurrentUser, "readed"))
 
       // ---------------------------------------------------------------------------------
+      // Получение всех запросов в которых все текущий пользователь подтвердили наличие
       const approvedCurrentUser = allConfirmRequests.filter(
         request =>
           request.users.some(user => user.user_id.toString() === currentUser.id.toString() && user.approval_status === "approved") &&
@@ -74,6 +86,7 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
       setApprovedReqCount(countRequests(approvedCurrentUser, "unread"))
       setApprovedReqCountRead(countRequests(approvedCurrentUser, "readed"))
       // ---------------------------------------------------------------------------------
+      // Получение всех запросов в которых все пользователи подтвердили наличие
       const allUsersApproved = requests.filter(request => request.users.every(user => user.approval_status === "approved"))
       setAllUsersApprovedReq(allUsersApproved)
       setAllUsersApprovedCount(countRequests(allUsersApproved, "unread"))
@@ -176,3 +189,112 @@ export const OwnersTabs = ({ requests = [], currentUser, reRender, addNewRequest
     </>
   )
 }
+
+
+// {
+//   "req_number": 8,
+//   "status": "pending", // Может быть "approved", "in_progress", "pending", "closed", "canceled"
+//   "status_history": [
+//     { "status": "pending", "timestamp": "2025-02-12T09:03:55Z" },
+//     { "status": "in_progress", "timestamp": "2025-02-12T10:00:00Z" },
+//     { "status": "approved", "timestamp": "2025-02-12T11:00:00Z" }
+//     { "status": "closed", "timestamp": "2025-02-12T11:00:00Z" }
+//     { "status": "canceled", "timestamp": "2025-02-12T11:00:00Z" }
+//   ],
+//   "reqForAvail_id": "355ee447-521b-4396-be0a-17f6503d9013",
+//   "culture": "Подсолнечник",
+//   "tonnage": "12",
+//   "classType": "",
+//   "type": "",
+//   "contractor": "12",
+//   "selectedDepartment": 3,
+//   "creator": 1042,
+//   "creator_subDep": 14,
+//   "creator_role": "chife",
+//   "approved": 1,
+//   "commentsThenCreate": "222",
+//   "yearOfHarvest": "12",
+//   "gost": "ГОСТ 22391-2015",
+//   "indicators": "[{\"name\":\"Влажность, %\",\"value\":\"12\"},{\"name\":\"Сорная примесь, %\",\"value\":\"12\"},{\"name\":\"Масличная примесь, %\",\"value\":\"12\"},{\"name\":\"Масличность, %\",\"value\":\"12\"},{\"name\":\"Кислотное число м/семян (кчм), мг КОН\",\"value\":\"12\"},{\"name\":\"Испорченные, %\",\"value\":\"12\"},{\"name\":\"Запах\",\"value\":\"12\"},{\"name\":\"Цвет\",\"value\":\"12\"},{\"name\":\"Зараженность\",\"value\":\"12\"}]",
+//   "department_name": "Алексиковский Э.",
+//   "created_at": "2025-02-12 09:03:55",
+//   "updated_at": null,
+//   "approved_at": "2025-02-12 09:04:15",
+//   "users": [
+//     {
+//       "request_id": "355ee447-521b-4396-be0a-17f6503d9013",
+//       "position_id": 2,
+//       "position_name": "Начальник ХПР",
+//       "user_id": 1001,
+//       "user_name": "Татаркин Дмитрий",
+//       "last_name_only": "Татаркин",
+//       "middle_name_only": "Олегович",
+//       "first_name_only": "Дмитрий",
+//       "approval_status": "pending",
+//       "subdepartment_name": "ХПР",
+//       "department_name": "Гелио-Пакс",
+//       "read_status": "unread",
+//       "approved_at": null
+//     },
+//     {
+//       "request_id": "355ee447-521b-4396-be0a-17f6503d9013",
+//       "position_id": 15,
+//       "position_name": "Зам. по производству",
+//       "user_id": 1008,
+//       "user_name": "Соломон Александр",
+//       "last_name_only": "Соломон",
+//       "middle_name_only": "Николаевич",
+//       "first_name_only": "Александр",
+//       "approval_status": "pending",
+//       "subdepartment_name": " АЕ Служба Качества",
+//       "department_name": "Алексиковский Э.",
+//       "read_status": "unread",
+//       "approved_at": null
+//     },
+//     {
+//       "request_id": "355ee447-521b-4396-be0a-17f6503d9013",
+//       "position_id": 16,
+//       "position_name": "Нач. Лаб",
+//       "user_id": 1030,
+//       "user_name": "Забодкина Ольга",
+//       "last_name_only": "Забодкина",
+//       "middle_name_only": "Владимировна",
+//       "first_name_only": "Ольга",
+//       "approval_status": "pending",
+//       "subdepartment_name": " АЕ Служба Качества",
+//       "department_name": "Алексиковский Э.",
+//       "read_status": "unread",
+//       "approved_at": null
+//     },
+//     {
+//       "request_id": "355ee447-521b-4396-be0a-17f6503d9013",
+//       "position_id": 33,
+//       "position_name": "Специалист по качеству зерна",
+//       "user_id": 1003,
+//       "user_name": "Гуреева Дарья",
+//       "last_name_only": "Гуреева",
+//       "middle_name_only": "Николаевна",
+//       "first_name_only": "Дарья",
+//       "approval_status": "pending",
+//       "subdepartment_name": "ХПР",
+//       "department_name": "Гелио-Пакс",
+//       "read_status": "unread",
+//       "approved_at": null
+//     },
+//     {
+//       "request_id": "355ee447-521b-4396-be0a-17f6503d9013",
+//       "position_id": 47,
+//       "position_name": "Начальник отдела",
+//       "user_id": 1042,
+//       "user_name": "Скворцов Иван",
+//       "last_name_only": "Скворцов",
+//       "middle_name_only": "Васильевич",
+//       "first_name_only": "Иван",
+//       "approval_status": "approved",
+//       "subdepartment_name": "Торгово-закупочный отдел",
+//       "department_name": "Гелио-Пакс",
+//       "read_status": "readed",
+//       "approved_at": "2025-02-12 09:04:15"
+//     }
+//   ]
+// }
