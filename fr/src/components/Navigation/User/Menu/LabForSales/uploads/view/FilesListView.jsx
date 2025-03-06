@@ -30,12 +30,12 @@ export const FilesListView = ({ files = [], removeTaskAddedFiles }) => {
                 <Paper elevation={3} style={{ padding: "10px" }}>
                   {isPdf ? (
                     <>
-                      <PictureAsPdfOutlinedIcon fontSize="large" />
+                      <PictureAsPdfOutlinedIcon fontSize="small" />
                       {fileName && <Typography variant="body2">{fileName}</Typography>}
                     </>
                   ) : isOfficeFile ? (
                     <>
-                      <TextSnippetOutlinedIcon fontSize="large" />
+                      <TextSnippetOutlinedIcon fontSize="small" />
                       {fileName && <Typography variant="body2">{fileName}</Typography>}
                     </>
                   ) : (
