@@ -10,25 +10,29 @@ import { Loader } from "../../../../FormComponents/Loader/Loader"
 
 const SALES_SUBDEB_G = "14"
 
+const getAllRequest = async (currentUser, setReqStatus, setRequests) => {
+  const endpoint = `/lab/getAllRequestsWithApprovals`
+  setReqStatus({ loading: true, error: null })
+
+  try {
+    const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", currentUser.id, setReqStatus)
+    setRequests(data)
+    setReqStatus({ loading: false, error: null })
+  } catch (error) {
+    setReqStatus({ loading: false, error: error.message })
+  }
+}
+
 export const LabRequestForAvailability = () => {
   const currentUser = useAuthContext()
   const socket = useSocketContext()
   const [modalOpen, setModalOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
-  const [data, setData] = useState(null)
+  const [data, setData] = useState([])
   const [addNewRequest, setAddNewRequest] = useState(null)
   const [approvedRequest, setApprovedRequest] = useState(null)
   const [checkFullScreenOpen, setCheckFullScreenOpen] = useState(false)
-
-  const filterRequests = async requests => {
-    return requests.filter(data => {
-      const isSubDepMatch = currentUser.subDep.toString() === data.creator_subDep.toString() && data.approved === 0
-      const isApproved = data.approved === 1
-      const isUserApproved = data.users.some(user => user.user_id.toString() === currentUser.id.toString() && user.approval_status === "approve")
-      return isSubDepMatch || isApproved || isUserApproved
-    })
-  }
 
   const openModal = () => {
     setModalOpen(true)
@@ -42,33 +46,21 @@ export const LabRequestForAvailability = () => {
     setFormKey(prevKey => prevKey + 1)
   }
 
-  const fetchData = async () => {
-    const endpoint = `/lab/getAllRequestsWithApprovals`
-    setReqStatus({ loading: true, error: null })
-
-    getDataFromEndpoint(currentUser.token, endpoint, "POST", currentUser.id, setReqStatus)
-      .then(fetchedData => {
-        return filterRequests(fetchedData)
-      })
-      .then(filteredData => {
-        setData(filteredData)
-        setReqStatus({ loading: false, error: null })
-      })
-      .catch(error => {
-        setReqStatus({ loading: false, error: error.message })
-      })
-  }
-
   useEffect(() => {
-    if (currentUser) {
-      fetchData()
+    const fetchData = async () => {
+      if (currentUser) {
+        await getAllRequest(currentUser, setReqStatus, setData)
+      }
     }
+
+    fetchData()
   }, [currentUser, formKey])
 
   useEffect(() => {
-    const handleSocketEvent = taskData => {
+    const handleSocketEvent = async taskData => {
       // При получении события от сокета обновляем данные
-      fetchData()
+      await getAllRequest(currentUser, setReqStatus, setData)
+      // херата выпилить
       setApprovedRequest({
         newReq: "1",
         toApprove: "2",
@@ -88,10 +80,10 @@ export const LabRequestForAvailability = () => {
   // !----------------------------------
   useEffect(() => {
     const handleNewComment = () => {
-      console.log('checkFullScreenOpen:', checkFullScreenOpen);
+      console.log("checkFullScreenOpen:", checkFullScreenOpen)
       if (checkFullScreenOpen === false) {
-        console.log('Updating formKey');
-        setFormKey(prevKey => prevKey + 1);
+        console.log("Updating formKey")
+        setFormKey(prevKey => prevKey + 1)
       }
     }
     socket.on("reqForLabNewComment", handleNewComment)
