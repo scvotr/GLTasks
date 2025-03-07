@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   IconButton,
   Stack,
   ImageList,
@@ -47,11 +46,9 @@ const renderIndicators = indicatorsString => {
 const renderReportIndicators = indicatorsString => {
   try {
     const indicators = JSON.parse(indicatorsString) // Преобразуем строку в массив объектов
-    console.log("🚀 ~ indicators:", indicators)
-
+   
     // Фильтруем массив, исключая записи с пустым oldValue
     const filteredIndicators = indicators.filter(indicator => indicator.oldValue !== "")
-    console.log("🚀 ~ filteredIndicators:", filteredIndicators)
 
     // Проверяем, что у каждого индикатора есть значения
     if (!indicators || indicators.length === 0) {
@@ -122,16 +119,16 @@ const renderReportIndicators = indicatorsString => {
   }
 }
 
-const handlePrintSelectedTasks = (user, request, getReqLabComments) => {
-  const comments = getReqLabComments?.map(
-    (comment, index) => `
-    <div class="comments-item" key="${index}">
-      <div>${comment.comment} | </div>
-      <div>${comment.last_name} ${comment.first_name.charAt(0)}.${comment.middle_name.charAt(0)}. | </div>
-      <div>${formatDateV2(comment.created_on, true)}</div>
-    </div>
-  `
-  )
+const handlePrintSelectedReq = (user, request, getReqLabComments) => {
+  // const comments = getReqLabComments?.map(
+  //   (comment, index) => `
+  //   <div class="comments-item" key="${index}">
+  //     <div>${comment.comment} | </div>
+  //     <div>${comment.last_name} ${comment.first_name.charAt(0)}.${comment.middle_name.charAt(0)}. | </div>
+  //     <div>${formatDateV2(comment.created_on, true)}</div>
+  //   </div>
+  // `
+  // )
 
   const indicatorsContent = JSON.parse(request.indicators)
     .filter(indicator => indicator.value)
@@ -183,11 +180,13 @@ const handlePrintSelectedTasks = (user, request, getReqLabComments) => {
       <p><strong>Лист согласования:</strong></p>
       <div class="user-list">${usersContent}</div>
     </div>
-    <p><strong>Протокол:</strong></p>
-    <div class="comments-list">
-      ${comments}
-    </div>
   `
+
+  // <p><strong>Протокол:</strong></p>
+  // <div class="comments-list">
+  //   ${comments}
+  // </div>
+
   // Ваша функция для открытия окна печати
   const printWindow = window.open("", "_blank")
   printWindow.document.write(`
@@ -281,6 +280,312 @@ const handlePrintSelectedTasks = (user, request, getReqLabComments) => {
   printWindow.close()
 }
 
+const handlePrintComments = (request, getReqLabComments) => {
+  const comments = getReqLabComments?.map(
+    (comment, index) => `
+    <div class="comments-item" key="${index}">
+      <div>${comment.comment} | </div>
+      <div>${comment.last_name} ${comment.first_name.charAt(0)}.${comment.middle_name.charAt(0)}. | </div>
+      <div>${formatDateV2(comment.created_on, true)}</div>
+    </div>
+  `
+  )
+
+  const printContent = `
+    <div class="print-content">
+      <p><strong>Протокол:</strong></p>
+      <div class="comments-list">
+        ${comments}
+      </div>
+    </div>
+  `
+
+  // Ваша функция для открытия окна печати
+  const printWindow = window.open("", "_blank")
+  printWindow.document.write(`
+  <html>
+    <head>
+      <style>
+        body {
+          margin: 0;
+          padding: 20px;
+          font-family: Arial, sans-serif;
+          background-color: #f9f9f9;
+          color: #333;
+        }
+        h2, h3, h4 {
+          text-align: center;
+          color: #2c3e50;
+        }
+        .print-content {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 20px;
+          background-color: #fff;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .indicators-container {
+          display: flex;
+          flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
+          justify-content: center; /* Центрирует элементы по горизонтали */
+          margin: 20px 0;
+        }
+        .indicator-item {
+          flex: 0 0 45%; /* Задает ширину элемента 45% */
+          margin: 5px; /* Отступ между элементами */
+          text-align: left; /* Выравнивание текста влево */
+        }
+        .user-list {
+          margin: 20px 0;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          background-color: #f1f1f1;
+        }
+        .user-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          padding: 5px;
+          border-bottom: 1px solid #ccc;
+        }
+        .comments-list {
+          margin: 20px 0;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          background-color: #f1f1f1;
+        }
+        .comments-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          padding: 5px;
+          border-bottom: 1px solid #ccc;
+        }
+        .subdepartment-name, .user-name {
+          flex: 1;
+        }
+        @media print {
+          @page {
+            margin-top: 0;
+            margin-bottom: 0;
+          }
+          body {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <h2>Запрос <br> №: ${request.req_number} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
+    request.department_name
+  } <br> для заключения договора с "${request.contractor}"</h2>
+      ${printContent}
+    </body>
+  </html>
+  `)
+
+  printWindow.document.close()
+  printWindow.focus()
+  printWindow.print()
+  printWindow.close()
+}
+
+const handlePrintReqReport = request => {
+  const indicators = JSON.parse(request.actual_indicators) // Преобразуем строку в массив объектов
+  // Фильтруем массив, исключая записи с пустым oldValue
+  const filteredIndicators = indicators.filter(indicator => indicator.oldValue !== "")
+
+  // ! WTF request.report_data содержит request.report_data.actual_indicators !!
+  const reportData = JSON.parse(request.report_data)
+  const translatedTransportType = {
+    auto: "Авто",
+    railway: "ЖД",
+  }
+  const transportType = translatedTransportType[reportData.shipped] || reportData.shipped // Получаем русский статус
+
+  const printContent = `
+    <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px;">
+      <thead>
+        <tr>
+          <th colspan="${filteredIndicators.length}" style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+            Качество по контракту:
+          </th>
+          <th colspan="${filteredIndicators.length}" style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+            Фактическое средневзв. кач. по отгрузке:
+          </th>
+          <th colspan="${filteredIndicators.length}" style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+            Отклонение:
+          </th>
+        </tr>
+        <tr>
+          ${filteredIndicators
+            .map(
+              indicator => `
+            <th style="border: 1px solid #ccc; text-align: center;">
+              ${indicator.name.slice(0, 3)}
+            </th>
+            <th style="border: 1px solid #ccc; text-align: center;">
+              ${indicator.name.slice(0, 3)}
+            </th>
+            <th style="border: 1px solid #ccc; text-align: center;">
+              ${indicator.name.slice(0, 3)}
+            </th>
+          `
+            )
+            .join("")}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <td style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.oldValue || "-"}
+              </td>
+            `
+              )
+              .join("")}
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <td style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.newValue || "-"}
+              </td>
+            `
+              )
+              .join("")}
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <td style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.absoluteDeviation || "-"}
+              </td>
+            `
+              )
+              .join("")}
+          </tr>
+        </tbody>
+        </table>
+        <div style="margin-top: 2px; font-family: Arial, sans-serif;">
+          <div style="display: flex; gap: 1px; align-items: center;">
+          <span>Отгружено всего: ${request.total_tonnage || "-"} т.</span>
+            <!-- Аспирационные потери -->
+            ${request.aspiration_dust ? `<span>АП: ${request.aspiration_dust}</span>` : ""}
+            <!-- Естественная убыль -->
+            ${request.natural_loss ? `<span>ЕУ: ${request.natural_loss}</span>` : ""}
+          </div>
+
+          <div style="margin-top: 2px;">
+            <!-- Комментарий к закрытию -->
+            ${request.sub_sorting ? `<p style="margin: 0;">Под сортировано: ${request.sub_sorting}%</p>` : ""}
+          </div>
+
+          <div style="margin-top: 2px;">
+            <!-- Комментарий к закрытию и тип отгрузки -->
+            <p style="margin: 0;">${request.commentsThenClosed || "-"}</p>
+            <p style="margin: 0;">Тип отгрузки: ${transportType || "-"}</p>
+            <p style="margin: 0;">${request.commentsThenCreate  || ""}</p>
+          </div>
+        </div>
+  `
+
+  // Ваша функция для открытия окна печати
+  const printWindow = window.open("", "_blank")
+  printWindow.document.write(`
+    <html>
+      <head>
+        <style>
+          body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+          }
+          h2, h3, h4 {
+            text-align: center;
+            color: #2c3e50;
+          }
+          .print-content {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          }
+          .indicators-container {
+            display: flex;
+            flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
+            justify-content: center; /* Центрирует элементы по горизонтали */
+            margin: 20px 0;
+          }
+          .indicator-item {
+            flex: 0 0 45%; /* Задает ширину элемента 45% */
+            margin: 5px; /* Отступ между элементами */
+            text-align: left; /* Выравнивание текста влево */
+          }
+          .user-list {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+          }
+          .user-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+          }
+          .comments-list {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+          }
+          .comments-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+          }
+          .subdepartment-name, .user-name {
+            flex: 1;
+          }
+          @media print {
+            @page {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+            body {
+              padding-top: 5rem;
+              padding-bottom: 5rem;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Запрос <br> №: ${request.req_number} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
+    request.department_name
+  } <br> для заключения договора с "${request.contractor}"</h2>
+        ${printContent}
+      </body>
+    </html>
+    `)
+
+  printWindow.document.close()
+  printWindow.focus()
+  printWindow.print()
+  printWindow.close()
+}
+
 export const ReqInfoViewTest = ({ request, currentUser, closeModal, reRender, totalUnreadCount, checkFullScreenOpen }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [getReqLabComments, setGetReqLabComments] = useState([])
@@ -354,9 +659,32 @@ export const ReqInfoViewTest = ({ request, currentUser, closeModal, reRender, to
             </Grid>
             <Grid item xs={4}>
               <Paper>
-                <IconButton color="primary" onClick={() => handlePrintSelectedTasks(null, request, getReqLabComments)}>
-                  <PrintIcon />
-                </IconButton>
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <IconButton color="primary" onClick={() => handlePrintSelectedReq(null, request, getReqLabComments)}>
+                    <PrintIcon />
+                    <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                      заявка
+                    </Typography>
+                  </IconButton>
+                  {/* если есть комментарии */}
+                  {getReqLabComments.length > 0 && (
+                    <IconButton color="primary" onClick={() => handlePrintComments(request, getReqLabComments)}>
+                      <PrintIcon />
+                      <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                        комментарии
+                      </Typography>
+                    </IconButton>
+                  )}
+                  {/* если контракт закрыт */}
+                  {request.req_status === "closed" && (
+                    <IconButton color="primary" onClick={() => handlePrintReqReport(request)}>
+                      <PrintIcon />
+                      <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                        отчет
+                      </Typography>
+                    </IconButton>
+                  )}
+                </Stack>
               </Paper>
             </Grid>
           </Grid>
@@ -699,7 +1027,6 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
 
 export const ReportReqLabView = ({ request }) => {
   const reportData = JSON.parse(request.report_data)
-  console.log("🚀 ~ ReportReqLabView ~ reportData:", reportData)
 
   const translatedTransportType = {
     auto: "Авто",
@@ -724,7 +1051,7 @@ export const ReportReqLabView = ({ request }) => {
         {request.sub_sorting && <Typography variant="body2">Под сортировано: {request.sub_sorting}%</Typography>}
       </Stack>
       <Stack direction={"column"}>
-        <Typography variant="body2"> {request.commentsThenClosed}</Typography>
+        <Typography variant="body2"> {request.commentsThenCreate}</Typography>
         {request.sub_sorting && <Typography variant="body2">Тип отгрузки: {transportType}</Typography>}
       </Stack>
     </Box>
