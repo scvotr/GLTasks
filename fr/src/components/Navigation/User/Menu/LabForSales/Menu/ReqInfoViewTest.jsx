@@ -472,22 +472,23 @@ const handlePrintReqReport = request => {
         </table>
         <div style="margin-top: 2px; font-family: Arial, sans-serif;">
           <div style="display: flex; gap: 1px; align-items: center;">
+          <span>Отгружено всего: ${request.total_tonnage || "-"} т.</span>
             <!-- Аспирационные потери -->
-            <span>Отгружено всего: ${request.total_tonnage || "-"} т.</span>
             ${request.aspiration_dust ? `<span>АП: ${request.aspiration_dust}</span>` : ""}
+            <!-- Естественная убыль -->
             ${request.natural_loss ? `<span>ЕУ: ${request.natural_loss}</span>` : ""}
           </div>
 
           <div style="margin-top: 2px;">
             <!-- Комментарий к закрытию -->
-            <p>${request.commentsThenClosed || "-"}</p>
-            ${request.sub_sorting ? `<p>Под сортировано: ${request.sub_sorting}%</p>` : ""}
+            ${request.sub_sorting ? `<p style="margin: 0;">Под сортировано: ${request.sub_sorting}%</p>` : ""}
           </div>
 
           <div style="margin-top: 2px;">
             <!-- Комментарий к закрытию и тип отгрузки -->
-            <p>${request.commentsThenClosed || "-"}</p>
-            <p>Тип отгрузки: ${transportType || "-"}</p>
+            <p style="margin: 0;">${request.commentsThenClosed || "-"}</p>
+            <p style="margin: 0;">Тип отгрузки: ${transportType || "-"}</p>
+            <p style="margin: 0;">${request.commentsThenCreate  || ""}</p>
           </div>
         </div>
   `
@@ -1050,7 +1051,7 @@ export const ReportReqLabView = ({ request }) => {
         {request.sub_sorting && <Typography variant="body2">Под сортировано: {request.sub_sorting}%</Typography>}
       </Stack>
       <Stack direction={"column"}>
-        <Typography variant="body2"> {request.commentsThenClosed}</Typography>
+        <Typography variant="body2"> {request.commentsThenCreate}</Typography>
         {request.sub_sorting && <Typography variant="body2">Тип отгрузки: {transportType}</Typography>}
       </Stack>
     </Box>
