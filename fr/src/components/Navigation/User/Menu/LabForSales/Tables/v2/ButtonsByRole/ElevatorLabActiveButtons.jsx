@@ -78,9 +78,10 @@ export const ElevatorLabActiveButtons = ({ currentRequest, closeModal, currentUs
       {currentRequest && (
         <>
           <Loader reqStatus={reqStatus}>
-            <Paper sx={{ p: 2, maxWidth: "600px", margin: "0 auto", mt: 2 }}>
-              <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-                {currentRequest.req_status === "in_progress" && <>действий нет</>}
+            <Paper sx={{ p: 1, maxWidth: "600px", margin: "0 auto", mt: 2 }}>
+              <Stack direction="row" spacing={2} justifyContent="center" >
+                {currentRequest.req_status === "in_progress" && <>Контракт открыт</>}
+                {currentRequest.req_status === "closed" && <>Контракт закрыт</>}
                 {currentRequest.req_status === "new" && (
                   <>
                     {currentRequest.users.map(user => (
