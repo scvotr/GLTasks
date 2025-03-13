@@ -6,8 +6,8 @@ import { SnackbarProvider } from './context/SnackbarProvider'
 let defaultTheme = createTheme({
   palette: {
     primary: {
-      main: '#4A894E', 
-      // main: '#3f51b5', 
+      main: '#4A894E',
+      // main: '#3f51b5',
       // main: '#007bff',
     },
     secondary: {
@@ -39,13 +39,13 @@ function App() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <SocketProvider>
-      <Container maxWidth={false}>
-        <Box>
-          <SnackbarProvider>
-            <GlobalWrapper />
-          </SnackbarProvider>
-        </Box>
-      </Container>
+        <Container maxWidth={false}>
+          <Box>
+            <SnackbarProvider>
+              <GlobalWrapper />
+            </SnackbarProvider>
+          </Box>
+        </Container>
       </SocketProvider>
     </ThemeProvider>
   )
