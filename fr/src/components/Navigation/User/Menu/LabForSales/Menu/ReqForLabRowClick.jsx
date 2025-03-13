@@ -44,7 +44,7 @@ export const ReqForLabRowClick = ({ isOpen, onClose, currentRequest, currentUser
     }
   }, [isOpen])
 
-  const labReqTitle = `В лабораторию АО "${currentRequest.department_name}" от ${formatDateV2(currentRequest.created_at)} культура: ${
+  const labReqTitle = `Запрос АО "${currentRequest.department_name}" от ${formatDateV2(currentRequest.created_at)} культура: ${
     currentRequest.culture
   }, масса: ${currentRequest.tonnage}`
 
