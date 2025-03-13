@@ -21,6 +21,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
   }
 
   const [filters, setFilters] = useState({
+    reqNum: "",
     reqNumber: "",
     reqStatus: "",
     department_name: "",
@@ -63,6 +64,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
   // Обработчик сброса фильтров
   const handleResetFilters = () => {
     setFilters({
+      reqNum: "",
       reqNumber: "",
       reqStatus: "",
       department_name: "",
@@ -92,6 +94,8 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
         if (filters.tonnage && !req.tonnage?.toString().toLowerCase().includes(filters.tonnage.toLowerCase())) return false
         // Фильтрация по номеру тонажу
         if (filters.contractor && !req.contractor?.toString().toLowerCase().includes(filters.contractor.toLowerCase())) return false
+        // 
+        if (filters.reqNum && !req.reqNum?.toString().toLowerCase().includes(filters.reqNum.toLowerCase())) return false
         return true
       })
       .sort((a, b) => {
@@ -182,12 +186,21 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="№"
+                    value={filters.reqNum}
+                    onChange={e => handleFilterChange("reqNum", e.target.value)}
+                    fullWidth
+                    sx={{ maxWidth: 80 }}
+                  />
+                </TableCell>
+                {/* <TableCell align="center">
+                  <TextField
+                    label="№"
                     value={filters.reqNumber}
                     onChange={e => handleFilterChange("reqNumber", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 80 }}
                   />
-                </TableCell>
+                </TableCell> */}
                 <TableCell align="center">
                   <TextField
                     label="Статус"
@@ -245,6 +258,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
               </TableRow>
               <TableRow>
                 <TableCell align="center">№</TableCell>
+                {/* <TableCell align="center">№</TableCell> */}
                 <TableCell align="center">Статус</TableCell>
                 <TableCell align="center">от</TableCell>
                 <TableCell align="center">На</TableCell>
@@ -286,8 +300,11 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                         }}
                         onClick={event => handleRowClick(event, req)}>
                         <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
-                          {req.req_number}
+                          {req.reqNum}
                         </TableCell>
+                        {/* <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
+                          {req.req_number}
+                        </TableCell> */}
                         <TableCell align="center" sx={{ fontWeight: unread ? "bold" : "normal" }}>
                           {renderStatus(req.req_status)}
                         </TableCell>
