@@ -9,7 +9,7 @@ import { Loader } from "../Loader/Loader"
 const data = {
   Масличные: {
     Подсолнечник: {
-      gost: "ГОСТ 22391-2015",
+      gost: "ГОСТ: 22391-2015",
       indicators: [
         "Влажность, %",
         "Сорная примесь, %",
@@ -23,7 +23,7 @@ const data = {
       ],
     },
     Лён: {
-      gost: "ГОСТ 10582-76",
+      gost: "ГОСТ: 10582-76",
       indicators: [
         "Влажность, %",
         "Сорная примесь, %",
@@ -38,17 +38,17 @@ const data = {
       ],
     },
     Соя: {
-      gost: "ГОСТ 17109-88",
+      gost: "ГОСТ: 17109-88",
       indicators: ["Влажность, %", "Сорная примесь, %", "Масличная примесь, %", "Поврежденные, %", "Проросшие, %", "Запах", "Цвет", "Зараженность"],
     },
     "Семена горчицы": {
-      gost: "ГОСТ 9159-71",
+      gost: "ГОСТ: 9159-71",
       indicators: ["Влажность, %", "Сорная примесь, %", "Масличная примесь, %", "Поврежденные, %", "Проросшие, %", "Запах", "Цвет", "Зараженность"],
     },
   },
   Зернобобовые: {
     Нут: {
-      gost: "ГОСТ 8758-76",
+      gost: "ГОСТ: 8758-76",
       indicators: [
         "Влажность, %",
         "Сорная примесь, %",
@@ -62,13 +62,13 @@ const data = {
       ],
     },
     Чечевица: {
-      gost: "ГОСТ 7066-2019",
+      gost: "ГОСТ: 7066-2019",
       indicators: ["Влажность, %", "Сорная примесь, %", "Зерновая примесь, %", "Запах", "Цвет", "Зараженность"],
     },
   },
   Злаковые: {
     Кукуруза: {
-      gost: "ГОСТ 13634-90",
+      gost: "ГОСТ: 13634-90",
       indicators: [
         "Влажность не более %",
         "Сорная примесь, %",
@@ -83,7 +83,7 @@ const data = {
       ],
     },
     Пшеница: {
-      gost: "ГОСТ 9353-2016",
+      gost: "ГОСТ: 9353-2016",
       types: {
         Твердая: {
           classes: ["3", "4", "5", "Безенчукская"],
@@ -133,7 +133,7 @@ const data = {
       },
     },
     Рожь: {
-      gost: "ГОСТ 16990-2017",
+      gost: "ГОСТ: 16990-2017",
       indicators: [
         "Влажность, %",
         "Сорная примесь, %",
@@ -168,7 +168,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const [comment, setComment] = useState("")
   const [yearOfHarvest, setYearOfHarvest] = useState("")
   const [indicatorValues, setIndicatorValues] = useState({})
-  const areFieldsSelected = Boolean(selectedDepartment && classification && culture && yearOfHarvest && tonnage && contractor)
+  const areFieldsSelected = Boolean(selectedDepartment && classification && culture && yearOfHarvest && tonnage && contractor && tonnagePermissible && reqNum)
 
   const handleClassificationChange = event => {
     const selectedClassification = event.target.value
@@ -384,8 +384,8 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
                     value={tonnagePermissible}
                     onChange={e => setTonnagePermissible(e.target.value)}
                     required // Обязательное поле
-                    error={!tonnage} // Показываем ошибку, если поле пустое
-                    helperText={!tonnage ? "Обязательное поле" : ""}
+                    error={!tonnagePermissible} // Показываем ошибку, если поле пустое
+                    helperText={!tonnagePermissible ? "Обязательное поле" : ""}
                   />
                 </Stack>
               </Grid>
