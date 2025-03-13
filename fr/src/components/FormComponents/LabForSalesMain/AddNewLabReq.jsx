@@ -162,6 +162,8 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const [indicators, setIndicators] = useState([])
   const [gost, setGost] = useState("")
   const [tonnage, setTonnage] = useState("")
+  const [tonnagePermissible, setTonnagePermissible] = useState("")
+  const [reqNum, setReqNum] = useState("")
   const [contractor, setContractor] = useState("")
   const [comment, setComment] = useState("")
   const [yearOfHarvest, setYearOfHarvest] = useState("")
@@ -228,6 +230,8 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         type,
         classType,
         gost,
+        tonnagePermissible,
+        reqNum,
         indicators: indicators.map(indicator => ({
           name: indicator,
           value: indicatorValues[indicator] || "",
@@ -332,45 +336,73 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
             ))}
             <Grid container spacing={1} sx={{ m: 0 }}>
               <Grid item xs={4}>
-                <TextField
-                  label="Год урожая"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  type="number"
-                  value={yearOfHarvest}
-                  onChange={e => setYearOfHarvest(e.target.value)}
-                  required // Обязательное поле
-                  error={!yearOfHarvest} // Показываем ошибку, если поле пустое
-                  helperText={!yearOfHarvest ? "Обязательное поле" : ""}
-                />
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    label="Номер запроса"
+                    variant="outlined"
+                    margin="normal"
+                    type="text"
+                    value={reqNum}
+                    onChange={e => setReqNum(e.target.value)}
+                    required // Обязательное поле
+                    error={!reqNum} // Показываем ошибку, если поле пустое
+                    helperText={!reqNum ? "Обязательное поле" : ""}
+                  />
+                  <TextField
+                    label="Год урожая"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    value={yearOfHarvest}
+                    onChange={e => setYearOfHarvest(e.target.value)}
+                    required // Обязательное поле
+                    error={!yearOfHarvest} // Показываем ошибку, если поле пустое
+                    helperText={!yearOfHarvest ? "Обязательное поле" : ""}
+                  />
+                </Stack>
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  label="Тоннаж"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  type="number"
-                  value={tonnage}
-                  onChange={e => setTonnage(e.target.value)}
-                  required // Обязательное поле
-                  error={!tonnage} // Показываем ошибку, если поле пустое
-                  helperText={!tonnage ? "Обязательное поле" : ""}
-                />
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    label="Тоннаж"
+                    variant="outlined"
+                    // fullWidth
+                    margin="normal"
+                    type="number"
+                    value={tonnage}
+                    onChange={e => setTonnage(e.target.value)}
+                    required // Обязательное поле
+                    error={!tonnage} // Показываем ошибку, если поле пустое
+                    helperText={!tonnage ? "Обязательное поле" : ""}
+                  />
+                  <TextField
+                    label="+\-"
+                    variant="outlined"
+                    margin="normal"
+                    type="number"
+                    value={tonnagePermissible}
+                    onChange={e => setTonnagePermissible(e.target.value)}
+                    required // Обязательное поле
+                    error={!tonnage} // Показываем ошибку, если поле пустое
+                    helperText={!tonnage ? "Обязательное поле" : ""}
+                  />
+                </Stack>
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  label="Контрагент"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  value={contractor}
-                  onChange={e => setContractor(e.target.value)}
-                  required // Обязательное поле
-                  error={!contractor} // Показываем ошибку, если поле пустое
-                  helperText={!contractor ? "Обязательное поле" : ""}
-                />
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    label="Контрагент"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={contractor}
+                    onChange={e => setContractor(e.target.value)}
+                    required // Обязательное поле
+                    error={!contractor} // Показываем ошибку, если поле пустое
+                    helperText={!contractor ? "Обязательное поле" : ""}
+                  />
+                </Stack>
               </Grid>
             </Grid>
             <Grid container spacing={1} sx={{ justifyContent: "center", m: 0 }}>

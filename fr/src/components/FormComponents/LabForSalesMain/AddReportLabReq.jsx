@@ -170,7 +170,16 @@ const data = {
 
 export const AddReportLabReq = ({ onClose, currentUser, request }) => {
   const { popupSnackbar } = useSnackbar()
-  // console.log("🚀 ~ AddReportLabReq ~ request:", request)
+
+  const filteredUsers = request.users.filter(user => user.user_id === currentUser.id);
+
+  const reportByUser = {
+    user_id: filteredUsers[0].user_id,
+    last_name:filteredUsers[0].last_name_only,
+    first_name: filteredUsers[0].first_name_only,
+    middle_name: filteredUsers[0].middle_name_only,
+  }
+  console.log("🚀 ~ AddReportLabReq ~ reporByUser:", JSON.stringify(reportByUser))
 
   // console.log((parseFloat(14).toFixed(2) - parseFloat(13.28).toFixed(2)).toFixed(2))
   // console.log((13.28 - 14).toFixed(2))
@@ -284,7 +293,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request }) => {
         deviation: isNaN(deviation) ? 0 : deviation.toFixed(2), // Отклонение, округленное до двух знаков после запятой
       }
     })
-    console.log("🚀 ~ updatedIndicators ~ updatedIndicators:", updatedIndicators)
+    // console.log("🚀 ~ updatedIndicators ~ updatedIndicators:", updatedIndicators)
     // Здесь вы можете отправить updatedIndicators на сервер или выполнить другие действия
     try {
       // handleChangeStatus("closed")
@@ -308,6 +317,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request }) => {
         naturalLoss,
         destinationPoint,
         transportType,
+        reportByUser,
       }
        await handleCreateReport(formData)
     } catch (error) {}

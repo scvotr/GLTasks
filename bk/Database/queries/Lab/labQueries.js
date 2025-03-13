@@ -21,8 +21,11 @@ const createNewReqForAvailableQ = async data => {
       gost,
       commentsThenCreate,
       yearOfHarvest,
+      tonnagePermissible,
+      reqNum,
+      approved_at,
       indicators
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `
   const params = [
     data.reqForAvail_id,
@@ -38,11 +41,13 @@ const createNewReqForAvailableQ = async data => {
     data.approved,
     data.req_status,
     data.gost,
-    data.comment,
+    data.comment, // thenCreate
     data.yearOfHarvest,
+    data.tonnagePermissible,
+    data.reqNum,
+    data.req_status === 'new' ? new Date().toISOString() : null, // Устанавливаем время только если статус "new"
     JSON.stringify(data.indicators), // Сохраняем индикаторы как JSON
   ]
-
   try {
     await executeDatabaseQueryAsync(insertQuery, params)
   } catch (error) {
@@ -184,7 +189,6 @@ const updateAppendApprovalsUsersQ = async data => {
 
   const { title, description } = translatedStatus
   const text = description(data) // Генерируем описание
-  console.log('🚀 ~ text:', text)
 
   const email_body = {
     task_descript: text,
@@ -321,6 +325,9 @@ const getAllRequestsQ = async () => {
       sub_sorting, -- подсортировка
       actual_indicators, -- Фактически отгружено
       shipped, -- отгружено тип
+      tonnagePermissible,
+      reqNum,
+      reportByUser, -- кто составил отчет
       --
       -- test
       JSON_OBJECT(
@@ -617,14 +624,31 @@ const getAllLabReqFilesNameQ = async req_id => {
 }
 
 const updateReqStatusQ = async data => {
-  const { reqForAvail_id, req_status } = data
+  const { reqForAvail_id, req_status, position_id } = data
   const query = `
     UPDATE reqForAvailableTable 
-    SET req_status = ? 
+    SET 
+      req_status = ?
     WHERE reqForAvail_id = ?
   `
   try {
-    const result = await executeDatabaseQueryAsync(query, [req_status, reqForAvail_id])
+    await executeDatabaseQueryAsync(query, [req_status, reqForAvail_id])
+    if (data.req_status === 'new') {
+      const updateApprovalQuery = `
+        UPDATE request_approvals
+        SET status = ?, approved_at = CURRENT_TIMESTAMP
+        WHERE reqForAvail_id = ? AND position_id = ?;
+      `
+      const query = `
+      UPDATE reqForAvailableTable 
+        SET 
+          req_status = ?,
+          approved_at = ?
+        WHERE reqForAvail_id = ?
+      `
+      await executeDatabaseQueryAsync(updateApprovalQuery, [req_status === 'new' ? 'approved' : 'approved', reqForAvail_id, position_id])
+      await executeDatabaseQueryAsync(query, [req_status, req_status === 'new' ? new Date().toISOString() : null, reqForAvail_id])
+    }
   } catch (error) {
     console.error('Error - getAllLabReqFilesNameQ:', error)
     throw error
@@ -642,7 +666,8 @@ const addReportQ = async data => {
       natural_loss = ?,
       destination_point = ?,
       shipped = ?,
-      actual_indicators = ?
+      actual_indicators = ?,
+      reportByUser = ?
     WHERE reqForAvail_id = ?
   `
   try {
@@ -655,6 +680,7 @@ const addReportQ = async data => {
       data.destinationPoint,
       data.transportType,
       JSON.stringify(data.indicators), // Сохраняем индикаторы как JSON
+      JSON.stringify(data.reportByUser), // Сохраняем индикаторы как JSON
       data.reqForAvail_id,
     ]
     await executeDatabaseQueryAsync(query, params)

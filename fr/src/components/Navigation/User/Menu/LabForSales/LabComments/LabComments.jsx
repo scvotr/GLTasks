@@ -65,7 +65,7 @@ export const LabComments = ({ comments, onSubmit, request, checkFullScreenOpen, 
     <>
       <TextField
         multiline
-        rows={4}
+        rows={2}
         variant="outlined"
         label="Напишите комментарий"
         value={comment}
@@ -79,7 +79,7 @@ export const LabComments = ({ comments, onSubmit, request, checkFullScreenOpen, 
       </Button>
       <ScrollableList
         sx={{
-          maxHeight: "calc(85vh - 270px)", // 130px - примерная высота TextField и Button
+          maxHeight: "calc(30vh - 10px)", // 130px - примерная высота TextField и Button
           overflowY: "auto",
         }}>
         {commentList.length > 0 && commentList?.map((comment, index) => (

@@ -26,7 +26,7 @@ export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser,
         currentUser.token,
         endpoint,
         "POST",
-        { reqForAvail_id: currentRequest.reqForAvail_id, user_id: currentUser.id, req_status: status, currentRequest },
+        { reqForAvail_id: currentRequest.reqForAvail_id, user_id: currentUser.id, position_id: currentUser.position, req_status: status, currentRequest },
         setReqStatus
       )
       setReqStatus({ loading: false, error: null })
@@ -86,9 +86,9 @@ export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser,
         <>
           <Loader reqStatus={reqStatus}>
             <Paper sx={{ p: 2, maxWidth: "600px", margin: "0 auto", mt: 2 }}>
-              <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 1 }}>
+              <Stack direction="row" spacing={2} justifyContent="center">
                 {/* ЧЕРНОВИК */}
-                {currentRequest.req_status === "on_confirm" && <>нужен отчет по контракту</>}
+                {currentRequest.req_status === "on_confirm" && <>формируется отчет</>}
                 {currentRequest.req_status === "draft" && (
                   <>
                     <Button

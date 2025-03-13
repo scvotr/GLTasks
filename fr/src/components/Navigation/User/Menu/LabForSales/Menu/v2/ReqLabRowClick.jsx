@@ -47,17 +47,35 @@ export const ReqLabRowClick = ({ isOpen, onClose, currentRequest, currentUser, r
     }
   }, [isOpen])
 
-  const labReqTitle = `В лабораторию АО "${currentRequest.department_name}" от ${formatDateV2(currentRequest.created_at)} культура: ${
-    currentRequest.culture
-  }, масса: ${currentRequest.tonnage}`
+  const labReqTitle = `Запрос АО "${currentRequest.department_name}", культура: ${currentRequest.culture} ${currentRequest.type ? currentRequest.type : ''} ${currentRequest.classType ? ` класс: ${currentRequest.classType}` : ''}, масса: ${currentRequest.tonnage} (+/- ${currentRequest.tonnagePermissible})т., ${currentRequest.gost}, урожай: ${currentRequest.yearOfHarvest}г., контрагент: ${currentRequest.contractor} `
+
+  // Масса: {request.tonnage} тонн +/- {request.tonnagePermissible}%
 
   const isSalesDep = currentUser.subDep.toString() === SALES_SUBDEB_G
 
   return (
     <FullScreenDialog isOpen={isOpen} onClose={onClose} infoText={labReqTitle}>
       <Loader reqStatus={reqStatus}>
-        {isSalesDep && <SalesLabActiveButtons currentRequest={currentRequest} closeModal={onClose} currentUser={currentUser} reRender={reRender} onClose={onClose} checkFullScreenOpen={checkFullScreenOpen}/>}
-        {!isSalesDep && <ElevatorLabActiveButtons currentRequest={currentRequest} closeModal={onClose} currentUser={currentUser} reRender={reRender} onClose={onClose} checkFullScreenOpen={checkFullScreenOpen}/>}
+        {isSalesDep && (
+          <SalesLabActiveButtons
+            currentRequest={currentRequest}
+            closeModal={onClose}
+            currentUser={currentUser}
+            reRender={reRender}
+            onClose={onClose}
+            checkFullScreenOpen={checkFullScreenOpen}
+          />
+        )}
+        {!isSalesDep && (
+          <ElevatorLabActiveButtons
+            currentRequest={currentRequest}
+            closeModal={onClose}
+            currentUser={currentUser}
+            reRender={reRender}
+            onClose={onClose}
+            checkFullScreenOpen={checkFullScreenOpen}
+          />
+        )}
       </Loader>
     </FullScreenDialog>
   )

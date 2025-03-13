@@ -8,7 +8,7 @@ const appendField = async (tableName, fieldName, fieldType, options = {}) => {
     if (typeof tableName !== 'string' || typeof fieldName !== 'string' || typeof fieldType !== 'string') {
       throw new Error('Некорректные входные данные: tableName, fieldName и fieldType должны быть строками.')
     }
-    const validTypes = ['TEXT', 'INTEGER', 'REAL', 'BLOB', 'NUMERIC', 'BOOLEAN', 'DATE', 'JSON', 'DATETIME']
+    const validTypes = ['TEXT', 'INTEGER', 'REAL', 'BLOB', 'NUMERIC', 'BOOLEAN', 'DATE', 'JSON', 'DATETIME', 'INTEGER']
     if (!validTypes.includes(fieldType.toUpperCase())) {
       throw new Error(`Некорректный тип данных: ${fieldType}. Допустимые типы: ${validTypes.join(', ')}`)
     }

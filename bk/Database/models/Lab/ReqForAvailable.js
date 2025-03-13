@@ -40,6 +40,9 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       is_auto BOOLEAN NOT NULL DEFAULT FALSE, -- Отгружено авто
       is_railway BOOLEAN NOT NULL DEFAULT FALSE, -- Отгружено ЖД
       shipped TEXT -- Отгружено
+      tonnagePermissible TEXT,
+      reqNum INTEGER, -- Уникальный номер запроса
+      reportByUser JSON, -- кто составил отчет
       --
       in_progress_at DATETIME, -- Время отправки в работу
       canceled_at DATETIME, -- Время аннулирования
@@ -160,6 +163,9 @@ const createAllReqForAvailable = async (allowDrop = false) => {
     await appendField('reqForAvailableTable', 'is_auto', 'BOOLEAN')
     await appendField('reqForAvailableTable', 'is_railway', 'BOOLEAN')
     await appendField('reqForAvailableTable', 'shipped', 'TEXT')
+    await appendField('reqForAvailableTable', 'tonnagePermissible', 'TEXT')
+    await appendField('reqForAvailableTable', 'reqNum', 'INTEGER')
+    await appendField('reqForAvailableTable', 'reportByUser', 'JSON')
 
     // -----new fields-----------------
     await createReqForAvailableTable(allowDrop)
