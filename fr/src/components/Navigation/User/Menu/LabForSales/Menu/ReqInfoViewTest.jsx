@@ -26,17 +26,72 @@ import { LabComments } from "../LabComments/LabComments"
 import { formatDateV2 } from "../../../../../../utils/formatDate"
 import { ModalCustom } from "../../../../../ModalCustom/ModalCustom"
 import { ConfirmationDialog } from "../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
+import { PictureAsPdfOutlined, DescriptionOutlined, PhotoOutlined, InsertDriveFileOutlined } from "@mui/icons-material"
+
+// const renderIndicators = indicatorsString => {
+//   try {
+//     const indicators = JSON.parse(indicatorsString) // Преобразуем строку в массив объектов
+
+//     return indicators
+//       .filter(indicator => indicator.value) // Фильтруем индикаторы, у которых value не пустое
+//       .map((indicator, index) => (
+//         <div key={index}>
+//           {indicator.name}: {indicator.value}
+//         </div>
+//       ))
+//   } catch (error) {
+//     console.error("Error parsing indicators:", error)
+//     return <div>Error parsing indicators</div>
+//   }
+// }
+
+const renderReportUser = data => {
+  try {
+    const user = JSON.parse(data)
+    return `Сформировал: ${user.last_name || ""} ${user.first_name.slice(0, 1)}.${user.middle_name.slice(0, 1)}.`
+  } catch (error) {
+    console.error("Ошибка при парсинге данных пользователя:", error)
+    return "<div>Пользователь не найден</div>" // Возвращаем сообщение об ошибке
+  }
+}
 
 const renderIndicators = indicatorsString => {
   try {
     const indicators = JSON.parse(indicatorsString) // Преобразуем строку в массив объектов
-    return indicators
-      .filter(indicator => indicator.value) // Фильтруем индикаторы, у которых value не пустое
-      .map((indicator, index) => (
-        <div key={index}>
-          <strong>{indicator.name}:</strong> {indicator.value}
-        </div>
-      ))
+    const filteredIndicators = indicators.filter(indicator => indicator.value)
+    if (!indicators || indicators.length === 0) {
+      return <div>Нет данных для отображения</div>
+    }
+    return (
+      <>
+        {/* ----------------------------V3----------------- */}
+        <TableContainer component={Paper} sx={{ padding: 0 }}>
+          <Table size="small" sx={{ borderCollapse: "collapse" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}></TableCell>
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.name}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}>
+                  Показатели:
+                </TableCell>
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.value || "-"}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+          </Table>
+        </TableContainer>
+        {/* ----------------------------V3----------------- */}
+      </>
+    )
   } catch (error) {
     console.error("Error parsing indicators:", error)
     return <div>Error parsing indicators</div>
@@ -46,7 +101,7 @@ const renderIndicators = indicatorsString => {
 const renderReportIndicators = indicatorsString => {
   try {
     const indicators = JSON.parse(indicatorsString) // Преобразуем строку в массив объектов
-   
+
     // Фильтруем массив, исключая записи с пустым oldValue
     const filteredIndicators = indicators.filter(indicator => indicator.oldValue !== "")
 
@@ -56,62 +111,56 @@ const renderReportIndicators = indicatorsString => {
     }
 
     return (
-      <TableContainer component={Paper} sx={{ border: "1px solid #ccc" }}>
-        <Table size="small" sx={{ borderCollapse: "collapse" }}>
-          <TableHead>
-            {/* Заголовки основных колонок */}
-            <TableRow>
-              <TableCell align="center" colSpan={filteredIndicators.length} sx={{ border: "1px solid #ccc" }}>
-                Качество по контракту:
-              </TableCell>
-              <TableCell align="center" colSpan={filteredIndicators.length} sx={{ border: "1px solid #ccc" }}>
-                Фактическое средневзв. кач. по отгрузке:
-              </TableCell>
-              <TableCell align="center" colSpan={filteredIndicators.length} sx={{ border: "1px solid #ccc" }}>
-                Отклонение:
-              </TableCell>
-            </TableRow>
-            {/* Названия индикаторов */}
-            <TableRow>
-              {filteredIndicators.map((indicator, index) => (
-                <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
-                  {indicator.name.slice(0, 3)}
+      <>
+        {/* ----------------------------V3----------------- */}
+        <TableContainer component={Paper}>
+          <Table size="small" sx={{ borderCollapse: "collapse" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}>
+                  Показатели:
                 </TableCell>
-              ))}
-              {filteredIndicators.map((indicator, index) => (
-                <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
-                  {indicator.name.slice(0, 3)}
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.name}.
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}>
+                  Контракт:
                 </TableCell>
-              ))}
-              {filteredIndicators.map((indicator, index) => (
-                <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
-                  {indicator.name.slice(0, 3)}
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.oldValue || "-"}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}>
+                  Факт:
                 </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* Значения индикаторов */}
-            <TableRow>
-              {filteredIndicators.map((indicator, index) => (
-                <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
-                  {indicator.oldValue || "-"}
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.newValue || "-"}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}>
+                  Отклонение:
                 </TableCell>
-              ))}
-              {filteredIndicators.map((indicator, index) => (
-                <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
-                  {indicator.newValue || "-"}
-                </TableCell>
-              ))}
-              {filteredIndicators.map((indicator, index) => (
-                <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
-                  {indicator.absoluteDeviation || "-"}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.absoluteDeviation || "-"}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+          </Table>
+        </TableContainer>
+        {/* ----------------------------V3----------------- */}
+      </>
     )
   } catch (error) {
     console.error("Error parsing indicators:", error)
@@ -120,16 +169,6 @@ const renderReportIndicators = indicatorsString => {
 }
 
 const handlePrintSelectedReq = (user, request, getReqLabComments) => {
-  // const comments = getReqLabComments?.map(
-  //   (comment, index) => `
-  //   <div class="comments-item" key="${index}">
-  //     <div>${comment.comment} | </div>
-  //     <div>${comment.last_name} ${comment.first_name.charAt(0)}.${comment.middle_name.charAt(0)}. | </div>
-  //     <div>${formatDateV2(comment.created_on, true)}</div>
-  //   </div>
-  // `
-  // )
-
   const indicatorsContent = JSON.parse(request.indicators)
     .filter(indicator => indicator.value)
     .map(
@@ -181,97 +220,91 @@ const handlePrintSelectedReq = (user, request, getReqLabComments) => {
       <div class="user-list">${usersContent}</div>
     </div>
   `
-
-  // <p><strong>Протокол:</strong></p>
-  // <div class="comments-list">
-  //   ${comments}
-  // </div>
-
   // Ваша функция для открытия окна печати
   const printWindow = window.open("", "_blank")
   printWindow.document.write(`
-<html>
-  <head>
-    <style>
-      body {
-        margin: 0;
-        padding: 20px;
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        color: #333;
-      }
-      h2, h3, h4 {
-        text-align: center;
-        color: #2c3e50;
-      }
-      .print-content {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        background-color: #fff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-      .indicators-container {
-        display: flex;
-        flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
-        justify-content: center; /* Центрирует элементы по горизонтали */
-        margin: 20px 0;
-      }
-      .indicator-item {
-        flex: 0 0 45%; /* Задает ширину элемента 45% */
-        margin: 5px; /* Отступ между элементами */
-        text-align: left; /* Выравнивание текста влево */
-      }
-      .user-list {
-        margin: 20px 0;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f1f1f1;
-      }
-      .user-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        padding: 5px;
-        border-bottom: 1px solid #ccc;
-      }
-      .comments-list {
-        margin: 20px 0;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f1f1f1;
-      }
-      .comments-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        padding: 5px;
-        border-bottom: 1px solid #ccc;
-      }
-      .subdepartment-name, .user-name {
-        flex: 1;
-      }
-      @media print {
-        @page {
-          margin-top: 0;
-          margin-bottom: 0;
-        }
-        body {
-          padding-top: 5rem;
-          padding-bottom: 5rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <h2>Запрос <br> №: ${request.req_number} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
-    request.department_name
-  } <br> для заключения договора с "${request.contractor}"</h2>
-    ${printContent}
-  </body>
-</html>
+    <html>
+      <head>
+        <style>
+          body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+          }
+          h2, h3, h4 {
+            text-align: center;
+            color: #2c3e50;
+          }
+          .print-content {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          }
+          .indicators-container {
+            display: flex;
+            flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
+            justify-content: center; /* Центрирует элементы по горизонтали */
+            margin: 20px 0;
+          }
+          .indicator-item {
+            flex: 0 0 45%; /* Задает ширину элемента 45% */
+            margin: 5px; /* Отступ между элементами */
+            text-align: left; /* Выравнивание текста влево */
+          }
+          .user-list {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+          }
+          .user-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+          }
+          .comments-list {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+          }
+          .comments-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+          }
+          .subdepartment-name, .user-name {
+            flex: 1;
+          }
+          @media print {
+            @page {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+            body {
+              padding-top: 5rem;
+              padding-bottom: 5rem;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Запрос <br> №: ${request.reqNum} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
+        request.department_name
+      } <br> для заключения договора с "${request.contractor}"</h2>
+        ${printContent}
+      </body>
+    </html>
 `)
 
   printWindow.document.close()
@@ -283,214 +316,21 @@ const handlePrintSelectedReq = (user, request, getReqLabComments) => {
 const handlePrintComments = (request, getReqLabComments) => {
   const comments = getReqLabComments?.map(
     (comment, index) => `
-    <div class="comments-item" key="${index}">
-      <div>${comment.comment} | </div>
-      <div>${comment.last_name} ${comment.first_name.charAt(0)}.${comment.middle_name.charAt(0)}. | </div>
-      <div>${formatDateV2(comment.created_on, true)}</div>
-    </div>
-  `
+      <div class="comments-item" key="${index}">
+        <div>${comment.comment} &nbsp </div>
+        <div>${comment.last_name} ${comment.first_name.charAt(0)}.${comment.middle_name.charAt(0)}.</div>
+        <div>&nbsp${formatDateV2(comment.created_on, true)}</div>
+      </div>
+    `
   )
 
   const printContent = `
     <div class="print-content">
       <p><strong>Протокол:</strong></p>
       <div class="comments-list">
-        ${comments}
+        ${comments.join('')}
       </div>
     </div>
-  `
-
-  // Ваша функция для открытия окна печати
-  const printWindow = window.open("", "_blank")
-  printWindow.document.write(`
-  <html>
-    <head>
-      <style>
-        body {
-          margin: 0;
-          padding: 20px;
-          font-family: Arial, sans-serif;
-          background-color: #f9f9f9;
-          color: #333;
-        }
-        h2, h3, h4 {
-          text-align: center;
-          color: #2c3e50;
-        }
-        .print-content {
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 20px;
-          background-color: #fff;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .indicators-container {
-          display: flex;
-          flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
-          justify-content: center; /* Центрирует элементы по горизонтали */
-          margin: 20px 0;
-        }
-        .indicator-item {
-          flex: 0 0 45%; /* Задает ширину элемента 45% */
-          margin: 5px; /* Отступ между элементами */
-          text-align: left; /* Выравнивание текста влево */
-        }
-        .user-list {
-          margin: 20px 0;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          background-color: #f1f1f1;
-        }
-        .user-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 10px;
-          padding: 5px;
-          border-bottom: 1px solid #ccc;
-        }
-        .comments-list {
-          margin: 20px 0;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          background-color: #f1f1f1;
-        }
-        .comments-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 10px;
-          padding: 5px;
-          border-bottom: 1px solid #ccc;
-        }
-        .subdepartment-name, .user-name {
-          flex: 1;
-        }
-        @media print {
-          @page {
-            margin-top: 0;
-            margin-bottom: 0;
-          }
-          body {
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-          }
-        }
-      </style>
-    </head>
-    <body>
-      <h2>Запрос <br> №: ${request.req_number} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
-    request.department_name
-  } <br> для заключения договора с "${request.contractor}"</h2>
-      ${printContent}
-    </body>
-  </html>
-  `)
-
-  printWindow.document.close()
-  printWindow.focus()
-  printWindow.print()
-  printWindow.close()
-}
-
-const handlePrintReqReport = request => {
-  const indicators = JSON.parse(request.actual_indicators) // Преобразуем строку в массив объектов
-  // Фильтруем массив, исключая записи с пустым oldValue
-  const filteredIndicators = indicators.filter(indicator => indicator.oldValue !== "")
-
-  // ! WTF request.report_data содержит request.report_data.actual_indicators !!
-  const reportData = JSON.parse(request.report_data)
-  const translatedTransportType = {
-    auto: "Авто",
-    railway: "ЖД",
-  }
-  const transportType = translatedTransportType[reportData.shipped] || reportData.shipped // Получаем русский статус
-
-  const printContent = `
-    <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px;">
-      <thead>
-        <tr>
-          <th colspan="${filteredIndicators.length}" style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
-            Качество по контракту:
-          </th>
-          <th colspan="${filteredIndicators.length}" style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
-            Фактическое средневзв. кач. по отгрузке:
-          </th>
-          <th colspan="${filteredIndicators.length}" style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
-            Отклонение:
-          </th>
-        </tr>
-        <tr>
-          ${filteredIndicators
-            .map(
-              indicator => `
-            <th style="border: 1px solid #ccc; text-align: center;">
-              ${indicator.name.slice(0, 3)}
-            </th>
-            <th style="border: 1px solid #ccc; text-align: center;">
-              ${indicator.name.slice(0, 3)}
-            </th>
-            <th style="border: 1px solid #ccc; text-align: center;">
-              ${indicator.name.slice(0, 3)}
-            </th>
-          `
-            )
-            .join("")}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-            ${filteredIndicators
-              .map(
-                indicator => `
-              <td style="border: 1px solid #ccc; text-align: center;">
-                ${indicator.oldValue || "-"}
-              </td>
-            `
-              )
-              .join("")}
-            ${filteredIndicators
-              .map(
-                indicator => `
-              <td style="border: 1px solid #ccc; text-align: center;">
-                ${indicator.newValue || "-"}
-              </td>
-            `
-              )
-              .join("")}
-            ${filteredIndicators
-              .map(
-                indicator => `
-              <td style="border: 1px solid #ccc; text-align: center;">
-                ${indicator.absoluteDeviation || "-"}
-              </td>
-            `
-              )
-              .join("")}
-          </tr>
-        </tbody>
-        </table>
-        <div style="margin-top: 2px; font-family: Arial, sans-serif;">
-          <div style="display: flex; gap: 1px; align-items: center;">
-          <span>Отгружено всего: ${request.total_tonnage || "-"} т.</span>
-            <!-- Аспирационные потери -->
-            ${request.aspiration_dust ? `<span>АП: ${request.aspiration_dust}</span>` : ""}
-            <!-- Естественная убыль -->
-            ${request.natural_loss ? `<span>ЕУ: ${request.natural_loss}</span>` : ""}
-          </div>
-
-          <div style="margin-top: 2px;">
-            <!-- Комментарий к закрытию -->
-            ${request.sub_sorting ? `<p style="margin: 0;">Под сортировано: ${request.sub_sorting}%</p>` : ""}
-          </div>
-
-          <div style="margin-top: 2px;">
-            <!-- Комментарий к закрытию и тип отгрузки -->
-            <p style="margin: 0;">${request.commentsThenClosed || "-"}</p>
-            <p style="margin: 0;">Тип отгрузки: ${transportType || "-"}</p>
-            <p style="margin: 0;">${request.commentsThenCreate  || ""}</p>
-          </div>
-        </div>
   `
 
   // Ваша функция для открытия окна печати
@@ -572,9 +412,210 @@ const handlePrintReqReport = request => {
         </style>
       </head>
       <body>
-        <h2>Запрос <br> №: ${request.req_number} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
+        <h2>Комментарии к запросу <br> №: ${request.reqNum} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${request.department_name}
+          <br> контрагент:  "${request.contractor}"
+        </h2>
+        ${printContent}
+      </body>
+    </html>
+    `
+  )
+
+  printWindow.document.close()
+  printWindow.focus()
+  printWindow.print()
+  printWindow.close()
+}
+
+const handlePrintReqReport = request => {
+  // Проверяем наличие actual_indicators и корректность JSON
+  let indicators = []
+  try {
+    indicators = JSON.parse(request.actual_indicators) || [] // Преобразуем строку в массив объектов
+  } catch (error) {
+    console.error("Error parsing actual_indicators:", error)
+    return // Завершаем выполнение функции, если произошла ошибка
+  }
+
+  // Фильтруем массив, исключая записи с пустым oldValue
+  const filteredIndicators = indicators.filter(indicator => indicator.oldValue !== "")
+
+  // ! WTF request.report_data содержит request.report_data.actual_indicators !!
+  const reportData = JSON.parse(request.report_data)
+
+  const translatedTransportType = {
+    auto: "Авто",
+    railway: "ЖД",
+  }
+  const transportType = translatedTransportType[reportData.shipped] || reportData.shipped // Получаем русский статус
+
+  const printContent = `
+    <div style="width: 100%; margin: 20px 0; overflow: hidden;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+              Показатели:
+            </th>
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <th style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.name.slice(0, 3)}.
+              </th>
+            `
+              )
+              .join("")}
+          </tr>
+          <tr>
+            <th style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+              Контракт:
+            </th>
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <th style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.oldValue || "-"}
+              </th>
+            `
+              )
+              .join("")}
+          </tr>
+          <tr>
+            <th style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+              Факт:
+            </th>
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <th style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.newValue || "-"}
+              </th>
+            `
+              )
+              .join("")}
+          </tr>
+          <tr>
+            <th style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+              Отклонение:
+            </th>
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <th style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.absoluteDeviation || "-"}
+              </th>
+            `
+              )
+              .join("")}
+          </tr>
+        </thead>
+      </table>
+      <div style="margin-top: 10px; font-family: Arial, sans-serif; padding: 10px;">
+        <div style="margin-bottom: 5px;">
+          <span>Отгружено всего: ${request.total_tonnage || "-"} т.</span>
+          ${request.aspiration_dust ? `<span> АП: ${request.aspiration_dust}</span>` : ""}
+          ${request.natural_loss ? `<span> ЕУ: ${request.natural_loss}</span>` : ""}
+        </div>
+        ${
+          request.sub_sorting
+            ? `
+          <div style="margin-bottom: 5px;">
+            <p style="margin: 0;">Под сортировано: ${request.sub_sorting}%</p>
+          </div>
+        `
+            : ""
+        }
+        <div style="margin-bottom: 5px;">
+          <p style="margin: 0;">${request.commentsThenClosed || "-"}</p>
+          <p style="margin: 0;">Тип отгрузки: ${transportType || "-"}</p>
+        </div>
+      </div>
+    </div>
+  `
+
+  // Ваша функция для открытия окна печати
+  const printWindow = window.open("", "_blank")
+  printWindow.document.write(`
+    <html>
+      <head>
+        <style>
+          body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+          }
+          h2, h3, h4 {
+            text-align: center;
+            color: #2c3e50;
+          }
+          .print-content {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          }
+          .indicators-container {
+            display: flex;
+            flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
+            justify-content: center; /* Центрирует элементы по горизонтали */
+            margin: 20px 0;
+          }
+          .indicator-item {
+            flex: 0 0 45%; /* Задает ширину элемента 45% */
+            margin: 5px; /* Отступ между элементами */
+            text-align: left; /* Выравнивание текста влево */
+          }
+          .user-list {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+          }
+          .user-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+          }
+          .comments-list {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+          }
+          .comments-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+          }
+          .subdepartment-name, .user-name {
+            flex: 1;
+          }
+          @media print {
+            @page {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+            body {
+              padding-top: 5rem;
+              padding-bottom: 5rem;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <h2> Отчет по контракту.<br> Запрос №: ${request.reqNum}<br> от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
     request.department_name
-  } <br> для заключения договора с "${request.contractor}"</h2>
+  } <br> контрагент "${request.contractor}"</h2>
         ${printContent}
       </body>
     </html>
@@ -635,90 +676,92 @@ export const ReqInfoViewTest = ({ request, currentUser, closeModal, reRender, to
     <>
       <Loader reqStatus={reqStatus}>
         <Box sx={{ p: 1 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <Typography variant="h6" gutterBottom textAlign="center">
-                <Paper>{request.commentsThenCreate}</Paper>
-              </Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Paper>
-                <Typography variant="h6" textAlign="center">
-                  Информация о заявке №: {request.req_number}
+          <Grid container spacing={2} alignItems="flex-start">
+            <Grid item xs={8} sx={{ height: "fit-content" }}>
+              {/* -------------------------------------------------------- */}
+              <Paper sx={{ p: 1, m: 1 }}>
+                <Typography variant="body1" textAlign="center">
+                  Заявка №: {request.reqNum} от {formatDateV2(request.approved_at)}
                 </Typography>
-                <Stack direction="row" spacing={2} flexWrap="wrap" alignItems="center">
-                  <Typography variant="body1">Культура: {request.culture}</Typography>
-                  <Typography variant="body1">Урожай: {request.yearOfHarvest} года</Typography>
-                  {request.type && <Typography variant="body1">Тип: {request.type}</Typography>}
-                  {request.classType && <Typography variant="body1">Класс: {request.classType}</Typography>}
-                  <Typography variant="body1">Масса: {request.tonnage} тонн +/- 5%</Typography>
-                  <Typography variant="body1">Покупатель: {request.contractor}</Typography>
-                  <Typography variant="body1">ГОСТ: {request.gost}</Typography>
-                </Stack>
               </Paper>
-            </Grid>
-            <Grid item xs={4}>
-              <Paper>
-                <Stack direction="row" alignItems="center" spacing={0.5}>
-                  <IconButton color="primary" onClick={() => handlePrintSelectedReq(null, request, getReqLabComments)}>
-                    <PrintIcon />
-                    <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
-                      заявка
-                    </Typography>
-                  </IconButton>
-                  {/* если есть комментарии */}
-                  {getReqLabComments.length > 0 && (
-                    <IconButton color="primary" onClick={() => handlePrintComments(request, getReqLabComments)}>
-                      <PrintIcon />
-                      <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
-                        комментарии
-                      </Typography>
-                    </IconButton>
-                  )}
-                  {/* если контракт закрыт */}
-                  {request.req_status === "closed" && (
-                    <IconButton color="primary" onClick={() => handlePrintReqReport(request)}>
-                      <PrintIcon />
-                      <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
-                        отчет
-                      </Typography>
-                    </IconButton>
-                  )}
-                </Stack>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box sx={{ padding: 2 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <InfoViewForLabReq request={request} />
-            </Grid>
-            <Grid item xs={4}>
+              {/* -------------------------------------------------------- */}
+              {request.commentsThenCreate && (
+                <Paper sx={{ p: 1, m: 1 }}>
+                  <Typography variant="body2" textAlign="center">
+                    {request.commentsThenCreate}
+                  </Typography>
+                </Paper>
+              )}
+              {/* -------------------------------------------------------- */}
+              {request.req_status !== "closed" && (
+                <>
+                  <Paper sx={{ p: 1, m: 1 }}>
+                    <InfoViewForLabReq request={request} />
+                    <ApprovedUsersListViewReqLab request={request} currentUser={currentUser} reRender={setFormKey} />
+                  </Paper>
+                </>
+              )}
+              {/* -------------------------------------------------------- */}
+              {request.req_status === "closed" && (
+                <Paper sx={{ p: 1, m: 1 }}>
+                  <ReportReqLabView request={request} />
+                </Paper>
+              )}
+              {/* -------------------------------------------------------- */}
               <Loader reqStatus={reqStatus}>
-                <Box>
-                  <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen} setGetReqLabComments={setGetReqLabComments} />
-                </Box>
+                <Paper sx={{ p: 1, m: 1 }}>
+                  <Box sx={{ mb: 2 }}>
+                    <UploadButton data={request} reRender={setFormKey} />
+                  </Box>
+                  <FilesViewForLabReq request={request} currentUser={currentUser} isImageFile={isImageFile} isDocFile={isDocFile} reRender={setFormKey} />
+                </Paper>
               </Loader>
+              {/* -------------------------------------------------------- */}
             </Grid>
-            <Grid item xs={4}>
-              <Loader reqStatus={reqStatus}>
-                <Box sx={{ mb: 2 }}>
-                  <UploadButton data={request} reRender={setFormKey} />
-                </Box>
-                <FilesViewForLabReq request={request} currentUser={currentUser} isImageFile={isImageFile} isDocFile={isDocFile} reRender={setFormKey} />
-              </Loader>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={8}>
-                <ApprovedUsersListViewReqLab request={request} currentUser={currentUser} reRender={setFormKey} />
-              </Grid>
-              <Grid item xs={2}></Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                {request.req_status === "closed" && <ReportReqLabView request={request} />}
+            <Grid item xs={4} sx={{ height: "fit-content" }}>
+              <Grid container spacing={2} direction="column">
+                <Grid item xs={12}>
+                  <Paper sx={{ p: 1, display: "flex", justifyContent: "flex-end" }}>
+                    <Stack direction="row" alignItems="center" spacing={0.5} sx={{ width: "100%", justifyContent: "space-between" }}>
+                      <Box sx={{ justifyContent: "flex-start" }}>{request.req_status === "closed" && renderReportUser(request.reportByUser)}</Box>
+                      <IconButton color="primary" onClick={() => handlePrintSelectedReq(null, request, getReqLabComments)}>
+                        <PrintIcon />
+                        <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                          запрос
+                        </Typography>
+                      </IconButton>
+                      {/* если есть комментарии */}
+                      {getReqLabComments.length > 0 && (
+                        <IconButton color="primary" onClick={() => handlePrintComments(request, getReqLabComments)}>
+                          <PrintIcon />
+                          <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                            комментарии
+                          </Typography>
+                        </IconButton>
+                      )}
+                      {/* если контракт закрыт */}
+                      {request.req_status === "closed" && (
+                        <IconButton color="primary" onClick={() => handlePrintReqReport(request)}>
+                          <PrintIcon />
+                          <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                            отчет
+                          </Typography>
+                        </IconButton>
+                      )}
+                    </Stack>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper sx={{ p: 1 }}>
+                    <LabComments request={request} reRender={reRender} checkFullScreenOpen={checkFullScreenOpen} setGetReqLabComments={setGetReqLabComments} />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  -
+                </Grid>
+                <Grid item xs={12}>
+                  -
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
@@ -730,53 +773,63 @@ export const ReqInfoViewTest = ({ request, currentUser, closeModal, reRender, to
 
 export const ApprovedUsersListViewReqLab = ({ request, currentUser, closeModal, reRender }) => {
   return (
-    <>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Должность</TableCell>
-              <TableCell>Отдел</TableCell>
-              <TableCell>Имя пользователя</TableCell>
-              <TableCell>Дата</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {request.users &&
-              request.users.map(user => (
-                <TableRow key={user.position_id} sx={{ backgroundColor: user.approval_status === "approved" ? "lightgreen" : "inherit" }}>
-                  <TableCell>{user.position_name}</TableCell>
-                  <TableCell>{user.department_name}</TableCell>
-                  <TableCell>{user.user_name}</TableCell>
-                  <TableCell>{user.approved_at ? formatDateV2(user.approved_at, true) : null}</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    <TableContainer sx={{ margin: 0, mt: 2, border: "1px solid #ddd" }}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>
+              <Typography variant="caption">Должность</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="caption">Отдел</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="caption">Имя пользователя</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="caption">Дата</Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {request.users &&
+            request.users.map(user => (
+              <TableRow key={user.position_id} sx={{ backgroundColor: user.approval_status === "approved" ? "lightgreen" : "inherit" }}>
+                <TableCell>
+                  <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                    {user.position_name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                    {user.department_name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                    {user.last_name_only} {user.first_name_only.charAt(0)}.{user.middle_name_only.charAt(0)}.
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "gray" }}>
+                    {user.approved_at ? formatDateV2(user.approved_at, true) : null}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
 
 export const InfoViewForLabReq = ({ request }) => {
   return (
     <>
-      <Paper sx={{ padding: 1 }}>
-        {/* <Typography variant="h6">Информация о заявке №: {request.req_number}</Typography>
-        <Typography variant="body1">Культура: {request.culture}</Typography>
-        <Typography variant="body1">Урожай: {request.yearOfHarvest} года</Typography>
-        {request.type && <Typography variant="body1">Тип: {request.type}</Typography>}
-        {request.classType && <Typography variant="body1">Класс: {request.classType}</Typography>}
-        <Typography variant="body1">Масса: {request.tonnage} тонн +/- 5%</Typography>
-        <Typography variant="body1">Покупатель: {request.contractor}</Typography>
-        <Typography variant="body1">ГОСТ: {request.gost}</Typography> */}
-        <Box>
-          <Typography variant="h6" textAlign="center">
-            Качество по контракту
-          </Typography>
-          <Box textAlign="center">{renderIndicators(request.indicators)}</Box>
-        </Box>
-      </Paper>
+      <Typography variant="h6" textAlign="center">
+        Качество по контракту:
+      </Typography>
+      {renderIndicators(request.indicators)}
     </>
   )
 }
@@ -851,45 +904,54 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
     }
   }
 
+  // Функция для определения иконки в зависимости от типа файла
+  const getIconByFileType = fileName => {
+    if (fileName.endsWith(".pdf")) return <PictureAsPdfOutlined fontSize="small" />
+    if (fileName.endsWith(".doc") || fileName.endsWith(".docx")) return <DescriptionOutlined fontSize="small" />
+    if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png")) return <PhotoOutlined fontSize="small" />
+    return <InsertDriveFileOutlined fontSize="small" />
+  }
+
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid container spacing={2} alignItems="flex-start" direction="column">
+        {/* Блок с документами */}
+        <Grid item xs={12} sx={{ height: "fit-content" }}>
           <Paper sx={{ padding: 1, maxHeight: "calc(70vh - 270px)", overflowY: "auto" }}>
-            <Typography variant="body2" sx={{ ml: 1, wordBreak: "break-word" }}>
+            {/* Заголовок "Документы" */}
+            <Typography variant="caption" sx={{ ml: 1, fontWeight: "bold", mb: 1 }}>
               Документы:
             </Typography>
-            {isDocFile && isDocFile.length > 0 && (
-              <ImageList sx={{ width: "100%", height: "100%" }} cols={3} rowHeight={190}>
-                {isDocFile &&
-                  isDocFile.map((file, index) => (
-                    <ImageListItem key={index} sx={{ display: "flex", flexDirection: "row" }}>
-                      <Box sx={{ p: 2 }}>
-                        <Tooltip title="Нажмите, чтобы скачать" onClick={() => handleDownload(file)}>
-                          <Stack direction="column" justifyContent="center" alignItems="center" spacing={1} sx={{ cursor: "pointer" }}>
-                            <Paper elevation={3} sx={{ p: "2", display: "flex", flexDirection: "row" }}>
-                              {/* переделать на разные форматы */}
-                              <PictureAsPdfOutlinedIcon fontSize="small" />
-                              {file && (
-                                <Typography variant="body2" sx={{ ml: 1, wordBreak: "break-word" }}>
-                                  {file.name}
-                                </Typography>
-                              )}
-                            </Paper>
-                          </Stack>
-                        </Tooltip>
-                      </Box>
+
+            {/* Если есть документы, показываем их список */}
+            {isDocFile && isDocFile.length > 0 ? (
+              <ImageList sx={{ width: "100%", height: "100%" }} cols={4} rowHeight={80}>
+                {isDocFile.map((file, index) => (
+                  <ImageListItem key={index} sx={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <Box sx={{ p: 1, width: "100%", textAlign: "center" }}>
+                      {/* Иконка файла и название */}
+                      <Tooltip title="Нажмите, чтобы скачать" onClick={() => handleDownload(file)}>
+                        <Stack direction="column" justifyContent="center" alignItems="center" spacing={0.5} sx={{ cursor: "pointer", width: "100%" }}>
+                          {getIconByFileType(file.name)}
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontSize: "0.75rem",
+                              color: "gray",
+                              wordBreak: "break-word", // Разрешаем перенос слов
+                              whiteSpace: "normal", // Разрешаем многострочный текст
+                              // overflow: "hidden",
+                              textAlign: "center",
+                              maxWidth: "100%",
+                            }}>
+                            {file.name}
+                          </Typography>
+                        </Stack>
+                      </Tooltip>
+
+                      {/* Кнопка удаления (если пользователь имеет право) */}
                       {isCreator && (
-                        <Tooltip
-                          title="Нажмите, чтобы удалить"
-                          sx={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            backgroundColor: "background.paper",
-                            borderRadius: "50%",
-                            boxShadow: 1,
-                          }}>
+                        <Tooltip title="Нажмите, чтобы удалить">
                           <IconButton
                             aria-label="delete"
                             onClick={() => {
@@ -902,16 +964,25 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
                             }}
                             size="small"
                             sx={{
+                              position: "absolute",
+                              top: 4,
+                              right: 4,
                               color: "error.main",
-                              "&:hover": { backgroundColor: "rgba(255, 0, 0, 0.1)" }, // Красный фон при наведении
+                              "&:hover": { backgroundColor: "rgba(255, 0, 0, 0.1)" },
                             }}>
                             <DeleteIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
                       )}
-                    </ImageListItem>
-                  ))}
+                    </Box>
+                  </ImageListItem>
+                ))}
               </ImageList>
+            ) : (
+              // Если документов нет, показываем сообщение
+              <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
+                Нет прикрепленных документов.
+              </Typography>
             )}
           </Paper>
         </Grid>
@@ -921,7 +992,7 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
               Изображения:
             </Typography>
             {isImageFile && isImageFile.length > 0 && (
-              <ImageList sx={{ width: "100%", height: "auto" }} cols={3} rowHeight={82}>
+              <ImageList sx={{ width: "100%", height: "100%" }} cols={3} rowHeight={82}>
                 {isImageFile.map((file, index) => (
                   <ImageListItem key={index} sx={{ display: "flex", justifyContent: "center" }}>
                     <Tooltip title="Нажмите, чтобы увеличить" onClick={() => handleImageClick(file)}>
@@ -1036,7 +1107,8 @@ export const ReportReqLabView = ({ request }) => {
   const transportType = translatedTransportType[reportData.shipped] || reportData.shipped // Получаем русский статус
 
   return (
-    <Box component="div" sx={{ width: "100%", maxWidth: "95%", mx: "auto", mt: 2 }}>
+    <>
+      {/* <Box component="div" sx={{ width: "100%", maxWidth: "95%", mx: "auto", mt: 2 }}> */}
       <Typography variant="h6">Качество по контракту:</Typography>
       {renderReportIndicators(request.actual_indicators)}
       <Stack direction="row" spacing={1} alignItems="center">
@@ -1048,12 +1120,13 @@ export const ReportReqLabView = ({ request }) => {
       </Stack>
       <Stack direction={"column"}>
         <Typography variant="body2"> {request.commentsThenClosed}</Typography>
-        {request.sub_sorting && <Typography variant="body2">Под сортировано: {request.sub_sorting}%</Typography>}
+        {request.sub_sorting && <Typography variant="body2">Под сортировано: {request.sub_sorting}</Typography>}
       </Stack>
       <Stack direction={"column"}>
-        <Typography variant="body2"> {request.commentsThenCreate}</Typography>
+        {/* <Typography variant="body2"> {request.commentsThenCreate}</Typography> */}
         {request.sub_sorting && <Typography variant="body2">Тип отгрузки: {transportType}</Typography>}
       </Stack>
-    </Box>
+      {/* </Box> */}
+    </>
   )
 }
