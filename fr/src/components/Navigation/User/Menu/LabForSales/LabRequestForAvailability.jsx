@@ -8,7 +8,7 @@ import { ReqForLabMain } from "./Main/ReqForLabMain"
 import { useSocketContext } from "../../../../../context/SocketProvider"
 import { Loader } from "../../../../FormComponents/Loader/Loader"
 
-const SALES_SUBDEB_G = "14"
+const SALES_SUBDEB_G = "13"
 
 const getAllRequest = async (currentUser, setReqStatus, setRequests) => {
   const endpoint = `/lab/getAllRequestsWithApprovals`
@@ -107,7 +107,7 @@ export const LabRequestForAvailability = () => {
         <TestForm onClose={closeModal} currentUser={currentUser} setAddNewRequest={setAddNewRequest} />
       </FullScreenDialog>
       <Loader reqStatus={reqStatus}>
-        <AppBarForPage title="Запрос в лабораторию: " openModal={currentUser.subDep.toString() === SALES_SUBDEB_G ? openModal : null} />
+        <AppBarForPage title="Запрос: " openModal={currentUser.subDep.toString() === SALES_SUBDEB_G ? openModal : null} />
         <ReqForLabMain
           requests={data}
           currentUser={currentUser}
