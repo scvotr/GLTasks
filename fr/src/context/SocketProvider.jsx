@@ -15,13 +15,18 @@ export const SocketProvider = ({ children }) => {
   const generalDep = "generalDep_" + currentUser.dep
   const leadSubDep = "leadSubDep_" + currentUser.subDep
   const userSocket = "user" + currentUser.id
-  const adminSocket = (currentUser.role === 'admin') ? "adm" + currentUser.id : null; 
+  const adminSocket = currentUser.role === "admin" ? "adm" + currentUser.id : null
 
   const socket = io(HOST_SOCKET, {
     extraHeaders: { Authorization: currentUser.token },
   })
 
   useEffect(() => {
+    if (!currentUser.login) {
+      socket.disconnect()
+      return
+    }
+
     socket.on("connect", () => {
       socket.emit("getMyRooms")
     })
@@ -55,7 +60,7 @@ export const SocketProvider = ({ children }) => {
     }
   }, [adminSocket, currentUser, generalDep, leadSubDep, socket, userSocket])
 
-  return currentUser ? <SocketContext.Provider value={socket}>{children}</SocketContext.Provider> : <>d</>
+  return currentUser ? <SocketContext.Provider value={socket}>{children}</SocketContext.Provider> : <></>
 }
 // ! need test wtf
 // export default function SocketConnectedApp() {

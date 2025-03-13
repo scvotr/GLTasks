@@ -168,14 +168,14 @@ const data = {
   },
 }
 
-export const AddReportLabReq = ({ onClose, currentUser, request }) => {
+export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyFields }) => {
   const { popupSnackbar } = useSnackbar()
 
-  const filteredUsers = request.users.filter(user => user.user_id === currentUser.id);
+  const filteredUsers = request.users.filter(user => user.user_id === currentUser.id)
 
   const reportByUser = {
     user_id: filteredUsers[0].user_id,
-    last_name:filteredUsers[0].last_name_only,
+    last_name: filteredUsers[0].last_name_only,
     first_name: filteredUsers[0].first_name_only,
     middle_name: filteredUsers[0].middle_name_only,
   }
@@ -193,6 +193,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request }) => {
   const [destinationPoint, setDestinationPoint] = useState("")
   const [transportType, setTransportType] = useState("auto") // По умолчанию выбран "Авто"
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
+  const areFieldsSelected = Boolean(totalTonnage && naturalLoss && aspirationDust)
 
   const handleChangeStatus = async status => {
     const endpoint = `/lab/updateReqStatus`
@@ -295,7 +296,6 @@ export const AddReportLabReq = ({ onClose, currentUser, request }) => {
     // console.log("🚀 ~ updatedIndicators ~ updatedIndicators:", updatedIndicators)
     // Здесь вы можете отправить updatedIndicators на сервер или выполнить другие действия
     try {
-      // handleChangeStatus("closed")
       await handleChangeStatus("closed")
 
       const formData = {
@@ -318,7 +318,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request }) => {
         transportType,
         reportByUser,
       }
-       await handleCreateReport(formData)
+      await handleCreateReport(formData)
     } catch (error) {}
   }
 
@@ -349,7 +349,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request }) => {
     <Loader reqStatus={reqStatus}>
       <Box component="form">
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
+          <Button variant="contained" color="primary" onClick={handleSubmit} disabled={!areFieldsSelected}>
             Сформировать отчет
           </Button>
         </Box>
@@ -518,6 +518,11 @@ export const OtherLabReqValue = ({
                 placeholder="+"
                 value={totalTonnage}
                 onChange={handleTotalTonnageChange}
+                // -----------------
+                required // Обязательное поле
+                error={!totalTonnage} // Показываем ошибку, если поле пустое
+                helperText={!totalTonnage ? "" : ""}
+                // -----------------
                 sx={{
                   width: "100px",
                   "& .MuiInputBase-input": {
@@ -535,6 +540,11 @@ export const OtherLabReqValue = ({
                 placeholder="+"
                 value={aspirationDust}
                 onChange={handleAspirationDustChange}
+                // -----------------
+                required // Обязательное поле
+                error={!aspirationDust} // Показываем ошибку, если поле пустое
+                helperText={!aspirationDust ? "" : ""}
+                // -----------------
                 sx={{
                   width: "100px",
                   "& .MuiInputBase-input": {
@@ -552,6 +562,9 @@ export const OtherLabReqValue = ({
                 placeholder="+"
                 value={naturalLoss}
                 onChange={handlesNaturalLossChange}
+                required // Обязательное поле
+                error={!naturalLoss} // Показываем ошибку, если поле пустое
+                helperText={!naturalLoss ? "" : ""}
                 sx={{
                   width: "100px",
                   "& .MuiInputBase-input": {
