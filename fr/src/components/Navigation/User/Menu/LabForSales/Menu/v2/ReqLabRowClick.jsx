@@ -20,7 +20,7 @@ import { ElevatorLabActiveButtons } from "../../Tables/v2/ButtonsByRole/Elevator
  * @param {Function} props.setCheckFullScreenOpen - Function to update the full-screen mode state.
  */
 
-const SALES_SUBDEB_G = "14"
+const SALES_SUBDEB_G = "13"
 
 export const ReqLabRowClick = ({ isOpen, onClose, currentRequest, currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen }) => {
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
