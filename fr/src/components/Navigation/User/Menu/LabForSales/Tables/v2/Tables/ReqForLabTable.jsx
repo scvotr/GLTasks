@@ -186,7 +186,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="№"
-                    value={filters.reqNum}
+                    value={filters.reqNum || ""}
                     onChange={e => handleFilterChange("reqNum", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 80 }}
@@ -195,7 +195,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 {/* <TableCell align="center">
                   <TextField
                     label="№"
-                    value={filters.reqNumber}
+                    value={filters.reqNumber || ""}
                     onChange={e => handleFilterChange("reqNumber", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 80 }}
@@ -204,7 +204,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Статус"
-                    value={filters.reqStatus}
+                    value={filters.reqStatus || ""}
                     onChange={e => handleFilterChange("reqStatus", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
@@ -222,7 +222,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Предприятие"
-                    value={filters.department_name} // Предположим, что у вас есть фильтр для даты
+                    value={filters.department_name || ""} // Предположим, что у вас есть фильтр для даты
                     onChange={e => handleFilterChange("department_name", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
@@ -231,7 +231,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Культура"
-                    value={filters.culture}
+                    value={filters.culture || ""}
                     onChange={e => handleFilterChange("culture", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
@@ -240,7 +240,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Тоннаж"
-                    value={filters.tonnage} // Предположим, что у вас есть фильтр для тоннажа
+                    value={filters.tonnage || ""} // Предположим, что у вас есть фильтр для тоннажа
                     onChange={e => handleFilterChange("tonnage", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
@@ -249,7 +249,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Покупатель"
-                    value={filters.contractor} // Предположим, что у вас есть фильтр для покупателя
+                    value={filters.contractor || ""} // Предположим, что у вас есть фильтр для покупателя
                     onChange={e => handleFilterChange("contractor", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
