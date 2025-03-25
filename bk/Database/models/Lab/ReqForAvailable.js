@@ -41,6 +41,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       is_railway BOOLEAN NOT NULL DEFAULT FALSE, -- Отгружено ЖД
       shipped TEXT -- Отгружено
       tonnagePermissible TEXT,
+      salesPoint TEXT, -- Кто продает
       reqNum INTEGER, -- Уникальный номер запроса
       reportByUser JSON, -- кто составил отчет
       --
@@ -166,6 +167,7 @@ const createAllReqForAvailable = async (allowDrop = false) => {
     await appendField('reqForAvailableTable', 'tonnagePermissible', 'TEXT')
     await appendField('reqForAvailableTable', 'reqNum', 'INTEGER')
     await appendField('reqForAvailableTable', 'reportByUser', 'JSON')
+    await appendField('reqForAvailableTable', 'salesPoint', 'TEXT')
 
     // -----new fields-----------------
     await createReqForAvailableTable(allowDrop)
