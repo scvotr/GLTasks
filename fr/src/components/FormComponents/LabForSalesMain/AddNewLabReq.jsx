@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
 import React, { useState } from "react"
-import { FormControl, InputLabel, Select, MenuItem, TextField, Grid, Typography, Box, Stack, Button } from "@mui/material"
+import { FormControl, InputLabel, Select, MenuItem, TextField, Grid, Typography, Box, Stack, Button, FormHelperText } from "@mui/material"
 import { DepartmentSelectOnce } from "../Select/DepartmentSelect/DepartmentSelectOnce"
 import { useSnackbar } from "../../../context/SnackbarProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
@@ -151,6 +151,14 @@ const data = {
   },
 }
 
+const options = {
+  option1: "Агро №1",
+  option2: "Агро №3",
+  option3: "Агро №4",
+  option4: "Агро №5",
+  option5: "Агро №6",
+}
+
 const AddNewLabReq = ({ onClose, currentUser }) => {
   const { popupSnackbar } = useSnackbar()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -168,7 +176,11 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const [comment, setComment] = useState("")
   const [yearOfHarvest, setYearOfHarvest] = useState("")
   const [indicatorValues, setIndicatorValues] = useState({})
-  const areFieldsSelected = Boolean(selectedDepartment && classification && culture && yearOfHarvest && tonnage && contractor && tonnagePermissible && reqNum)
+  const [salesPoint, setSalesPoint] = useState("")
+  console.log("🚀 ~ AddNewLabReq ~ salesPoint:", salesPoint)
+  const areFieldsSelected = Boolean(
+    selectedDepartment && classification && culture && yearOfHarvest && tonnage && contractor && tonnagePermissible && reqNum && salesPoint
+  )
 
   const handleClassificationChange = event => {
     const selectedClassification = event.target.value
@@ -232,6 +244,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         gost,
         tonnagePermissible,
         reqNum,
+        salesPoint,
         indicators: indicators.map(indicator => ({
           name: indicator,
           value: indicatorValues[indicator] || "",
@@ -261,11 +274,36 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     createRequest("draft") // Устанавливаем статус "draft"
   }
 
+  const handleSalesPointChange = event => {
+    setSalesPoint(event.target.value)
+  }
+
   return (
     <Box component="form" sx={{ m: 5 }}>
       <Loader reqStatus={reqStatus}>
         <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
           <DepartmentSelectOnce selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment} />
+
+          {/* ----------------------------- */}
+          <FormControl fullWidth>
+            <InputLabel id="select-label">Продавец</InputLabel>
+            <Select
+              label="select-label"
+              value={salesPoint}
+              onChange={handleSalesPointChange}
+              required // Обязательное поле
+              error={!salesPoint} // Показываем ошибку, если поле пустое
+            >
+              {Object.entries(options).map(([key, label]) => (
+                <MenuItem key={key} value={label}>
+                  {label}
+                </MenuItem>
+              ))}
+            </Select>
+            {!salesPoint && <FormHelperText style={{ position: "absolute", bottom: "-20px", left: "0" }}>Обязательное поле</FormHelperText>}
+          </FormControl>
+          {/* ----------------------------- */}
+
           <FormControl fullWidth>
             <InputLabel>Классификация</InputLabel>
             <Select label="Классификация" value={classification} onChange={handleClassificationChange} required>
