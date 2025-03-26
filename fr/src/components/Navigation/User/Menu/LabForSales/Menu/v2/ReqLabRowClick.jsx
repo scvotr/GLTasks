@@ -47,7 +47,7 @@ export const ReqLabRowClick = ({ isOpen, onClose, currentRequest, currentUser, r
     }
   }, [isOpen])
 
-  const labReqTitle = `Запрос АО "${currentRequest.department_name}", культура: ${currentRequest.culture} ${currentRequest.type ? currentRequest.type : ''} ${currentRequest.classType ? ` класс: ${currentRequest.classType}` : ''}, масса: ${currentRequest.tonnage} (+/- ${currentRequest.tonnagePermissible})т., ${currentRequest.gost}, урожай: ${currentRequest.yearOfHarvest}г., контрагент: ${currentRequest.contractor} `
+  const labReqTitle = `Запрос АО "${currentRequest.department_name}", культура: ${currentRequest.culture} ${currentRequest.type ? currentRequest.type : ''} ${currentRequest.classType ? ` класс: ${currentRequest.classType}` : ''}, масса: ${currentRequest.tonnage} (+/- ${currentRequest.tonnagePermissible})т., ${currentRequest.gost}, урожай: ${currentRequest.yearOfHarvest}г., контрагент: ${currentRequest.contractor}, продажа: ${currentRequest.salesPoint} `
 
   // Масса: {request.tonnage} тонн +/- {request.tonnagePermissible}%
 
