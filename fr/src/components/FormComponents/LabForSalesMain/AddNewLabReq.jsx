@@ -177,7 +177,6 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const [yearOfHarvest, setYearOfHarvest] = useState("")
   const [indicatorValues, setIndicatorValues] = useState({})
   const [salesPoint, setSalesPoint] = useState("")
-  console.log("🚀 ~ AddNewLabReq ~ salesPoint:", salesPoint)
   const areFieldsSelected = Boolean(
     selectedDepartment && classification && culture && yearOfHarvest && tonnage && contractor && tonnagePermissible && reqNum && salesPoint
   )
