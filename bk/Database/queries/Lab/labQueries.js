@@ -24,8 +24,9 @@ const createNewReqForAvailableQ = async data => {
       tonnagePermissible,
       reqNum,
       approved_at,
+      salesPoint,
       indicators
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `
   const params = [
     data.reqForAvail_id,
@@ -46,6 +47,7 @@ const createNewReqForAvailableQ = async data => {
     data.tonnagePermissible,
     data.reqNum,
     data.req_status === 'new' ? new Date().toISOString() : null, // Устанавливаем время только если статус "new"
+    data.salesPoint,
     JSON.stringify(data.indicators), // Сохраняем индикаторы как JSON
   ]
   try {
@@ -326,6 +328,7 @@ const getAllRequestsQ = async () => {
       actual_indicators, -- Фактически отгружено
       shipped, -- отгружено тип
       tonnagePermissible,
+      salesPoint,
       reqNum,
       reportByUser, -- кто составил отчет
       --

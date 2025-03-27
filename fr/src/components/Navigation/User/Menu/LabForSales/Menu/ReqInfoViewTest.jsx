@@ -101,7 +101,6 @@ const renderIndicators = indicatorsString => {
 const renderReportIndicators = indicatorsString => {
   try {
     const indicators = JSON.parse(indicatorsString) // Преобразуем строку в массив объектов
-
     // Фильтруем массив, исключая записи с пустым oldValue
     const filteredIndicators = indicators.filter(indicator => indicator.oldValue !== "")
 
@@ -153,6 +152,26 @@ const renderReportIndicators = indicatorsString => {
                 {filteredIndicators.map((indicator, index) => (
                   <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
                     {indicator.absoluteDeviation || "-"}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}>
+                  Удостоверение:
+                </TableCell>
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.cardValue || "-"}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableCell align="center" sx={{ border: "1px solid #ccc" }}>
+                  От клиента:
+                </TableCell>
+                {filteredIndicators.map((indicator, index) => (
+                  <TableCell key={index} align="center" sx={{ border: "1px solid #ccc" }}>
+                    {indicator.responseValue || "-"}
                   </TableCell>
                 ))}
               </TableRow>
@@ -301,7 +320,7 @@ const handlePrintSelectedReq = (user, request, getReqLabComments) => {
       <body>
         <h2>Запрос <br> №: ${request.reqNum} от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
         request.department_name
-      } <br> для заключения договора с "${request.contractor}"</h2>
+      } <br> для заключения договора с "${request.contractor}" <br> продажа: ${request.salesPoint}</h2>
         ${printContent}
       </body>
     </html>
@@ -509,6 +528,34 @@ const handlePrintReqReport = request => {
               )
               .join("")}
           </tr>
+          <tr>
+            <th style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+              Удостоверение:
+            </th>
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <th style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.cardValue || "-"}
+              </th>
+            `
+              )
+              .join("")}
+          </tr>
+          <tr>
+            <th style="border: 1px solid #ccc; text-align: center; font-weight: bold; background-color: #f1f1f1;">
+              От клиента:
+            </th>
+            ${filteredIndicators
+              .map(
+                indicator => `
+              <th style="border: 1px solid #ccc; text-align: center;">
+                ${indicator.responseValue || "-"}
+              </th>
+            `
+              )
+              .join("")}
+          </tr>
         </thead>
       </table>
       <div style="margin-top: 10px; font-family: Arial, sans-serif; padding: 10px;">
@@ -615,7 +662,7 @@ const handlePrintReqReport = request => {
       <body>
         <h2> Отчет по контракту.<br> Запрос №: ${request.reqNum}<br> от ${formatDateV2(request.approved_at)} <br> в лабораторию ${
     request.department_name
-  } <br> контрагент "${request.contractor}"</h2>
+  } <br> контрагент "${request.contractor} <br> продажа: "${request.salesPoint}"</h2>
         ${printContent}
       </body>
     </html>
@@ -681,7 +728,7 @@ export const ReqInfoViewTest = ({ request, currentUser, closeModal, reRender, to
               {/* -------------------------------------------------------- */}
               <Paper sx={{ p: 1, m: 1 }}>
                 <Typography variant="body1" textAlign="center">
-                  Заявка №: {request.reqNum} от {formatDateV2(request.approved_at)}
+                  Заявка №: {request.reqNum} от {formatDateV2(request.approved_at)} продажа от: {request.salesPoint}
                 </Typography>
               </Paper>
               {/* -------------------------------------------------------- */}
@@ -848,7 +895,6 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
     try {
       setReqStatus({ loading: true, error: null })
       const fullFile = await getDataFromEndpoint(currentUser.token, endpoint, "POST", { file: file, req_id: request.reqForAvail_id }, setReqStatus)
-      console.log("fullFile", fullFile)
       setReqStatus({ loading: false, error: null })
       // Создаем ссылку для скачивания файла
       const downloadLink = document.createElement("a")
@@ -893,7 +939,6 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
    */
   const deleteFile = async file => {
     const endpoint = `/lab/deleteFile`
-    console.log(file)
     try {
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, endpoint, "POST", file, setReqStatus)

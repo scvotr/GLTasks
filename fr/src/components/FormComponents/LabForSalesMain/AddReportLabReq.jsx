@@ -185,6 +185,8 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
 
   const [indicators, setIndicators] = useState([])
   const [newValues, setNewValues] = useState({})
+  const [cardValues, setCardValues] = useState({})
+  const [responseValues, setResponseValues] = useState({})
   const [comment, setComment] = useState("") // Для комментария
   const [subSorting, setSubSorting] = useState("") // Для подсортировки
   const [totalTonnage, setTotalTonnage] = useState("")
@@ -246,6 +248,8 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
           ...indicator,
           oldValue: indicator.value || "", // Переименовываем value в oldValue
           newValue: "", // Инициализируем новое значение
+          cardValue: "", // Инициализируем новое значение
+          responseValue: "", // Инициализируем новое значение
           deviation: 0, // Инициализируем отклонение
         }))
         setIndicators(initialIndicatorValues)
@@ -281,6 +285,45 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
       return updatedIndicators
     })
   }
+  // !--------------------------------
+  const handleCartChange = (index, event) => {
+    const { value } = event.target
+    const cardValue = parseFloat(value) || 0 // Преобразуем новое значение в число
+
+    setCardValues(prevValues => ({
+      ...prevValues,
+      [index]: cardValue, // Сохраняем новое значение по индексу
+    }))
+
+    // Обновляем отклонение для текущего индикатора
+    setIndicators(prevIndicators => {
+      const updatedIndicators = [...prevIndicators]
+      updatedIndicators[index] = {
+        ...updatedIndicators[index],
+        cardValue,
+      }
+      return updatedIndicators
+    })
+  }
+  const handleResponseChange = (index, event) => {
+    const { value } = event.target
+    const responseValue = parseFloat(value) || 0 // Преобразуем новое значение в число
+
+    setCardValues(prevValues => ({
+      ...prevValues,
+      [index]: responseValue, // Сохраняем новое значение по индексу
+    }))
+
+    // Обновляем отклонение для текущего индикатора
+    setIndicators(prevIndicators => {
+      const updatedIndicators = [...prevIndicators]
+      updatedIndicators[index] = {
+        ...updatedIndicators[index],
+        responseValue,
+      }
+      return updatedIndicators
+    })
+  }
 
   const handleSubmit = async () => {
     const updatedIndicators = indicators.map((indicator, index) => {
@@ -296,6 +339,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
     // console.log("🚀 ~ updatedIndicators ~ updatedIndicators:", updatedIndicators)
     // Здесь вы можете отправить updatedIndicators на сервер или выполнить другие действия
     try {
+
       await handleChangeStatus("closed")
 
       const formData = {
@@ -306,6 +350,8 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
           name: indicator.name, // Используем имя индикатора
           oldValue: indicator.value || "", // Переименовываем value в oldValue
           newValue: indicator.newValue || "", // Используем новое значение
+          cardValue: indicator.cardValue || "", // Используем новое значение
+          responseValue: indicator.responseValue || "", // Используем новое значение
           absoluteDeviation: indicator.absoluteDeviation || "0.00", // Абсолютное отклонение
           percentDeviation: indicator.percentDeviation || "0.00", // Процентное отклонение
         })),
@@ -367,7 +413,15 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
             <Grid item xs={6}>
               <Grid container spacing={1} component={Paper}>
                 <Grid item xs={12}>
-                  <ActualLabReqValue indicators={indicators} newValues={newValues} handleChange={handleChange} />
+                  <ActualLabReqValue
+                    indicators={indicators}
+                    newValues={newValues}
+                    cardValues={cardValues}
+                    responseValues={responseValues}
+                    handleChange={handleChange}
+                    handleCartChange={handleCartChange}
+                    handleResponseChange={handleResponseChange}
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -406,7 +460,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
   )
 }
 // ----------------------------------
-export const ActualLabReqValue = ({ indicators, newValues, handleChange }) => {
+export const ActualLabReqValue = ({ indicators, newValues, cartValues, responseValues, handleChange, handleCartChange, handleResponseChange }) => {
   return (
     <>
       <TableContainer component={Paper} sx={{ width: "90%", m: 2 }}>
@@ -421,10 +475,16 @@ export const ActualLabReqValue = ({ indicators, newValues, handleChange }) => {
                 знач.
               </TableCell>
               <TableCell align="center" sx={{ border: "1px solid black", padding: "4px" }}>
-                Фактическое <br></br>средневзвешенное
+                Фактическое средневзвешенное
               </TableCell>
               <TableCell align="center" colSpan={2} sx={{ border: "1px solid black", padding: "4px" }}>
                 Отклонение
+              </TableCell>
+              <TableCell align="center" sx={{ border: "1px solid black", padding: "4px" }}>
+                Удостоверение
+              </TableCell>
+              <TableCell align="center" sx={{ border: "1px solid black", padding: "4px" }}>
+                От клиента
               </TableCell>
             </TableRow>
           </TableHead>
@@ -474,6 +534,44 @@ export const ActualLabReqValue = ({ indicators, newValues, handleChange }) => {
                 </TableCell>
                 <TableCell align="center" sx={{ width: "60px", border: "1px solid black", padding: "4px" }}>
                   <Typography variant="body2" sx={{ fontSize: "0.875rem", textAlign: "center" }}>{`${indicator.percentDeviation || 0}%`}</Typography>
+                </TableCell>
+                {/* ------------------- */}
+                <TableCell align="center" sx={{ border: "1px solid black", padding: "4px" }}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    // type={["color", "smell", "contamination"].includes(indicator.type) ? "text" : "number"} // Устанавливаем тип поля
+                    type={"number"} // Устанавливаем тип поля
+                    // value={cartValues[index] || ""} // Используем новое значение, если оно есть
+                    onChange={event => handleCartChange(index, event)}
+                    placeholder="+"
+                    sx={{
+                      width: "100px",
+                      "& .MuiInputBase-input": {
+                        padding: "2px", // Уменьшение отступов внутри поля
+                        textAlign: "center", // Выравнивание текста по центру
+                      },
+                    }}
+                  />
+                </TableCell>
+                {/* ------------------- */}
+                <TableCell align="center" sx={{ border: "1px solid black", padding: "4px" }}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    // type={["color", "smell", "contamination"].includes(indicator.type) ? "text" : "number"} // Устанавливаем тип поля
+                    type={"number"} // Устанавливаем тип поля
+                    // value={cartValues[index] || ""} // Используем новое значение, если оно есть
+                    onChange={event => handleResponseChange(index, event)}
+                    placeholder="+"
+                    sx={{
+                      width: "100px",
+                      "& .MuiInputBase-input": {
+                        padding: "2px", // Уменьшение отступов внутри поля
+                        textAlign: "center", // Выравнивание текста по центру
+                      },
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             ))}

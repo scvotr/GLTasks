@@ -28,6 +28,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
     culture: "",
     tonnage: "",
     contractor: "",
+    sales: "",
   })
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
       culture: "",
       tonnage: "",
       contractor: "",
+      sales: "",
     })
     // Очищаем localStorage
     localStorage.removeItem("labTableFilters")
@@ -96,6 +98,8 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
         if (filters.contractor && !req.contractor?.toString().toLowerCase().includes(filters.contractor.toLowerCase())) return false
         // 
         if (filters.reqNum && !req.reqNum?.toString().toLowerCase().includes(filters.reqNum.toLowerCase())) return false
+        // 
+        if (filters.sales && !req.salesPoint?.toString().toLowerCase().includes(filters.sales.toLowerCase())) return false
         return true
       })
       .sort((a, b) => {
@@ -249,8 +253,17 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Покупатель"
-                    value={filters.contractor || ""} // Предположим, что у вас есть фильтр для покупателя
+                    value={filters.contractor || ""} 
                     onChange={e => handleFilterChange("contractor", e.target.value)}
+                    fullWidth
+                    sx={{ maxWidth: 190 }}
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  <TextField
+                    label="Продавец"
+                    value={filters.sales || ""} 
+                    onChange={e => handleFilterChange("sales", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
                   />
@@ -266,6 +279,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">Тоннаж</TableCell>
                 {/* <TableCell align="center">Качество</TableCell> */}
                 <TableCell align="center">Покупатель</TableCell>
+                <TableCell align="center">Продавец</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -314,6 +328,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                         <TableCell align="center">{req.tonnage}</TableCell>
                         {/* <TableCell align="center">{renderIndicators(req.indicators)}</TableCell> */}
                         <TableCell align="center">{req.contractor}</TableCell>
+                        <TableCell align="center">{req.salesPoint}</TableCell>
                       </TableRow>
                     )
                   })}
