@@ -895,7 +895,6 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
     try {
       setReqStatus({ loading: true, error: null })
       const fullFile = await getDataFromEndpoint(currentUser.token, endpoint, "POST", { file: file, req_id: request.reqForAvail_id }, setReqStatus)
-      console.log("fullFile", fullFile)
       setReqStatus({ loading: false, error: null })
       // Создаем ссылку для скачивания файла
       const downloadLink = document.createElement("a")
@@ -940,7 +939,6 @@ export const FilesViewForLabReq = ({ request, isDocFile, isImageFile, currentUse
    */
   const deleteFile = async file => {
     const endpoint = `/lab/deleteFile`
-    console.log(file)
     try {
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, endpoint, "POST", file, setReqStatus)
