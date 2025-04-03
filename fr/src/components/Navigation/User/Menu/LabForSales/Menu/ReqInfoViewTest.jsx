@@ -828,7 +828,7 @@ export const ApprovedUsersListViewReqLab = ({ request, currentUser, closeModal, 
               <Typography variant="caption">Должность</Typography>
             </TableCell>
             <TableCell>
-              <Typography variant="caption">Отдел</Typography>
+              <Typography variant="caption">Предприятие</Typography>
             </TableCell>
             <TableCell>
               <Typography variant="caption">Имя пользователя</Typography>
