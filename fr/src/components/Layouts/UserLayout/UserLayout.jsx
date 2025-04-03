@@ -36,42 +36,43 @@ export const UserLayout = () => {
   }
 
   const handleLinkClick = () => {
-    setOpen(false); // Закрываем Snackbar при клике на ссылку
-  };
+    setOpen(false) // Закрываем Snackbar при клике на ссылку
+  }
 
   const socket = useSocketContext()
+
   useEffect(() => {
-    socket.on("taskApproved", messageData => {
-      setSnackbarMessage(messageData.message)
-      notifyEvent("need-all-Tasks")
-      setOpen(true)
-    })
-    socket.on("reqForLab", messageData => {
-      setSnackbarMessage(messageData.message)
-      // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
-      setSnackbarLink("/labForSales") // Устанавливаем ссылку
-      // notifyEvent("need-all-Tasks")
-      setOpen(true)
-    })
-    // Для уведомлений !!
-    socket.on("reqForLabNewComment", taskData => {
-      // notifyEvent("need-all-Tasks")
-      setSnackbarMessage(taskData.message)
-      // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
-      setSnackbarLink("/labForSales") // Устанавливаем ссылку
-      // setLogSnackbarMessage(prev => [...prev, taskData])
-      setOpen(true)
-    })
+    if (!socket) return // Защита от undefined socket
+
+    const handleTaskApproved = messageData => {
+      setSnackbarMessage(messageData.message);
+      notifyEvent("need-all-Tasks");
+      setOpen(true);
+    };
+
+    const handleReqForLab = messageData => {
+      setSnackbarMessage(messageData.message);
+      setSnackbarLink("/labForSales");
+      setOpen(true);
+    };
+
+    const handleReqForLabNewComment = taskData => {
+      setSnackbarMessage(taskData.message);
+      setSnackbarLink("/labForSales");
+      setOpen(true);
+    };
+
+    socket.on("taskApproved", handleTaskApproved);
+    socket.on("reqForLab", handleReqForLab);
+    socket.on("reqForLabNewComment", handleReqForLabNewComment);
 
     return () => {
-      socket.off("yourRooms")
       socket.off("taskApproved")
       socket.off("reqForLab")
       socket.off("reqForLabNewComment")
-      socket.disconnect()
-      window.removeEventListener("beforeunload", () => socket.disconnect())
+      if (socket) socket.disconnect() // Защита от undefined socket
     }
-  }, [])
+  }, [socket])
 
   useEffect(() => {
     window.addEventListener("beforeunload", () => {
@@ -91,7 +92,7 @@ export const UserLayout = () => {
           <MuiAlert onClose={handleClose} severity="success" variant="filled" sx={{ width: "100%" }}>
             {snackbarMessage}{" "}
             {!isCurrentPath && snackbarLink && (
-              <Link to={snackbarLink} style={{ color: 'inherit', textDecoration: 'underline' }} onClick={handleLinkClick}>
+              <Link to={snackbarLink} style={{ color: "inherit", textDecoration: "underline" }} onClick={handleLinkClick}>
                 Перейти
               </Link>
             )}
@@ -102,3 +103,26 @@ export const UserLayout = () => {
     </>
   )
 }
+
+
+// socket.on("taskApproved", messageData => {
+//       setSnackbarMessage(messageData.message)
+//       notifyEvent("need-all-Tasks")
+//       setOpen(true)
+//     })
+//     socket.on("reqForLab", messageData => {
+//       setSnackbarMessage(messageData.message)
+//       // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+//       setSnackbarLink("/labForSales") // Устанавливаем ссылку
+//       // notifyEvent("need-all-Tasks")
+//       setOpen(true)
+//     })
+//     // Для уведомлений !!
+//     socket.on("reqForLabNewComment", taskData => {
+//       // notifyEvent("need-all-Tasks")
+//       setSnackbarMessage(taskData.message)
+//       // setSnackbarLink("/labForSales/requestForAvailability") // Устанавливаем ссылку
+//       setSnackbarLink("/labForSales") // Устанавливаем ссылку
+//       // setLogSnackbarMessage(prev => [...prev, taskData])
+//       setOpen(true)
+//     })
