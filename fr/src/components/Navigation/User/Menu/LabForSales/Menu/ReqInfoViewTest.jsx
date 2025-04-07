@@ -217,7 +217,7 @@ const handlePrintSelectedReq = (user, request, getReqLabComments) => {
       <h2>Культура: ${request.culture}. Урожай: ${request.yearOfHarvest}г. ${
     request.classType ? `${request.type.toLowerCase()} класс: ${request.classType}` : ""
   }</h2>
-      <h3>Масса: ${request.tonnage} т. (+/- 5%) | Покупатель: ${request.contractor}</h3>
+      <h3>Масса: ${request.tonnage} т. (+/- ${request.tonnagePermissible}%) | Покупатель: ${request.contractor}</h3>
       <h4>Качественные показатели(${request.gost}):</h4>
 
 
