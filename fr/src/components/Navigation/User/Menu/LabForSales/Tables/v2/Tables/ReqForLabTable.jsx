@@ -1,5 +1,19 @@
 import { useEffect, useMemo, useState } from "react"
-import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TablePagination, TextField, Button } from "@mui/material"
+import {
+  Box,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  TablePagination,
+  TextField,
+  Button,
+  Paper,
+} from "@mui/material"
 import { formatDateV2 } from "../../../../../../../../utils/formatDate"
 import { ReqLabRowClick } from "../../../Menu/v2/ReqLabRowClick"
 
@@ -96,9 +110,9 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
         if (filters.tonnage && !req.tonnage?.toString().toLowerCase().includes(filters.tonnage.toLowerCase())) return false
         // Фильтрация по номеру тонажу
         if (filters.contractor && !req.contractor?.toString().toLowerCase().includes(filters.contractor.toLowerCase())) return false
-        // 
+        //
         if (filters.reqNum && !req.reqNum?.toString().toLowerCase().includes(filters.reqNum.toLowerCase())) return false
-        // 
+        //
         if (filters.sales && !req.salesPoint?.toString().toLowerCase().includes(filters.sales.toLowerCase())) return false
         return true
       })
@@ -182,6 +196,17 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
           </Button>
         </Box>
         {/* -------------------------------- */}
+        <Paper sx={{m : 2}}>
+          <TablePagination
+            rowsPerPageOptions={[10, 15, 25]} // Опции для выбора количества записей на страницу
+            component="div"
+            count={filteredRequests?.length || 0} // Общее количество записей
+            rowsPerPage={rowsPerPage} // Количество записей на страницу
+            page={page} // Текущая страница
+            onPageChange={handleChangePage} // Обработчик изменения страницы
+            onRowsPerPageChange={handleChangeRowsPerPage} // Обработчик изменения количества записей на страницу
+          />
+        </Paper>
         <TableContainer>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
@@ -253,7 +278,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Покупатель"
-                    value={filters.contractor || ""} 
+                    value={filters.contractor || ""}
                     onChange={e => handleFilterChange("contractor", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
@@ -262,7 +287,7 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
                 <TableCell align="center">
                   <TextField
                     label="Продавец"
-                    value={filters.sales || ""} 
+                    value={filters.sales || ""}
                     onChange={e => handleFilterChange("sales", e.target.value)}
                     fullWidth
                     sx={{ maxWidth: 190 }}
@@ -335,15 +360,6 @@ export const ReqForLabTable = ({ requests, currentUser, reRender, checkFullScree
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 15, 25]} // Опции для выбора количества записей на страницу
-          component="div"
-          count={filteredRequests?.length || 0} // Общее количество записей
-          rowsPerPage={rowsPerPage} // Количество записей на страницу
-          page={page} // Текущая страница
-          onPageChange={handleChangePage} // Обработчик изменения страницы
-          onRowsPerPageChange={handleChangeRowsPerPage} // Обработчик изменения количества записей на страницу
-        />
       </Box>
     </>
   )
