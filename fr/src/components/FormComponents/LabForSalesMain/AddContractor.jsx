@@ -29,7 +29,7 @@ export const AddContractor = ({ currentUser, onClose, popupSnackbar }) => {
     <>
       <Loader reqStatus={reqStatus}>
         <Stack direction="column" spacing={2} justifyContent="center">
-          <Typography>Как будет отображаться в заявке</Typography>
+          <Typography>Как будет отображаться в заявке:</Typography>
           <Paper sx={{p:2}}>
             <Typography>{contractor}</Typography>
           </Paper>
