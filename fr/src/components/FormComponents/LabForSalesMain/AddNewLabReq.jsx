@@ -529,9 +529,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
                       disablePortal
                       options={contractorFK}
                       getOptionLabel={option => option.name}
-                      onChange={(event, value) => {
-                        console.log("Выбранный контрагент:", value)
-                        // Здесь можно сохранить выбранный объект в состояние или отправить на сервер
+                      onChange={(value) => {
                         setCurrentContractorFK(value)
                       }}
                       sx={{ width: 300 }}
