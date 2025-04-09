@@ -14,6 +14,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     height: "100%", // Устанавливаем высоту на 100%
     display: "flex", // Используем flex для растяжения контента
     alignItems: "stretch", // Растягиваем контент по вертикали
+    justifyContent: "center",
   },
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
