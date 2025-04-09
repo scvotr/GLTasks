@@ -254,7 +254,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         reqForAvail_id: uuidv4(),
         yearOfHarvest,
         tonnage,
-        contractor: currentContractorFK.id,
+        contractor: currentContractorFK.name,
         selectedDepartment: selectedDepartment?.id,
         creator: currentUser.id,
         user_id: currentUser.id, //Для уведомления через сокет
@@ -499,7 +499,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
                       helperText={!tonnage ? "Обязательное поле" : ""}
                     />
                     <TextField
-                      label="+\-"
+                      label="+\- %"
                       variant="outlined"
                       margin="normal"
                       type="number"
@@ -529,7 +529,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
                       disablePortal
                       options={contractorFK}
                       getOptionLabel={option => option.name}
-                      onChange={(value) => {
+                      onChange={(event, value) => {
                         setCurrentContractorFK(value)
                       }}
                       sx={{ width: 300 }}
