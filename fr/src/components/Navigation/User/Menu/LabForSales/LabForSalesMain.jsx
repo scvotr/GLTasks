@@ -8,7 +8,7 @@ import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
 import AddNewLabReq from "../../../../FormComponents/LabForSalesMain/AddNewLabReq"
 import { LabForSalesView } from "./Main/LabForSalesView"
 
-const SALES_SUBDEB_G = "14"
+const SALES_SUBDEB_G = "13"
 
 const getAllRequest = async (currentUser, setReqStatus, setRequests) => {
   const endpoint = `/lab/getAllRequestsWithApprovals`
