@@ -70,7 +70,6 @@ class LabController {
     try {
       // Получаем все запросы
       const requests = await getAllRequestsQ()
-      // console.log(requests)
       // Проверяем, есть ли запросы
       if (!requests || requests.length === 0) {
         return sendResponseWithData(res, []) // Возвращаем пустой массив, если запросов нет

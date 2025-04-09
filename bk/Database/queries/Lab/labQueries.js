@@ -357,11 +357,13 @@ const getAllRequestsQ = async () => {
     FROM 
       reqForAvailableTable
     LEFT JOIN 
-      departments dp ON reqForAvailableTable.selectedDepartment = dp.id,
+      departments dp ON reqForAvailableTable.selectedDepartment = dp.id
+    LEFT JOIN   
       contractors cr ON reqForAvailableTable.contractor_id == cr.id;
   `
   try {
     const result = await executeDatabaseQueryAsync(query)
+    console.log('🚀 ~ getAllRequestsQ ~ result:', result)
     return result // Вернёт массив объектов с заявками и пользователями
   } catch (error) {
     console.error('Error fetching requests with approvals:', error)
