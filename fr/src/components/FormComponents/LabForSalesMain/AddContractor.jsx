@@ -45,7 +45,7 @@ export const AddContractor = ({ currentUser, onClose, popupSnackbar }) => {
             helperText={!contractor ? "Обязательное поле" : ""}
           />
           <Button onClick={addContractorHandler} variant="contained" color="primary" disabled={!contractor}>
-            Создать запрос
+            Создать
           </Button>
           <Button onClick={onClose} variant="outlined" color="error">
             Закрыть
