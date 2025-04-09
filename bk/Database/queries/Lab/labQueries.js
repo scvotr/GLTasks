@@ -23,10 +23,12 @@ const createNewReqForAvailableQ = async data => {
       yearOfHarvest,
       tonnagePermissible,
       reqNum,
+      basis,
       approved_at,
       salesPoint,
+      contractor_id,
       indicators
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `
   const params = [
     data.reqForAvail_id,
@@ -46,14 +48,16 @@ const createNewReqForAvailableQ = async data => {
     data.yearOfHarvest,
     data.tonnagePermissible,
     data.reqNum,
+    data.basis,
     data.req_status === 'new' ? new Date().toISOString() : null, // Устанавливаем время только если статус "new"
     data.salesPoint,
+    data.contractor_id,
     JSON.stringify(data.indicators), // Сохраняем индикаторы как JSON
   ]
   try {
     await executeDatabaseQueryAsync(insertQuery, params)
   } catch (error) {
-    console.error('Error - createSchedules:', error)
+    console.error('Error - createNewReqForAvailableQ:', error)
     throw error
   }
 }
@@ -329,6 +333,7 @@ const getAllRequestsQ = async () => {
       shipped, -- отгружено тип
       tonnagePermissible,
       salesPoint,
+      basis,
       reqNum,
       reportByUser, -- кто составил отчет
       --
@@ -345,13 +350,15 @@ const getAllRequestsQ = async () => {
       ) AS report_data, -- Группируем поля в объект
       --
       dp.name AS department_name,
+      cr.name AS cr_name,
       DATETIME(created_at, 'localtime') AS created_at,
       DATETIME(updated_at, 'localtime') AS updated_at,  
       DATETIME(approved_at, 'localtime') AS approved_at  
     FROM 
       reqForAvailableTable
     LEFT JOIN 
-      departments dp ON reqForAvailableTable.selectedDepartment = dp.id;
+      departments dp ON reqForAvailableTable.selectedDepartment = dp.id,
+      contractors cr ON reqForAvailableTable.contractor_id == cr.id;
   `
   try {
     const result = await executeDatabaseQueryAsync(query)
@@ -643,12 +650,12 @@ const updateReqStatusQ = async data => {
         WHERE reqForAvail_id = ? AND position_id = ?;
       `
       const query = `
-      UPDATE reqForAvailableTable 
-        SET 
-          req_status = ?,
-          approved_at = ?
-        WHERE reqForAvail_id = ?
-      `
+        UPDATE reqForAvailableTable 
+          SET 
+            req_status = ?,
+            approved_at = ?
+          WHERE reqForAvail_id = ?
+        `
       await executeDatabaseQueryAsync(updateApprovalQuery, [req_status === 'new' ? 'approved' : 'approved', reqForAvail_id, position_id])
       await executeDatabaseQueryAsync(query, [req_status, req_status === 'new' ? new Date().toISOString() : null, reqForAvail_id])
     }
@@ -693,6 +700,32 @@ const addReportQ = async data => {
   }
 }
 
+const getContractorsQ = async () => {
+  const query = `
+    SELECT id, name FROM contractors
+  `
+  try {
+    const result = await executeDatabaseQueryAsync(query)
+    return result
+  } catch (error) {
+    console.error('Error - getContractorsQ:', error)
+    throw error
+  }
+}
+const addContractorQ = async data => {
+  const query = `
+    INSERT INTO contractors(
+      name
+    ) VALUES (?);
+  `
+  try {
+    await executeDatabaseQueryAsync(query, data.name)
+  } catch (error) {
+    console.error('Error - getContractorsQ:', error)
+    throw error
+  }
+}
+
 module.exports = {
   createNewReqForAvailableQ,
   appendUserForApprovalQ,
@@ -712,4 +745,6 @@ module.exports = {
   deleteFileQ,
   updateReqStatusQ,
   addReportQ,
+  getContractorsQ,
+  addContractorQ,
 }

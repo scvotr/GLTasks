@@ -1,5 +1,6 @@
 'use strict'
 
+const { addForeignKeyToTable } = require('../../utils/addForeignKeyToTable/addForeignKeyToTable')
 const { appendField } = require('../../utils/appendField/appendField')
 const { executeTableCreation } = require('../../utils/executeTableCreation/executeTableCreation')
 
@@ -21,6 +22,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       classType TEXT,
       type TEXT,
       contractor TEXT NOT NULL,
+      contractor_id INTEGER,
       selectedDepartment INTEGER NOT NULL,
       creator INTEGER NOT NULL,
       creator_subDep INTEGER NOT NULL,
@@ -42,6 +44,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       shipped TEXT -- Отгружено
       tonnagePermissible TEXT,
       salesPoint TEXT, -- Кто продает
+      basis TEXT, -- Тип контракта
       reqNum INTEGER, -- Уникальный номер запроса
       reportByUser JSON, -- кто составил отчет
       --
@@ -51,6 +54,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       closed_at DATETIME, -- Время закрытия запроса
       --
       FOREIGN KEY (creator) REFERENCES users(id)
+      FOREIGN KEY (contractor_id) REFERENCES contractors(id)
     )
   `
   await executeTableCreation('reqForAvailableTable', createTableQuery, allowDrop)
@@ -127,47 +131,64 @@ const createTableReqForLabFiles = async (allowDrop = false) => {
 }
 const createTableReqForLabStatusHistory = async (allowDrop = false) => {
   const createTableQuery = `
-  CREATE TABLE IF NOT EXISTS lab_request_status_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    reqForAvail_id TEXT NOT NULL,
-    status TEXT NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    user_id INTEGER NOT NULL,
-    comment TEXT,
-    FOREIGN KEY (reqForAvail_id) REFERENCES reqForAvailableTable(reqForAvail_id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
-  )
+    CREATE TABLE IF NOT EXISTS lab_request_status_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      reqForAvail_id TEXT NOT NULL,
+      status TEXT NOT NULL,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+      user_id INTEGER NOT NULL,
+      comment TEXT,
+      FOREIGN KEY (reqForAvail_id) REFERENCES reqForAvailableTable(reqForAvail_id),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
   `
   await executeTableCreation('lab_request_status_history', createTableQuery, allowDrop)
+}
+
+const createTableContractors = async (allowDrop = false) => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS contractors (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL
+    )
+  `
+  await executeTableCreation('contractors', createTableQuery, allowDrop)
+
+  await addForeignKeyToTable(
+    'reqForAvailableTable', // Название таблицы
+    'contractor_id', // Новое поле
+    'INTEGER', // Тип нового поля
+    'contractors', // Таблица-ссылка
+    'id', // Поле в таблице-ссылке
+    true // Разрешить удаление старой таблицы
+  )
 }
 
 const createAllReqForAvailable = async (allowDrop = false) => {
   try {
     // -----new fields-----------------
-    await appendField('reqForAvailableTable', 'yearOfHarvest', 'TEXT')
-    await appendField('reqForAvailableTable', 'req_status', 'TEXT')
-
-    await appendField('reqForAvailableTable', 'actual_indicators', 'JSON')
-    await appendField('reqForAvailableTable', 'status_history', 'JSON')
-
-    await appendField('reqForAvailableTable', 'in_progress_at', 'DATETIME')
-    await appendField('reqForAvailableTable', 'canceled_at', 'DATETIME')
-    await appendField('reqForAvailableTable', 'on_confirm_at', 'DATETIME')
-    await appendField('reqForAvailableTable', 'closed_at', 'DATETIME')
-
-    await appendField('reqForAvailableTable', 'total_tonnage', 'TEXT')
-    await appendField('reqForAvailableTable', 'commentsThenClosed', 'TEXT')
-    await appendField('reqForAvailableTable', 'aspiration_dust', 'TEXT')
-    await appendField('reqForAvailableTable', 'natural_loss', 'TEXT')
-    await appendField('reqForAvailableTable', 'destination_point', 'TEXT')
-    await appendField('reqForAvailableTable', 'sub_sorting', 'TEXT')
-    await appendField('reqForAvailableTable', 'is_auto', 'BOOLEAN')
-    await appendField('reqForAvailableTable', 'is_railway', 'BOOLEAN')
-    await appendField('reqForAvailableTable', 'shipped', 'TEXT')
-    await appendField('reqForAvailableTable', 'tonnagePermissible', 'TEXT')
-    await appendField('reqForAvailableTable', 'reqNum', 'INTEGER')
-    await appendField('reqForAvailableTable', 'reportByUser', 'JSON')
-    await appendField('reqForAvailableTable', 'salesPoint', 'TEXT')
+    // await appendField('reqForAvailableTable', 'yearOfHarvest', 'TEXT')
+    // await appendField('reqForAvailableTable', 'req_status', 'TEXT')
+    // await appendField('reqForAvailableTable', 'actual_indicators', 'JSON')
+    // await appendField('reqForAvailableTable', 'status_history', 'JSON')
+    // await appendField('reqForAvailableTable', 'in_progress_at', 'DATETIME')
+    // await appendField('reqForAvailableTable', 'canceled_at', 'DATETIME')
+    // await appendField('reqForAvailableTable', 'on_confirm_at', 'DATETIME')
+    // await appendField('reqForAvailableTable', 'closed_at', 'DATETIME')
+    // await appendField('reqForAvailableTable', 'total_tonnage', 'TEXT')
+    // await appendField('reqForAvailableTable', 'commentsThenClosed', 'TEXT')
+    // await appendField('reqForAvailableTable', 'aspiration_dust', 'TEXT')
+    // await appendField('reqForAvailableTable', 'natural_loss', 'TEXT')
+    // await appendField('reqForAvailableTable', 'destination_point', 'TEXT')
+    // await appendField('reqForAvailableTable', 'sub_sorting', 'TEXT')
+    // await appendField('reqForAvailableTable', 'is_auto', 'BOOLEAN')
+    // await appendField('reqForAvailableTable', 'is_railway', 'BOOLEAN')
+    // await appendField('reqForAvailableTable', 'shipped', 'TEXT')
+    // await appendField('reqForAvailableTable', 'tonnagePermissible', 'TEXT')
+    // await appendField('reqForAvailableTable', 'reqNum', 'INTEGER')
+    // await appendField('reqForAvailableTable', 'reportByUser', 'JSON')
+    // await appendField('reqForAvailableTable', 'salesPoint', 'TEXT')
+    await appendField('reqForAvailableTable', 'basis', 'TEXT')
 
     // -----new fields-----------------
     await createReqForAvailableTable(allowDrop)
@@ -176,6 +197,7 @@ const createAllReqForAvailable = async (allowDrop = false) => {
     await createTableReqForLabComments(allowDrop)
     await createTableReqForLabFiles(allowDrop)
     await createTableReqForLabStatusHistory(allowDrop)
+    await createTableContractors(allowDrop)
   } catch (error) {
     console.log('Error creating tables: ', error)
     throw new Error('Failed to create all tables')

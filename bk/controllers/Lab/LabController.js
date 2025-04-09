@@ -18,6 +18,8 @@ const {
   deleteFileQ,
   updateReqStatusQ,
   addReportQ,
+  getContractorsQ,
+  addContractorQ,
 } = require('../../Database/queries/Lab/labQueries')
 const { executeDatabaseQueryAsync } = require('../../Database/utils/executeDatabaseQuery/executeDatabaseQuery')
 const { saveAndConvert } = require('../../utils/files/saveAndConvert')
@@ -29,6 +31,22 @@ class LabController {
     try {
       const authDecodeUserData = req.user
       const payLoad = JSON.parse(authDecodeUserData.payLoad)
+      // Проверяем, существует ли уже запись с таким reqNum
+      const checkQuery = `
+        SELECT COUNT(*) AS count
+        FROM reqForAvailableTable
+        WHERE reqNum = ?;
+      `
+      try {
+        const checkResult = await executeDatabaseQueryAsync(checkQuery, [payLoad.reqNum])
+        if (checkResult[0].count > 0) {
+          return handleError(res, `Запись с номером "${payLoad.reqNum}" уже существует.`)
+        }
+      } catch (error) {
+        // Передаем ошибку в handleError
+        return handleError(res, error)
+      }
+
       await createNewReqForAvailableQ(payLoad)
       await appendUserForApprovalQ(payLoad)
       // Если статус запрос не драфт а новый то сразу рассылаем уведомления
@@ -38,7 +56,7 @@ class LabController {
       }
       sendResponseWithData(res, 'addNewLabsReqForAvailability-ok')
     } catch (error) {
-      handleError(res, 'addNewLabsReqForAvailability')
+      handleError(res, 'addNewLabsReqForAvailability  ')
     }
   }
 
@@ -92,7 +110,7 @@ class LabController {
       await updateApprovalsUserQ(payLoad)
       // обновляем статус прочтено
       // await appendApprovalsUsersQ(payLoad)
-      
+
       // !Что бы не уведомлять при согласовании конкретным пользователем
       //! await updateAppendApprovalsUsersQ(payLoad)
       sendResponseWithData(res, 'getUserConfirmation-ok')
@@ -283,14 +301,46 @@ class LabController {
     try {
       const authDecodeUserData = req.user
       const payLoad = JSON.parse(authDecodeUserData.payLoad)
-      // console.log("🚀 ~ LabController ~ addReport ~ payLoad:", payLoad)
-      
-      await addReportQ(payLoad)
 
+      await addReportQ(payLoad)
       sendResponseWithData(res, 'addReport-ok')
     } catch (error) {
       console.error('Ошибка при addReport:', error)
       handleError(res, 'addReport')
+    }
+  }
+  async getContractors(req, res) {
+    try {
+      const result = await getContractorsQ()
+      sendResponseWithData(res, result)
+    } catch (error) {
+      console.error('Ошибка при getContractors:', error)
+      handleError(res, 'getContractors')
+    }
+  }
+  async addContractor(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const payLoad = JSON.parse(authDecodeUserData.payLoad)
+      const checkQuery = `
+        SELECT COUNT(*) AS count
+        FROM contractors
+        WHERE name = ?;
+      `
+      try {
+        const checkResult = await executeDatabaseQueryAsync(checkQuery, [payLoad.name])
+        if (checkResult[0].count > 0) {
+          return handleError(res, `Контрагент "${payLoad.name}" уже существует.`)
+        }
+      } catch (error) {
+        return handleError(res, error)
+      }
+      await addContractorQ(payLoad)
+
+      sendResponseWithData(res, 'addContractor-ok')
+    } catch (error) {
+      console.error('Ошибка при addContractor:', error)
+      handleError(res, 'addContractor')
     }
   }
 }
