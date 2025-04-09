@@ -14,9 +14,10 @@ export const PrivateRoutesCheck = ({ component: Component, roles: RequiredRoles,
   let renderCmp
 
   const hasRequiredPosition = RequiredPosition.includes(Number(currentUser.position))
+  console.log("🚀 ~ PrivateRoutesCheck ~ hasRequiredPosition:", hasRequiredPosition)
 
   if (currentUser.login) {
-    if (RequiredRoles.includes(currentUser.role) && hasRequiredPosition) {
+    if (RequiredRoles.includes(currentUser.role) || hasRequiredPosition) {
       renderCmp = <Component />
     }
   } else {
