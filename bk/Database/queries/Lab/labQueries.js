@@ -363,7 +363,6 @@ const getAllRequestsQ = async () => {
   `
   try {
     const result = await executeDatabaseQueryAsync(query)
-    console.log('🚀 ~ getAllRequestsQ ~ result:', result)
     return result // Вернёт массив объектов с заявками и пользователями
   } catch (error) {
     console.error('Error fetching requests with approvals:', error)
