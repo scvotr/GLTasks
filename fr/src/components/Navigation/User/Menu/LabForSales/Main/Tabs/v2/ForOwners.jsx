@@ -3,6 +3,7 @@ import { ReqForLabTableView } from "../../../Tables/v2/ReqForLabTableView"
 
 const SALES_SUBDEB_G = "13"
 
+
 export const ForOwners = ({ requests = [], currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen }) => {
   const [data, setData] = useState([])
 
