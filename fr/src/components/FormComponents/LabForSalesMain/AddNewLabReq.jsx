@@ -1,10 +1,13 @@
 import { v4 as uuidv4 } from "uuid"
-import React, { useState } from "react"
-import { FormControl, InputLabel, Select, MenuItem, TextField, Grid, Typography, Box, Stack, Button, FormHelperText } from "@mui/material"
+import React, { useEffect, useState } from "react"
+import { FormControl, InputLabel, Select, MenuItem, TextField, Grid, Typography, Box, Stack, Button, FormHelperText, Fab, Autocomplete } from "@mui/material"
 import { DepartmentSelectOnce } from "../Select/DepartmentSelect/DepartmentSelectOnce"
 import { useSnackbar } from "../../../context/SnackbarProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
 import { Loader } from "../Loader/Loader"
+import AddIcon from "@mui/icons-material/Add";
+import { ModalCustom } from "../../ModalCustom/ModalCustom";
+import { AddContractor } from "./AddContractor";
 
 const data = {
   Масличные: {
@@ -159,6 +162,12 @@ const options = {
   option5: "Агро №6",
 }
 
+const basis_ETOS = {
+  option1: "FCA",
+  option2: "EXW",
+  option3: "CPT",
+}
+
 const AddNewLabReq = ({ onClose, currentUser }) => {
   const { popupSnackbar } = useSnackbar()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
@@ -173,13 +182,32 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const [tonnagePermissible, setTonnagePermissible] = useState("")
   const [reqNum, setReqNum] = useState("")
   const [contractor, setContractor] = useState("")
+  const [contractorFK, setContractorFK] = useState("")
+  const [currentContractorFK, setCurrentContractorFK] = useState("")
   const [comment, setComment] = useState("")
   const [yearOfHarvest, setYearOfHarvest] = useState("")
   const [indicatorValues, setIndicatorValues] = useState({})
   const [salesPoint, setSalesPoint] = useState("")
+  const [basis, setBasis] = useState("")
+  const [modalOpen, setModalOpen] = useState(false)
+  const [formKey, setFormKey] = useState(0)
   const areFieldsSelected = Boolean(
-    selectedDepartment && classification && culture && yearOfHarvest && tonnage && contractor && tonnagePermissible && reqNum && salesPoint
+    selectedDepartment &&
+      classification &&
+      culture &&
+      yearOfHarvest &&
+      tonnage &&
+      // contractor &&
+      tonnagePermissible &&
+      reqNum &&
+      salesPoint &&
+      basis &&
+      currentContractorFK
   )
+
+  const openModal = () => {
+    setModalOpen(true)
+  }
 
   const handleClassificationChange = event => {
     const selectedClassification = event.target.value
@@ -226,7 +254,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         reqForAvail_id: uuidv4(),
         yearOfHarvest,
         tonnage,
-        contractor,
+        contractor: currentContractorFK.id,
         selectedDepartment: selectedDepartment?.id,
         creator: currentUser.id,
         user_id: currentUser.id, //Для уведомления через сокет
@@ -244,6 +272,8 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         tonnagePermissible,
         reqNum,
         salesPoint,
+        basis,
+        contractor_id: currentContractorFK.id,
         indicators: indicators.map(indicator => ({
           name: indicator,
           value: indicatorValues[indicator] || "",
@@ -255,8 +285,9 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
       popupSnackbar("Создан запрос!", "success")
       onClose()
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Ошибка при создании запроса."
+      const errorMessage = error.message || "Ошибка при создании запроса."
       popupSnackbar(errorMessage, "error")
+      setReqNum("")
       setReqStatus({ loading: false, error })
     } finally {
       setReqStatus({ loading: false, error: null })
@@ -276,198 +307,273 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const handleSalesPointChange = event => {
     setSalesPoint(event.target.value)
   }
+  const handleBasisChange = event => {
+    setBasis(event.target.value)
+  }
+  // ! ------------------------------------------------------
+
+  const getAllContractors = async (currentUser, setReqStatus, setContractorFK) => {
+    const endpoint = `/lab/getContractors`
+    setReqStatus({ loading: true, error: null })
+
+    try {
+      const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", currentUser.id, setReqStatus)
+      setContractorFK(data)
+      setReqStatus({ loading: false, error: null })
+    } catch (error) {
+      setReqStatus({ loading: false, error: error.message })
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUser) {
+        await getAllContractors(currentUser, setReqStatus, setContractorFK)
+      }
+    }
+    fetchData()
+  }, [currentUser, formKey])
+
+  const closeModal = () => {
+    setModalOpen(false)
+    setFormKey(prevKey => prevKey + 1)
+  }
+  // ! ------------------------------------------------------
 
   return (
-    <Box component="form" sx={{ m: 5 }}>
-      <Loader reqStatus={reqStatus}>
-        <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
-          <DepartmentSelectOnce selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment} />
+    <>
+      <ModalCustom isOpen={modalOpen} onClose={closeModal}>
+        <AddContractor currentUser={currentUser} onClose={closeModal} popupSnackbar={popupSnackbar} />
+      </ModalCustom>
+      <Box component="form" sx={{ m: 5 }}>
+        <Loader reqStatus={reqStatus}>
+          <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
+            <DepartmentSelectOnce selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment} />
 
-          {/* ----------------------------- */}
-          <FormControl fullWidth>
-            <InputLabel id="select-label">Продавец</InputLabel>
-            <Select
-              label="select-label"
-              value={salesPoint}
-              onChange={handleSalesPointChange}
-              required // Обязательное поле
-              error={!salesPoint} // Показываем ошибку, если поле пустое
-            >
-              {Object.entries(options).map(([key, label]) => (
-                <MenuItem key={key} value={label}>
-                  {label}
-                </MenuItem>
-              ))}
-            </Select>
-            {!salesPoint && <FormHelperText style={{ position: "absolute", bottom: "-20px", left: "0" }}>Обязательное поле</FormHelperText>}
-          </FormControl>
-          {/* ----------------------------- */}
-
-          <FormControl fullWidth>
-            <InputLabel>Классификация</InputLabel>
-            <Select label="Классификация" value={classification} onChange={handleClassificationChange} required>
-              {Object.keys(data).map(key => (
-                <MenuItem key={key} value={key}>
-                  {key}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth sx={{ mt: 1 }}>
-            <InputLabel>Культура</InputLabel>
-            <Select label="Культура" value={culture} onChange={handleCultureChange} disabled={!classification} required>
-              {classification &&
-                Object.keys(data[classification]).map(key => (
-                  <MenuItem key={key} value={key}>
-                    {key}
+            {/* ----------------------------- */}
+            <FormControl fullWidth>
+              <InputLabel id="select-label">Продавец</InputLabel>
+              <Select
+                label="select-label"
+                value={salesPoint}
+                onChange={handleSalesPointChange}
+                required // Обязательное поле
+                error={!salesPoint} // Показываем ошибку, если поле пустое
+              >
+                {Object.entries(options).map(([key, label]) => (
+                  <MenuItem key={key} value={label}>
+                    {label}
                   </MenuItem>
                 ))}
-            </Select>
-          </FormControl>
+              </Select>
+              {!salesPoint && <FormHelperText style={{ position: "absolute", bottom: "-20px", left: "0" }}>Обязательное поле</FormHelperText>}
+            </FormControl>
+            {/* --------------- */}
+            <FormControl fullWidth>
+              <InputLabel id="select-label">Контракт</InputLabel>
+              <Select
+                label="select-label"
+                value={basis}
+                onChange={handleBasisChange}
+                required // Обязательное поле
+                error={!basis} // Показываем ошибку, если поле пустое
+              >
+                {Object.entries(basis_ETOS).map(([key, label]) => (
+                  <MenuItem key={key} value={label}>
+                    {label}
+                  </MenuItem>
+                ))}
+              </Select>
+              {!salesPoint && <FormHelperText style={{ position: "absolute", bottom: "-20px", left: "0" }}>Обязательное поле</FormHelperText>}
+            </FormControl>
+            {/* ----------------------------- */}
 
-          {culture === "Пшеница" && (
-            <FormControl fullWidth sx={{ mt: 1 }}>
-              <InputLabel>Тип пшеницы</InputLabel>
-              <Select label="Тип пшеницы" value={type} onChange={handleTypeChange} disabled={!culture} required>
-                {Object.keys(data[classification][culture].types).map(key => (
+            <FormControl fullWidth>
+              <InputLabel>Классификация</InputLabel>
+              <Select label="Классификация" value={classification} onChange={handleClassificationChange} required>
+                {Object.keys(data).map(key => (
                   <MenuItem key={key} value={key}>
                     {key}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-          )}
-        </Stack>
-        {type && (
-          <FormControl fullWidth sx={{ mt: 1 }}>
-            <InputLabel>Класс</InputLabel>
-            <Select label="Класс" value={classType} onChange={handleClassChange} disabled={!type} required>
-              {data[classification][culture].types[type].classes.map(classOption => (
-                <MenuItem key={classOption} value={classOption}>
-                  {classOption}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )}
 
-        {gost && (
-          <Stack direction="row" spacing={3} justifyContent="center" alignItems="center" sx={{ mb: 2, mt: 2 }}>
-            <Typography variant="subtitle1">{`ГОСТ: ${gost}`}</Typography>
+            <FormControl fullWidth sx={{ mt: 1 }}>
+              <InputLabel>Культура</InputLabel>
+              <Select label="Культура" value={culture} onChange={handleCultureChange} disabled={!classification} required>
+                {classification &&
+                  Object.keys(data[classification]).map(key => (
+                    <MenuItem key={key} value={key}>
+                      {key}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+
+            {culture === "Пшеница" && (
+              <FormControl fullWidth sx={{ mt: 1 }}>
+                <InputLabel>Тип пшеницы</InputLabel>
+                <Select label="Тип пшеницы" value={type} onChange={handleTypeChange} disabled={!culture} required>
+                  {Object.keys(data[classification][culture].types).map(key => (
+                    <MenuItem key={key} value={key}>
+                      {key}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
           </Stack>
-        )}
+          {type && (
+            <FormControl fullWidth sx={{ mt: 1 }}>
+              <InputLabel>Класс</InputLabel>
+              <Select label="Класс" value={classType} onChange={handleClassChange} disabled={!type} required>
+                {data[classification][culture].types[type].classes.map(classOption => (
+                  <MenuItem key={classOption} value={classOption}>
+                    {classOption}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
 
-        {indicators.length > 0 && (
-          <Grid container spacing={1}>
-            {indicators.map(indicator => (
-              <Grid item xs={3} key={indicator}>
-                <TextField
-                  label={indicator}
-                  variant="outlined"
-                  fullWidth
-                  value={indicatorValues[indicator] || ""} // Получаем значение из состояния
-                  onChange={e => handleIndicatorChange(indicator, e.target.value)} // Обновляем значение
-                />
-              </Grid>
-            ))}
-            <Grid container spacing={1} sx={{ m: 0 }}>
-              <Grid item xs={4}>
-                <Stack direction="row" spacing={2}>
+          {gost && (
+            <Stack direction="row" spacing={3} justifyContent="center" alignItems="center" sx={{ mb: 2, mt: 2 }}>
+              <Typography variant="subtitle1">{`ГОСТ: ${gost}`}</Typography>
+            </Stack>
+          )}
+
+          {indicators.length > 0 && (
+            <Grid container spacing={1}>
+              {indicators.map(indicator => (
+                <Grid item xs={3} key={indicator}>
                   <TextField
-                    label="Номер запроса"
-                    variant="outlined"
-                    margin="normal"
-                    type="text"
-                    value={reqNum}
-                    onChange={e => setReqNum(e.target.value)}
-                    required // Обязательное поле
-                    error={!reqNum} // Показываем ошибку, если поле пустое
-                    helperText={!reqNum ? "Обязательное поле" : ""}
-                  />
-                  <TextField
-                    label="Год урожая"
+                    label={indicator}
                     variant="outlined"
                     fullWidth
-                    margin="normal"
-                    type="number"
-                    value={yearOfHarvest}
-                    onChange={e => setYearOfHarvest(e.target.value)}
-                    required // Обязательное поле
-                    error={!yearOfHarvest} // Показываем ошибку, если поле пустое
-                    helperText={!yearOfHarvest ? "Обязательное поле" : ""}
+                    value={indicatorValues[indicator] || ""} // Получаем значение из состояния
+                    onChange={e => handleIndicatorChange(indicator, e.target.value)} // Обновляем значение
                   />
-                </Stack>
+                </Grid>
+              ))}
+              <Grid container spacing={1} sx={{ m: 0 }}>
+                <Grid item xs={4}>
+                  <Stack direction="row" spacing={2}>
+                    <TextField
+                      label="Номер запроса"
+                      variant="outlined"
+                      margin="normal"
+                      type="text"
+                      value={reqNum}
+                      onChange={e => setReqNum(e.target.value)}
+                      required // Обязательное поле
+                      error={!reqNum} // Показываем ошибку, если поле пустое
+                      helperText={!reqNum ? "Обязательное поле" : ""}
+                    />
+                    <TextField
+                      label="Год урожая"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      type="number"
+                      value={yearOfHarvest}
+                      onChange={e => setYearOfHarvest(e.target.value)}
+                      required // Обязательное поле
+                      error={!yearOfHarvest} // Показываем ошибку, если поле пустое
+                      helperText={!yearOfHarvest ? "Обязательное поле" : ""}
+                    />
+                  </Stack>
+                </Grid>
+                <Grid item xs={4}>
+                  <Stack direction="row" spacing={2}>
+                    <TextField
+                      label="Тоннаж"
+                      variant="outlined"
+                      // fullWidth
+                      margin="normal"
+                      type="number"
+                      value={tonnage}
+                      onChange={e => setTonnage(e.target.value)}
+                      required // Обязательное поле
+                      error={!tonnage} // Показываем ошибку, если поле пустое
+                      helperText={!tonnage ? "Обязательное поле" : ""}
+                    />
+                    <TextField
+                      label="+\-"
+                      variant="outlined"
+                      margin="normal"
+                      type="number"
+                      value={tonnagePermissible}
+                      onChange={e => setTonnagePermissible(e.target.value)}
+                      required // Обязательное поле
+                      error={!tonnagePermissible} // Показываем ошибку, если поле пустое
+                      helperText={!tonnagePermissible ? "Обязательное поле" : ""}
+                    />
+                  </Stack>
+                </Grid>
+                <Grid item xs={4}>
+                  <Stack direction="row" spacing={2}>
+                    {/* <TextField
+                      label="Контрагент"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      value={contractor}
+                      onChange={e => setContractor(e.target.value)}
+                      required // Обязательное поле
+                      error={!contractor} // Показываем ошибку, если поле пустое
+                      helperText={!contractor ? "Обязательное поле" : ""}
+                    /> */}
+                    {/*  */}
+                    <Autocomplete
+                      disablePortal
+                      options={contractorFK}
+                      getOptionLabel={option => option.name}
+                      onChange={(event, value) => {
+                        console.log("Выбранный контрагент:", value)
+                        // Здесь можно сохранить выбранный объект в состояние или отправить на сервер
+                        setCurrentContractorFK(value)
+                      }}
+                      sx={{ width: 300 }}
+                      renderInput={params => (
+                        <TextField {...params} label="Контрагент" error={!currentContractorFK} helperText={!currentContractorFK ? "Обязательное поле" : ""} />
+                      )}
+                    />
+
+                    <Fab color="secondary" aria-label="add" onClick={openModal}>
+                      <AddIcon />
+                    </Fab>
+                    {/*  */}
+                  </Stack>
+                </Grid>
               </Grid>
-              <Grid item xs={4}>
-                <Stack direction="row" spacing={2}>
-                  <TextField
-                    label="Тоннаж"
-                    variant="outlined"
-                    // fullWidth
-                    margin="normal"
-                    type="number"
-                    value={tonnage}
-                    onChange={e => setTonnage(e.target.value)}
-                    required // Обязательное поле
-                    error={!tonnage} // Показываем ошибку, если поле пустое
-                    helperText={!tonnage ? "Обязательное поле" : ""}
-                  />
-                  <TextField
-                    label="+\-"
-                    variant="outlined"
-                    margin="normal"
-                    type="number"
-                    value={tonnagePermissible}
-                    onChange={e => setTonnagePermissible(e.target.value)}
-                    required // Обязательное поле
-                    error={!tonnagePermissible} // Показываем ошибку, если поле пустое
-                    helperText={!tonnagePermissible ? "Обязательное поле" : ""}
-                  />
-                </Stack>
-              </Grid>
-              <Grid item xs={4}>
-                <Stack direction="row" spacing={2}>
-                  <TextField
-                    label="Контрагент"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={contractor}
-                    onChange={e => setContractor(e.target.value)}
-                    required // Обязательное поле
-                    error={!contractor} // Показываем ошибку, если поле пустое
-                    helperText={!contractor ? "Обязательное поле" : ""}
-                  />
-                </Stack>
+              <Grid container spacing={1} sx={{ justifyContent: "center", m: 0 }}>
+                <Grid item xs={12}>
+                  <TextField label="Примечание" variant="outlined" fullWidth type="text" value={comment} onChange={e => setComment(e.target.value)} />
+                </Grid>
               </Grid>
             </Grid>
-            <Grid container spacing={1} sx={{ justifyContent: "center", m: 0 }}>
-              <Grid item xs={12}>
-                <TextField label="Примечание" variant="outlined" fullWidth type="text" value={comment} onChange={e => setComment(e.target.value)} />
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
-        <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-          {/* Кнопка "Создать запрос" */}
+          )}
+          <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+            {/* Кнопка "Создать запрос" */}
 
-          <Button onClick={handleCreateRequest} variant="contained" color="primary" disabled={!areFieldsSelected}>
-            Создать запрос
-          </Button>
+            <Button onClick={handleCreateRequest} variant="contained" color="primary" disabled={!areFieldsSelected}>
+              Создать запрос
+            </Button>
 
-          {/* Кнопка "Сохранить в черновик" */}
-          <Button onClick={handleSaveDraft} variant="contained" color="secondary" disabled={!areFieldsSelected}>
-            Сохранить в черновик
-          </Button>
+            {/* Кнопка "Сохранить в черновик" */}
+            <Button onClick={handleSaveDraft} variant="contained" color="secondary" disabled={!areFieldsSelected}>
+              Сохранить в черновик
+            </Button>
 
-          {/* Кнопка "Закрыть" */}
-          <Button onClick={onClose} variant="outlined" color="error">
-            Закрыть
-          </Button>
-        </Stack>
-      </Loader>
-    </Box>
+            {/* Кнопка "Закрыть" */}
+            <Button onClick={onClose} variant="outlined" color="error">
+              Закрыть
+            </Button>
+          </Stack>
+        </Loader>
+      </Box>
+    </>
   )
 }
 
