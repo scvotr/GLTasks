@@ -1,20 +1,22 @@
-import { Navigate } from 'react-router-dom'
-import { useAuthContext } from '../context/AuthProvider'
-import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Navigate } from "react-router-dom"
+import { useAuthContext } from "../context/AuthProvider"
+import { useLocation } from "react-router-dom"
+import { useEffect } from "react"
 
-export const PrivateRoutesCheck = ({ component: Component, roles: RequiredRoles }) => {
-  const location = useLocation();
-  
-  useEffect(()=> {
-    localStorage.setItem('currentRoute', location.pathname);
+export const PrivateRoutesCheck = ({ component: Component, roles: RequiredRoles, position: RequiredPosition = [] }) => {
+  const currentUser = useAuthContext()
+  const location = useLocation()
+
+  useEffect(() => {
+    localStorage.setItem("currentRoute", location.pathname)
   }, [location])
 
-  const currentUser = useAuthContext()
   let renderCmp
 
+  const hasRequiredPosition = RequiredPosition.includes(Number(currentUser.position))
+
   if (currentUser.login) {
-    if (RequiredRoles.includes(currentUser.role)) {
+    if (RequiredRoles.includes(currentUser.role) && hasRequiredPosition) {
       renderCmp = <Component />
     }
   } else {
