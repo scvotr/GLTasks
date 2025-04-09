@@ -62,7 +62,6 @@ export const ReqInfoView = ({ request, currentUser, closeModal, reRender, totalU
   // !----------------------------------
   useEffect(() => {
     const fetchData = async () => {
-      console.log("rerernedr")
       try {
         setReqStatus({ loading: true, error: null })
         // Первый запрос - получаем файлы
