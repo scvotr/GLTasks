@@ -3,7 +3,7 @@ import { ReqForLabTableView } from "../../../Tables/v2/ReqForLabTableView"
 
 const SALES_SUBDEB_G = "13"
 
-export const ForOwners = ({ requests = [], currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen }) => {
+export const ForOwners = ({ requests = [], currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen, isClosedView }) => {
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -24,6 +24,7 @@ export const ForOwners = ({ requests = [], currentUser, reRender, checkFullScree
         reRender={reRender}
         setCheckFullScreenOpen={setCheckFullScreenOpen}
         checkFullScreenOpen={checkFullScreenOpen}
+        isClosedView={isClosedView}
       />
     </>
   )
