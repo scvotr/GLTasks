@@ -85,6 +85,7 @@ export const LabForSalesMain = () => {
           reRender={handleReRender}
           checkFullScreenOpen={checkFullScreenOpen}
           setCheckFullScreenOpen={setCheckFullScreenOpen}
+          isClosedView={false}
         />
       </Loader>
     </>
