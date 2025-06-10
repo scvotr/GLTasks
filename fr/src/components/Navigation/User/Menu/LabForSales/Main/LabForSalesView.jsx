@@ -11,7 +11,7 @@ const isElevatorUser = user => {
   return department === ELEVATOR_AE || department === ELEVATOR_PE
 }
 
-export const LabForSalesView = ({ requests = [], currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen }) => {
+export const LabForSalesView = ({ requests = [], currentUser, reRender, checkFullScreenOpen, setCheckFullScreenOpen, isClosedView }) => {
   const isElevator = isElevatorUser(currentUser)
 
   return (
@@ -23,6 +23,7 @@ export const LabForSalesView = ({ requests = [], currentUser, reRender, checkFul
           reRender={reRender}
           checkFullScreenOpen={checkFullScreenOpen}
           setCheckFullScreenOpen={setCheckFullScreenOpen}
+          isClosedView={isClosedView}
         />
       )}
       {!isElevator && (
@@ -32,6 +33,7 @@ export const LabForSalesView = ({ requests = [], currentUser, reRender, checkFul
           reRender={reRender}
           checkFullScreenOpen={checkFullScreenOpen}
           setCheckFullScreenOpen={setCheckFullScreenOpen}
+          isClosedView={isClosedView}
         />
       )}
     </>

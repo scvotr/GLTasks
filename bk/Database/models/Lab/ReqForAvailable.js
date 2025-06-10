@@ -4,7 +4,7 @@ const { addForeignKeyToTable } = require('../../utils/addForeignKeyToTable/addFo
 const { appendField } = require('../../utils/appendField/appendField')
 const { executeTableCreation } = require('../../utils/executeTableCreation/executeTableCreation')
 
-const createReqForAvailableTable = async (allowDrop = false) => {
+const createReqForAvailableTable = async (allowDrop) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS reqForAvailableTable (
       req_number INTEGER PRIMARY KEY AUTOINCREMENT,  -- Уникальный номер запроса
@@ -41,7 +41,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
       -- 
       is_auto BOOLEAN NOT NULL DEFAULT FALSE, -- Отгружено авто
       is_railway BOOLEAN NOT NULL DEFAULT FALSE, -- Отгружено ЖД
-      shipped TEXT -- Отгружено
+      shipped TEXT, -- Отгружено
       tonnagePermissible TEXT,
       salesPoint TEXT, -- Кто продает
       basis TEXT, -- Тип контракта
@@ -60,7 +60,7 @@ const createReqForAvailableTable = async (allowDrop = false) => {
   await executeTableCreation('reqForAvailableTable', createTableQuery, allowDrop)
 }
 
-const createRequestApprovalsTable = async (allowDrop = false) => {
+const createRequestApprovalsTable = async (allowDrop) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS request_approvals (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,7 +77,7 @@ const createRequestApprovalsTable = async (allowDrop = false) => {
   await executeTableCreation('request_approvals', createTableQuery, allowDrop)
 }
 
-const createLabReqReadStatus = async (allowDrop = false) => {
+const createLabReqReadStatus = async (allowDrop) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_req_readStatus (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -92,7 +92,7 @@ const createLabReqReadStatus = async (allowDrop = false) => {
   await executeTableCreation('lab_req_readStatus', createTableQuery, allowDrop)
 }
 
-const createTableReqForLabComments = async (allowDrop = false) => {
+const createTableReqForLabComments = async (allowDrop) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_req_comments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,7 +107,7 @@ const createTableReqForLabComments = async (allowDrop = false) => {
   await executeTableCreation('lab_req_comments', createTableQuery, allowDrop)
 }
 
-const createTableReqForLabFiles = async (allowDrop = false) => {
+const createTableReqForLabFiles = async (allowDrop) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_req_files (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,7 +129,7 @@ const createTableReqForLabFiles = async (allowDrop = false) => {
 
   await executeTableCreation('lab_req_files', createTableQuery, allowDrop)
 }
-const createTableReqForLabStatusHistory = async (allowDrop = false) => {
+const createTableReqForLabStatusHistory = async (allowDrop) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS lab_request_status_history (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -145,7 +145,7 @@ const createTableReqForLabStatusHistory = async (allowDrop = false) => {
   await executeTableCreation('lab_request_status_history', createTableQuery, allowDrop)
 }
 
-const createTableContractors = async (allowDrop = false) => {
+const createTableContractors = async (allowDrop) => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS contractors (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -188,7 +188,7 @@ const createAllReqForAvailable = async (allowDrop = false) => {
     // await appendField('reqForAvailableTable', 'reqNum', 'INTEGER')
     // await appendField('reqForAvailableTable', 'reportByUser', 'JSON')
     // await appendField('reqForAvailableTable', 'salesPoint', 'TEXT')
-    await appendField('reqForAvailableTable', 'basis', 'TEXT')
+    // await appendField('reqForAvailableTable', 'basis', 'TEXT')
 
     // -----new fields-----------------
     await createReqForAvailableTable(allowDrop)

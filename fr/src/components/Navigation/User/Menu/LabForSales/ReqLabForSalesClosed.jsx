@@ -4,16 +4,11 @@ import { useSocketContext } from "../../../../../context/SocketProvider"
 import { AppBarForPage } from "../components/AppBarForPage/AppBarForPage"
 import { getDataFromEndpoint } from "../../../../../utils/getDataFromEndpoint"
 import { Loader } from "../../../../FormComponents/Loader/Loader"
-import { FullScreenDialog } from "../../../../FullScreenDialog/FullScreenDialog"
-import AddNewLabReq from "../../../../FormComponents/LabForSalesMain/AddNewLabReq"
 import { LabForSalesView } from "./Main/LabForSalesView"
-
-const SALES_SUBDEB_G = "13"
 
 const getAllRequest = async (currentUser, setReqStatus, setRequests) => {
   const endpoint = `/lab/getAllRequestsWithApprovals`
   setReqStatus({ loading: true, error: null })
-
   try {
     const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", currentUser.id, setReqStatus)
     setRequests(data)
@@ -23,14 +18,14 @@ const getAllRequest = async (currentUser, setReqStatus, setRequests) => {
   }
 }
 
-export const LabForSalesMain = () => {
+export const ReqLabForSalesClosed = () => {
   const currentUser = useAuthContext()
   const socket = useSocketContext()
   const [reqStatus, setReqStatus] = useState({ loading: false, error: null })
   const [requests, setRequests] = useState([])
   const [checkFullScreenOpen, setCheckFullScreenOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [data, setData] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +35,16 @@ export const LabForSalesMain = () => {
     }
     fetchData()
   }, [currentUser, formKey])
+
+  useEffect(() => {
+    if (!Array.isArray(requests)) return
+    const filteredData = requests.filter(req => {
+      const isClosed = req.req_status === "closed"
+      const hasUserRead = req.users?.some(user => user.user_id === currentUser.id && user.read_status === "readed")
+      return isClosed && hasUserRead
+    })
+    setData(filteredData)
+  }, [requests, currentUser.id])
 
   const handleSocketEvent = async () => {
     await getAllRequest(currentUser, setReqStatus, setRequests)
@@ -60,32 +65,21 @@ export const LabForSalesMain = () => {
     }
   }, [socket, checkFullScreenOpen])
 
-  const openModal = () => {
-    setModalOpen(true)
-  }
-  const closeModal = () => {
-    setModalOpen(false)
-    setFormKey(prevKey => prevKey + 1)
-  }
   const handleReRender = () => {
     setFormKey(prevKey => prevKey + 1)
   }
 
   return (
     <>
-      <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText="Запрос на партию:">
-        <AddNewLabReq onClose={closeModal} currentUser={currentUser} />
-      </FullScreenDialog>
-      <AppBarForPage title="Лаборатория: " openModal={currentUser.subDep.toString() === SALES_SUBDEB_G ? openModal : null} />
+      <AppBarForPage title="Закрытые контракты: " />
       <Loader reqStatus={reqStatus}>
         <LabForSalesView
-          requests={requests}
+          requests={data}
           currentUser={currentUser}
-          // - Re render main cmp
           reRender={handleReRender}
           checkFullScreenOpen={checkFullScreenOpen}
           setCheckFullScreenOpen={setCheckFullScreenOpen}
-          isClosedView={false}
+          isClosedView={true}
         />
       </Loader>
     </>
