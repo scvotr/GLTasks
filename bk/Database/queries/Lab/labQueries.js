@@ -134,7 +134,6 @@ const updateAppendApprovalsUsersQ = async data => {
     console.warn('Invalid data provided:', data)
     return
   }
-
   // const statusTranslations = {
   //   new: 'Новый запрос',
   //   approved: 'Запрос одобрен',
@@ -145,60 +144,59 @@ const updateAppendApprovalsUsersQ = async data => {
   //   canceled: 'Запрос аннулирован',
   // }
   // Объект переводов статусов
-
   const statusTranslations = {
     new: {
       title: 'Новый запрос',
       description: data =>
-        `Запрос: ${data.culture ? data.culture : data.currentRequest.culture} ${data.gost ? data.gost : data.currentRequest.gost} тоннаж: ${data.tonnage ? data.tonnage : data.currentRequest.tonnage} покупатель: ${data.contractor ? data.contractor : data.currentRequest.contractor}`,
+        `Новый запрос: ${data.selectedDepartment_name ? data.selectedDepartment_name : data.currentRequest.department_name} ${data.culture ? data.culture : data.currentRequest.culture} ${data.gost ? data.gost : data.currentRequest.gost} тоннаж: ${data.tonnage ? data.tonnage : data.currentRequest.tonnage} покупатель: ${data.contractor ? data.contractor : data.currentRequest.contractor}`,
     },
     approved: {
       title: 'Запрос одобрен',
       description: data =>
-        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+        `Запрос одобрен: ${data.currentRequest.department_name} ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor} продавец: ${data.currentRequest.salesPoint}`,
     },
     discard: {
       title: 'Запрос отклонен',
       description: data =>
-        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+        `Запрос отклонен: ${data.currentRequest.department_name} ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor} продавец: ${data.currentRequest.salesPoint}`,
     },
     in_progress: {
       title: 'Открыт контракт',
       description: data =>
-        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+        `Открыт контракт: ${data.currentRequest.department_name} ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor} продавец: ${data.currentRequest.salesPoint}`,
     },
     on_confirm: {
-      title: 'Требуется отчет',
+      title: 'Контракт закрыт',
       description: data =>
-        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+        `Контракт закрыт: ${data.currentRequest.department_name} ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor} продавец: ${data.currentRequest.salesPoint}`,
     },
     closed: {
       title: 'Сформирован отчет',
       description: data =>
-        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+        `Сформирован отчет: ${data.currentRequest.department_name} ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor} продавец: ${data.currentRequest.salesPoint}`,
     },
     canceled: {
       title: 'Запрос аннулирован',
       description: data =>
-        `Запрос: ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor}`,
+        `Запрос аннулирован: ${data.currentRequest.department_name} ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor} продавец: ${data.currentRequest.salesPoint}`,
     },
   }
 
   // const translatedStatus = statusTranslations[data.req_status] || data.req_status // Получаем русский статус
-
   // Получаем русский статус и описание
   const translatedStatus = statusTranslations[data.req_status]
   if (!translatedStatus) {
     console.warn(`Unknown status: ${data.req_status}`)
     return
   }
-
   const { title, description } = translatedStatus
   const text = description(data) // Генерируем описание
-
+  
   const email_body = {
     task_descript: text,
   }
+  
+  console.log("🚀 ~ email_body:", email_body)
 
   const getAllReqUsers = `
     SELECT user_id FROM request_approvals WHERE reqForAvail_id = ?
@@ -217,7 +215,6 @@ const updateAppendApprovalsUsersQ = async data => {
         await noticeForLabSystemUsersT(user.user_id, title, email_body)
       }
     })
-
     await Promise.all(promises)
   } catch (error) {
     console.error('Error - updateAppendApprovalsUsersQ:', error)
