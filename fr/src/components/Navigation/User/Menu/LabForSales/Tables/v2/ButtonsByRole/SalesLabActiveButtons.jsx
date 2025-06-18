@@ -1,4 +1,4 @@
-import { Button, IconButton, Paper, Stack } from "@mui/material"
+import { Button, IconButton, Paper, Stack, Typography } from "@mui/material"
 import { useSnackbar } from "../../../../../../../../context/SnackbarProvider"
 import { useState } from "react"
 import { getDataFromEndpoint } from "../../../../../../../../utils/getDataFromEndpoint"
@@ -6,6 +6,8 @@ import { Loader } from "../../../../../../../FormComponents/Loader/Loader"
 import { ReqInfoViewTest } from "../../../Menu/ReqInfoViewTest"
 import { ConfirmationDialog } from "../../../../../../../FormComponents/ConfirmationDialog/ConfirmationDialog"
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined"
+import { FullScreenDialog } from "../../../../../../../FullScreenDialog/FullScreenDialog"
+import { RepeatLabReq } from "../../../../../../../FormComponents/LabForSalesMain/RepeatLabReq"
 
 export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser, reRender, checkFullScreenOpen }) => {
   const { popupSnackbar } = useSnackbar()
@@ -17,6 +19,9 @@ export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser,
   const [toInWork, setToInWork] = useState(false)
   const [toCancel, setToCancel] = useState(false)
   const [toConfirm, setToConfirm] = useState(false)
+  const [toRepeat, setToRepeat] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [formKey, setFormKey] = useState(0)
 
   const handleChangeStatus = async status => {
     const endpoint = `/lab/updateReqStatus`
@@ -80,15 +85,41 @@ export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser,
     }
   }
 
+  const handleRepeat = () => {
+    setModalOpen(true)
+  }
+
   return (
     <>
       {currentRequest && (
         <>
           <Loader reqStatus={reqStatus}>
+            <FullScreenDialog isOpen={modalOpen} onClose={closeModal} infoText="Запрос на партию:">
+              <RepeatLabReq currentRequest_id={currentRequest.reqForAvail_id} closeModal={closeModal} currentUser={currentUser} />
+            </FullScreenDialog>
             <Paper sx={{ p: 2, maxWidth: "600px", margin: "0 auto", mt: 2 }}>
               <Stack direction="row" spacing={2} justifyContent="center">
+                {/* -------------------------------- */}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    setToRepeat(true)
+                    setDialogText({
+                      title: "Подтверждение запроса",
+                      message: "Вы уверены, что хотите создать этот запрос?",
+                    })
+                    setOpenDialog(true)
+                  }}>
+                  Повторить
+                </Button>
+                {/* -------------------------------- */}
                 {/* ЧЕРНОВИК */}
-                {currentRequest.req_status === "on_confirm" && <>формируется отчет</>}
+                {currentRequest.req_status === "on_confirm" && (
+                  <>
+                    <Typography>формируется отчет</Typography>
+                  </>
+                )}
                 {currentRequest.req_status === "draft" && (
                   <>
                     <Button
@@ -259,7 +290,7 @@ export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser,
                 {/* ЗАКРЫТА */}
                 {currentRequest.req_status === "closed" && (
                   <>
-                    <Button
+                    {/* <Button
                       variant="contained"
                       color="error"
                       onClick={() => {
@@ -274,7 +305,11 @@ export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser,
                     </Button>
                     <IconButton onClick={() => closeModal()}>
                       <CancelPresentationOutlinedIcon />
-                    </IconButton>
+                    </IconButton> */}
+                    <>
+                      {" "}
+                      <Typography> контракт закрыт </Typography>
+                    </>
                   </>
                 )}
               </Stack>
@@ -307,6 +342,8 @@ export const SalesLabActiveButtons = ({ currentRequest, closeModal, currentUser,
                   await handleChangeStatus("canceled")
                 } else if (toConfirm) {
                   await handleChangeStatus("on_confirm")
+                } else if (toRepeat) {
+                  handleRepeat()
                 }
               } catch (error) {
                 console.error("Ошибка при удалении файла:", error.message)
