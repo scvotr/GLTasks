@@ -20,6 +20,7 @@ const routeHandlers = {
   "/lab/addReport": LabController.addReport,
   "/lab/getContractors": LabController.getContractors,
   "/lab/addContractor": LabController.addContractor,
+  "/lab/getRequestForRepeat": LabController.getRequestForRepeat,
 }
 
 const handelLabRoutes = async(req, res) => {
