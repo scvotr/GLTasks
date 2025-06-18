@@ -17,7 +17,6 @@ const getAllRequest = async (currentUser, setReqStatus, setRequests) => {
     setReqStatus({ loading: false, error: error.message })
   }
 }
-
 export const ReqLabForSalesClosed = () => {
   const currentUser = useAuthContext()
   const socket = useSocketContext()
@@ -25,27 +24,16 @@ export const ReqLabForSalesClosed = () => {
   const [requests, setRequests] = useState([])
   const [checkFullScreenOpen, setCheckFullScreenOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
-  const [data, setData] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
-      if (currentUser) {
+      if (currentUser?.login) {
         await getAllRequest(currentUser, setReqStatus, setRequests)
       }
     }
     fetchData()
   }, [currentUser, formKey])
-
-  useEffect(() => {
-    if (!Array.isArray(requests)) return
-    const filteredData = requests.filter(req => {
-      const isClosed = req.req_status === "closed"
-      const hasUserRead = req.users?.some(user => user.user_id === currentUser.id && user.read_status === "readed")
-      return isClosed && hasUserRead
-    })
-    setData(filteredData)
-  }, [requests, currentUser.id])
-
+// !--------------------------------------
   const handleSocketEvent = async () => {
     await getAllRequest(currentUser, setReqStatus, setRequests)
   }
@@ -54,27 +42,24 @@ export const ReqLabForSalesClosed = () => {
       setFormKey(prevKey => prevKey + 1)
     }
   }
-
   useEffect(() => {
     socket.on("reqForLab", handleSocketEvent)
     socket.on("reqForLabNewComment", handleNewComment)
-
     return () => {
       socket.off("reqForLab", handleSocketEvent)
       socket.off("reqForLabNewComment", handleNewComment)
     }
   }, [socket, checkFullScreenOpen])
-
+  // !--------------------------------------
   const handleReRender = () => {
     setFormKey(prevKey => prevKey + 1)
   }
-
   return (
     <>
       <AppBarForPage title="Закрытые контракты: " />
       <Loader reqStatus={reqStatus}>
         <LabForSalesView
-          requests={data}
+          requests={requests}
           currentUser={currentUser}
           reRender={handleReRender}
           checkFullScreenOpen={checkFullScreenOpen}

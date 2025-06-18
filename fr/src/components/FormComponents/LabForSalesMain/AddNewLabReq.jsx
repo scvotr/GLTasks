@@ -5,25 +5,18 @@ import { DepartmentSelectOnce } from "../Select/DepartmentSelect/DepartmentSelec
 import { useSnackbar } from "../../../context/SnackbarProvider"
 import { getDataFromEndpoint } from "../../../utils/getDataFromEndpoint"
 import { Loader } from "../Loader/Loader"
-import AddIcon from "@mui/icons-material/Add";
-import { ModalCustom } from "../../ModalCustom/ModalCustom";
-import { AddContractor } from "./AddContractor";
+import AddIcon from "@mui/icons-material/Add"
+import { ModalCustom } from "../../ModalCustom/ModalCustom"
+import { AddContractor } from "./AddContractor"
+
+const defaultOption = ["Запах", "Цвет", "Зараженность"]
 
 const data = {
   Масличные: {
     Подсолнечник: {
       gost: "ГОСТ: 22391-2015",
-      indicators: [
-        "Влажность, %",
-        "Сорная примесь, %",
-        "Масличная примесь, %",
-        "Масличность, %",
-        "Кислотное число м/семян (кчм), мг КОН",
-        "Испорченные, %",
-        "Запах",
-        "Цвет",
-        "Зараженность",
-      ],
+      indicators: ["Влажность, %", "Сорная примесь, %", "Масличная примесь, %", "Масличность, %", "Кислотное число м/семян (кчм), мг КОН", "Испорченные, %"],
+      defaultOptionIndicators: [...defaultOption],
     },
     Лён: {
       gost: "ГОСТ: 10582-76",
@@ -35,38 +28,30 @@ const data = {
         "Кислотное число м/семян (кчм), мг КОН",
         "Потемневшие, %",
         "Другие масличные культуры, %",
-        "Запах",
-        "Цвет",
-        "Зараженность",
       ],
+      defaultOptionIndicators: [...defaultOption],
     },
     Соя: {
       gost: "ГОСТ: 17109-88",
-      indicators: ["Влажность, %", "Сорная примесь, %", "Масличная примесь, %", "Поврежденные, %", "Проросшие, %", "Запах", "Цвет", "Зараженность"],
+      indicators: ["Влажность, %", "Сорная примесь, %", "Масличная примесь, %", "Поврежденные, %", "Проросшие, %"],
+      defaultOptionIndicators: [...defaultOption],
     },
     "Семена горчицы": {
       gost: "ГОСТ: 9159-71",
-      indicators: ["Влажность, %", "Сорная примесь, %", "Масличная примесь, %", "Поврежденные, %", "Проросшие, %", "Запах", "Цвет", "Зараженность"],
+      indicators: ["Влажность, %", "Сорная примесь, %", "Масличная примесь, %", "Поврежденные, %", "Проросшие, %"],
+      defaultOptionIndicators: [...defaultOption],
     },
   },
   Зернобобовые: {
     Нут: {
       gost: "ГОСТ: 8758-76",
-      indicators: [
-        "Влажность, %",
-        "Сорная примесь, %",
-        "Зерновая примесь, %",
-        "Маранные зерна, %",
-        "Другие масличные культуры, %",
-        "Крупность, %",
-        "Запах",
-        "Цвет",
-        "Зараженность",
-      ],
+      indicators: ["Влажность, %", "Сорная примесь, %", "Зерновая примесь, %", "Маранные зерна, %", "Другие масличные культуры, %", "Крупность, %"],
+      defaultOptionIndicators: [...defaultOption],
     },
     Чечевица: {
       gost: "ГОСТ: 7066-2019",
-      indicators: ["Влажность, %", "Сорная примесь, %", "Зерновая примесь, %", "Запах", "Цвет", "Зараженность"],
+      indicators: ["Влажность, %", "Сорная примесь, %", "Зерновая примесь, %"],
+      defaultOptionIndicators: [...defaultOption],
     },
   },
   Злаковые: {
@@ -80,10 +65,8 @@ const data = {
         "Испорченные, %",
         "Поврежденные, %",
         "Проросшие, %",
-        "Запах",
-        "Цвет",
-        "Зараженность",
       ],
+      defaultOptionIndicators: [...defaultOption],
     },
     Пшеница: {
       gost: "ГОСТ: 9353-2016",
@@ -106,10 +89,8 @@ const data = {
             "Мелкое зерно, %",
             "Клоп-черепашка, %",
             "Мягкая пшеница, %",
-            "Запах",
-            "Цвет",
-            "Зараженность",
           ],
+          defaultOptionIndicators: [...defaultOption],
         },
         Мягкая: {
           classes: ["3", "4", "5", "Безенчукская"],
@@ -128,10 +109,8 @@ const data = {
             "Минеральная примесь, %",
             "Мелкое зерно, %",
             "Клоп-черепашка, %",
-            "Запах",
-            "Цвет",
-            "Зараженность",
           ],
+          defaultOptionIndicators: [...defaultOption],
         },
       },
     },
@@ -146,10 +125,8 @@ const data = {
         "Проросшие, %",
         "Мелкое зерно, %",
         "Мягкая пшеница, %",
-        "Запах",
-        "Цвет",
-        "Зараженность",
       ],
+      defaultOptionIndicators: [...defaultOption],
     },
   },
 }
@@ -177,6 +154,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const [type, setType] = useState("")
   const [classType, setClassType] = useState("")
   const [indicators, setIndicators] = useState([])
+  const [defaultOptionIndicators, setDefaultOptionIndicators] = useState([])
   const [gost, setGost] = useState("")
   const [tonnage, setTonnage] = useState("")
   const [tonnagePermissible, setTonnagePermissible] = useState("")
@@ -187,6 +165,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
   const [comment, setComment] = useState("")
   const [yearOfHarvest, setYearOfHarvest] = useState("")
   const [indicatorValues, setIndicatorValues] = useState({})
+  const [defaultIndicatorValues, setDefaultIndicatorValues] = useState({})
   const [salesPoint, setSalesPoint] = useState("")
   const [basis, setBasis] = useState("")
   const [modalOpen, setModalOpen] = useState(false)
@@ -216,6 +195,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     setType("")
     setClassType("")
     setIndicators([])
+    setDefaultOptionIndicators([])
     setGost("")
     setIndicatorValues({})
   }
@@ -226,6 +206,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     setType("")
     setClassType("")
     setIndicators(selectedCulture === "Пшеница" ? [] : data[classification][selectedCulture].indicators)
+    setDefaultOptionIndicators(data[classification][selectedCulture].defaultOptionIndicators)
     setGost(data[classification][selectedCulture].gost)
     setIndicatorValues({})
   }
@@ -234,6 +215,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     const selectedType = event.target.value
     setType(selectedType)
     setIndicators(data[classification][culture].types[selectedType].indicators)
+    setDefaultOptionIndicators(data[classification][culture].types[selectedType].defaultOptionIndicators)
     setIndicatorValues({})
   }
 
@@ -247,6 +229,12 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
       [indicator]: value,
     }))
   }
+  const handleDefaultOptionIndicatorsChange = (indicator, value) => {
+    setDefaultIndicatorValues(prevValues => ({
+      ...prevValues,
+      [indicator]: value,
+    }))
+  }
 
   const createRequest = async status => {
     try {
@@ -256,6 +244,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         tonnage,
         contractor: currentContractorFK.name,
         selectedDepartment: selectedDepartment?.id,
+        selectedDepartment_name: selectedDepartment?.name,
         creator: currentUser.id,
         user_id: currentUser.id, //Для уведомления через сокет
         creator_role: currentUser.role,
@@ -274,10 +263,24 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         salesPoint,
         basis,
         contractor_id: currentContractorFK.id,
-        indicators: indicators.map(indicator => ({
-          name: indicator,
-          value: indicatorValues[indicator] || "",
-        })),
+        indicators: [
+          ...indicators.map(indicator => ({
+            name: indicator,
+            value: indicatorValues[indicator] || "",
+          })),
+          ...defaultOptionIndicators.map(indicator => ({
+            name: indicator,
+            value: defaultIndicatorValues[indicator] || "",
+          })),
+        ],
+        // indicators: indicators.map(indicator => ({
+        //   name: indicator,
+        //   value: indicatorValues[indicator] || "",
+        // })),
+        // defaultOptionIndicators: defaultOptionIndicators.map(indicator => ({
+        //   name: indicator,
+        //   value: defaultIndicatorValues[indicator] || "",
+        // })),
       }
       setReqStatus({ loading: true, error: null })
       await getDataFromEndpoint(currentUser.token, "/lab/createReqForAvailability", "POST", formData, setReqStatus)
@@ -439,7 +442,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
 
           {gost && (
             <Stack direction="row" spacing={3} justifyContent="center" alignItems="center" sx={{ mb: 2, mt: 2 }}>
-              <Typography variant="subtitle1">{`ГОСТ: ${gost}`}</Typography>
+              <Typography variant="subtitle1">{`${gost}`}</Typography>
             </Stack>
           )}
 
@@ -450,9 +453,31 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
                   <TextField
                     label={indicator}
                     variant="outlined"
+                    type={"number"}
                     fullWidth
                     value={indicatorValues[indicator] || ""} // Получаем значение из состояния
-                    onChange={e => handleIndicatorChange(indicator, e.target.value)} // Обновляем значение
+                    onChange={e => {
+                      const newValue = e.target.value
+                        // .replace(/,/g, ".") // Заменяем запятые на точки
+                        // .replace(/[^0-9.]/g, "") // Удаляем все символы, кроме цифр и точки
+                        // .replace(/(\..*?)\..*/g, "$1") // Удаляем лишние точки, если они есть
+                      handleIndicatorChange(indicator, newValue) // Обновляем значение
+                    }}
+                  />
+                </Grid>
+              ))}
+              {defaultOptionIndicators.map(indicator => (
+                <Grid item xs={3} key={indicator}>
+                  <TextField
+                    label={indicator}
+                    variant="outlined"
+                    fullWidth
+                    type="text"
+                    value={defaultIndicatorValues[indicator] || ""} // Получаем значение из состояния
+                    onChange={e => {
+                      const newValue = e.target.value.replace(/[^а-яА-ЯёЁa-zA-Z]/g, "") // Оставляем только буквы
+                      handleDefaultOptionIndicatorsChange(indicator, newValue) // Обновляем значение
+                    }}
                   />
                 </Grid>
               ))}

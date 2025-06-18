@@ -246,7 +246,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
         // Устанавливаем индикаторы и инициализируем значения
         const initialIndicatorValues = filteredData.map(indicator => ({
           ...indicator,
-          oldValue: indicator.value || "", // Переименовываем value в oldValue
+          oldValue: indicator.value || 0, // Переименовываем value в oldValue
           newValue: "", // Инициализируем новое значение
           cardValue: "", // Инициализируем новое значение
           responseValue: "", // Инициализируем новое значение
@@ -262,7 +262,8 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
   // Обработчик изменения значения текстового поля
   const handleChange = (index, event) => {
     const { value } = event.target
-    const newValue = parseFloat(value) || 0 // Преобразуем новое значение в число
+    // const newValue = parseFloat(value) || 0 // Преобразуем новое значение в число
+    const newValue = value // Преобразуем новое значение в число
 
     setNewValues(prevValues => ({
       ...prevValues,
@@ -286,15 +287,14 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
     })
   }
   // !--------------------------------
-  const handleCartChange = (index, event) => {
+  const handleCardChange = (index, event) => {
     const { value } = event.target
-    const cardValue = parseFloat(value) || 0 // Преобразуем новое значение в число
-
+    // const cardValue = parseFloat(value) || 0 // Преобразуем новое значение в число
+    const cardValue = value // Преобразуем новое значение в число
     setCardValues(prevValues => ({
       ...prevValues,
       [index]: cardValue, // Сохраняем новое значение по индексу
     }))
-
     // Обновляем отклонение для текущего индикатора
     setIndicators(prevIndicators => {
       const updatedIndicators = [...prevIndicators]
@@ -307,9 +307,8 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
   }
   const handleResponseChange = (index, event) => {
     const { value } = event.target
-    const responseValue = parseFloat(value) || 0 // Преобразуем новое значение в число
-
-    setCardValues(prevValues => ({
+    const responseValue = value 
+    setResponseValues(prevValues => ({
       ...prevValues,
       [index]: responseValue, // Сохраняем новое значение по индексу
     }))
@@ -324,12 +323,11 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
       return updatedIndicators
     })
   }
-
+  // !--------------------------------
   const handleSubmit = async () => {
     const updatedIndicators = indicators.map((indicator, index) => {
       const newValue = newValues[index] !== undefined ? newValues[index] : indicator.oldValue
       const deviation = ((newValue - indicator.oldValue) / indicator.oldValue) * 100 // Расчет отклонения в процентах
-
       return {
         ...indicator,
         newValue,
@@ -339,7 +337,6 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
     // console.log("🚀 ~ updatedIndicators ~ updatedIndicators:", updatedIndicators)
     // Здесь вы можете отправить updatedIndicators на сервер или выполнить другие действия
     try {
-
       await handleChangeStatus("closed")
 
       const formData = {
@@ -367,7 +364,6 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
       await handleCreateReport(formData)
     } catch (error) {}
   }
-
   const handleCommentChange = event => {
     setComment(event.target.value)
   }
@@ -386,9 +382,8 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
   const handlesDestinationPointChange = event => {
     setDestinationPoint(event.target.value)
   }
-  // Обработчик изменения типа транспорта
   const handleTransportChange = event => {
-    setTransportType(event.target.value) // Обновляем состояние при выборе
+    setTransportType(event.target.value)
   }
 
   return (
@@ -419,7 +414,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
                     cardValues={cardValues}
                     responseValues={responseValues}
                     handleChange={handleChange}
-                    handleCartChange={handleCartChange}
+                    handleCardChange={handleCardChange}
                     handleResponseChange={handleResponseChange}
                   />
                 </Grid>
@@ -460,7 +455,7 @@ export const AddReportLabReq = ({ onClose, currentUser, request, setIsEmptyField
   )
 }
 // ----------------------------------
-export const ActualLabReqValue = ({ indicators, newValues, cartValues, responseValues, handleChange, handleCartChange, handleResponseChange }) => {
+export const ActualLabReqValue = ({ indicators, newValues, cardValues, responseValues, handleChange, handleCardChange, handleResponseChange }) => {
   return (
     <>
       <TableContainer component={Paper} sx={{ width: "90%", m: 2 }}>
@@ -513,7 +508,7 @@ export const ActualLabReqValue = ({ indicators, newValues, cartValues, responseV
                 <TableCell align="center" sx={{ border: "1px solid black", padding: "4px" }}>
                   <TextField
                     variant="outlined"
-                    size="small"
+                    // size="small"
                     // type={["color", "smell", "contamination"].includes(indicator.type) ? "text" : "number"} // Устанавливаем тип поля
                     type={"number"} // Устанавливаем тип поля
                     value={newValues[index] || ""} // Используем новое значение, если оно есть
@@ -542,8 +537,8 @@ export const ActualLabReqValue = ({ indicators, newValues, cartValues, responseV
                     size="small"
                     // type={["color", "smell", "contamination"].includes(indicator.type) ? "text" : "number"} // Устанавливаем тип поля
                     type={"number"} // Устанавливаем тип поля
-                    // value={cartValues[index] || ""} // Используем новое значение, если оно есть
-                    onChange={event => handleCartChange(index, event)}
+                    value={cardValues[index] || ""} // Используем новое значение, если оно есть
+                    onChange={event => handleCardChange(index, event)}
                     placeholder="+"
                     sx={{
                       width: "100px",
@@ -561,7 +556,7 @@ export const ActualLabReqValue = ({ indicators, newValues, cartValues, responseV
                     size="small"
                     // type={["color", "smell", "contamination"].includes(indicator.type) ? "text" : "number"} // Устанавливаем тип поля
                     type={"number"} // Устанавливаем тип поля
-                    // value={cartValues[index] || ""} // Используем новое значение, если оно есть
+                    value={responseValues[index] || ""} // Используем новое значение, если оно есть
                     onChange={event => handleResponseChange(index, event)}
                     placeholder="+"
                     sx={{
@@ -581,7 +576,7 @@ export const ActualLabReqValue = ({ indicators, newValues, cartValues, responseV
     </>
   )
 }
-
+// !-----------------------------------------------
 export const OtherLabReqValue = ({
   totalTonnage,
   handleTotalTonnageChange,
