@@ -20,6 +20,7 @@ const {
   addReportQ,
   getContractorsQ,
   addContractorQ,
+  getRequestForRepeatQ,
 } = require('../../Database/queries/Lab/labQueries')
 const { executeDatabaseQueryAsync } = require('../../Database/utils/executeDatabaseQuery/executeDatabaseQuery')
 const { saveAndConvert } = require('../../utils/files/saveAndConvert')
@@ -31,7 +32,6 @@ class LabController {
     try {
       const authDecodeUserData = req.user
       const payLoad = JSON.parse(authDecodeUserData.payLoad)
-      // Проверяем, существует ли уже запись с таким reqNum
       const checkQuery = `
         SELECT COUNT(*) AS count
         FROM reqForAvailableTable
@@ -340,6 +340,17 @@ class LabController {
     } catch (error) {
       console.error('Ошибка при addContractor:', error)
       handleError(res, 'addContractor')
+    }
+  }
+  async getRequestForRepeat(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const currentRequest_id = JSON.parse(authDecodeUserData.payLoad)
+      const result = await getRequestForRepeatQ(currentRequest_id)
+      sendResponseWithData(res, result)
+    } catch (error) {
+      console.error('Ошибка при getRequestForRepeat:', error)
+      handleError(res, 'getRequestForRepeat')
     }
   }
 }
