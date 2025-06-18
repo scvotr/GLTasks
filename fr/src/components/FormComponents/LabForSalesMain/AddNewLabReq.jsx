@@ -244,6 +244,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         tonnage,
         contractor: currentContractorFK.name,
         selectedDepartment: selectedDepartment?.id,
+        selectedDepartment_name: selectedDepartment?.name,
         creator: currentUser.id,
         user_id: currentUser.id, //Для уведомления через сокет
         creator_role: currentUser.role,
