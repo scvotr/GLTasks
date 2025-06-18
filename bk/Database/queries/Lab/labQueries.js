@@ -148,7 +148,11 @@ const updateAppendApprovalsUsersQ = async data => {
     new: {
       title: 'Новый запрос',
       description: data =>
-        `Новый запрос: ${data.selectedDepartment_name ? data.selectedDepartment_name : data.currentRequest.department_name} ${data.culture ? data.culture : data.currentRequest.culture} ${data.gost ? data.gost : data.currentRequest.gost} тоннаж: ${data.tonnage ? data.tonnage : data.currentRequest.tonnage} покупатель: ${data.contractor ? data.contractor : data.currentRequest.contractor}`,
+        `Новый запрос: ${data.selectedDepartment_name ? data.selectedDepartment_name : data.currentRequest.department_name} ${
+          data.culture ? data.culture : data.currentRequest.culture
+        } ${data.gost ? data.gost : data.currentRequest.gost} тоннаж: ${data.tonnage ? data.tonnage : data.currentRequest.tonnage} покупатель: ${
+          data.contractor ? data.contractor : data.currentRequest.contractor
+        }`,
     },
     approved: {
       title: 'Запрос одобрен',
@@ -181,7 +185,6 @@ const updateAppendApprovalsUsersQ = async data => {
         `Запрос аннулирован: ${data.currentRequest.department_name} ${data.currentRequest.culture} ${data.currentRequest.gost} тоннаж: ${data.currentRequest.tonnage} покупатель: ${data.currentRequest.contractor} продавец: ${data.currentRequest.salesPoint}`,
     },
   }
-
   // const translatedStatus = statusTranslations[data.req_status] || data.req_status // Получаем русский статус
   // Получаем русский статус и описание
   const translatedStatus = statusTranslations[data.req_status]
@@ -191,11 +194,11 @@ const updateAppendApprovalsUsersQ = async data => {
   }
   const { title, description } = translatedStatus
   const text = description(data) // Генерируем описание
-  
+
   const email_body = {
     task_descript: text,
   }
-
+  console.log('🚀 ~ email_body:', email_body)
   const getAllReqUsers = `
     SELECT user_id FROM request_approvals WHERE reqForAvail_id = ?
   `
@@ -721,6 +724,21 @@ const addContractorQ = async data => {
     throw error
   }
 }
+const getRequestForRepeatQ = async currentRequest_id => {
+  const query = `
+    SELECT rft.*, d.name AS dep_name  
+    FROM reqForAvailableTable rft 
+    JOIN departments d ON d.id = rft.selectedDepartment
+    WHERE reqForAvail_id = ?
+  `
+  try {
+    const result = await executeDatabaseQueryAsync(query, currentRequest_id)
+    return result
+  } catch (error) {
+    console.error('Error - getRequestForRepeatQ:', error)
+    throw error
+  }
+}
 
 module.exports = {
   createNewReqForAvailableQ,
@@ -743,4 +761,5 @@ module.exports = {
   addReportQ,
   getContractorsQ,
   addContractorQ,
+  getRequestForRepeatQ,
 }

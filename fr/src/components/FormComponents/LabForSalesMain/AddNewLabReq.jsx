@@ -183,11 +183,9 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
       basis &&
       currentContractorFK
   )
-
   const openModal = () => {
     setModalOpen(true)
   }
-
   const handleClassificationChange = event => {
     const selectedClassification = event.target.value
     setClassification(selectedClassification)
@@ -199,7 +197,6 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     setGost("")
     setIndicatorValues({})
   }
-
   const handleCultureChange = event => {
     const selectedCulture = event.target.value
     setCulture(selectedCulture)
@@ -210,7 +207,6 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     setGost(data[classification][selectedCulture].gost)
     setIndicatorValues({})
   }
-
   const handleTypeChange = event => {
     const selectedType = event.target.value
     setType(selectedType)
@@ -218,11 +214,9 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     setDefaultOptionIndicators(data[classification][culture].types[selectedType].defaultOptionIndicators)
     setIndicatorValues({})
   }
-
   const handleClassChange = event => {
     setClassType(event.target.value)
   }
-
   const handleIndicatorChange = (indicator, value) => {
     setIndicatorValues(prevValues => ({
       ...prevValues,
@@ -235,7 +229,6 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
       [indicator]: value,
     }))
   }
-
   const createRequest = async status => {
     try {
       const formData = {
@@ -244,7 +237,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         tonnage,
         contractor: currentContractorFK.name,
         selectedDepartment: selectedDepartment?.id,
-        selectedDepartment_name: selectedDepartment?.name,
+        selectedDepartment_name: selectedDepartment?.name, //Для уведомления через сокет
         creator: currentUser.id,
         user_id: currentUser.id, //Для уведомления через сокет
         creator_role: currentUser.role,
@@ -253,7 +246,7 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
         approved: false,
         req_status: status, // Устанавливаем статус на основе параметра
         comment,
-        classification,
+        classification, //! ????
         culture,
         type,
         classType,
@@ -296,17 +289,12 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
       setReqStatus({ loading: false, error: null })
     }
   }
-
-  // Обработчик для кнопки "Создать запрос"
-  const handleCreateRequest = () => {
-    createRequest("new") // Устанавливаем статус "new"
+  const handleCreateRequest = async () => {
+    await createRequest("new")
   }
-
-  // Обработчик для кнопки "Сохранить в черновик"
-  const handleSaveDraft = () => {
-    createRequest("draft") // Устанавливаем статус "draft"
+  const handleSaveDraft = async () => {
+    await createRequest("draft")
   }
-
   const handleSalesPointChange = event => {
     setSalesPoint(event.target.value)
   }
@@ -314,12 +302,10 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     setBasis(event.target.value)
   }
   // ! ------------------------------------------------------
-
   const getAllContractors = async (currentUser, setReqStatus, setContractorFK) => {
     const endpoint = `/lab/getContractors`
-    setReqStatus({ loading: true, error: null })
-
     try {
+      setReqStatus({ loading: true, error: null })
       const data = await getDataFromEndpoint(currentUser.token, endpoint, "POST", currentUser.id, setReqStatus)
       setContractorFK(data)
       setReqStatus({ loading: false, error: null })
@@ -327,7 +313,6 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
       setReqStatus({ loading: false, error: error.message })
     }
   }
-
   useEffect(() => {
     const fetchData = async () => {
       if (currentUser) {
@@ -336,13 +321,11 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
     }
     fetchData()
   }, [currentUser, formKey])
-
   const closeModal = () => {
     setModalOpen(false)
     setFormKey(prevKey => prevKey + 1)
   }
   // ! ------------------------------------------------------
-
   return (
     <>
       <ModalCustom isOpen={modalOpen} onClose={closeModal}>
@@ -458,9 +441,9 @@ const AddNewLabReq = ({ onClose, currentUser }) => {
                     value={indicatorValues[indicator] || ""} // Получаем значение из состояния
                     onChange={e => {
                       const newValue = e.target.value
-                        // .replace(/,/g, ".") // Заменяем запятые на точки
-                        // .replace(/[^0-9.]/g, "") // Удаляем все символы, кроме цифр и точки
-                        // .replace(/(\..*?)\..*/g, "$1") // Удаляем лишние точки, если они есть
+                      // .replace(/,/g, ".") // Заменяем запятые на точки
+                      // .replace(/[^0-9.]/g, "") // Удаляем все символы, кроме цифр и точки
+                      // .replace(/(\..*?)\..*/g, "$1") // Удаляем лишние точки, если они есть
                       handleIndicatorChange(indicator, newValue) // Обновляем значение
                     }}
                   />
