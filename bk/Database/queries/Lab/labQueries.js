@@ -195,8 +195,6 @@ const updateAppendApprovalsUsersQ = async data => {
   const email_body = {
     task_descript: text,
   }
-  
-  console.log("🚀 ~ email_body:", email_body)
 
   const getAllReqUsers = `
     SELECT user_id FROM request_approvals WHERE reqForAvail_id = ?
