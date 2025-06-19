@@ -11,6 +11,16 @@ class LabAnalyticsController {
       handleError(res, `getData-Error`)
     }
   }
+  async getRequestByID(req, res) {
+    try {
+      const authDecodeUserData = req.user
+      const request_id = JSON.parse(authDecodeUserData.payLoad)
+      const result = await LabAnalyticQueries.getRequestByIDQ(request_id)
+      sendResponseWithData(res, result)
+    } catch (error) {
+      handleError(res, `getRequestByID-Error`)
+    }
+  }
 }
 
 module.exports = new LabAnalyticsController()
