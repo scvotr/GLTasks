@@ -11,7 +11,7 @@ class LabAnalyticQueries {
       throw error
     }
   }
-  async getDataQ(req, res) {
+  async getDataQ() {
     const query = `
       SELECT
         reqForAvail_id,
@@ -38,6 +38,16 @@ class LabAnalyticQueries {
         contractor;
     `
     return this.executeQuery(query, 'getDataQ')
+  }
+  async getRequestByIDQ(request_id) {
+    const query = `
+      SELECT *
+      FROM reqForAvailableTable
+      WHERE reqForAvail_id = ?
+    `
+    return this.executeQuery(query, 'getRequestByIDQ', request_id, 'get') //db.all(): Всегда возвращает массив (даже пустой [])
+    // const result = await this.executeQuery(query, 'getRequestByIDQ', [request_id]) //db.all() всегда возвращает массив ([{}])
+    // return result.length > 0 ? result[0] : null // Возвращаем первый элемент или null, если массив пуст
   }
 }
 
