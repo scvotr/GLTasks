@@ -676,7 +676,8 @@ const addReportQ = async data => {
       destination_point = ?,
       shipped = ?,
       actual_indicators = ?,
-      reportByUser = ?
+      reportByUser = ?,
+      closed_at = CURRENT_TIMESTAMP
     WHERE reqForAvail_id = ?
   `
   try {
