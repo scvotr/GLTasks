@@ -634,12 +634,26 @@ const getAllLabReqFilesNameQ = async req_id => {
 
 const updateReqStatusQ = async data => {
   const { reqForAvail_id, req_status, position_id } = data
-  const query = `
+  // Определяем поле для обновления времени в зависимости от статуса
+  const current_status = {
+    in_progress: 'in_progress_at',
+    on_confirm: 'on_confirm_at',
+  }
+  // Проверяем, является ли req_status допустимым
+  const updateTimeField = current_status[req_status]
+
+  // Формируем SQL-запрос
+  let query = `
     UPDATE reqForAvailableTable 
     SET 
       req_status = ?
-    WHERE reqForAvail_id = ?
   `
+  // Если статус допустим, добавляем обновление времени
+  if (updateTimeField) {
+    query += `, ${updateTimeField} = CURRENT_TIMESTAMP`
+  }
+
+  query += ` WHERE reqForAvail_id = ?`
   try {
     await executeDatabaseQueryAsync(query, [req_status, reqForAvail_id])
     if (data.req_status === 'new') {
