@@ -23,6 +23,7 @@ const routeHandlers = {
   '/lab/getRequestForRepeat': LabController.getRequestForRepeat,
   // -----------------
   '/lab/analytics/getData': LabAnalyticsController.getData,
+  '/lab/analytics/getRequestByID': LabAnalyticsController.getRequestByID,
 }
 
 const handelLabRoutes = async (req, res) => {
